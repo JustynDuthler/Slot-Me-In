@@ -1,0 +1,111 @@
+#
+# Business Timeslot Reservation Backend
+#
+
+openapi: "3.0.3"
+
+info:
+  description: Business Timeslot Reservation Backend
+  version: 0.1.0
+  title: Business Timeslot Reservation Backend
+
+servers:
+  - url: http://localhost:3010/api
+
+paths:
+  /users/signup:
+    post:
+      description: Creates a new user
+      requestBody:
+        description: User details to set for user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUser"
+      responses:
+        201:
+          description: Successfully created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Unexpected property in user details
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/login:
+    post:
+      description: Validate user credentials during login
+      requestBody:
+        description: User credentials to login with
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Email and password must be specified
+        403:
+          description: Incorrect password
+        404:
+          description: User with given email not found
+
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    NewUser:
+      type: object
+      maxProperties: 3
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    UserLogin:
+      type: object
+      maxProperties: 3
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    UserToken:
+      type: object
+      maxProperties: 1
+      additionalProperties: false
+      properties:
+        token:
+          type: string
+
