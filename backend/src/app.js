@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
-
+const users = require('./users');
 
 const app = express();
 app.use(cors());
@@ -19,18 +19,16 @@ const apidoc = yaml.load(fs.readFileSync(apiSpec, 'utf8'));
 app.use('/v0/api-docs', swaggerUi.serve, swaggerUi.setup(apidoc));
 
 app.use(
-    OpenApiValidator.middleware({
-      apiSpec: apiSpec,
-      validateRequests: true,
-      validateResponses: true,
-    }),
-);
-
-// Returns a single mailbox by name
-app.get('/', (req, res) => {
-  res.send('Hello World')
-});
-
+  OpenApiValidator.middleware({
+    apiSpec: apiSpec,
+    validateRequests: true,
+    validateResponses: true,
+  }),
+  );
+  
+// User authentication routes
+app.post('/api/users/login', users.login);
+app.post('/api/users/signup', users.signup);
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

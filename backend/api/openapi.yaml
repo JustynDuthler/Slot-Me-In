@@ -32,6 +32,8 @@ paths:
                 $ref: "#/components/schemas/UserToken"
         400:
           description: Unexpected property in user details
+        409:
+          description: User with given email already exists
         default:
           description: Unexpected Error
           content:
@@ -88,10 +90,14 @@ components:
         password:
           type: string
           format: password
+      required:
+        - username
+        - email
+        - password
 
     UserLogin:
       type: object
-      maxProperties: 3
+      maxProperties: 2
       additionalProperties: false
       properties:
         email:
@@ -100,6 +106,9 @@ components:
         password:
           type: string
           format: password
+      required:
+        - email
+        - password
 
     UserToken:
       type: object
@@ -108,4 +117,6 @@ components:
       properties:
         token:
           type: string
+      required:
+        - token
 
