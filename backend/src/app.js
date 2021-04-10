@@ -7,6 +7,7 @@ const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
 const users = require('./users');
+const businesses = require('./businesses');
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,10 @@ app.use(
 // User authentication routes
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
+// Business authentication routes
+app.post('/api/businesses/login', businesses.login);
+app.post('/api/businesses/signup', businesses.signup);
+
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({
