@@ -34,6 +34,7 @@ app.post('/api/users/signup', users.signup);
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 
+
 app.use((err, req, res, next) => {
   res.status(err.status).json({
     message: err.message,
