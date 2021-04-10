@@ -1,8 +1,8 @@
 // const db = require()
 const bcrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
-const tokenSecret = "tempTokenSecret";
+const dotenv = require('dotenv');
+dotenv.config();
 
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
@@ -38,5 +38,5 @@ exports.login = async (req, res) => {
 };
 
 function generateToken(account) {
-  return jwt.sign({data: account}, tokenSecret, {expiresIn: '24h'});
+  return jwt.sign({data: account}, process.env.TOKEN_SECRET, {expiresIn: '24h'});
 }
