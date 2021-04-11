@@ -1,5 +1,12 @@
 import React from 'react';
+/**
+ * Register class
+ */
 export default class Register extends React.Component {
+  /**
+   *
+   * @param {*} props
+   */
   constructor(props) {
     super(props);
     this.state = {username: '', email: '', password: ''};
@@ -10,16 +17,32 @@ export default class Register extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   *
+   * @param {*} event
+   */
   changeUsername(event) {
     this.setState({username: event.target.value});
   }
+  /**
+   *
+   * @param {*} event
+   */
   changeEmail(event) {
     this.setState({email: event.target.value});
   }
+  /**
+   *
+   * @param {event} event
+   */
   changePassword(event) {
     this.setState({password: event.target.value});
   }
 
+  /**
+   * Handles form submission
+   * @param {event} event
+   */
   handleSubmit(event) {
     alert('A name was submitted: ' + this.state.username+' '+
       this.state.password);
@@ -39,6 +62,10 @@ export default class Register extends React.Component {
         });
   }
 
+  /**
+   * Renders register page
+   * @return {object} JSX
+   */
   render() {
     return (
       <form onSubmit={this.handleSubmit}>

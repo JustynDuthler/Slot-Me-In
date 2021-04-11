@@ -1,5 +1,9 @@
 import React from 'react';
 
+/**
+ * Login component
+ * @return {object} JSX
+ */
 export default function Login() {
   return (
     <div>
