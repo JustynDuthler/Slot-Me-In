@@ -47,18 +47,24 @@ export default class Register extends React.Component {
     alert('A name was submitted: ' + this.state.username+' '+
       this.state.password);
     event.preventDefault();
-    fetch('http://localhost:3010/api/users/signup', {method: 'POST', body: JSON.stringify(this.state)})
+    fetch('http://localhost:3010/api/users/signup', {
+      method: 'POST',
+      body: JSON.stringify(this.state),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
         .then((response) => {
           if (!response.ok) {
             throw response;
           }
-          return response.json();
+          return response;
         })
         .then((json) => {
-          console.log(json.message);
+          console.log(json);
         })
         .catch((error) => {
-          console.log(error.toString());
+          console.log(error);
         });
   }
 
