@@ -18,12 +18,24 @@ module.exports = {
       "restParams" : true,
     },
   },
+  'rules': {
+    "linebreak-style": ["error", "windows"],
+    "require-jsdoc": ["error", {
+        "require": {
+            "FunctionDeclaration": false,
+            "MethodDefinition": false,
+            "ClassDeclaration": false,
+            "ArrowFunctionExpression": false,
+            "FunctionExpression": false
+        }
+    }]
+  },
   "settings": {
     "react": {
-      "version": "detect", 
+      "version": "detect",
     },
   },
-  "ignorePatterns": [ 
+  "ignorePatterns": [
     "*.test.js", ".eslintrc.js",
   ],
 };
