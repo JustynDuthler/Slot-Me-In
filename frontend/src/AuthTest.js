@@ -1,5 +1,5 @@
 import React from 'react';
-
+const Auth = require('./libs/Auth');
 
 
 /**
@@ -15,12 +15,12 @@ import React from 'react';
     const response = await fetch("http://localhost:3010/api/test/get_token");
     const res = await response.json();
     const token = res.token;
-    localStorage.setItem('auth_token', token);
+    Auth.saveJWT(token);
     setToken(token);
   };
 
   const remove_token = () => {
-    localStorage.removeItem('auth_token');
+    Auth.removeJWT();
     setToken("");
     setAuth(false);
   };
@@ -30,9 +30,7 @@ import React from 'react';
     if (foundToken) { 
       await fetch("http://localhost:3010/api/test/test_token", {
         method : "POST",
-        headers : {
-          'Authorization': 'Bearer ' + foundToken,
-        }
+        headers : Auth.JWTHeader(),
       })
       .then(res => res.json())
       .then(data => setResponse(data.auth));
@@ -41,7 +39,7 @@ import React from 'react';
 
 
   if (!auth) { 
-    const foundToken = localStorage.getItem('auth_token');
+    const foundToken = Auth.getJWT();
     if (foundToken) {
       setToken(foundToken);
       setAuth(true);

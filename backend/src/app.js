@@ -37,12 +37,14 @@ app.post('/api/users/signup', users.signup);
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 
-// Generates a token which expires in 1 minutes
+// Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
   temp_token = jwt.sign({data: "asdfasdf"}, process.env.TOKEN_SECRET, {expiresIn: '60s'});
   res.status(200).json({token: temp_token});
 });
 
+// A test api which uses authentication middleware
+// Will send the json only if the middleware authenticates the JWT
 app.post('/api/test/test_token', auth, (req, res) => {
   res.status(200).json({auth: "authenticated"});
 });
