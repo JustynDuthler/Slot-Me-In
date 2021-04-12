@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
-// access with process.env.WHATEVER
 
-
+// If the JWT token is valid, sets req.user and goes to next part
+// If there is no token it sends a 401
+// If there is an error in the 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]

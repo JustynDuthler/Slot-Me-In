@@ -13,6 +13,33 @@ servers:
   - url: http://localhost:3010/api
 
 paths:
+  /test/get_token:
+    get:
+      description: Gets a test token
+      responses:
+        200:
+          description: a jwt is being sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+  /test/test_token:
+    post:
+      description: Test API to check token sending
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Accepted JWT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTestSchema"
+
+        
+
   /users/signup:
     post:
       description: Creates a new user account
@@ -124,7 +151,23 @@ paths:
           description: Business account with given email not found
 
 components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+
+  # 1) Define the security scheme type (HTTP bearer)
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+
   schemas:
+    AuthTestSchema:
+      type: object
+      properties:
+        auth:
+          type: string
     Error:
       required:
         - code
@@ -135,7 +178,7 @@ components:
           format: int32
         message:
           type: string
-
+        
     NewAccount:
       type: object
       maxProperties: 3

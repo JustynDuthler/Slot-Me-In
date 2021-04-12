@@ -5,9 +5,12 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
+const jwt = require('jsonwebtoken');
+
 
 const users = require('./users');
 const businesses = require('./businesses');
+const auth = require('./auth');
 
 const app = express();
 app.use(cors());
@@ -34,6 +37,15 @@ app.post('/api/users/signup', users.signup);
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 
+// Generates a token which expires in 1 minutes
+app.get('/api/test/get_token', async (req, res) => {
+  temp_token = jwt.sign({data: "asdfasdf"}, process.env.TOKEN_SECRET, {expiresIn: '60s'});
+  res.status(200).json({token: temp_token});
+});
+
+app.post('/api/test/test_token', auth, (req, res) => {
+  res.status(200).json({auth: "authenticated"});
+});
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

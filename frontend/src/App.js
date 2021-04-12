@@ -9,6 +9,7 @@ import Login from './Login';
 // import Register from './Register';
 import Register from './Register';
 import Home from './Home';
+import AuthTest from './AuthTest';
 
 /**
  *
@@ -29,6 +30,9 @@ function App() {
             <li>
               <Link to="/register">Create Account</Link>
             </li>
+            <li>
+              <Link to="/authtest">Auth Test</Link>
+            </li>
           </ul>
         </nav>
         <Switch>
@@ -37,6 +41,9 @@ function App() {
           </Route>
           <Route path="/register">
             <Register/>
+          </Route>
+          <Route path="/authtest">
+            <AuthTest />
           </Route>
           <Route path="/">
             <Home />

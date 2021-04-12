@@ -36,6 +36,6 @@ module.exports = {
     },
   },
   "ignorePatterns": [
-    "*.test.js", ".eslintrc.js",
+    "*.test.js", ".eslintrc.js", "*.js",
   ],
 };
