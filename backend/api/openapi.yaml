@@ -217,8 +217,8 @@ components:
       maxProperties: 1
       additionalProperties: false
       properties:
-        token:
+        auth_token:
           type: string
       required:
-        - token
+        - auth_token
 

@@ -2,24 +2,29 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// If the JWT token is valid, sets req.user and goes to next part
-// If there is no token it sends a 401
-// If there is an error in the 
-function authenticateToken(req, res, next) {
+// Middleware for authenticating JWT
+exports.authenticateJWT = (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
-  
-    if (token == null) return res.sendStatus(401)
-  
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-      console.log(err)
-  
-      if (err) return res.sendStatus(403)
-  
-      req.user = user
-  
-      next()
-    })
-}
 
-module.exports = authenticateToken;
+    // If no token is found send 401
+    if (token == null) return res.sendStatus(401);
+  
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+      if(err) {
+        console.log(err);
+      }
+      
+      // If the token is invalid send 403
+      if (err) return res.sendStatus(403)
+      
+      // If all is good set req.payload to the payload of the JWT
+      req.payload = decoded;
+      next();
+    })
+};
+
+// Generates a JWT for a user based on their email, database id, and userType('')
+exports.generateJWT = async (email, id, userType, time="24h") => {
+  return jwt.sign({email: email, id: id, userType: userType}, process.env.TOKEN_SECRET, {expiresIn: time});
+}

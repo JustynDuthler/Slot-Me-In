@@ -14,7 +14,7 @@ const Auth = require('./libs/Auth');
   async function get_token(){
     const response = await fetch("http://localhost:3010/api/test/get_token");
     const res = await response.json();
-    const token = res.token;
+    const token = res.auth_token;
     Auth.saveJWT(token);
     setToken(token);
   };
