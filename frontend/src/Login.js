@@ -9,11 +9,20 @@ export default class Login extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {email: '', password: ''};
+    this.state = {email: '', password: '', showBusiness: false};
+
+    this.changeForm = this.changeForm.bind(this);
 
     this.changeEmail = this.changeEmail.bind(this);
     this.changePassword = this.changePassword.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  /**
+   *
+   * @param {event} event
+   */
+  changeForm(event) {
+    this.setState({showBusiness: !this.state.showBusiness});
   }
   /*
    *
@@ -31,14 +40,25 @@ export default class Login extends React.Component {
   }
 
   /**
+   *
+   * @param {event} event
+   */
+  changePassword(event) {
+    this.setState({password: event.target.value});
+  }
+
+  /**
    * Handles form submission
    * @param {event} event
    */
   handleSubmit(event) {
     event.preventDefault();
-    fetch('http://localhost:3010/api/users/login', {
+    var apicall = 'http://localhost:3010/api/'+
+      (this.state.showBusiness?'businesses':'users')+'/login';
+    fetch(apicall, {
       method: 'POST',
-      body: JSON.stringify(this.state),
+      body: JSON.stringify({"email":this.state.email,
+        "password":this.state.password}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -62,8 +82,25 @@ export default class Login extends React.Component {
    * @return {object} JSX
    */
   render() {
+    const showBusiness = this.state.showBusiness;
+    console.log(showBusiness);
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div>
+      {showBusiness && <form onSubmit={this.handleSubmit}>
+        <label>
+          Business Email:
+          <input type="text" value={this.state.email}
+            onChange={this.changeEmail} />
+        </label><br/>
+        <label>
+          Password:
+          <input type="text" value={this.state.password}
+            onChange={this.changePassword} />
+        </label><br/>
+        <input type="submit" value="Submit" />
+      </form>}
+      {showBusiness && <button onClick={this.changeForm}>Toggle User Login</button>}
+      {!showBusiness && <form onSubmit={this.handleSubmit}>
         <label>
           Email:
           <input type="text" value={this.state.email}
@@ -75,7 +112,10 @@ export default class Login extends React.Component {
             onChange={this.changePassword} />
         </label><br/>
         <input type="submit" value="Submit" />
-      </form>
+      </form>}
+      {!showBusiness && <button onClick={this.changeForm}>Toggle Business Login</button>}
+      </div>
+
     );
   }
 }

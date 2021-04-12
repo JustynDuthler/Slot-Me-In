@@ -9,12 +9,22 @@ export default class Register extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {username: '', email: '', password: ''};
+    this.state = {username: '', email: '', password: '', showBusiness: false};
+
+    this.changeForm = this.changeForm.bind(this);
 
     this.changeUsername = this.changeUsername.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changePassword = this.changePassword.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  /**
+   *
+   * @param {*} event
+   */
+  changeForm(event) {
+    this.setState({showBusiness: !this.state.showBusiness});
   }
 
   /**
@@ -47,9 +57,12 @@ export default class Register extends React.Component {
     alert('A name was submitted: ' + this.state.username+' '+
       this.state.password);
     event.preventDefault();
-    fetch('http://localhost:3010/api/users/signup', {
+    var apicall = 'http://localhost:3010/api/'+
+      (this.state.showBusiness?'businesses':'users')+'/signup';
+    fetch(apicall, {
       method: 'POST',
-      body: JSON.stringify(this.state),
+      body: JSON.stringify({"email":this.state.email,
+        "password":this.state.password,"username":this.state.username}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -73,8 +86,30 @@ export default class Register extends React.Component {
    * @return {object} JSX
    */
   render() {
+    const showBusiness = this.state.showBusiness;
+    console.log(showBusiness);
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div>
+      {showBusiness && <form onSubmit={this.handleSubmit}>
+        <label>
+          Business Name:
+          <input type="text" value={this.state.username}
+            onChange={this.changeUsername} />
+        </label><br/>
+        <label>
+          Business Email:
+          <input type="text" value={this.state.email}
+            onChange={this.changeEmail} />
+        </label><br/>
+        <label>
+          Password:
+          <input type="text" value={this.state.password}
+            onChange={this.changePassword} />
+        </label><br/>
+        <input type="submit" value="Submit" />
+      </form>}
+      {showBusiness && <button onClick={this.changeForm}>Toggle User Signup</button>}
+      {!showBusiness && <form onSubmit={this.handleSubmit}>
         <label>
           Username:
           <input type="text" value={this.state.username}
@@ -91,7 +126,10 @@ export default class Register extends React.Component {
             onChange={this.changePassword} />
         </label><br/>
         <input type="submit" value="Submit" />
-      </form>
+      </form>}
+      {!showBusiness && <button onClick={this.changeForm}>Toggle Business Signup</button>}
+      </div>
+
     );
   }
 }
