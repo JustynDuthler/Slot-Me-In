@@ -149,6 +149,110 @@ paths:
           description: Incorrect password
         404:
           description: Business account with given email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /events:
+    post:
+      description: Create a new event
+      tags:
+        - events
+      requestBody:
+        description: Event details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        201:
+          description: Successfully created event
+        400:
+          description: Unexpected property in event details
+        403:
+          description: Only business accounts can create events
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      description: Get all events
+      tags:
+        - events
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events/{eventID}:
+    get:
+      description: Returns a single event associated with a specified eventID
+      tags:
+        - events
+      parameters:
+        - name: eventID
+          in: path
+          description: ID of event to get
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfully retrieved event
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events/{eventID}/signup:
+    post:
+      description: Signup for event associated with specified eventID
+      tags:
+        - events
+      parameters:
+        - name: eventID
+          in: path
+          description: ID of event to get
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Details of user signing up for event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        201:
+          description: Successfully signed up for event
+        400:
+          description: Unexpected property in user details
+        409:
+          description: User already signed up for this event
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   responses:
@@ -181,10 +285,10 @@ components:
         
     NewAccount:
       type: object
-      maxProperties: 3
+      maxProperties: 4
       additionalProperties: false
       properties:
-        username:
+        name:
           type: string
         email:
           type: string
@@ -192,8 +296,12 @@ components:
         password:
           type: string
           format: password
+        phoneNumber:
+          type: string
+          pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+          example: "123-456-7890"
       required:
-        - username
+        - name
         - email
         - password
 
@@ -211,7 +319,20 @@ components:
       required:
         - email
         - password
-
+    User:
+      type: object
+      maxProperties: 3
+      additionalProperties: false
+      properties:
+        userID:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+      required:
+        - userID
     UserToken:
       type: object
       maxProperties: 1
@@ -222,3 +343,28 @@ components:
       required:
         - auth_token
 
+    Event:
+      type: object
+      additionalProperties: false
+      properties:
+        businessID:
+          type: integer
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        capacity:
+          type: integer
+        repeat:
+          type: boolean
+      required:
+        - businessID
+        - startTime
+        - endTime
+        - capacity
+    EventList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Event"
