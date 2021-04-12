@@ -83,7 +83,6 @@ export default class Login extends React.Component {
    */
   render() {
     const showBusiness = this.state.showBusiness;
-    console.log(showBusiness);
     return (
       <div>
       {showBusiness && <form onSubmit={this.handleSubmit}>

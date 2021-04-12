@@ -87,7 +87,6 @@ export default class Register extends React.Component {
    */
   render() {
     const showBusiness = this.state.showBusiness;
-    console.log(showBusiness);
     return (
       <div>
       {showBusiness && <form onSubmit={this.handleSubmit}>
