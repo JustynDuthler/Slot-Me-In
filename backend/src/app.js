@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 const users = require('./users');
 const businesses = require('./businesses');
 const auth = require('./auth');
+const db = require('./db');
+const { dbTest } = require('./db');
 
 const app = express();
 app.use(cors());
@@ -56,5 +58,10 @@ app.use((err, req, res, next) => {
     status: err.status,
   });
 });
+
+app.get('/db/test', async(req, res) => {
+  db.dbTest();
+  res.status(200);
+})
 
 module.exports = app;
