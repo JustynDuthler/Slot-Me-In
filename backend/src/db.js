@@ -61,4 +61,15 @@ exports.getEventID = async (eventID) => {
   return rows;
 }
 
+exports.insertUserAccount = async (userName, password, email) => {
+  const insert = 'INSERT INTO Users (userName, Password, userEmail) VALUES ($1, $2, $3) RETURNING userID';
+  const query = {
+    text: insert,
+    values: [userName, password, email],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows[0].userID;
+};
+
 console.log(`Connected to database '${process.env.DB}'`);

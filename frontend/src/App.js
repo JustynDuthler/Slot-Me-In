@@ -10,6 +10,7 @@ import Login from './Login';
 import Register from './Register';
 import Home from './Home';
 import AuthTest from './AuthTest';
+import CreateEvent from './CreateEvent';
 
 /**
  *
@@ -31,6 +32,9 @@ function App() {
               <Link to="/register">Create Account</Link>
             </li>
             <li>
+              <Link to="/eventcreate">Create Event</Link>
+            </li>
+            <li>
               <Link to="/authtest">Auth Test</Link>
             </li>
           </ul>
@@ -44,6 +48,9 @@ function App() {
           </Route>
           <Route path="/authtest">
             <AuthTest />
+          </Route>
+          <Route path="/eventcreate">
+            <CreateEvent />
           </Route>
           <Route path="/">
             <Home />
