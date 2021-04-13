@@ -1,13 +1,13 @@
 #
-# Business Timeslot Reservation Backend
+# SlotMeIn Backend
 #
 
 openapi: "3.0.3"
 
 info:
-  description: Business Timeslot Reservation Backend
+  description: API for SlotMeIn, a business timeslot reservation web app
   version: 0.1.0
-  title: Business Timeslot Reservation Backend
+  title: SlotMeIn API
 
 servers:
   - url: http://localhost:3010/api
@@ -94,6 +94,34 @@ paths:
           description: Incorrect password
         404:
           description: User account with given email not found
+  /users/{userID}/events:
+    get:
+      description: Retrieves all events that a user has signed up for
+      tags:
+        - users
+      parameters:
+        - name: userID
+          in: path
+          description: ID of user to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: User with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /businesses/signup:
     post:
@@ -155,6 +183,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /businesses/{businessID}/events:
+    get:
+      description: Retrieves all events that a business has created
+      tags:
+        - businesses
+      parameters:
+        - name: businessID
+          in: path
+          description: ID of business to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: Business with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /events:
     post:
@@ -200,7 +256,7 @@ paths:
                 $ref: "#/components/schemas/Error"
   /events/{eventID}:
     get:
-      description: Returns a single event associated with a specified eventID
+      description: Retrieves a single event associated with a specified eventID
       tags:
         - events
       parameters:
@@ -209,10 +265,15 @@ paths:
           description: ID of event to get
           required: true
           schema:
-            type: integer
+            type: string
+            format: uuid
       responses:
         200:
           description: Successfully retrieved event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
         404:
           description: Event with specified ID not found
         default:
@@ -232,7 +293,8 @@ paths:
           description: ID of event to get
           required: true
           schema:
-            type: integer
+            type: string
+            format: uuid
       requestBody:
         description: Details of user signing up for event
         required: true
@@ -325,7 +387,8 @@ components:
       additionalProperties: false
       properties:
         userID:
-          type: integer
+          type: string
+          format: uuid
         username:
           type: string
         email:
@@ -348,7 +411,8 @@ components:
       additionalProperties: false
       properties:
         businessID:
-          type: integer
+          type: string
+          format: uuid
         startTime:
           type: string
           format: date-time
