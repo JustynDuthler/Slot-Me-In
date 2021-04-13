@@ -21,3 +21,22 @@ exports.dbTest = async() => {
         pool.end;
     });
 };
+
+// Inserts a new event entry into the database
+// Returns the newely created eventID
+exports.insertEvent = async (eventName, startTime, endTime, date, businessID, capacity=null) => {
+  const insert = 'INSERT INTO Events (eventName, startTime, endTime, date, businessID, capacity) VALUES ($1, $2, $3, $4, $5, $6) RETURNING eventID';
+  const query = {
+    text: insert,
+    values: [eventName, startTime, endTime, date, businessID, capacity],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows[0].eventID;
+};
+
+exports.insertRepeatingEvent = async () => {
+
+};
+
+console.log(`Connected to database '${process.env.DB}'`);
