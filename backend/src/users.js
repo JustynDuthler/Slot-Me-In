@@ -2,6 +2,9 @@ const db = require('./db')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const auth = require('./auth');
+
+
 dotenv.config();
 const User = db.Users;
 
@@ -52,7 +55,7 @@ exports.login = async (req, res) => {
       if (error)
         res.status(500).json(error)
       else if (match)
-        res.status(200).json({token: generateToken(account)});
+        res.status(200).json({auth_token: auth.generateJWT(account.email, account.id, 'user')});
       else
         res.status(403).send();
     })
@@ -67,7 +70,3 @@ exports.getEvents = async (req, res) => {
   const events = [];
   res.status(200).json(events);
 };
-
-function generateToken(account) {
-  return jwt.sign({data: account}, process.env.TOKEN_SECRET, {expiresIn: '24h'});
-}
