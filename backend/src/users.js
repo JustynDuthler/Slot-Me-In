@@ -2,31 +2,31 @@ const db = require('./db')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+dotenv.config();
+
 const auth = require('./auth');
 
-
-dotenv.config();
-const User = db.Users;
 
 exports.signup = async (req, res) => {
 
   // hash password using bcrypt with 10 salt rounds
-  bcrypt.hash(req.body.password, 10, (error, hash) => {
+  bcrypt.hash(req.body.password, 10, async (error, hash) => {
     if (error) {
       res.status(500).json(error);
       return;
-    }
-    else {
+    } else {
       // TODO: add once db is implemented
       // if email or username already exists in db
       //    then res.status(409)
       // else 
       //    add email, username, hashed password to db 
       //    res.status(200) and return json web token
-      const userNameExists = User.findOne({ where: { userName: req.body.userName } });
-      const userEmailExists = User.findOne({ where: { userEmail: req.body.userEmail } });
 
-      if (userNameExists !== null && userEmailExists !== null) {
+      const userID = await db.insertUserAccount(req.body.name, hash, req.body.email);
+      const token = await auth.generateJWT(req.body.email, userID, 'user');
+      res.status(201).json({auth_token: token});
+
+      /*if (userNameExists !== null && userEmailExists !== null) {
         res.status(409);
         console.log('User already taken!');
       }
@@ -42,6 +42,7 @@ exports.signup = async (req, res) => {
         const {rows} = pool.query(query);
         return rows[0].userID;
       }
+      */
     }
   })
 };
