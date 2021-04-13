@@ -27,9 +27,8 @@ CREATE TABLE Events (
 	eventID uuid DEFAULT uuid_generate_v4(),
 	eventName TEXT NOT NULL,
 	businessID uuid,
-	startTime TIME NOT NULL,
-	endTime TIME NOT NULL,
-	date DATE NOT NULL,
+	startTime TIMESTAMP NOT NULL,
+	endTime TIMESTAMP NOT NULL,
 	capacity INTEGER,
 	PRIMARY KEY (eventID),
 	FOREIGN KEY (businessID) REFERENCES Businesses
