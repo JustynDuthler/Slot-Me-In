@@ -46,5 +46,19 @@ exports.insertBusinessAccount = async (businessName, password, phoneNumber, busi
   return rows[0].businessID;
 };
 
+// retrieve by event uuid 
+// retrieve startTime and endTime
+
+exports.getEventID = async (eventID) => {
+  const queryText = 'SELECT * FROM Events e WHERE  e.eventID = $1';
+  const query = {
+    text: queryText,
+    values: [eventID],
+  };
+  
+  const {rows} = await pool.query(query);
+  console.log(rows)
+  return rows;
+}
 
 console.log(`Connected to database '${process.env.DB}'`);
