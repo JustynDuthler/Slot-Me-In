@@ -22,8 +22,8 @@ export default function CreateEvent() {
       fetch('http://localhost:3010/api/events', {
         method: 'POST',
         body: JSON.stringify({"name":eventName,
-          "startTime":(new Date(startDate+" "+startTime).toString()),
-          "endTime":(new Date(endDate+" "+endTime).toString()),
+          "starttime":(new Date(startDate+" "+startTime).toString()),
+          "endtime":(new Date(endDate+" "+endTime).toString()),
           "capacity":capacity,
           "repeat":repeat.toString(),
         }),
