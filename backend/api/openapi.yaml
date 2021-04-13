@@ -226,7 +226,11 @@ paths:
               $ref: "#/components/schemas/Event"
       responses:
         201:
-          description: Successfully created event
+          description: Successfully created event, returns event with generated event ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
         400:
           description: Unexpected property in event details
         403:
@@ -416,6 +420,8 @@ components:
         businessID:
           type: string
           format: uuid
+        name:
+          type: string
         startTime:
           type: string
           format: date-time
@@ -428,6 +434,7 @@ components:
           type: boolean
       required:
         - businessID
+        - name
         - startTime
         - endTime
         - capacity
