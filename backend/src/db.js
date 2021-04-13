@@ -57,8 +57,8 @@ exports.getEventID = async (eventID) => {
   };
   
   const {rows} = await pool.query(query);
-  console.log(rows)
-  return rows;
+  console.log(rows[0])
+  return rows[0];
 }
 
 exports.insertUserAccount = async (userName, password, email) => {
