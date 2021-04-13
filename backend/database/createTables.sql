@@ -7,7 +7,7 @@
 CREATE TABLE Users (
 	userID uuid DEFAULT uuid_generate_v4(), 
 	userName TEXT NOT NULL,
-	Password TEXT,
+	Password TEXT NOT NULL,
     userEmail TEXT NOT NULL,
 	PRIMARY KEY (userID)
 );
@@ -16,8 +16,30 @@ CREATE TABLE Users (
 CREATE TABLE Businesses (
 	businessID uuid DEFAULT uuid_generate_v4(),
 	businessName TEXT NOT NULL,
-	Password TEXT,
+	Password TEXT NOT NULL,
 	phoneNumber TEXT NOT NULL,
 	businessEmail TEXT NOT NULL,
 	PRIMARY KEY (businessID)
-)
+);
+
+-- Events Table
+CREATE TABLE Events (
+	eventID uuid DEFAULT uuid_generate_v4(),
+	eventName TEXT NOT NULL,
+	businessID uuid,
+	startTime TIME NOT NULL,
+	endTime TIME NOT NULL,
+	date DATE NOT NULL,
+	capacity INTEGER,
+	PRIMARY KEY (eventID),
+	FOREIGN KEY (businessID) REFERENCES Businesses
+);
+
+-- Attendees Table
+CREATE TABLE Attendees (
+	eventID uuid,
+	userID uuid,
+	numAttendees INTEGER NOT NULL,
+	FOREIGN KEY (eventID) REFERENCES Events,
+	FOREIGN KEY (userID) REFERENCES Users
+);
