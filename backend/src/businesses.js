@@ -7,14 +7,14 @@ dotenv.config();
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
   bcrypt.hash(req.body.password, 10, (error, hash) => {
-    if (error) 
+    if (error)
       res.status(500).json(error)
     else {
       // TODO: add once db is implemented
       // if email or username already exists in db
       //    then res.status(409)
-      // else 
-      //    add email, username, hashed password to db 
+      // else
+      //    add email, username, hashed password to db
       //    res.status(200) and return json web token
       res.status(200).send();
     }
@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
       if (error)
         res.status(500).json(error)
       else if (match)
-        res.status(200).json({token: generateToken(account)});
+        res.status(200).json({auth_token: auth.generateJWT(account.email, account.id, 'business')});
       else
         res.status(403).send();
     })

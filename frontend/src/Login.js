@@ -1,4 +1,6 @@
 import React from 'react';
+const Auth = require('./libs/Auth');
+
 /**
  * Register class
  */
@@ -67,9 +69,10 @@ export default class Login extends React.Component {
           if (!response.ok) {
             throw response;
           }
-          return response;
+          return response.json();
         })
         .then((json) => {
+          Auth.saveJWT(json.auth_token);
           console.log(json);
         })
         .catch((error) => {
