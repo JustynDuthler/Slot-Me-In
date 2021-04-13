@@ -6,7 +6,6 @@ dotenv.config();
 
 const auth = require('./auth');
 
-
 exports.signup = async (req, res) => {
 
   // hash password using bcrypt with 10 salt rounds
@@ -15,33 +14,22 @@ exports.signup = async (req, res) => {
       res.status(500).json(error);
       return;
     } else {
-      // TODO: add once db is implemented
-      // if email or username already exists in db
-      //    then res.status(409)
-      // else 
-      //    add email, username, hashed password to db 
-      //    res.status(200) and return json web token
 
-      const userID = await db.insertUserAccount(req.body.name, hash, req.body.email);
-      const token = await auth.generateJWT(req.body.email, userID, 'user');
-      res.status(201).json({auth_token: token});
+      // check if username/email is already in use
+      const emailRes = await db.checkUserEmailTaken(req.body.email);
+      const nameRes = await db.checkUserNameTaken(req.body.name);
 
-      /*if (userNameExists !== null && userEmailExists !== null) {
-        res.status(409);
+      // this returns 500 for some reason
+      if (nameRes.length > 0 || emailRes.length > 0) {
+        res.status(409).json(error);
         console.log('User already taken!');
       }
       else {
-        const insert = 'INSERT INTO Users (userName, Password, userEmail) VALUES ($1, $2, $3) RETURNING userID';
-        const query = {
-          text: insert,
-          values: [userName, Password, userEmail],
-        };
-        res.status(201).json({auth_token: 'token'});
-        console.log('User added! ' + req.body.userName + ' ' + req.body.userEmail);
-        const {rows} = pool.query(query);
-        return rows[0].userID;
+        const userID = await db.insertUserAccount(req.body.name, hash, req.body.email);
+        const token = await auth.generateJWT(req.body.email, userID, 'user');
+        res.status(201).json({auth_token: token});
       }
-      */
+
     }
   })
 };

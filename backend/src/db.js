@@ -11,7 +11,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: 5432,
 });
-module.exports = pool;
+// module.exports = pool;
 pool.connect()
 
 // basic testing query
@@ -71,5 +71,29 @@ exports.insertUserAccount = async (userName, password, email) => {
   const {rows} = await pool.query(query);
   return rows[0].userID;
 };
+
+// check if a username is taken
+exports.checkUserNameTaken = async (userName) => {
+  const insert = 'SELECT * FROM Users u WHERE u.userName = $1';
+  const query = {
+    text: insert,
+    values: [userName],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+} 
+
+// check if an email is already in use
+exports.checkUserEmailTaken = async (userEmail) => {
+  const insert = 'SELECT * FROM Users u WHERE u.userEmail = $1';
+  const query = {
+    text: insert,
+    values: [userEmail],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+} 
 
 console.log(`Connected to database '${process.env.DB}'`);
