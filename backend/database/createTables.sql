@@ -8,7 +8,7 @@ CREATE TABLE Users (
 	userID uuid DEFAULT uuid_generate_v4(), 
 	userName TEXT NOT NULL,
 	Password TEXT NOT NULL,
-    userEmail TEXT NOT NULL,
+    userEmail TEXT UNIQUE NOT NULL,
 	PRIMARY KEY (userID)
 );
 
@@ -18,7 +18,7 @@ CREATE TABLE Businesses (
 	businessName TEXT NOT NULL,
 	Password TEXT NOT NULL,
 	phoneNumber TEXT NOT NULL,
-	businessEmail TEXT NOT NULL,
+	businessEmail TEXT UNIQUE NOT NULL,
 	PRIMARY KEY (businessID)
 );
 

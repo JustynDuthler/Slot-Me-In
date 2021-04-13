@@ -35,5 +35,16 @@ exports.insertEvent = async (eventName, startTime, endTime, date, businessID, ca
   return rows[0].eventID;
 };
 
+exports.insertBusinessAccount = async (businessName, password, phoneNumber, businessEmail) => {
+  const insert = 'INSERT INTO Businesses (businessName, Password, phoneNumber, businessEmail) VALUES ($1, $2, $3, $4) RETURNING businessID';
+  const query = {
+    text: insert,
+    values: [businessName, password, phoneNumber, businessEmail],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows[0].businessID;
+};
+
 
 console.log(`Connected to database '${process.env.DB}'`);
