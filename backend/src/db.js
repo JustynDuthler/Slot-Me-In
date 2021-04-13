@@ -11,7 +11,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: 5432,
 });
-
+module.exports = pool;
 pool.connect()
 
 // basic testing query

@@ -3,40 +3,50 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
-const User = db.Users;
 
 exports.signup = async (req, res) => {
 
   // hash password using bcrypt with 10 salt rounds
-  bcrypt.hash(req.body.password, 10, (error, hash) => {
+  bcrypt.hash(req.body.password, 10, async (error, hash) => {
     if (error) {
       res.status(500).json(error);
-      return;
+      // return;
     }
     else {
-      // TODO: add once db is implemented
-      // if email or username already exists in db
-      //    then res.status(409)
-      // else 
-      //    add email, username, hashed password to db 
-      //    res.status(200) and return json web token
-      const userNameExists = User.findOne({ where: { userName: req.body.userName } });
-      const userEmailExists = User.findOne({ where: { userEmail: req.body.userEmail } });
 
-      if (userNameExists !== null && userEmailExists !== null) {
+      const userNameExists = 'SELECT (userName) FROM users VALUES ($1)';
+      const userNameExistsQuery = {
+        text: userNameExists,
+        values: [req.body.userName],
+      };
+
+      const userEmailExists = 'SELECT (userEmail) FROM users VALUES ($1)';
+      const userEmailExistsQuery = {
+        text: userEmailExists,
+        values: [req.body.userEmail],
+      };
+
+      try {
+        const {nameRes} = await pool.query(userNameExists);
+        const {emailRes} = await pool.query(userEmailExists);
+      } catch (err) {
+        console.error(err.message);
+      }
+
+      console.log('name length: ' + userNameExists.length + ' email length: ' + userEmailExists.length);
+      if (userNameExists.length !== 0 || userEmailExists.length !== 0) {
         res.status(409);
         console.log('User already taken!');
       }
       else {
-        const insert = 'INSERT INTO Users (userName, Password, userEmail) VALUES ($1, $2, $3) RETURNING userID';
+        const insert = 'INSERT INTO users (userName, Password, userEmail) VALUES ($1, $2, $3) RETURNING userID';
         const query = {
           text: insert,
-          values: [userName, Password, userEmail],
+          values: [req.body.userName, req.body.Password, req.body.userEmail],
         };
-        res.status(201).json({auth_token: 'token'});
+        const {rows} = await pool.query(query);
+        user => {res.status(201).json({token: generateToken(user)})};
         console.log('User added! ' + req.body.userName + ' ' + req.body.userEmail);
-
-        const {rows} = pool.query(query);
         return rows[0].userID;
       }
     }
