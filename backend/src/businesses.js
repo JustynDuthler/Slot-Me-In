@@ -37,6 +37,15 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.getEvents = async (req, res) => {
+  // const businessID = req.params.businessID;
+  const account = undefined;  // TODO: replace to query db for user once db is implemented
+  if (!account) res.status(404).send();
+  // TODO: query DB for all events this business has created
+  const events = [];
+  res.status(200).json(events);
+};
+
 function generateToken(account) {
   return jwt.sign({data: account}, process.env.TOKEN_SECRET, {expiresIn: '24h'});
 }

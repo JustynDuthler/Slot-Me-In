@@ -283,7 +283,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /events/{eventID}/signup:
-    post:
+    put:
       description: Signup for event associated with specified eventID
       tags:
         - events
@@ -303,7 +303,7 @@ paths:
             schema:
               $ref: "#/components/schemas/User"
       responses:
-        201:
+        200:
           description: Successfully signed up for event
         400:
           description: Unexpected property in user details
@@ -410,6 +410,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        eventID:
+          type: string
+          format: uuid
         businessID:
           type: string
           format: uuid

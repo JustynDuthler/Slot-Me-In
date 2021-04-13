@@ -37,6 +37,15 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.getEvents = async (req, res) => {
+  // const userID = req.params.userID;
+  const account = undefined;  // TODO: replace to query db for user once db is implemented
+  if (!account) res.status(404).send();
+  // TODO: query DB for all events this user has signed up for
+  const events = [];
+  res.status(200).json(events);
+};
+
 function generateToken(account) {
   return jwt.sign({data: account}, process.env.TOKEN_SECRET, {expiresIn: '24h'});
 }

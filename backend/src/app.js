@@ -8,11 +8,11 @@ const OpenApiValidator = require('express-openapi-validator');
 const jwt = require('jsonwebtoken');
 
 
+const auth = require('./auth');
 const users = require('./users');
 const businesses = require('./businesses');
-const auth = require('./auth');
+const events = require('./events');
 const db = require('./db');
-const { dbTest } = require('./db');
 
 const app = express();
 app.use(cors());
@@ -32,12 +32,19 @@ app.use(
   }),
   );
   
-// User authentication routes
+// User routes
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
-// Business authentication routes
+app.get('/api/users/:userID/events', users.getEvents);
+// Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
+app.get('/api/businesses/:businessID/events', businesses.getEvents);
+// Event routes
+app.post('/api/events', events.create);
+app.get('/api/events', events.getEvents);
+app.get('/api/events/:eventID', events.getEventByID);
+app.put('/api/events/:eventID/signup', events.signup)
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
