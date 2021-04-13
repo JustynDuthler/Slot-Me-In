@@ -5,19 +5,19 @@
 
 -- Users Tables
 CREATE TABLE Users (
-	userID INTEGER, 
-	userName TEXT,
+	userID uuid DEFAULT uuid_generate_v4(), 
+	userName TEXT NOT NULL,
 	Password TEXT,
-    userEmail TEXT,
+    userEmail TEXT NOT NULL,
 	PRIMARY KEY (userID)
 );
 
 -- Businesses Tables
 CREATE TABLE Businesses (
-	businessID INTEGER,
-	businessName TEXT,
+	businessID uuid DEFAULT uuid_generate_v4(),
+	businessName TEXT NOT NULL,
 	Password TEXT,
-	phoneNumber TEXT,
-	businessEmail TEXT,
+	phoneNumber TEXT NOT NULL,
+	businessEmail TEXT NOT NULL,
 	PRIMARY KEY (businessID)
 )
