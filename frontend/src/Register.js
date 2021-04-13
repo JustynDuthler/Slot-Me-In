@@ -62,7 +62,7 @@ export default class Register extends React.Component {
     fetch(apicall, {
       method: 'POST',
       body: JSON.stringify({"email":this.state.email,
-        "password":this.state.password,"username":this.state.username}),
+        "password":this.state.password,"name":this.state.username}),
       headers: {
         'Content-Type': 'application/json',
       },
