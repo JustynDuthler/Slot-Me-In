@@ -1,15 +1,19 @@
-// const db = require()
+const db = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
 exports.create = async (req, res) => {
-  // const event = req.body;
+  const event = req.body;
   // TODO: check if user logged in is business account
   //    if not business account, res.status(403).send()
-  // TODO: call function to insert event into DB
-  res.status(201).send();
+  const eventID = 
+      await db.insertEvent(event.name, event.startTime, event.endTime,
+      event.businessID, event.capacity);
+  // add generated event ID to event object before returning
+  event.eventID = eventID;
+  res.status(201).json(event);
 };
 
 exports.getEvents = async (req, res) => {
