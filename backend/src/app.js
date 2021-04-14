@@ -31,7 +31,7 @@ app.use(
     validateResponses: true,
   }),
   );
-  
+
 // User routes
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
@@ -43,7 +43,7 @@ app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 app.get('/api/businesses/:businessID/events', businesses.getEvents);
 // Event routes
-app.post('/api/events', events.create);
+app.post('/api/events', auth.authenticateJWT, events.create);
 app.get('/api/events', events.getEvents);
 app.get('/api/events/:eventID', events.getEventByID);
 app.put('/api/events/:eventID/signup', events.signup)
@@ -60,18 +60,16 @@ app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
   res.status(200).json({auth: "authenticated"});
 });
 
-app.use((err, req, res, next) => {
-  res.status(err.status).json({
-    message: err.message,
-    errors: err.errors,
-    status: err.status,
-  });
-});
-
 app.get('/db/test', async(req, res) => {
   let eventID = '00000000-0000-0000-0000-000000000010';
   db.getEventByID(eventID);
   res.status(200);
-})
+});
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  //console.log(res);
+  //console.log(next);
+  res.status(err.status).send('Internal Server Error');
+});
 module.exports = app;

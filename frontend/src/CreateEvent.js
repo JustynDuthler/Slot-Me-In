@@ -1,4 +1,5 @@
 import React from 'react';
+const Auth = require('./libs/Auth');
 /**
  * CreateEvent Function
  */
@@ -10,6 +11,7 @@ export default function CreateEvent() {
   const[endTime, changeEndTime] = React.useState("");
   const[capacity, changeCapacity] = React.useState("");
   const[repeat, changeRepeat] = React.useState(false);
+  const[failures,setFailures] = React.useState(0);
 
   /**
    * Handles form submission
@@ -20,18 +22,37 @@ export default function CreateEvent() {
     const foundToken = localStorage.getItem('auth_token');
     if (foundToken) {
       fetch('http://localhost:3010/api/events', {
-        method: 'POST',
-        body: JSON.stringify({"name":eventName,
-          "starttime":(new Date(startDate+" "+startTime).toString()),
-          "endtime":(new Date(endDate+" "+endTime).toString()),
-          "capacity":capacity,
-          "repeat":repeat.toString(),
+        method: "POST",
+        body: JSON.stringify({
+          "eventname":eventName,
+          "starttime":new Date(startDate+" "+startTime).toISOString(),
+          "endtime":new Date(endDate+" "+endTime).toISOString(),
+          "capacity":parseInt(capacity),
+          "repeat":repeat,
         }),
-        headers: {
-          'Content-Type': 'application/json',
-          headers : Auth.JWTHeader(),
-        },
+        headers: Auth.JWTHeaderJson(),
+      }).then((response) => {
+        if (!response.ok) {
+          if (response.status == 403) {
+            Auth.updateToken().then((new_token)=>{
+              Auth.saveJWT(new_token);
+              if (failures < 5) {
+                setFailures(failures+1);
+                handleSubmit(event);
+              }
+            });
+          }
+          throw response;
+        }
+        return response.json();
       })
+      .then((json) => {
+        Auth.saveJWT(json.auth_token);
+        console.log(json);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   };
   return (

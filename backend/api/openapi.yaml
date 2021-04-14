@@ -39,7 +39,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthTestSchema"
 
-        
+
   /users/getUser:
     get:
       description: Gets user information
@@ -253,6 +253,12 @@ paths:
                 $ref: "#/components/schemas/Event"
         400:
           description: Unexpected property in event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
         403:
           description: Only business accounts can create events
         default:

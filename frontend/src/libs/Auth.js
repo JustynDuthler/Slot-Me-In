@@ -24,3 +24,20 @@ exports.JWTHeader = () => {
         return null;
     }
 };
+
+// Creates JWT header with json Content-Type or returns null
+exports.JWTHeaderJson = () => {
+    const jwt = localStorage.getItem('auth_token');
+    if (jwt) {
+        return {'Authorization': 'Bearer ' + jwt,
+        'Content-Type':'application/json'};
+    } else {
+        return null;
+    }
+};
+exports.updateToken = async () => {
+  const response = await fetch("http://localhost:3010/api/test/get_token");
+  const res = await response.json();
+  const token = res.auth_token;
+  return token;
+};
