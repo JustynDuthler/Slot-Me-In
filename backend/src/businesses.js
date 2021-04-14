@@ -47,7 +47,8 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(req.body.password, pass);
     if (match) {
       // returns 500
-      res.status(200).json({auth_token: auth.generateJWT(account.email, account.id, 'user')});
+      const token = await auth.generateJWT(account.email, account.id, 'user');
+      res.status(200).json({'auth_token': token});
     }
     else {
       // incorrect password
