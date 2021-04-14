@@ -1,6 +1,4 @@
 const db = require('./db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -17,9 +15,15 @@ exports.create = async (req, res) => {
 };
 
 exports.getEvents = async (req, res) => {
-  const events = await db.getEvents();
-  // 200 and return events list
-  res.status(200).json(events);
+  if (req.query.start) {
+    // if start query provided, query DB for events starting at that time
+    const events = await db.getEventsByStart(req.query.start);
+    res.status(200).json(events);
+  } else {
+    // if no queries provided, query DB for all events
+    const events = await db.getEvents();
+    res.status(200).json(events);
+  }
 };
 
 exports.getEventByID = async (req, res) => {
