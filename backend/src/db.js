@@ -85,11 +85,38 @@ exports.checkUserNameTaken = async (userName) => {
 } 
 
 // check if an email is already in use
-exports.checkUserEmailTaken = async (code, userEmail) => {
+exports.checkUserEmailTaken = async (code, email) => {
   const insert = 'SELECT * FROM Users u WHERE u.userEmail = $1';
   const query = {
     text: insert,
-    values: [userEmail],
+    values: [email],
+  };
+
+  const {rows} = await pool.query(query);
+  if (code === 1)
+    return rows;
+  else if (code === 2)
+    return rows[0].password;
+} 
+
+// check if a business username is taken
+exports.checkBusinessNameTaken = async (businessName) => {
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessName = $1';
+  const query = {
+    text: insert,
+    values: [businessName],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+} 
+
+// check if a business email is already in use
+exports.checkBusinessEmailTaken = async (code, email) => {
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessEmail = $1';
+  const query = {
+    text: insert,
+    values: [email],
   };
 
   const {rows} = await pool.query(query);

@@ -18,8 +18,8 @@ exports.signup = async (req, res) => {
       const emailRes = await db.checkUserEmailTaken(1, req.body.email);
       const nameRes = await db.checkUserNameTaken(req.body.name);
 
-      // returns 500 for some reason
       if (nameRes.length > 0 || emailRes.length > 0) {
+        // returns 500 for some reason
         res.status(409).json(error);
         console.log('User already taken!');
       }
@@ -28,7 +28,6 @@ exports.signup = async (req, res) => {
         const token = await auth.generateJWT(req.body.email, userID, 'user');
         res.status(201).json({auth_token: token});
       }
-
     }
   })
 };
