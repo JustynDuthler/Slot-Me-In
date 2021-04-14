@@ -36,6 +36,8 @@ app.use(
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
 app.get('/api/users/:userID/events', users.getEvents);
+app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
+
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
@@ -48,7 +50,7 @@ app.put('/api/events/:eventID/signup', events.signup)
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
-  temp_token = jwt.sign({data: "asdfasdf"}, process.env.TOKEN_SECRET, {expiresIn: '60s'});
+  temp_token = await auth.generateJWT('jeff@ucsc.edu', '00000000-0000-0000-0000-000000000000', 'user');
   res.status(200).json({auth_token: temp_token});
 });
 

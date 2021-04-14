@@ -72,4 +72,16 @@ exports.insertUserAccount = async (userName, password, email) => {
   return rows[0].userID;
 };
 
+// Returns row for a specific userID
+exports.selectUser = async (userid) => {
+  const select = 'SELECT * FROM Users u WHERE u.userID = $1';
+  const query = {
+    text: select,
+    values: [userid],
+  };
+  
+  const {rows} = await pool.query(query);
+  return rows[0];
+};
+
 console.log(`Connected to database '${process.env.DB}'`);

@@ -16,6 +16,7 @@ paths:
   /test/get_token:
     get:
       description: Gets a test token
+
       responses:
         200:
           description: a jwt is being sent
@@ -39,7 +40,22 @@ paths:
                 $ref: "#/components/schemas/AuthTestSchema"
 
         
-
+  /users/getUser:
+    get:
+      description: Gets user information
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Sending user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
   /users/signup:
     post:
       description: Creates a new user account

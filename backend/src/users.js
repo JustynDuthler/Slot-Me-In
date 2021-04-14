@@ -6,6 +6,10 @@ dotenv.config();
 
 const auth = require('./auth');
 
+exports.getInfo = async (req, res) => {
+  const user = await db.selectUser(req.payload.id);
+  res.status(200).json(user);
+}
 
 exports.signup = async (req, res) => {
 
