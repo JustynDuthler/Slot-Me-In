@@ -11,7 +11,6 @@ export default function CreateEvent() {
   const[endTime, changeEndTime] = React.useState("");
   const[capacity, changeCapacity] = React.useState("");
   const[repeat, changeRepeat] = React.useState(false);
-  const[failures,setFailures] = React.useState(0);
 
   /**
    * Handles form submission
@@ -32,19 +31,7 @@ export default function CreateEvent() {
         }),
         headers: Auth.JWTHeaderJson(),
       }).then((response) => {
-        if (!response.ok) {
-          if (response.status == 403) {
-            Auth.updateToken().then((new_token)=>{
-              Auth.saveJWT(new_token);
-              if (failures < 5) {
-                setFailures(failures+1);
-                handleSubmit(event);
-              }
-            });
-          }
-          throw response;
-        }
-        return response.json();
+        return response;
       })
       .then((json) => {
         console.log(json)
