@@ -419,9 +419,6 @@ components:
         eventid:
           type: string
           format: uuid
-        businessid:
-          type: string
-          format: uuid
         eventname:
           type: string
         starttime:
@@ -435,7 +432,6 @@ components:
         repeat:
           type: boolean
       required:
-        - businessid
         - eventname
         - starttime
         - endtime
