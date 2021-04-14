@@ -11,7 +11,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: 5432,
 });
-
+// module.exports = pool;
 pool.connect()
 
 // basic testing query
@@ -57,8 +57,8 @@ exports.getEventID = async (eventID) => {
   };
   
   const {rows} = await pool.query(query);
-  console.log(rows)
-  return rows;
+  console.log(rows[0])
+  return rows[0];
 }
 
 exports.insertUserAccount = async (userName, password, email) => {
@@ -83,5 +83,58 @@ exports.selectUser = async (userid) => {
   const {rows} = await pool.query(query);
   return rows[0];
 };
+// check if a username is taken
+exports.checkUserNameTaken = async (userName) => {
+  const insert = 'SELECT * FROM Users u WHERE u.userName = $1';
+  const query = {
+    text: insert,
+    values: [userName],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+} 
+
+// check if an email is already in use
+exports.checkUserEmailTaken = async (code, email) => {
+  const insert = 'SELECT * FROM Users u WHERE u.userEmail = $1';
+  const query = {
+    text: insert,
+    values: [email],
+  };
+
+  const {rows} = await pool.query(query);
+  if (code === 1)
+    return rows;
+  else if (code === 2)
+    return rows[0].password;
+} 
+
+// check if a business username is taken
+exports.checkBusinessNameTaken = async (businessName) => {
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessName = $1';
+  const query = {
+    text: insert,
+    values: [businessName],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+} 
+
+// check if a business email is already in use
+exports.checkBusinessEmailTaken = async (code, email) => {
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessEmail = $1';
+  const query = {
+    text: insert,
+    values: [email],
+  };
+
+  const {rows} = await pool.query(query);
+  if (code === 1)
+    return rows;
+  else if (code === 2)
+    return rows[0].password;
+} 
 
 console.log(`Connected to database '${process.env.DB}'`);

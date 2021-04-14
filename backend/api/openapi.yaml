@@ -56,6 +56,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+
+
   /users/signup:
     post:
       description: Creates a new user account
@@ -240,6 +242,8 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Event"
+      security:
+        - bearerAuth: []
       responses:
         201:
           description: Successfully created event, returns event with generated event ID
@@ -364,7 +368,7 @@ components:
           format: int32
         message:
           type: string
-        
+
     NewAccount:
       type: object
       maxProperties: 4
@@ -378,7 +382,7 @@ components:
         password:
           type: string
           format: password
-        phoneNumber:
+        phonenumber:
           type: string
           pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
           example: "123-456-7890"
@@ -406,7 +410,7 @@ components:
       maxProperties: 3
       additionalProperties: false
       properties:
-        userID:
+        userid:
           type: string
           format: uuid
         username:
@@ -415,7 +419,7 @@ components:
           type: string
           format: email
       required:
-        - userID
+        - userid
     UserToken:
       type: object
       maxProperties: 1
@@ -430,18 +434,15 @@ components:
       type: object
       additionalProperties: false
       properties:
-        eventID:
+        eventid:
           type: string
           format: uuid
-        businessID:
+        eventname:
           type: string
-          format: uuid
-        name:
-          type: string
-        startTime:
+        starttime:
           type: string
           format: date-time
-        endTime:
+        endtime:
           type: string
           format: date-time
         capacity:
@@ -449,10 +450,9 @@ components:
         repeat:
           type: boolean
       required:
-        - businessID
-        - name
-        - startTime
-        - endTime
+        - eventname
+        - starttime
+        - endtime
         - capacity
     EventList:
       type: array
