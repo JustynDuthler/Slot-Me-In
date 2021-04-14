@@ -38,7 +38,6 @@ CREATE TABLE Events (
 CREATE TABLE Attendees (
 	eventID uuid,
 	userID uuid,
-	numAttendees INTEGER NOT NULL,
 	FOREIGN KEY (eventID) REFERENCES Events,
 	FOREIGN KEY (userID) REFERENCES Users
 );

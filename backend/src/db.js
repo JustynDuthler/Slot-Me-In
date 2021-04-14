@@ -46,10 +46,8 @@ exports.insertBusinessAccount = async (businessName, password, phoneNumber, busi
   return rows[0].businessID;
 };
 
-// retrieve by event uuid 
-// retrieve startTime and endTime
 
-exports.getEventID = async (eventID) => {
+exports.getEventByID = async (eventID) => {
   const queryText = 'SELECT * FROM Events e WHERE  e.eventID = $1';
   const query = {
     text: queryText,
@@ -60,6 +58,29 @@ exports.getEventID = async (eventID) => {
   console.log(rows[0])
   return rows[0];
 }
+
+exports.getEventsByStart = async (startTime) => { // start time must be a unix timestamp 
+  const queryText = 'SELECT * FROM Events e WHERE e.startTime = $1'; 
+  const query = {
+    text: queryText,
+    values: [startTime],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
+
+exports.insertAttendees = async (eventID, userID) => {
+  const insert = 'INSERT INTO Attendees (eventID, userID) VALUES ($1, $2)';
+  const query = {
+    text: insert,
+    values: [eventID, userID],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
+
 
 exports.insertUserAccount = async (userName, password, email) => {
   const insert = 'INSERT INTO Users (userName, Password, userEmail) VALUES ($1, $2, $3) RETURNING userID';
@@ -125,5 +146,16 @@ exports.checkBusinessEmailTaken = async (code, email) => {
   else if (code === 2)
     return rows[0].password;
 } 
+
+exports.getUsersEvents = async (userID) => {
+  const queryText = 'SELECT e.eventID FROM Events e, Attendees a WHERE a.userID = $1 AND e.userID = $1';
+  const query = {
+    text: queryText,
+    values: [userID],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
 
 console.log(`Connected to database '${process.env.DB}'`);
