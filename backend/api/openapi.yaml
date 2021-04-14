@@ -437,6 +437,9 @@ components:
         eventid:
           type: string
           format: uuid
+        businessid:
+          type: string
+          format: uuid
         eventname:
           type: string
         starttime:

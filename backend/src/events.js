@@ -24,7 +24,7 @@ exports.getEvents = async (req, res) => {
 };
 
 exports.getEventByID = async (req, res) => {
-  const event = await db.getEventID(req.params.eventID);
+  const event = await db.getEventByID(req.params.eventID);
   // 200 if event found, 404 if not found
   if (!event) {
     res.status(404).send();

@@ -48,14 +48,13 @@ exports.insertBusinessAccount = async (businessName, password, phoneNumber, busi
 
 
 exports.getEventByID = async (eventID) => {
-  const queryText = 'SELECT * FROM Events e WHERE  e.eventID = $1';
+  const queryText = 'SELECT * FROM Events e WHERE e.eventID = $1';
   const query = {
     text: queryText,
     values: [eventID],
   };
   
   const {rows} = await pool.query(query);
-  console.log(rows[0])
   return rows[0];
 }
 
