@@ -43,7 +43,7 @@ app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 app.get('/api/businesses/:businessID/events', businesses.getEvents);
 // Event routes
-app.post('/api/events', auth.authenticateJWT, events.create);
+app.post('/api/events', auth.authenticateBusinessJWT, events.create);
 app.get('/api/events', events.getEvents);
 app.get('/api/events/:eventID', events.getEventByID);
 app.put('/api/events/:eventID/signup', events.signup)

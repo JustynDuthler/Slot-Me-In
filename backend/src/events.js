@@ -4,8 +4,6 @@ dotenv.config();
 
 exports.create = async (req, res) => {
   const event = req.body;
-  // TODO: check if user logged in is business account
-  //    if not business account, res.status(403).send()
   const eventID =
       await db.insertEvent(event.eventname, event.starttime, event.endtime,
       event.businessid, event.capacity);
