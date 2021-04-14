@@ -47,8 +47,7 @@ export default function CreateEvent() {
         return response.json();
       })
       .then((json) => {
-        Auth.saveJWT(json.auth_token);
-        console.log(json);
+        console.log(json)
       })
       .catch((error) => {
         console.log(error);
