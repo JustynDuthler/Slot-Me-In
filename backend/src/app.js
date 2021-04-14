@@ -69,7 +69,8 @@ app.use((err, req, res, next) => {
 });
 
 app.get('/db/test', async(req, res) => {
-  db.dbTest();
+  let eventID = '00000000-0000-0000-0000-000000000010';
+  db.getEventByID(eventID);
   res.status(200);
 })
 
