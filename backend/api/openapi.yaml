@@ -262,9 +262,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     get:
-      description: Get all events
+      description: Get a list of events
       tags:
         - events
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get events starting at a given timestamp (optional)
       responses:
         200:
           description: Successfully retrieved events

@@ -17,8 +17,7 @@ exports.create = async (req, res) => {
 };
 
 exports.getEvents = async (req, res) => {
-  // TODO: call db function to query for all events
-  const events = [];
+  const events = await db.getEvents();
   // 200 and return events list
   res.status(200).json(events);
 };

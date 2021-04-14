@@ -46,6 +46,17 @@ exports.insertBusinessAccount = async (businessName, password, phoneNumber, busi
   return rows[0].businessID;
 };
 
+exports.getEvents = async () => {
+  const select = 'SELECT * FROM Events';
+  const query = {
+    text: select,
+    values: [],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
+
 
 exports.getEventByID = async (eventID) => {
   const queryText = 'SELECT * FROM Events e WHERE e.eventID = $1';
