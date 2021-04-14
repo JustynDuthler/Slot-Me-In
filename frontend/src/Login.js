@@ -4,63 +4,22 @@ const Auth = require('./libs/Auth');
 /**
  * Register class
  */
-export default class Login extends React.Component {
-  /**
-   *
-   * @param {*} props
-   */
-  constructor(props) {
-    super(props);
-    this.state = {email: '', password: '', showBusiness: false};
-
-    this.changeForm = this.changeForm.bind(this);
-
-    this.changeEmail = this.changeEmail.bind(this);
-    this.changePassword = this.changePassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  /**
-   *
-   * @param {event} event
-   */
-  changeForm(event) {
-    this.setState({showBusiness: !this.state.showBusiness});
-  }
-  /*
-   *
-   * @param {*} event
-   */
-  changeEmail(event) {
-    this.setState({email: event.target.value});
-  }
-  /**
-   *
-   * @param {event} event
-   */
-  changePassword(event) {
-    this.setState({password: event.target.value});
-  }
-
-  /**
-   *
-   * @param {event} event
-   */
-  changePassword(event) {
-    this.setState({password: event.target.value});
-  }
-
+export default function Login() {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [showBusiness, setForm] = React.useState(false);
   /**
    * Handles form submission
    * @param {event} event
    */
-  handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     var apicall = 'http://localhost:3010/api/'+
-      (this.state.showBusiness?'businesses':'users')+'/login';
+      (showBusiness?'businesses':'users')+'/login';
     fetch(apicall, {
       method: 'POST',
-      body: JSON.stringify({"email":this.state.email,
-        "password":this.state.password}),
+      body: JSON.stringify({"email":email,
+        "password":password}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -78,61 +37,38 @@ export default class Login extends React.Component {
         .catch((error) => {
           console.log(error);
         });
-  }
-
-  /**
-   * Renders register page
-   * @return {object} JSX
-   */
-  render() {
-    const showBusiness = this.state.showBusiness;
-    return (
-      <div>
-      {showBusiness && <form onSubmit={this.handleSubmit}>
-        <label>
-          Business Email:
-          <input type="text" value={this.state.email}
-            onChange={this.changeEmail} />
-        </label><br/>
-        <label>
-          Password:
-          <input type="text" value={this.state.password}
-            onChange={this.changePassword} />
-        </label><br/>
-        <input type="submit" value="Submit" />
-      </form>}
-      {showBusiness && <button onClick={this.changeForm}>Toggle User Login</button>}
-      {!showBusiness && <form onSubmit={this.handleSubmit}>
-        <label>
-          Email:
-          <input type="text" value={this.state.email}
-            onChange={this.changeEmail} />
-        </label><br/>
-        <label>
-          Password:
-          <input type="text" value={this.state.password}
-            onChange={this.changePassword} />
-        </label><br/>
-        <input type="submit" value="Submit" />
-      </form>}
-      {!showBusiness && <button onClick={this.changeForm}>Toggle Business Login</button>}
-      </div>
-
-    );
-  }
-}
-/* export default function Register() {
+  };
   return (
     <div>
-      <h1>Register</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="fname">First name:</label><br></br>
-        <input type="text" id="fname" name="fname"></input><br></br>
-        <label htmlFor="lname">Last name:</label><br></br>
-        <input type="text" id="lname" name="lname"></input><br></br>
-        <input type="submit" value="Submit" />
-      </form>
+    {showBusiness && <form onSubmit={handleSubmit}>
+      <label>
+        Business Email:
+        <input type="text" value={email}
+          onChange={(event) => {setEmail(event.target.value);}} />
+      </label><br/>
+      <label>
+        Password:
+        <input type="text" value={password}
+          onChange={(event) => {setPassword(event.target.value);}} />
+      </label><br/>
+      <input type="submit" value="Submit" />
+    </form>}
+    {showBusiness && <button onClick={(event) => {setForm(!showBusiness);}}>Toggle User Login</button>}
+    {!showBusiness && <form onSubmit={handleSubmit}>
+      <label>
+        Email:
+        <input type="text" value={email}
+          onChange={(event) => {setEmail(event.target.value);}} />
+      </label><br/>
+      <label>
+        Password:
+        <input type="text" value={password}
+          onChange={(event) => {setPassword(event.target.value);}} />
+      </label><br/>
+      <input type="submit" value="Submit" />
+    </form>}
+    {!showBusiness && <button onClick={(event) => {setForm(!showBusiness);}}>Toggle Business Login</button>}
     </div>
+
   );
 }
-*/
