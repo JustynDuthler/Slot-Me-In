@@ -8,7 +8,12 @@ const auth = require('./auth');
 
 exports.getInfo = async (req, res) => {
   const user = await db.selectUser(req.payload.id);
-  res.status(200).json(user);
+  const userData = {
+    userid: user.userid,
+    username: user.username,
+    email: user.useremail,
+  };
+  res.status(200).json(userData);
 }
 
 exports.signup = async (req, res) => {
