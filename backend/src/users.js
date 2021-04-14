@@ -12,14 +12,13 @@ exports.signup = async (req, res) => {
   bcrypt.hash(req.body.password, 10, async (error, hash) => {
     if (error) {
       res.status(500).json(error);
-      return;
     } else {
 
       // check if username/email is already in use
-      const emailRes = await db.checkUserEmailTaken(req.body.email);
+      const emailRes = await db.checkUserEmailTaken(1, req.body.email);
       const nameRes = await db.checkUserNameTaken(req.body.name);
 
-      // this returns 500 for some reason
+      // returns 500 for some reason
       if (nameRes.length > 0 || emailRes.length > 0) {
         res.status(409).json(error);
         console.log('User already taken!');
@@ -35,18 +34,22 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const account = undefined;  // TODO: replace to query db for user once db is implemented
-  if (!account) res.status(404).send();
+  const account = await db.checkUserEmailTaken(1, req.body.email);
+
+  // email not found
+  if (account.length === 0) res.status(404).send();
   else {
     // compare given password to hashed password in db
-    bcrypt.compare(req.body.password, account.password, (error, match) => {
-      if (error)
-        res.status(500).json(error)
-      else if (match)
-        res.status(200).json({auth_token: auth.generateJWT(account.email, account.id, 'user')});
-      else
-        res.status(403).send();
-    })
+    const pass = await db.checkUserEmailTaken(2, req.body.email);
+    const match = await bcrypt.compare(req.body.password, pass);
+    if (match) {
+      // returns 500 for some reason
+      res.status(200).json({auth_token: auth.generateJWT(account.email, account.id, 'user')});
+    }
+    else {
+      // incorrect password
+      res.status(403).send();
+    }
   }
 };
 

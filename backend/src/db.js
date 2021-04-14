@@ -85,7 +85,7 @@ exports.checkUserNameTaken = async (userName) => {
 } 
 
 // check if an email is already in use
-exports.checkUserEmailTaken = async (userEmail) => {
+exports.checkUserEmailTaken = async (code, userEmail) => {
   const insert = 'SELECT * FROM Users u WHERE u.userEmail = $1';
   const query = {
     text: insert,
@@ -93,7 +93,10 @@ exports.checkUserEmailTaken = async (userEmail) => {
   };
 
   const {rows} = await pool.query(query);
-  return rows;
+  if (code === 1)
+    return rows;
+  else if (code === 2)
+    return rows[0].password;
 } 
 
 console.log(`Connected to database '${process.env.DB}'`);
