@@ -179,4 +179,15 @@ exports.getUsersEvents = async (userID) => {
   return rows;
 };
 
+exports.checkUserAttending = async (eventID, userID) => {
+  const select = 'SELECT * FROM Attendees a WHERE a.eventid = $1 AND a.userid = $2';
+  const query = {
+    text: select,
+    values: [eventID, userID],
+  };
+
+  const {rows} = await pool.query(query);
+  return (rows.length > 0);
+}
+
 console.log(`Connected to database '${process.env.DB}'`);

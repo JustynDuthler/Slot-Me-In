@@ -35,16 +35,21 @@ exports.getEventByID = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-  // const eventID = req.params.eventID;
-  // const userID = req.body.userID;
-  // TODO: call db function to query for event with ID
-  const event = {};
-  // 200 if event found, 404 if not found
+  const eventID = req.params.eventID;
+  const userID = req.payload.id;  // this doesn't work, userID is undefined
+  const event = await db.getEventByID(req.params.eventID);
+  // 404 if event not found
   if (!event) {
     res.status(404).send();
+  } else {
+    const userAttending = await db.checkUserAttending(eventID, userID);
+    if (userAttending) {
+      // if user already attending event, send 409
+      res.status(409).send();
+    } else {
+      // if not already attending, add user to attendees then send 200
+      await db.insertAttendees(eventID, userID);
+      res.status(200).send();
+    }
   }
-  // TODO: query db to check if userID already signed up for eventID
-  //    if already signed up, res.status(409).send()
-  // TODO: query db to add user to Attendees of event
-  res.status(200).send();
 };
