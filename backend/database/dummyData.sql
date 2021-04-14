@@ -1,6 +1,6 @@
 -- Inserts dummy data into Users table for testing
 -- Unhashed password is PaSWord
-INSERT INTO Users(userName, Password, userEmail)
+INSERT INTO Users(userID, userName, Password, userEmail)
 VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'jeff@ucsc.edu');
 
 --Unhashed password is Pwd
