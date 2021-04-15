@@ -5,8 +5,6 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
-const jwt = require('jsonwebtoken');
-
 
 const auth = require('./auth');
 const users = require('./users');
@@ -42,6 +40,7 @@ app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 app.get('/api/businesses/:businessid/events', businesses.getEvents);
+
 // Event routes
 app.post('/api/events', auth.authenticateBusinessJWT, events.create);
 app.get('/api/events', events.getEvents);

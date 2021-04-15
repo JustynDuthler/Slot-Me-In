@@ -7,19 +7,15 @@ dotenv.config();
 const auth = require('./auth');
 
 exports.signup = async (req, res) => {
-
   // hash password using bcrypt with 10 salt rounds
   bcrypt.hash(req.body.password, 10, async (error, hash) => {
     if (error) {
       res.status(500).json(error);
     } else {
-
       // check if username/email is already in use
       const emailRes = await db.checkBusinessEmailTaken(1, req.body.email);
       const nameRes = await db.checkBusinessNameTaken(req.body.name);
-
       if (nameRes.length > 0 || emailRes.length > 0) {
-        // returns 500
         res.status(409).json(error);
         console.log('Name/email already taken!');
       }
@@ -32,26 +28,25 @@ exports.signup = async (req, res) => {
       }
     }
   })
-
 };
 
 exports.login = async (req, res) => {
-
   const account = await db.checkBusinessEmailTaken(1, req.body.email);
-
-  // email not found
-  if (account.length === 0) res.status(404).send();
+  // 404 if email not found
+  if (!account) res.status(404).send();
   else {
     // compare given password to hashed password in db
     const pass = await db.checkBusinessEmailTaken(2, req.body.email);
     const match = await bcrypt.compare(req.body.password, pass);
+    // if passwords match, generate JWT and send 200
     if (match) {
-      const token = await auth.generateJWT(account.email, account.id, 'business');
+      const token = 
+          await auth.generateJWT(account.businessemail, account.businessid, 'business');
       res.status(200).json({'auth_token': token});
     }
     else {
-      // incorrect password
-      res.status(403).send();
+      // 401 if incorrect password
+      res.status(401).send();
     }
   }
 

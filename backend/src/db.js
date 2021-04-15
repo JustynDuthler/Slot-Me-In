@@ -136,7 +136,7 @@ exports.checkUserEmailTaken = async (code, email) => {
 
   const {rows} = await pool.query(query);
   if (code === 1)
-    return rows;
+    return (rows ? rows[0] : undefined);
   else if (code === 2)
     return rows[0].password;
 }
@@ -163,7 +163,7 @@ exports.checkBusinessEmailTaken = async (code, email) => {
 
   const {rows} = await pool.query(query);
   if (code === 1)
-    return rows;
+    return (rows ? rows[0] : undefined);
   else if (code === 2)
     return rows[0].password;
 }
