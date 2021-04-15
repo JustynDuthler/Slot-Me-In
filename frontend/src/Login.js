@@ -8,6 +8,7 @@ export default function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showBusiness, setForm] = React.useState(false);
+  const [flag, setFlag] = React.useState(false);
   /**
    * Handles form submission
    * @param {event} event
@@ -26,8 +27,10 @@ export default function Login() {
     })
         .then((response) => {
           if (!response.ok) {
+            setFlag(true);
             throw response;
           }
+          setFlag(false);
           return response.json();
         })
         .then((json) => {
@@ -68,6 +71,7 @@ export default function Login() {
       <input type="submit" value="Login" />
     </form>}
     {!showBusiness && <button onClick={(event) => {setForm(!showBusiness);}}>Toggle Business Login</button>}
+    {flag && <p>The email or password entered is incorrect.</p>}
     </div>
 
   );
