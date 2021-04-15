@@ -59,6 +59,7 @@ app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
   res.status(200).json({auth: "authenticated"});
 });
 
+// simple database test 
 app.get('/db/test', async(req, res) => {
   let eventid = '00000000-0000-0000-0000-000000000010';
   db.getEventByID(eventid);
