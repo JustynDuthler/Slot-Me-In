@@ -9,7 +9,7 @@ export default class Register extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {username: '', email: '', password: '', showBusiness: false};
+    this.state = {username: '', email: '', password: '', showBusiness: false, flag: 0};
 
     this.changeForm = this.changeForm.bind(this);
 
@@ -69,8 +69,10 @@ export default class Register extends React.Component {
     })
         .then((response) => {
           if (!response.ok) {
+            this.setState({flag: 1}); 
             throw response;
           }
+          this.setState({flag: 0}); 
           return response;
         })
         .then((json) => {
@@ -105,7 +107,7 @@ export default class Register extends React.Component {
           <input type="text" value={this.state.password}
             onChange={this.changePassword} />
         </label><br/>
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Sign Up" />
       </form>}
       {showBusiness && <button onClick={this.changeForm}>Toggle User Signup</button>}
       {!showBusiness && <form onSubmit={this.handleSubmit}>
@@ -124,9 +126,10 @@ export default class Register extends React.Component {
           <input type="text" value={this.state.password}
             onChange={this.changePassword} />
         </label><br/>
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Sign Up" />
       </form>}
       {!showBusiness && <button onClick={this.changeForm}>Toggle Business Signup</button>}
+      {this.state.flag === 1 && <p>The email or username you entered is already in use.</p>}
       </div>
 
     );

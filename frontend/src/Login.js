@@ -51,7 +51,7 @@ export default function Login() {
         <input type="text" value={password}
           onChange={(event) => {setPassword(event.target.value);}} />
       </label><br/>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Login" />
     </form>}
     {showBusiness && <button onClick={(event) => {setForm(!showBusiness);}}>Toggle User Login</button>}
     {!showBusiness && <form onSubmit={handleSubmit}>
@@ -65,7 +65,7 @@ export default function Login() {
         <input type="text" value={password}
           onChange={(event) => {setPassword(event.target.value);}} />
       </label><br/>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Login" />
     </form>}
     {!showBusiness && <button onClick={(event) => {setForm(!showBusiness);}}>Toggle Business Login</button>}
     </div>
