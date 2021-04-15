@@ -34,9 +34,8 @@ exports.signup = async (req, res) => {
         console.log('User already taken!');
       }
       else {
-        const userID = await db.insertUserAccount(req.body.name, hash, req.body.email);
-        console.log(userID);
-        const token = await auth.generateJWT(req.body.email, userID, 'user');
+        const userid = await db.insertUserAccount(req.body.name, hash, req.body.email);
+        const token = await auth.generateJWT(req.body.email, userid, 'user');
         res.status(201).json({auth_token: token});
       }
     }

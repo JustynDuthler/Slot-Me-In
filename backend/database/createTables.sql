@@ -5,39 +5,39 @@
 
 -- Users Tables
 CREATE TABLE Users (
-	userID uuid DEFAULT uuid_generate_v4(), 
-	userName TEXT NOT NULL,
-	Password TEXT NOT NULL,
-    userEmail TEXT UNIQUE NOT NULL,
-	PRIMARY KEY (userID)
+	userid uuid DEFAULT uuid_generate_v4(), 
+	username TEXT NOT NULL,
+	password TEXT NOT NULL,
+  useremail TEXT UNIQUE NOT NULL,
+	PRIMARY KEY (userid)
 );
 
 -- Businesses Tables
 CREATE TABLE Businesses (
-	businessID uuid DEFAULT uuid_generate_v4(),
-	businessName TEXT NOT NULL,
-	Password TEXT NOT NULL,
-	phoneNumber TEXT NOT NULL,
-	businessEmail TEXT UNIQUE NOT NULL,
-	PRIMARY KEY (businessID)
+	businessid uuid DEFAULT uuid_generate_v4(),
+	businessname TEXT NOT NULL,
+	password TEXT NOT NULL,
+	phonenumber TEXT NOT NULL,
+	businessemail TEXT UNIQUE NOT NULL,
+	PRIMARY KEY (businessid)
 );
 
 -- Events Table
 CREATE TABLE Events (
-	eventID uuid DEFAULT uuid_generate_v4(),
-	eventName TEXT NOT NULL,
-	businessID uuid,
-	startTime TIMESTAMP NOT NULL,
-	endTime TIMESTAMP NOT NULL,
+	eventid uuid DEFAULT uuid_generate_v4(),
+	eventname TEXT NOT NULL,
+	businessid uuid,
+	starttime TIMESTAMP NOT NULL,
+	endtime TIMESTAMP NOT NULL,
 	capacity INTEGER,
-	PRIMARY KEY (eventID),
-	FOREIGN KEY (businessID) REFERENCES Businesses
+	PRIMARY KEY (eventid),
+	FOREIGN KEY (businessid) REFERENCES Businesses
 );
 
 -- Attendees Table
 CREATE TABLE Attendees (
-	eventID uuid,
-	userID uuid,
-	FOREIGN KEY (eventID) REFERENCES Events,
-	FOREIGN KEY (userID) REFERENCES Users
+	eventid uuid,
+	userid uuid,
+	FOREIGN KEY (eventid) REFERENCES Events,
+	FOREIGN KEY (userid) REFERENCES Users
 );

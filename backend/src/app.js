@@ -35,18 +35,18 @@ app.use(
 // User routes
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
-app.get('/api/users/:userID/events', users.getEvents);
+app.get('/api/users/:userid/events', users.getEvents);
 app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
 
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
-app.get('/api/businesses/:businessID/events', businesses.getEvents);
+app.get('/api/businesses/:businessid/events', businesses.getEvents);
 // Event routes
 app.post('/api/events', auth.authenticateBusinessJWT, events.create);
 app.get('/api/events', events.getEvents);
-app.get('/api/events/:eventID', events.getEventByID);
-app.put('/api/events/:eventID/signup', auth.authenticateUserJWT, events.signup)
+app.get('/api/events/:eventid', events.getEventByID);
+app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup)
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
@@ -61,8 +61,8 @@ app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
 });
 
 app.get('/db/test', async(req, res) => {
-  let eventID = '00000000-0000-0000-0000-000000000010';
-  db.getEventByID(eventID);
+  let eventid = '00000000-0000-0000-0000-000000000010';
+  db.getEventByID(eventid);
   res.status(200);
 });
 

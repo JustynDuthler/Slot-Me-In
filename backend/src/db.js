@@ -23,23 +23,23 @@ exports.dbTest = async() => {
 };
 
 // Inserts a new event entry into the database
-// Returns the newly created event eventID
-exports.insertEvent = async (eventName, startTime, endTime, businessID, capacity=100) => {
-  const insert = 'INSERT INTO Events (eventName, startTime, endTime, businessID, capacity) VALUES ($1, $2, $3, $4, $5) RETURNING eventID';
+// Returns the newly created event eventid
+exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity=100) => {
+  const insert = 'INSERT INTO Events (eventname, starttime, endtime, businessid, capacity) VALUES ($1, $2, $3, $4, $5) RETURNING eventid';
   const query = {
     text: insert,
-    values: [eventName, startTime, endTime, businessID, capacity],
+    values: [eventname, starttime, endtime, businessid, capacity],
   };
 
   const {rows} = await pool.query(query);
   return rows[0].eventid;
 };
 
-exports.insertBusinessAccount = async (businessName, password, phoneNumber, businessEmail) => {
-  const insert = 'INSERT INTO Businesses (businessName, Password, phoneNumber, businessEmail) VALUES ($1, $2, $3, $4) RETURNING businessID';
+exports.insertBusinessAccount = async (businessname, password, phonenumber, businessemail) => {
+  const insert = 'INSERT INTO Businesses (businessname, Password, phonenumber, businessemail) VALUES ($1, $2, $3, $4) RETURNING businessid';
   const query = {
     text: insert,
-    values: [businessName, password, phoneNumber, businessEmail],
+    values: [businessname, password, phonenumber, businessemail],
   };
 
   const {rows} = await pool.query(query);
@@ -58,33 +58,33 @@ exports.getEvents = async () => {
 }
 
 
-exports.getEventByID = async (eventID) => {
-  const queryText = 'SELECT * FROM Events e WHERE e.eventID = $1';
+exports.getEventByID = async (eventid) => {
+  const queryText = 'SELECT * FROM Events e WHERE e.eventid = $1';
   const query = {
     text: queryText,
-    values: [eventID],
+    values: [eventid],
   };
 
   const {rows} = await pool.query(query);
   return rows[0];
 }
 
-exports.getEventsByStart = async (startTime) => { // start time must be a unix timestamp
-  const queryText = 'SELECT * FROM Events e WHERE e.startTime = $1';
+exports.getEventsByStart = async (starttime) => { // start time must be a unix timestamp
+  const queryText = 'SELECT * FROM Events e WHERE e.starttime = $1';
   const query = {
     text: queryText,
-    values: [startTime],
+    values: [starttime],
   };
 
   const {rows} = await pool.query(query);
   return rows;
 }
 
-exports.insertAttendees = async (eventID, userID) => {
-  const insert = 'INSERT INTO Attendees (eventID, userID) VALUES ($1, $2)';
+exports.insertAttendees = async (eventid, userid) => {
+  const insert = 'INSERT INTO Attendees (eventid, userid) VALUES ($1, $2)';
   const query = {
     text: insert,
-    values: [eventID, userID],
+    values: [eventid, userid],
   };
 
   const {rows} = await pool.query(query);
@@ -92,20 +92,20 @@ exports.insertAttendees = async (eventID, userID) => {
 };
 
 
-exports.insertUserAccount = async (userName, password, email) => {
-  const insert = 'INSERT INTO Users (userName, Password, userEmail) VALUES ($1, $2, $3) RETURNING userID';
+exports.insertUserAccount = async (username, password, email) => {
+  const insert = 'INSERT INTO Users (username, password, useremail) VALUES ($1, $2, $3) RETURNING userid';
   const query = {
     text: insert,
-    values: [userName, password, email],
+    values: [username, password, email],
   };
 
   const {rows} = await pool.query(query);
   return rows[0].userid;
 };
 
-// Returns row for a specific userID
+// Returns row for a specific userid
 exports.selectUser = async (userid) => {
-  const select = 'SELECT * FROM Users WHERE userID = $1';
+  const select = 'SELECT * FROM Users WHERE userid = $1';
   const query = {
     text: select,
     values: [userid],
@@ -115,11 +115,11 @@ exports.selectUser = async (userid) => {
   return rows[0];
 };
 // check if a username is taken
-exports.checkUserNameTaken = async (userName) => {
-  const insert = 'SELECT * FROM Users u WHERE u.userName = $1';
+exports.checkUserNameTaken = async (username) => {
+  const insert = 'SELECT * FROM Users u WHERE u.username = $1';
   const query = {
     text: insert,
-    values: [userName],
+    values: [username],
   };
 
   const {rows} = await pool.query(query);
@@ -128,7 +128,7 @@ exports.checkUserNameTaken = async (userName) => {
 
 // check if an email is already in use
 exports.checkUserEmailTaken = async (code, email) => {
-  const insert = 'SELECT * FROM Users u WHERE u.userEmail = $1';
+  const insert = 'SELECT * FROM Users u WHERE u.useremail = $1';
   const query = {
     text: insert,
     values: [email],
@@ -142,11 +142,11 @@ exports.checkUserEmailTaken = async (code, email) => {
 }
 
 // check if a business username is taken
-exports.checkBusinessNameTaken = async (businessName) => {
-  const insert = 'SELECT * FROM Businesses b WHERE b.businessName = $1';
+exports.checkBusinessNameTaken = async (businessname) => {
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessname = $1';
   const query = {
     text: insert,
-    values: [businessName],
+    values: [businessname],
   };
 
   const {rows} = await pool.query(query);
@@ -155,7 +155,7 @@ exports.checkBusinessNameTaken = async (businessName) => {
 
 // check if a business email is already in use
 exports.checkBusinessEmailTaken = async (code, email) => {
-  const insert = 'SELECT * FROM Businesses b WHERE b.businessEmail = $1';
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessemail = $1';
   const query = {
     text: insert,
     values: [email],
@@ -168,22 +168,22 @@ exports.checkBusinessEmailTaken = async (code, email) => {
     return rows[0].password;
 }
 
-exports.getUsersEvents = async (userID) => {
-  const queryText = 'SELECT e.eventID FROM Events e, Attendees a WHERE a.userID = $1 AND e.userID = $1';
+exports.getUsersEvents = async (userid) => {
+  const queryText = 'SELECT e.eventid FROM Events e, Attendees a WHERE a.userid = $1 AND e.userid = $1';
   const query = {
     text: queryText,
-    values: [userID],
+    values: [userid],
   };
 
   const {rows} = await pool.query(query);
   return rows;
 };
 
-exports.checkUserAttending = async (eventID, userID) => {
+exports.checkUserAttending = async (eventid, userid) => {
   const select = 'SELECT * FROM Attendees a WHERE a.eventid = $1 AND a.userid = $2';
   const query = {
     text: select,
-    values: [eventID, userID],
+    values: [eventid, userid],
   };
 
   const {rows} = await pool.query(query);

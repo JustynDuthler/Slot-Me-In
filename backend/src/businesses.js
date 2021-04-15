@@ -25,8 +25,8 @@ exports.signup = async (req, res) => {
       }
       else {
         // dummy phone number
-        const businessID = await db.insertBusinessAccount(req.body.name, hash, '123-456-7890', req.body.email);
-        const token = await auth.generateJWT(req.body.email, businessID, 'business');
+        const businessid = await db.insertBusinessAccount(req.body.name, hash, '123-456-7890', req.body.email);
+        const token = await auth.generateJWT(req.body.email, businessid, 'business');
         console.log('Business added!');
         res.status(201).json({auth_token: token});
       }
@@ -65,7 +65,3 @@ exports.getEvents = async (req, res) => {
   const events = [];
   res.status(200).json(events);
 };
-
-function generateToken(account) {
-  return jwt.sign({data: account}, process.env.TOKEN_SECRET, {expiresIn: '24h'});
-}
