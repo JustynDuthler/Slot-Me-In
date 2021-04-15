@@ -4,20 +4,20 @@ dotenv.config();
 
 // Middleware for authenticating JWT
 exports.authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
     // If no token is found send 401
     if (token == null) return res.sendStatus(401);
-  
+
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
       if(err) {
         console.log(err);
       }
-      
+
       // If the token is invalid send 403
       if (err) return res.sendStatus(403)
-      
+
       // If all is good set req.payload to the payload of the JWT
       req.payload = decoded;
       next();
@@ -35,14 +35,14 @@ exports.authenticateUserJWT = (req, res, next) => {
     if(err) {
       console.log(err);
     }
-    
+
     // If the token is invalid send 403
     if (err) return res.sendStatus(403)
 
     if (decoded.userType != 'user') {
       res.sendStatus(403);
     }
-    
+
     // If all is good set req.payload to the payload of the JWT
     req.payload = decoded;
     next();
@@ -60,7 +60,7 @@ exports.authenticateBusinessJWT = (req, res, next) => {
     if(err) {
       console.log(err);
     }
-    
+
     // If the token is invalid send 403
     if (err) return res.sendStatus(403)
     if (decoded.userType != 'business') {

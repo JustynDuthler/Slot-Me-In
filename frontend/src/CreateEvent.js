@@ -1,4 +1,5 @@
 import React from 'react';
+const Auth = require('./libs/Auth');
 /**
  * CreateEvent Function
  */
@@ -20,18 +21,24 @@ export default function CreateEvent() {
     const foundToken = localStorage.getItem('auth_token');
     if (foundToken) {
       fetch('http://localhost:3010/api/events', {
-        method: 'POST',
-        body: JSON.stringify({"name":eventName,
-          "starttime":(new Date(startDate+" "+startTime).toString()),
-          "endtime":(new Date(endDate+" "+endTime).toString()),
-          "capacity":capacity,
-          "repeat":repeat.toString(),
+        method: "POST",
+        body: JSON.stringify({
+          "eventname":eventName,
+          "starttime":new Date(startDate+" "+startTime).toISOString(),
+          "endtime":new Date(endDate+" "+endTime).toISOString(),
+          "capacity":parseInt(capacity),
+          "repeat":repeat,
         }),
-        headers: {
-          'Content-Type': 'application/json',
-          headers : Auth.JWTHeader(),
-        },
+        headers: Auth.JWTHeaderJson(),
+      }).then((response) => {
+        return response;
       })
+      .then((json) => {
+        console.log(json)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   };
   return (

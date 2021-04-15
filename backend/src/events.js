@@ -4,14 +4,12 @@ dotenv.config();
 
 exports.create = async (req, res) => {
   const event = req.body;
-  // TODO: check if user logged in is business account
-  //    if not business account, res.status(403).send()
-  const eventID = 
-      await db.insertEvent(event.name, event.startTime, event.endTime,
-      event.businessID, event.capacity);
+  const eventID =
+      await db.insertEvent(event.eventname, event.starttime, event.endtime,
+      event.businessid, event.capacity);
   // add generated event ID to event object before returning
-  event.eventID = eventID;
-  res.status(201).json(event);
+  event.eventid = eventID;
+  res.status(201).send(event);
 };
 
 exports.getEvents = async (req, res) => {
@@ -37,17 +35,21 @@ exports.getEventByID = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-  // const eventID = req.params.eventID;
-  // const userID = req.body.userID;
-  // TODO: call db function to query for event with ID
-  const event = {};
-  // 200 if event found, 404 if not found
+  const eventID = req.params.eventID;
+  const userID = req.payload.id;  // this doesn't work, userID is undefined
+  const event = await db.getEventByID(req.params.eventID);
+  // 404 if event not found
   if (!event) {
     res.status(404).send();
-  } 
-  // TODO: query db to check if userID already signed up for eventID
-  //    if already signed up, res.status(409).send()
-  // TODO: query db to add user to Attendees of event
-  res.status(200).send();
+  } else {
+    const userAttending = await db.checkUserAttending(eventID, userID);
+    if (userAttending) {
+      // if user already attending event, send 409
+      res.status(409).send();
+    } else {
+      // if not already attending, add user to attendees then send 200
+      await db.insertAttendees(eventID, userID);
+      res.status(200).send();
+    }
+  }
 };
-
