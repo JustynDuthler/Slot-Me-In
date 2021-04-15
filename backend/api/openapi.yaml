@@ -107,7 +107,7 @@ paths:
                 $ref: "#/components/schemas/UserToken"
         400:
           description: Email and password must be specified
-        403:
+        401:
           description: Incorrect password
         404:
           description: User account with given email not found
@@ -190,7 +190,7 @@ paths:
                 $ref: "#/components/schemas/UserToken"
         400:
           description: Email and password must be specified
-        403:
+        401:
           description: Incorrect password
         404:
           description: Business account with given email not found
