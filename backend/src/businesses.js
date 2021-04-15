@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
       else {
         // dummy phone number
         const businessID = await db.insertBusinessAccount(req.body.name, hash, '123-456-7890', req.body.email);
-        const token = await auth.generateJWT(req.body.email, businessID, 'user');
+        const token = await auth.generateJWT(req.body.email, businessID, 'business');
         console.log('Business added!');
         res.status(201).json({auth_token: token});
       }
@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
     const pass = await db.checkBusinessEmailTaken(2, req.body.email);
     const match = await bcrypt.compare(req.body.password, pass);
     if (match) {
-      const token = await auth.generateJWT(account.email, account.id, 'user');
+      const token = await auth.generateJWT(account.email, account.id, 'business');
       res.status(200).json({'auth_token': token});
     }
     else {
