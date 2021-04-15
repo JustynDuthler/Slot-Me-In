@@ -43,7 +43,7 @@ exports.insertBusinessAccount = async (businessName, password, phoneNumber, busi
   };
 
   const {rows} = await pool.query(query);
-  return rows[0].businessID;
+  return rows[0].businessid;
 };
 
 exports.getEvents = async () => {
@@ -100,12 +100,12 @@ exports.insertUserAccount = async (userName, password, email) => {
   };
 
   const {rows} = await pool.query(query);
-  return rows[0].userID;
+  return rows[0].userid;
 };
 
 // Returns row for a specific userID
 exports.selectUser = async (userid) => {
-  const select = 'SELECT * FROM Users u WHERE u.userID = $1';
+  const select = 'SELECT * FROM Users WHERE userID = $1';
   const query = {
     text: select,
     values: [userid],

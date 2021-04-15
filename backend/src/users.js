@@ -35,6 +35,7 @@ exports.signup = async (req, res) => {
       }
       else {
         const userID = await db.insertUserAccount(req.body.name, hash, req.body.email);
+        console.log(userID);
         const token = await auth.generateJWT(req.body.email, userID, 'user');
         res.status(201).json({auth_token: token});
       }
