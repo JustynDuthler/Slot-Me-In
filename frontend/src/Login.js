@@ -20,8 +20,6 @@ import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/material.css'
 const Auth = require('./libs/Auth');
 
 /**
@@ -30,7 +28,6 @@ const Auth = require('./libs/Auth');
 export default function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [phoneNumber, setPhoneNumber] = React.useState("");
   const [showBusiness, setForm] = React.useState(false);
   const [showPassword, setVisibility] = React.useState(false);
   const [flag, setFlag] = React.useState(false);
@@ -140,12 +137,6 @@ export default function Login() {
               control={<Checkbox value="remember" color="primary" onChange={(event) => {setForm(event.target.checked);}}/>}
               label="Business Account"
             />
-            {showBusiness && <PhoneInput
-              inputStyle={{width:'100%'}}
-              country={'us'}
-              value={phoneNumber}
-              onChange={(phone) => {setPhoneNumber(phoneNumber);}}
-            />}
             <Button
               type="submit"
               fullWidth
