@@ -5,16 +5,12 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import FilledInput from '@material-ui/core/FilledInput';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -30,7 +26,8 @@ export default function Login() {
   const [password, setPassword] = React.useState("");
   const [showBusiness, setForm] = React.useState(false);
   const [showPassword, setVisibility] = React.useState(false);
-  const [flag, setFlag] = React.useState(false);
+  const [emailError, setEmailError] = React.useState(false);
+  const [passError, setPassError] = React.useState(false);
   /**
    * Handles form submission
    * @param {event} event
@@ -49,11 +46,20 @@ export default function Login() {
     })
         .then((response) => {
           if (!response.ok) {
-            setFlag(true);
+            if (response.status === 404) {
+              setEmailError(true);
+              setPassError(false);
+            }
+            else if (response.status === 401) {
+              setEmailError(false);
+              setPassError(true);
+            }
             throw response;
+          } else {
+            setEmailError(false);
+            setPassError(false);
+            return response.json();
           }
-          setFlag(false);
-          return response.json();
         })
         .then((json) => {
           Auth.saveJWT(json.auth_token);
@@ -96,6 +102,8 @@ export default function Login() {
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit} noValidate>
             <TextField
+              error={emailError}
+              helperText={emailError?"Account not found.":""}
               variant="outlined"
               margin="normal"
               required
@@ -109,8 +117,9 @@ export default function Login() {
             />
 
             <FormControl className={classes.form} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-              <OutlinedInput
+              <TextField
+                error={passError}
+                helperText={passError?"Incorrect password.":""}
                 variant="outlined"
                 required
                 fullWidth
