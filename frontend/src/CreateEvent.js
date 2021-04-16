@@ -76,7 +76,7 @@ export default function CreateEvent() {
       </label><br/>
       {repeat && <button onClick={(event) => {changeRepeat(!repeat);}}>Repeat</button>}
       {!repeat && <button onClick={(event) => {changeRepeat(!repeat);}}>Don't Repeat</button>}
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Create Event" />
     </form>
     </div>
 
