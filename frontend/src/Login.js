@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -46,6 +47,10 @@ export default function Login() {
     })
         .then((response) => {
           if (!response.ok) {
+            if (response.status === 400) {
+              setEmailError(email === "");
+              setPassError(password === "");
+            }
             if (response.status === 404) {
               setEmailError(true);
               setPassError(false);
@@ -69,6 +74,17 @@ export default function Login() {
           console.log(error);
         });
   };
+
+  const validateInput = (event) => {
+    // regex to check for valid email format
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(email)) {
+      setEmailError(true);
+    } else {
+      handleSubmit(event);
+    }
+  }
+
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -100,7 +116,7 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} onSubmit={handleSubmit} noValidate>
+          <div className={classes.form}>
             <TextField
               error={emailError}
               helperText={emailError?"Account not found.":""}
@@ -129,17 +145,18 @@ export default function Login() {
                 id="password"
                 onChange={(event) => {setPassword(event.target.value);}}
                 autoComplete="current-password"
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={(event) => {setVisibility(!showPassword);}}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
+                InputProps={{
+                  endAdornment:
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={(event) => {setVisibility(!showPassword);}}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>,
+                }}
               />
             </FormControl>
             <FormControlLabel
@@ -152,6 +169,7 @@ export default function Login() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={validateInput}
             >
               Sign In
             </Button>
@@ -167,7 +185,7 @@ export default function Login() {
                 </Link>
               </Grid>
             </Grid>
-          </form>
+          </div>
         </div>
       </Container>
     </div>
