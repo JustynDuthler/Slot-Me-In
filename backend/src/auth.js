@@ -15,8 +15,8 @@ exports.authenticateJWT = (req, res, next) => {
         console.log(err);
       }
 
-      // If the token is invalid send 403
-      if (err) return res.status(403).json({code:403,message:"Token is expired"});
+      // If the token is invalid send 401
+      if (err) return res.status(401).json({code:401,message:"Token is expired"});
 
       // If all is good set req.payload to the payload of the JWT
       req.payload = decoded;
@@ -36,8 +36,8 @@ exports.authenticateUserJWT = (req, res, next) => {
       console.log(err);
     }
 
-    // If the token is invalid send 403
-    if (err) return res.status(403).json({code:403,message:"Token is expired"});
+    // If the token is invalid send 401
+    if (err) return res.status(401).json({code:401,message:"Token is expired"});
 
     if (decoded.userType != 'user') {
       return res.status(403).json({code:403,message:"Token is not a user type"});
@@ -61,10 +61,9 @@ exports.authenticateBusinessJWT = (req, res, next) => {
       console.log(err);
     }
 
-    // If the token is invalid send 403
+    // If the token is invalid send 401
     if (err) {
-      //const rval = res.status(403).json({code:'403',message:"business"});
-      return res.status(403).json({code:403,message:"Token is expired"});
+      return res.status(401).json({code:401,message:"Token is expired"});
     };
     if (decoded.userType != 'business') {
       return res.status(403).json({code:403,message:"Token is not a user type"});
