@@ -69,11 +69,11 @@ exports.getEventByID = async (eventid) => {
   return rows[0];
 }
 
-exports.getEventsByStart = async (starttime) => { // start time must be a unix timestamp
-  const queryText = 'SELECT * FROM Events e WHERE e.starttime = $1';
+exports.getEventsByRange = async (startTime, endTime) => { // start time must be a unix timestamp
+  const queryText = 'SELECT * FROM Events e WHERE e.startTime >= $1 AND e.endTime <= $2';
   const query = {
     text: queryText,
-    values: [starttime],
+    values: [startTime, endTime],
   };
 
   const {rows} = await pool.query(query);
