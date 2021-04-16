@@ -13,11 +13,10 @@ exports.signup = async (req, res) => {
       res.status(500).json(error);
     } else {
       // check if username/email is already in use
-      const emailRes = await db.checkBusinessEmailTaken(1, req.body.email);
-      const nameRes = await db.checkBusinessNameTaken(req.body.name);
-      if (nameRes.length > 0 || emailRes) {
-        res.status(409).json(error);
-        console.log('Name/email already taken!');
+      const emailRes = await db.checkBusinessEmailTaken(req.body.email);
+      if (emailRes) {
+        res.status(409).send();
+        console.log('Email already taken!');
       }
       else {
         // dummy phone number
@@ -31,12 +30,12 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const account = await db.checkBusinessEmailTaken(1, req.body.email);
+  const account = await db.checkBusinessEmailTaken(req.body.email);
   // 404 if email not found
   if (!account) res.status(404).send();
   else {
     // compare given password to hashed password in db
-    const pass = await db.checkBusinessEmailTaken(2, req.body.email);
+    const pass = await db.getBusinessPass(req.body.email);
     const match = await bcrypt.compare(req.body.password, pass);
     // if passwords match, generate JWT and send 200
     if (match) {

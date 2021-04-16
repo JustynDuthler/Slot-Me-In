@@ -69,11 +69,34 @@ exports.getEventByID = async (eventid) => {
   return rows[0];
 }
 
-exports.getEventsByStart = async (starttime) => { // start time must be a unix timestamp
-  const queryText = 'SELECT * FROM Events e WHERE e.starttime = $1';
+exports.getEventsByStart = async (starttime) => {
+  const queryText = 'SELECT * FROM Events e WHERE e.starttime >= $1';
   const query = {
     text: queryText,
     values: [starttime],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
+
+exports.getEventsByEnd = async (endtime) => {
+  const queryText = 'SELECT * FROM Events e WHERE e.endtime <= $1';
+  const query = {
+    text: queryText,
+    values: [endtime],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
+
+
+exports.getEventsByRange = async (starttime, endtime) => { // start time must be a unix timestamp
+  const queryText = 'SELECT * FROM Events e WHERE e.starttime >= $1 AND e.endtime <= $2';
+  const query = {
+    text: queryText,
+    values: [starttime, endtime],
   };
 
   const {rows} = await pool.query(query);
@@ -114,20 +137,9 @@ exports.selectUser = async (userid) => {
   const {rows} = await pool.query(query);
   return rows[0];
 };
-// check if a username is taken
-exports.checkUserNameTaken = async (username) => {
-  const insert = 'SELECT * FROM Users u WHERE u.username = $1';
-  const query = {
-    text: insert,
-    values: [username],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows;
-}
 
 // check if an email is already in use
-exports.checkUserEmailTaken = async (code, email) => {
+exports.checkUserEmailTaken = async (email) => {
   const insert = 'SELECT * FROM Users u WHERE u.useremail = $1';
   const query = {
     text: insert,
@@ -135,26 +147,23 @@ exports.checkUserEmailTaken = async (code, email) => {
   };
 
   const {rows} = await pool.query(query);
-  if (code === 1)
-    return (rows ? rows[0] : undefined);
-  else if (code === 2)
-    return rows[0].password;
+  return (rows.length > 0 ? rows[0] : undefined);
 }
 
-// check if a business username is taken
-exports.checkBusinessNameTaken = async (businessname) => {
-  const insert = 'SELECT * FROM Businesses b WHERE b.businessname = $1';
+// get a user hashed password
+exports.getUserPass = async (email) => {
+  const insert = 'SELECT password FROM Users u WHERE u.useremail = $1';
   const query = {
     text: insert,
-    values: [businessname],
+    values: [email],
   };
 
   const {rows} = await pool.query(query);
-  return rows;
+  return rows[0].password;
 }
 
 // check if a business email is already in use
-exports.checkBusinessEmailTaken = async (code, email) => {
+exports.checkBusinessEmailTaken = async (email) => {
   const insert = 'SELECT * FROM Businesses b WHERE b.businessemail = $1';
   const query = {
     text: insert,
@@ -162,10 +171,19 @@ exports.checkBusinessEmailTaken = async (code, email) => {
   };
 
   const {rows} = await pool.query(query);
-  if (code === 1)
-    return (rows ? rows[0] : undefined);
-  else if (code === 2)
-    return rows[0].password;
+  return (rows.length > 0 ? rows[0] : undefined);
+}
+
+// get a business hashed password
+exports.getBusinessPass = async (email) => {
+  const insert = 'SELECT password FROM Businesses b WHERE b.businessemail = $1';
+  const query = {
+    text: insert,
+    values: [email],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows[0].password;
 }
 
 exports.getUsersEvents = async (userid) => {

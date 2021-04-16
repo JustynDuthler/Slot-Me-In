@@ -280,7 +280,13 @@ paths:
           schema:
             type: string
             format: date-time
-          description: Get events starting at a given timestamp (optional)
+          description: Get only events starting after a given timestamp (optional)
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events ending before a given timestamp (optional)
       responses:
         200:
           description: Successfully retrieved events

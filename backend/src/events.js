@@ -13,9 +13,17 @@ exports.create = async (req, res) => {
 };
 
 exports.getEvents = async (req, res) => {
-  if (req.query.start) {
-    // if start query provided, query DB for events starting at that time
+  if (req.query.start && req.query.end) {
+    // if start and end query provided, query DB for events in between
+    const events = await db.getEventsByRange(req.query.start, req.query.end);
+    res.status(200).json(events);
+  } else if (req.query.start) {
+    // if only start query provided, query DB for events starting after that time
     const events = await db.getEventsByStart(req.query.start);
+    res.status(200).json(events);
+  } else if (req.query.end) {
+    // if only end query provided, query DB for events ending before that time
+    const events = await db.getEventsByEnd(req.query.end);
     res.status(200).json(events);
   } else {
     // if no queries provided, query DB for all events
