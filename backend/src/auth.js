@@ -6,7 +6,7 @@ dotenv.config();
 exports.authenticateJWT = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    
+
     // If no token is found send 401
     if (token == null) return res.sendStatus(401);
 
@@ -16,7 +16,7 @@ exports.authenticateJWT = (req, res, next) => {
       }
 
       // If the token is invalid send 403
-      if (err) return res.sendStatus(403)
+      if (err) return res.status(403).json({code:403,message:"Token is expired"});
 
       // If all is good set req.payload to the payload of the JWT
       req.payload = decoded;
@@ -37,10 +37,10 @@ exports.authenticateUserJWT = (req, res, next) => {
     }
 
     // If the token is invalid send 403
-    if (err) return res.sendStatus(403)
+    if (err) return res.status(403).json({code:403,message:"Token is expired"});
 
     if (decoded.userType != 'user') {
-      res.sendStatus(403);
+      return res.status(403).json({code:403,message:"Token is not a user type"});
     }
 
     // If all is good set req.payload to the payload of the JWT
@@ -62,9 +62,12 @@ exports.authenticateBusinessJWT = (req, res, next) => {
     }
 
     // If the token is invalid send 403
-    if (err) return res.sendStatus(403)
+    if (err) {
+      //const rval = res.status(403).json({code:'403',message:"business"});
+      return res.status(403).json({code:403,message:"Token is expired"});
+    };
     if (decoded.userType != 'business') {
-      res.sendStatus(403);
+      return res.status(403).json({code:403,message:"Token is not a user type"});
     }
 
     // If all is good set req.payload to the payload of the JWT

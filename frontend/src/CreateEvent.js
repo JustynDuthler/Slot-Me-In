@@ -30,11 +30,9 @@ export default function CreateEvent() {
           "repeat":repeat,
         }),
         headers: Auth.JWTHeaderJson(),
-      }).then((response) => {
-        return response;
-      })
+      }).then(response => response.json())
       .then((json) => {
-        console.log(json)
+        console.log(json);
       })
       .catch((error) => {
         console.log(error);

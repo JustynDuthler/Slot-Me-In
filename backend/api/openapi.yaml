@@ -259,7 +259,11 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
-          description: Only business accounts can create events
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         default:
           description: Unexpected Error
           content:
@@ -366,13 +370,13 @@ components:
         auth:
           type: string
     Error:
+      type: object
       required:
         - code
         - message
       properties:
         code:
           type: integer
-          format: int32
         message:
           type: string
 
