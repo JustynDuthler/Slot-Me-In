@@ -23,11 +23,10 @@ exports.signup = async (req, res) => {
       res.status(500).json(error);
     } else {
       // check if username/email is already in use
-      const emailRes = await db.checkUserEmailTaken(1, req.body.email);
-      const nameRes = await db.checkUserNameTaken(req.body.name);
-      if (nameRes.length > 0 || emailRes) {
-        res.status(409).json(error);
-        console.log('User already taken!');
+      const emailRes = await db.checkUserEmailTaken(req.body.email);
+      if (emailRes) {
+        res.status(409).send();
+        console.log('Email already taken!');
       }
       else {
         const userid = await db.insertUserAccount(req.body.name, hash, req.body.email);
@@ -39,12 +38,12 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const account = await db.checkUserEmailTaken(1, req.body.email);
+  const account = await db.checkUserEmailTaken(req.body.email);
   // 404 if email not found
   if (!account) res.status(404).send();
   else {
     // compare given password to hashed password in db
-    const pass = await db.checkUserEmailTaken(2, req.body.email);
+    const pass = await db.getUserPass(req.body.email);
     const match = await bcrypt.compare(req.body.password, pass);
     // if passwords match, generate JWT and send 200
     if (match) {

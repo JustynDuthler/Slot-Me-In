@@ -112,7 +112,7 @@ export default class Register extends React.Component {
       {showBusiness && <button onClick={this.changeForm}>Toggle User Signup</button>}
       {!showBusiness && <form onSubmit={this.handleSubmit}>
         <label>
-          Username:
+          Name:
           <input type="text" value={this.state.username}
             onChange={this.changeUsername} />
         </label><br/>
@@ -129,7 +129,7 @@ export default class Register extends React.Component {
         <input type="submit" value="Sign Up" />
       </form>}
       {!showBusiness && <button onClick={this.changeForm}>Toggle Business Signup</button>}
-      {this.state.flag === 1 && <p>The email or username you entered is already in use.</p>}
+      {this.state.flag === 1 && <p>The email you entered is already in use.</p>}
       </div>
 
     );
