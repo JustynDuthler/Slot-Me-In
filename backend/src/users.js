@@ -25,7 +25,7 @@ exports.signup = async (req, res) => {
       // check if username/email is already in use
       const emailRes = await db.checkUserEmailTaken(1, req.body.email);
       const nameRes = await db.checkUserNameTaken(req.body.name);
-      if (nameRes.length > 0 || emailRes.length > 0) {
+      if (nameRes.length > 0 || emailRes) {
         res.status(409).json(error);
         console.log('User already taken!');
       }
