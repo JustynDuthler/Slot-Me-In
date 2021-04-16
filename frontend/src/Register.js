@@ -8,7 +8,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -86,6 +86,7 @@ const Auth = require('./libs/Auth');
      },
      submit: {
        margin: theme.spacing(3, 0, 2),
+       backgroundColor: theme.palette.primary.main,
      },
    }));
    const classes = useStyles();
@@ -95,7 +96,7 @@ const Auth = require('./libs/Auth');
          <CssBaseline />
          <div className={classes.paper}>
            <Avatar className={classes.avatar}>
-             <LockOutlinedIcon />
+             <AccountBoxIcon />
            </Avatar>
            <Typography component="h1" variant="h5">
              Register
