@@ -33,10 +33,10 @@ function App() {
               <Link to="/register">Create Account</Link>
             </li>
             <li>
-              <Link to="/eventcreate">Create Event</Link>
+              <Link to="/events/create">Create Event</Link>
             </li>
             <li>
-              <Link to="/viewevents">View Events</Link>
+              <Link to="/events/view">View Events</Link>
             </li>
             <li>
               <Link to="/authtest">Auth Test</Link>
@@ -53,10 +53,10 @@ function App() {
           <Route path="/authtest">
             <AuthTest />
           </Route>
-          <Route path="/eventcreate">
+          <Route path="/events/create">
             <CreateEvent />
           </Route>
-          <Route path="/viewevents">
+          <Route path="/events">
             <ViewEvents />
           </Route>
           <Route path="/">
