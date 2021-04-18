@@ -6,7 +6,6 @@ import {
   Link,
 } from 'react-router-dom';
 import Login from './Login';
-// import Register from './Register';
 import Register from './Register';
 import Home from './Home';
 import AuthTest from './AuthTest';
@@ -36,7 +35,7 @@ function App() {
               <Link to="/events/create">Create Event</Link>
             </li>
             <li>
-              <Link to="/events/view">View Events</Link>
+              <Link to="/events">View Events</Link>
             </li>
             <li>
               <Link to="/authtest">Auth Test</Link>
