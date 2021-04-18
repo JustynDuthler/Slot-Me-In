@@ -104,7 +104,7 @@ exports.getEventsByRange = async (starttime, endtime) => { // start time must be
 }
 
 exports.insertAttendees = async (eventid, userid) => {
-  const insert = 'INSERT INTO Attendees (eventid, userid) VALUES ($1, $2)';
+  const insert = 'INSERT INTO Attendees (eventid, userid) SELECT ($1, $2) FROM Attendees a, Events e WHERE a.eventid = $1 HAVING count(*) < e.capacity';
   const query = {
     text: insert,
     values: [eventid, userid],

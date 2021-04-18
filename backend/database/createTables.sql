@@ -5,7 +5,7 @@
 
 -- Users Tables
 CREATE TABLE Users (
-	userid uuid DEFAULT uuid_generate_v4(), 
+	userid uuid  UNIQUE DEFAULT uuid_generate_v4(), 
 	username TEXT NOT NULL,
 	password TEXT NOT NULL,
   useremail TEXT UNIQUE NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE Users (
 
 -- Businesses Tables
 CREATE TABLE Businesses (
-	businessid uuid DEFAULT uuid_generate_v4(),
+	businessid uuid UNIQUE DEFAULT uuid_generate_v4(),
 	businessname TEXT NOT NULL,
 	password TEXT NOT NULL,
 	phonenumber TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE Businesses (
 
 -- Events Table
 CREATE TABLE Events (
-	eventid uuid DEFAULT uuid_generate_v4(),
+	eventid uuid UNIQUE DEFAULT uuid_generate_v4(),
 	eventname TEXT NOT NULL,
 	businessid uuid,
 	starttime TIMESTAMP NOT NULL,
