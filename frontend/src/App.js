@@ -42,7 +42,7 @@ function App() {
 
 
   function validateBusiness() {
-    fetch('http://localhost:3010/api/business/checkBusinessID', {
+    fetch('http://localhost:3010/api/businesses/checkBusinessID', {
       method: "GET",
       headers: Auth.JWTHeaderJson(),
     }).then((response) => {
