@@ -6,7 +6,7 @@ exports.create = async (req, res) => {
   const event = req.body;
   const eventid =
       await db.insertEvent(event.eventname, event.starttime, event.endtime,
-      event.businessid, event.capacity);
+      req.payload.id, event.capacity);
   // add generated event ID to event object before returning
   event.eventid = eventid;
   res.status(201).send(event);
