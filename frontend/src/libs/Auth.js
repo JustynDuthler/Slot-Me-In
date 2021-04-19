@@ -6,6 +6,7 @@ exports.saveJWT = (jwt) => {
 };
 
 // Gets JWT from local storage
+// Returns null if no JWT in localStorage
 exports.getJWT = () => {
     return localStorage.getItem('auth_token');
 };
