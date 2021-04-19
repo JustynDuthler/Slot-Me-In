@@ -60,7 +60,7 @@ exports.getEvents = async (req, res) => {
   res.status(200).json(events);
 };
 
-exports.getEvents = async (req, res) => {
+exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
   res.status(200).send();
 }

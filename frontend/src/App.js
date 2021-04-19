@@ -38,7 +38,25 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [authState, setAuthState] = React.useState(null);
+  const [businessState, setBusinessState] = React.useState(false);
 
+
+  function validateBusiness() {
+    fetch('http://localhost:3010/api/business/checkBusinessID', {
+      method: "GET",
+      headers: Auth.JWTHeaderJson(),
+    }).then((response) => {
+      if (response.status === 200) {
+        setBusinessState(true);
+      } else {
+        setBusinessState(false);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+  
   if (Auth.getJWT() !== authState) {
     setAuthState(Auth.getJWT());
   }
@@ -48,6 +66,12 @@ function App() {
     setAuthState(null);
   };
 
+  React.useEffect(() => {
+    if (authState != null) {
+      validateBusiness();
+    }
+  }, [authState]);
+  
   // RightSide navigation changes depending on if the user is
   // logged in or not
   let rightSide;
@@ -88,7 +112,7 @@ function App() {
         size="large"
         variant="contained"
       >
-        Sign Up
+        Register Account
       </Button>
 
       <Button 
@@ -104,6 +128,77 @@ function App() {
     );
   }
 
+  let leftSide;
+  if (businessState == true) {
+    leftSide = (
+    <Box className={classes.leftMenu}>
+      <Button
+        startIcon={<HomeIcon/>}
+        href="/home"
+        color="primary"
+        size="large"
+        variant="contained"
+      >
+        Home
+      </Button>
+      <Button
+        href="/events/create"
+        color="primary"
+        size="large"
+        variant="contained"
+      >
+        Create Event
+      </Button>
+      <Button
+        href="/events"
+        color="primary"
+        size="large"
+        variant="contained"
+      >
+        Events
+      </Button>
+      <Button
+        href="/authtest"
+        color="primary"
+        size="large"
+        variant="contained"
+      >
+        AuthTest
+      </Button>
+    </Box>
+    );
+  } else {
+    leftSide = (
+      <Box className={classes.leftMenu}>
+        <Button
+          startIcon={<HomeIcon/>}
+          href="/home"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Home
+        </Button>
+        <Button
+          href="/events"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Events
+        </Button>
+        <Button
+          href="/authtest"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          AuthTest
+        </Button>
+      </Box>
+      );
+  }
+
   return (
     <Router>
       <AppBar
@@ -112,71 +207,40 @@ function App() {
         <Toolbar>
           {/*classes.leftMenu has flexGrow: 1 meaning it will try to take up as much space as possible
           this will push the content outside of the box to the right */}
-          <Box className={classes.leftMenu}>
-            <Button
-              startIcon={<HomeIcon/>}
-              href="/home"
-              color="primary"
-              size="large"
-              variant="contained"
-            >
-              Home
-            </Button>
-            <Button
-              href="/events/create"
-              color="primary"
-              size="large"
-              variant="contained"
-            >
-              Create Event
-            </Button>
-            <Button
-              href="/events"
-              color="primary"
-              size="large"
-              variant="contained"
-            >
-              Events
-            </Button>
-            <Button
-              href="/authtest"
-              color="primary"
-              size="large"
-              variant="contained"
-            >
-              AuthTest
-            </Button>
-          </Box>
+          {leftSide}
           {rightSide}
         </Toolbar>
       </AppBar>
       {/* Used a container so that there would be top margin between nav and content */}
       <Container className={classes.content}>
         <Switch>
-          <Route path="/login">
-            <Context.Provider value={{authState, setAuthState}}>
-              <Login/>
-            </Context.Provider>
-          </Route>
-          <Route path="/register">
-            <Register/>
-          </Route>
-          <Route path="/authtest">
-            <AuthTest />
-          </Route>
-          <PrivateRoute 
-            path="/events/create"
-            authed={authState}
-            component={CreateEvent}
-          />
-          <PrivateRoute 
-            path="/events"
-            authed={authState}
-            component={ViewEvents}
-          />
-          <Route path="/">
-            <Home />
-          </Route>
+          <Context.Provider value={{
+            authState, setAuthState, 
+            businessState, setBusinessState
+          }}>
+            <Route path="/login">
+                <Login/>
+            </Route>
+            <Route path="/register">
+              <Register/>
+            </Route>
+            <Route path="/authtest">
+              <AuthTest />
+            </Route>
+            <PrivateRoute 
+              path="/events/create"
+              authed={authState}
+              component={CreateEvent}
+            />
+            <PrivateRoute 
+              path="/events"
+              authed={authState}
+              component={ViewEvents}
+            />
+            <Route path="/">
+              <Home />
+            </Route>
+          </Context.Provider>
         </Switch>
       </Container>
     </Router>
