@@ -71,7 +71,7 @@ function App() {
       validateBusiness();
     }
   }, [authState]);
-  
+
   // RightSide navigation changes depending on if the user is
   // logged in or not
   let rightSide;
@@ -213,11 +213,11 @@ function App() {
       </AppBar>
       {/* Used a container so that there would be top margin between nav and content */}
       <Container className={classes.content}>
-        <Switch>
-          <Context.Provider value={{
+        <Context.Provider value={{
             authState, setAuthState, 
             businessState, setBusinessState
           }}>
+          <Switch>
             <Route path="/login">
                 <Login/>
             </Route>
@@ -240,8 +240,8 @@ function App() {
             <Route path="/">
               <Home />
             </Route>
-          </Context.Provider>
-        </Switch>
+          </Switch>
+        </Context.Provider>
       </Container>
     </Router>
   );
