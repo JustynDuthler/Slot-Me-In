@@ -59,3 +59,8 @@ exports.getEvents = async (req, res) => {
   const events = [];
   res.status(200).json(events);
 };
+
+exports.validID = async (req, res) => {
+  // jwt will return 401 or 403 if id is not a business
+  res.status(200).send();
+}

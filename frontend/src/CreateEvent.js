@@ -25,6 +25,7 @@ const Auth = require('./libs/Auth');
  * CreateEvent Function
  */
 export default function CreateEvent() {
+  const context = React.useContext(Context);
   const[eventName, changeName] = React.useState("");
   const[startDateTime, changeStartDateTime] = React.useState(null);
   const[endDateTime, changeEndDateTime] = React.useState(null);
@@ -37,8 +38,7 @@ export default function CreateEvent() {
    */
   function handleSubmit(event) {
     event.preventDefault();
-    const foundToken = localStorage.getItem('auth_token');
-    if (foundToken) {
+    if (context.businessState) {
       fetch('http://localhost:3010/api/events', {
         method: "POST",
         body: JSON.stringify({
@@ -56,6 +56,8 @@ export default function CreateEvent() {
       .catch((error) => {
         console.log(error);
       });
+    } else {
+      alert("Error: Only business accounts may create events.");
     }
   };
   const useStyles = makeStyles((theme) => ({

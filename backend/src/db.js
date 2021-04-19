@@ -208,4 +208,5 @@ exports.checkUserAttending = async (eventid, userid) => {
   return (rows.length > 0);
 }
 
+
 console.log(`Connected to database '${process.env.DB}'`);
