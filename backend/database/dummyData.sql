@@ -1,4 +1,4 @@
--- 20 fake users. Every password is PaSWord.
+-- 20 fake users. Every password is PaSWord
 INSERT INTO Users(userid, username, password, useremail)
 VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'jeff@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
@@ -40,7 +40,7 @@ VALUES ('00000000-0000-0000-0000-000000000018', 'Alex', '$2b$10$yM6wHn3IDtPttfUK
 INSERT INTO Users(userid, username, password, useremail)
 VALUES ('00000000-0000-0000-0000-000000000019', 'Elle', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Elle@ucsc.edu');
 
--- 10 Businesses. Every password is PaSWord.
+-- 10 Businesses. Every password is password
 INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail)
 VALUES ('00000000-0000-0000-0000-000000000000', 'Test Inc.', '$2b$10$yGQjScs.rHEbbccY2NVipeYAIvtTENxUbzME65JReiU1i6fgXw0.a', '000-000-0000', 'contact@testinc.com');
 INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail)

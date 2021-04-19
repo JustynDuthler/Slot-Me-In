@@ -29,6 +29,7 @@ export default function Login() {
   const [showBusiness, setForm] = React.useState(false);
   const [showPassword, setVisibility] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
+  const [emailMsg, setEmailMsg] = React.useState("");
   const [passError, setPassError] = React.useState(false);
   const context = React.useContext(Context);
   /**
@@ -51,10 +52,12 @@ export default function Login() {
           if (!response.ok) {
             if (response.status === 400) {
               setEmailError(email === "");
-              setPassError(password === "");
+              setEmailMsg("Invalid email.");
+              setPassError(false);
             }
             if (response.status === 404) {
               setEmailError(true);
+              setEmailMsg("Account not found.");
               setPassError(false);
             }
             else if (response.status === 401) {
@@ -70,6 +73,7 @@ export default function Login() {
           }
         })
         .then((json) => {
+          // save JWT and set authState after logging in
           Auth.saveJWT(json.auth_token);
           context.setAuthState(Auth.getJWT());
           console.log(json);
@@ -84,6 +88,8 @@ export default function Login() {
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!emailRegex.test(email)) {
       setEmailError(true);
+      setEmailMsg("Invalid email.");
+      setPassError(false);
     } else {
       handleSubmit(event);
     }
@@ -110,6 +116,7 @@ export default function Login() {
   }));
   const classes = useStyles();
 
+  // if authenticated already, redirect to homepage
   if (context.authState !== null) {
     return <Redirect to={{pathname: '/'}}/>
   }
@@ -128,7 +135,7 @@ export default function Login() {
           <div className={classes.form}>
             <TextField
               error={emailError}
-              helperText={emailError?"Account not found.":""}
+              helperText={emailError ? emailMsg : ""}
               variant="outlined"
               margin="normal"
               required

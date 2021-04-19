@@ -171,6 +171,7 @@ function App() {
   );
 }
 
+// PrivateRoute that redirects to login page if not authenticated
 function PrivateRoute ({component: Component, authed, ...rest}) {
   return (
     <Route
