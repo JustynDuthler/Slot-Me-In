@@ -3,8 +3,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
+  Redirect,
 } from 'react-router-dom';
+import Context from './Context';
 import Login from './Login';
 import Register from './Register';
 import Home from './Home';
@@ -38,7 +39,7 @@ function App() {
   const classes = useStyles();
   const [authState, setAuthState] = React.useState(null);
 
-  if (Auth.getJWT() != authState) {
+  if (Auth.getJWT() !== authState) {
     setAuthState(Auth.getJWT());
   }
   
@@ -63,7 +64,7 @@ function App() {
   } else {
     rightSide = (
     <ButtonGroup
-      anchorOrigin={{
+      anchororigin={{
         vertical: 'top',
         horizonal: 'right',
       }}
@@ -141,7 +142,9 @@ function App() {
       <Container className={classes.content}>
         <Switch>
           <Route path="/login">
-            <Login/>
+            <Context.Provider value={{authState, setAuthState}}>
+              <Login/>
+            </Context.Provider>
           </Route>
           <Route path="/register">
             <Register/>
@@ -149,12 +152,16 @@ function App() {
           <Route path="/authtest">
             <AuthTest />
           </Route>
-          <Route path="/events/create">
-            <CreateEvent />
-          </Route>
-          <Route path="/events">
-            <ViewEvents />
-          </Route>
+          <PrivateRoute 
+            path="/events/create"
+            authed={authState}
+            component={CreateEvent}
+          />
+          <PrivateRoute 
+            path="/events"
+            authed={authState}
+            component={ViewEvents}
+          />
           <Route path="/">
             <Home />
           </Route>
@@ -162,6 +169,17 @@ function App() {
       </Container>
     </Router>
   );
+}
+
+function PrivateRoute ({component: Component, authed, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={(props) => authed !== null
+        ? <Component {...props} />
+        : <Redirect to={{pathname: '/login'}} />}
+    />
+  )
 }
 
 export default App;

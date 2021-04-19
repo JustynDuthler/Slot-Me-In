@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,10 +14,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Context from './Context';
 const Auth = require('./libs/Auth');
 
 /**
@@ -29,6 +30,7 @@ export default function Login() {
   const [showPassword, setVisibility] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
   const [passError, setPassError] = React.useState(false);
+  const context = React.useContext(Context);
   /**
    * Handles form submission
    * @param {event} event
@@ -59,6 +61,7 @@ export default function Login() {
               setEmailError(false);
               setPassError(true);
             }
+            context.setAuthState(null);
             throw response;
           } else {
             setEmailError(false);
@@ -68,6 +71,7 @@ export default function Login() {
         })
         .then((json) => {
           Auth.saveJWT(json.auth_token);
+          context.setAuthState(Auth.getJWT());
           console.log(json);
         })
         .catch((error) => {
@@ -105,6 +109,11 @@ export default function Login() {
     },
   }));
   const classes = useStyles();
+
+  if (context.authState !== null) {
+    return <Redirect to={{pathname: '/'}}/>
+  }
+
   return (
     <div>
       <Container component="main" maxWidth="xs">
