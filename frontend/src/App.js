@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -42,24 +42,36 @@ function App() {
   if (Auth.getJWT() !== authState) {
     setAuthState(Auth.getJWT());
   }
-  
+
+  const logout = () => {
+    Auth.removeJWT();
+    setAuthState(null);
+  };
 
   // RightSide navigation changes depending on if the user is
   // logged in or not
-  // This could be improved so that when someone logs-in or out it automatically changes
-  // Might be good to setup a React.useContext system
   let rightSide;
   if (authState) {
     rightSide = (
-      <Button
-        startIcon={<AccountBoxIcon />}
-        href="/profile" 
-        color="primary"
-        size="large"
-        variant="contained"
-      >
-        Profile
-      </Button>
+      <ButtonGroup>
+        <Button
+          startIcon={<AccountBoxIcon />}
+          href="/profile" 
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Profile
+        </Button>
+        <Button
+          color="primary"
+          size="large"
+          variant="contained"
+          onClick={logout}
+          >
+            Logout
+        </Button>
+      </ButtonGroup>
     );
   } else {
     rightSide = (
