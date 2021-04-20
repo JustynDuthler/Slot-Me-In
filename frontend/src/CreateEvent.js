@@ -31,6 +31,10 @@ export default function CreateEvent() {
   const[endDateTime, changeEndDateTime] = React.useState(null);
   const[capacity, changeCapacity] = React.useState("");
   const[repeat, changeRepeat] = React.useState(false);
+  const [nameError, setNameError] = React.useState(false);
+  const [startError, setStartError] = React.useState(false);
+  const [endError, setEndError] = React.useState(false);
+  const [capacityError, setCapacityError] = React.useState(false);
 
   /**
    * Handles form submission
@@ -87,9 +91,23 @@ export default function CreateEvent() {
   const classes = useStyles();
 
   const validateInput = (event) => {
-    // regex to check for valid email format
-    //const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-    handleSubmit(event);
+    // check that all fields are filled before submitting
+    (!eventName) ? setNameError(true) : setNameError(false);
+    (!startDateTime) ? setStartError(true) : setStartError(false);
+    (!endDateTime) ? setEndError(true) : setEndError(false);
+    // make sure capacity is an integer
+    (!capacity || capacity % 1 !== 0) 
+        ? setCapacityError(true) : setCapacityError(false);
+    // only submit if all fields are filled out
+    if (!eventName || !startDateTime || !endDateTime || !capacity) {
+      return;
+    } else {
+      setNameError(false);
+      setStartError(false);
+      setEndError(false);
+      setCapacityError(false);
+      handleSubmit(event);
+    }
   }
 
   const handleKeypress = (event) => {
@@ -115,6 +133,8 @@ export default function CreateEvent() {
           </Typography>
           <div className={classes.form}>
             <TextField
+              error={nameError}
+              helperText={nameError ? "Event name is required." : ""}
               variant="outlined"
               margin="normal"
               required
@@ -128,6 +148,8 @@ export default function CreateEvent() {
             />
             <MuiPickersUtilsProvider utils={DateFnsUtils} className={classes.form}>
               <DateTimePicker
+                error={startError}
+                helperText={startError ? "Start date/time is required." : ""}
                 clearable
                 className={classes.dateselect}
                 label="Start Date/Time"
@@ -139,6 +161,8 @@ export default function CreateEvent() {
             </MuiPickersUtilsProvider>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DateTimePicker
+                error={endError}
+                helperText={endError ? "End date/time is required." : ""}
                 clearable
                 className={classes.dateselect}
                 label="End Date/Time"
@@ -149,6 +173,8 @@ export default function CreateEvent() {
               />
             </MuiPickersUtilsProvider>
             <TextField
+              error={capacityError}
+              helperText={capacityError ? "Capacity is required and must be an integer." : ""}
               variant="outlined"
               margin="normal"
               fullWidth
