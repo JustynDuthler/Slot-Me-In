@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [authState, setAuthState] = React.useState(null);
-  const [businessState, setBusinessState] = React.useState(false);
+  const [businessState, setBusinessState] = React.useState();
 
 
   function validateBusiness() {
@@ -67,7 +67,7 @@ function App() {
   };
 
   React.useEffect(() => {
-    if (authState != null) {
+    if (authState !== null) {
       validateBusiness();
     }
   }, [authState]);

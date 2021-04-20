@@ -95,6 +95,13 @@ export default function Login() {
     }
   }
 
+  const handleKeypress = (event) => {
+    // only start submit process if enter is pressed
+    if (event.key === "Enter") {
+      validateInput(event);
+    }
+  }
+
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -145,6 +152,7 @@ export default function Login() {
               name="email"
               autoComplete="email"
               onChange={(event) => {setEmail(event.target.value);}}
+              onKeyPress={handleKeypress}
               autoFocus
             />
 
@@ -160,6 +168,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 onChange={(event) => {setPassword(event.target.value);}}
+                onKeyPress={handleKeypress}
                 autoComplete="current-password"
                 InputProps={{
                   endAdornment:

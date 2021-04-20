@@ -60,6 +60,7 @@ export default function CreateEvent() {
       alert("Error: Only business accounts may create events.");
     }
   };
+
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -84,12 +85,21 @@ export default function CreateEvent() {
     },
   }));
   const classes = useStyles();
+
   const validateInput = (event) => {
     // regex to check for valid email format
     //const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
     handleSubmit(event);
   }
-  if (Auth.JWTHeader() === null) {
+
+  const handleKeypress = (event) => {
+    // only start submit process if enter is pressed
+    if (event.key === "Enter") {
+      validateInput(event);
+    }
+  }
+
+  if (context.businessState === false) {
     return <Redirect to={{pathname: '/'}}/>
   }
   return (
@@ -113,6 +123,7 @@ export default function CreateEvent() {
               label="Event Name"
               name="eventname"
               onChange={(event) => {changeName(event.target.value);}}
+              onKeyPress={handleKeypress}
               autoFocus
             />
             <MuiPickersUtilsProvider utils={DateFnsUtils} className={classes.form}>
@@ -123,6 +134,7 @@ export default function CreateEvent() {
                 inputVariant="outlined"
                 value={startDateTime}
                 onChange={changeStartDateTime}
+                onKeyPress={handleKeypress}
               />
             </MuiPickersUtilsProvider>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -133,6 +145,7 @@ export default function CreateEvent() {
                 inputVariant="outlined"
                 value={endDateTime}
                 onChange={changeEndDateTime}
+                onKeyPress={handleKeypress}
               />
             </MuiPickersUtilsProvider>
             <TextField
@@ -142,7 +155,9 @@ export default function CreateEvent() {
               id="capacity"
               label="Capacity"
               name="capacity"
+              type="number"
               onChange={(event) => {changeCapacity(event.target.value);}}
+              onKeyPress={handleKeypress}
             />
 
             <Button

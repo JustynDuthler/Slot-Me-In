@@ -40,7 +40,6 @@ export default function Register() {
   */
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(phoneNumber);
     var apicall = 'http://localhost:3010/api/'+
       (showBusiness?'businesses':'users')+'/signup';
     var info = {"email":email,
@@ -94,6 +93,13 @@ export default function Register() {
     }
   }
 
+  const handleKeypress = (event) => {
+    // only start submit process if enter is pressed
+    if (event.key === "Enter") {
+      validateInput(event);
+    }
+  }
+
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -136,6 +142,7 @@ export default function Register() {
               label={!showBusiness ? "Name" : "Business Name"}
               name="username"
               onChange={(event) => {setUsername(event.target.value);}}
+              onKeyPress={handleKeypress}
               autoFocus
             />
             <TextField
@@ -150,6 +157,7 @@ export default function Register() {
               name="email"
               autoComplete="email"
               onChange={(event) => {setEmail(event.target.value);}}
+              onKeyPress={handleKeypress}
               autoFocus
             />
 
@@ -164,6 +172,7 @@ export default function Register() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 onChange={(event) => {setPassword(event.target.value);}}
+                onKeyPress={handleKeypress}
                 autoComplete="current-password"
                 endAdornment={
                   <InputAdornment position="end">
@@ -195,6 +204,7 @@ export default function Register() {
               country={'us'}
               value={phoneNumber}
               onChange={(phone) => {setPhoneNumber(phone);}}
+              onKeyDown={(event) => {handleKeypress(event)}}
             />}
             <Button
               type="submit"
