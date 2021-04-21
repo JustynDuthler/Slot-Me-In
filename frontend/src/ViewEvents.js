@@ -70,25 +70,27 @@ export default function ViewEvents() {
             justify="center"
         >
             {rows.map((row) => (
-                <Card className={classes.root} variant="outlined">
-                <CardContent>
-                    <Typography variant="h5" component="h2">
-                    {row.eventname}
-                    </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
-                    Start Time: {row.starttime}
-                    </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
-                    End Time: {row.endtime}
-                    </Typography>
-                    <Typography variant="body2" component="p">
-                    Capacity: {row.capacity}
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <Button size="small">Learn More</Button>
-                </CardActions>
-                </Card>
+                <Grid item xs={12} sm={6} md={4}>
+                    <Card className={classes.root} variant="outlined">
+                    <CardContent>
+                        <Typography variant="h5" component="h2">
+                        {row.eventname}
+                        </Typography>
+                        <Typography className={classes.pos} color="textSecondary">
+                        Start Time: {row.starttime}
+                        </Typography>
+                        <Typography className={classes.pos} color="textSecondary">
+                        End Time: {row.endtime}
+                        </Typography>
+                        <Typography variant="body2" component="p">
+                        Capacity: {row.capacity}
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small">Learn More</Button>
+                    </CardActions>
+                    </Card>
+                </Grid>
             ))}
         </Grid>
     );
