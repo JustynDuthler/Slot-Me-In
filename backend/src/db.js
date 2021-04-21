@@ -186,8 +186,9 @@ exports.getBusinessPass = async (email) => {
   return rows[0].password;
 }
 
+// This is not working, error: e.userid does not exist
 exports.getUsersEvents = async (userid) => {
-  const queryText = 'SELECT e.eventid FROM Events e, Attendees a WHERE a.userid = $1 AND e.userid = $1';
+  const queryText = 'SELECT * FROM Events WHERE eventid IN (SELECT eventid FROM attendees where userid = $1)';
   const query = {
     text: queryText,
     values: [userid],

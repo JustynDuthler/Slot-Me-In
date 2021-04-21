@@ -39,6 +39,29 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthTestSchema"
 
+  /users/getUserEvents:
+    get:
+      description: Gets events a user has signed up for based on JWT
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Sending user events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+
   /users/getUser:
     get:
       description: Gets user information
@@ -459,6 +482,8 @@ components:
           format: email
       required:
         - userid
+        - username
+        - email
     UserToken:
       type: object
       maxProperties: 1

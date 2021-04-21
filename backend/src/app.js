@@ -33,8 +33,9 @@ app.use(
 // User routes
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
-app.get('/api/users/:userid/events', users.getEvents);
+//app.get('/api/users/:userid/events', users.getEvents); incomplete, use getUserEvents
 app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
+app.get('/api/users/getUserEvents', auth.authenticateUserJWT, users.getEvents)
 
 // Business routes
 app.post('/api/businesses/login', businesses.login);

@@ -59,10 +59,16 @@ exports.login = async (req, res) => {
 };
 
 exports.getEvents = async (req, res) => {
-  // const userID = req.params.userID;
-  const account = undefined;  // TODO: replace to query db for user once db is implemented
-  if (!account) res.status(404).send();
-  // TODO: query DB for all events this user has signed up for
-  const events = [];
-  res.status(200).json(events);
+  const userID = req.payload.id;
+  if (userID == null) {
+    throw new Error('UserID was null');
+  }
+
+  db.getUsersEvents(userID)
+  .then((events) => {
+    res.status(200).send(events);
+  })
+  .catch((error) => {
+    console.log('GetEvents error: ', error);
+  });
 };
