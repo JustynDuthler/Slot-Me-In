@@ -1,38 +1,37 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core'
+import { Grid } from "@material-ui/core";
 
 const Auth = require('./libs/Auth');
 
-const columns = [
-    { id: 'event', label: 'Event', minWidth: 100},
-    { id: 'start', label: 'Start Time', minWidth: 100},
-    { id: 'end', label: 'End Time', minWidth: 100},
-    { id: 'capacity', label: 'Capacity', minWidth: 100},
-];
-
 const useStyles = makeStyles({
-    root: {
-        width: '100%',
-    },
-    container: {
-        maxHeight: 440,
-    },
+  root: {
+    minWidth: 275,
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+  gridContainer: {
+    paddingLeft: "40px",
+    paddingRight: "40px"
+  }
 });
 
 export default function ViewEvents() {
     const classes = useStyles();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [rows, getRows] = React.useState([]);
 
     function getEvents() {
@@ -59,58 +58,38 @@ export default function ViewEvents() {
     useEffect(() => {
         getEvents();
     }, []);
-    console.log(rows);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    const bull = <span className={classes.bullet}>•</span>;
 
     return (
-        <Paper className={classes.root}>
-            <Typography variant = "h4" align="center">Events</Typography>
-                <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                {columns.map((column) => (
-                                    <TableCell
-                                        key={column.id}
-                                        align={column.align}
-                                        style={{ minWidth: column.minWidth }}
-                                    >
-                                        {column.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.eventname}>
-                                <TableCell component="th" scope="row">
-                                    {row.eventname}
-                                </TableCell>
-                                <TableCell align="left">{row.starttime}</TableCell>
-                                <TableCell align="left">{row.endtime}</TableCell>
-                                <TableCell align="left">{row.capacity}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-        </Paper>
+
+        <Grid
+            container
+            spacing={4}
+            className={classes.gridContainer}
+            justify="center"
+        >
+            {rows.map((row) => (
+                <Card className={classes.root} variant="outlined">
+                <CardContent>
+                    <Typography variant="h5" component="h2">
+                    {row.eventname}
+                    </Typography>
+                    <Typography className={classes.pos} color="textSecondary">
+                    Start Time: {row.starttime}
+                    </Typography>
+                    <Typography className={classes.pos} color="textSecondary">
+                    End Time: {row.endtime}
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                    Capacity: {row.capacity}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button size="small">Learn More</Button>
+                </CardActions>
+                </Card>
+            ))}
+        </Grid>
     );
 }
