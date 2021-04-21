@@ -1,0 +1,502 @@
+#
+# SlotMeIn Backend
+#
+
+openapi: "3.0.3"
+
+info:
+  description: API for SlotMeIn, a business timeslot reservation web app
+  version: 0.1.0
+  title: SlotMeIn API
+
+servers:
+  - url: http://localhost:3010/api
+
+paths:
+  /test/get_token:
+    get:
+      description: Gets a test token
+
+      responses:
+        200:
+          description: a jwt is being sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+  /test/test_token:
+    post:
+      description: Test API to check token sending
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Accepted JWT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTestSchema"
+
+  /users/getUser:
+    get:
+      description: Gets user information
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Sending user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+
+  /users/signup:
+    post:
+      description: Creates a new user account
+      tags:
+        - users
+      requestBody:
+        description: User details to set for user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccount"
+      responses:
+        201:
+          description: Successfully created user account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Unexpected property in account details
+        409:
+          description: Account with given email already exists
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/login:
+    post:
+      description: Validate user account credentials during login
+      tags:
+        - users
+      requestBody:
+        description: Account credentials to login with
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Email and password must be specified
+        401:
+          description: Incorrect password
+        404:
+          description: User account with given email not found
+  /users/{userid}/events:
+    get:
+      description: Retrieves all events that a user has signed up for
+      tags:
+        - users
+      parameters:
+        - name: userid
+          in: path
+          description: ID of user to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: User with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses/signup:
+    post:
+      description: Creates a new business account
+      tags:
+        - businesses
+      requestBody:
+        description: Business details to set for account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccount"
+      responses:
+        201:
+          description: Successfully created business account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Unexpected property in account details
+        409:
+          description: Account with given email already exists
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /businesses/login:
+    post:
+      description: Validate business account credentials during login
+      tags:
+        - businesses
+      requestBody:
+        description: Account credentials to login with
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Email and password must be specified
+        401:
+          description: Incorrect password
+        404:
+          description: Business account with given email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /businesses/{businessid}/events:
+    get:
+      description: Retrieves all events that a business has created
+      tags:
+        - businesses
+      parameters:
+        - name: businessid
+          in: path
+          description: ID of business to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: Business with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses/checkBusinessID:
+    get:
+      description: get the business info
+      tags: 
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Given ID is a business ID
+        401:
+          description: Token is missing or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        403:
+          description: Given ID is not a business ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events:
+    post:
+      description: Create a new event
+      tags:
+        - events
+      requestBody:
+        description: Event details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: Successfully created event, returns event with generated event ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        400:
+          description: Unexpected property in event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      description: Get a list of events
+      tags:
+        - events
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events starting after a given timestamp (optional)
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events ending before a given timestamp (optional)
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events/{eventid}:
+    get:
+      description: Retrieves a single event associated with a specified eventID
+      tags:
+        - events
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events/{eventid}/signup:
+    put:
+      description: Signup for event associated with specified eventID
+      tags:
+        - events
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to signup for
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully signed up for event
+        404:
+          description: Event ID does not exist
+        409:
+          description: User already signed up for this event
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+
+  # 1) Define the security scheme type (HTTP bearer)
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+
+  schemas:
+    AuthTestSchema:
+      type: object
+      properties:
+        auth:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+    NewAccount:
+      type: object
+      maxProperties: 4
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        phonenumber:
+          type: string
+          pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+          example: "123-456-7890"
+      required:
+        - name
+        - email
+        - password
+
+    UserLogin:
+      type: object
+      maxProperties: 2
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+      required:
+        - email
+        - password
+    User:
+      type: object
+      maxProperties: 3
+      additionalProperties: false
+      properties:
+        userid:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+      required:
+        - userid
+    UserToken:
+      type: object
+      maxProperties: 1
+      additionalProperties: false
+      properties:
+        auth_token:
+          type: string
+      required:
+        - auth_token
+
+    Event:
+      type: object
+      additionalProperties: false
+      properties:
+        eventid:
+          type: string
+          format: uuid
+        businessid:
+          type: string
+          format: uuid
+        eventname:
+          type: string
+        starttime:
+          type: string
+          format: date-time
+        endtime:
+          type: string
+          format: date-time
+        capacity:
+          type: integer
+        repeat:
+          type: boolean
+      required:
+        - eventname
+        - starttime
+        - endtime
+        - capacity
+    EventList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Event"

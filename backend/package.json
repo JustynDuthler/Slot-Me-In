@@ -1,0 +1,29 @@
+{
+  "name": "115a-project-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-openapi-validator": "^4.12.7",
+    "express-sessions": "^1.0.6",
+    "js-yaml": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.5.1",
+    "swagger-ui-express": "^4.1.6"
+  },
+  "scripts": {
+    "prestart": "docker-compose --env-file .env up --build -d && docker-compose --env-file .env config",
+    "start": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "docker-compose": "^0.23.5",
+    "nodemon": "^2.0.7"
+  }
+}
