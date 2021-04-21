@@ -1,4 +1,5 @@
-import { isThisMinute } from 'date-fns';
+import Container from '@material-ui/core/Container';
+
 import React from 'react';
 import Auth from './libs/Auth';
 
@@ -51,16 +52,16 @@ export default function Profile() {
     return <div>Loading...</div>;
   } else {
     return (
-      <div>
+      <Container>
         <h1>Profile</h1>
         {userData.username}
         <br/>
         {userData.email}
         <br/>
         {eventList.map(item => (
-          <h2 key={item.eventid}>{item.eventname}</h2>
+          <h2 key={item.eventid}>{item.eventname}</h2> 
         ))}
-      </div>
+      </Container>
     );
   }
 }

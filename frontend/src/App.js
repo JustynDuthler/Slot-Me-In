@@ -22,6 +22,7 @@ import AccountIcon from '@material-ui/icons/AccountCircle';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -202,11 +203,12 @@ function App() {
 
   return (
     <Router>
+      <CssBaseline /> {/* I moved Css basline to here so that it applies to the whole project */}
       <AppBar
         position="static"
       >
         <Toolbar>
-          {/*classes.leftMenu has flexGrow: 1 meaning it will try to take up as much space as possible
+          {/* classes.leftMenu has flexGrow: 1 meaning it will try to take up as much space as possible
           this will push the content outside of the box to the right */}
           {leftSide}
           {rightSide}
