@@ -26,6 +26,7 @@ CREATE TABLE Businesses (
 CREATE TABLE Events (
 	eventid uuid UNIQUE DEFAULT uuid_generate_v4(),
 	eventname TEXT NOT NULL,
+  description VARCHAR(500) DEFAULT '',
 	businessid uuid,
 	starttime TIMESTAMP NOT NULL,
 	endtime TIMESTAMP NOT NULL,
