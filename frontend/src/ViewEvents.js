@@ -25,8 +25,8 @@ const useStyles = makeStyles({
     marginTop: 12,
   },
   gridContainer: {
-    paddingLeft: "40px",
-    paddingRight: "40px"
+    paddingLeft: "10px",
+    paddingRight: "10px",
   }
 });
 
@@ -76,10 +76,14 @@ export default function ViewEvents() {
                           {row.eventname}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                          Start Time: {new Date(row.starttime).toLocaleString('en-US')}
+                          Start Time: {new Date(row.starttime).toLocaleString('en-US',
+                              {weekday: 'long', month: 'short', day: 'numeric',
+                                year: 'numeric', hour: 'numeric', minute: 'numeric'})}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                          End Time: {new Date(row.endtime).toLocaleString('en-US')}
+                          End Time: &nbsp;{new Date(row.endtime).toLocaleString('en-US',
+                              {weekday: 'long', month: 'short', day: 'numeric',
+                                year: 'numeric', hour: 'numeric', minute: 'numeric'})}
                         </Typography>
                         <Typography className={classes.pos} variant="body2" noWrap>
                           Description: {row.description ? row.description : "N/A"}
