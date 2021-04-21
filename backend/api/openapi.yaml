@@ -506,6 +506,8 @@ components:
           format: uuid
         eventname:
           type: string
+        description:
+          type: string
         starttime:
           type: string
           format: date-time
