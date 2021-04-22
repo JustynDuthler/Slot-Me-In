@@ -1,13 +1,30 @@
 import { isThisMinute } from 'date-fns';
 import React from 'react';
 import Auth from './libs/Auth';
+import Button from '@material-ui/core/Button';
 
 export default function Profile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState([]);
-  
+
+/*
+  function handleSubmit(event) {
+    event.preventDefault(eventid);
+    var apicall = 'http://localhost:3010/api/users/removeUserAttending';
+    fetch(apicall, {
+      method: 'DELETE',
+      body: JSON.stringify({"eventid":eventid}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+        .then((response) => {
+        
+        })
+  };
+  */
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this 
@@ -58,7 +75,14 @@ export default function Profile() {
         {userData.email}
         <br/>
         {eventList.map(item => (
-          <h2 key={item.eventid}>{item.eventname}</h2>
+          <h2 key={item.eventid}>{item.eventname}
+          <Button  
+              type="submit"
+              variant="contained"
+              color="primary"
+            >Cancel event 
+            </Button>
+          </h2>
         ))}
       </div>
     );
