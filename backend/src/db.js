@@ -209,5 +209,18 @@ exports.checkUserAttending = async (eventid, userid) => {
   return (rows.length > 0);
 }
 
+// Removes user from the attendees table
+exports.removeUserAttending = async (eventid, userid) => {
+  const deleteU = 'DELETE FROM Attendees a WHERE a.userid = $1 AND a.eventid = $2 RETURNING a.eventid';
+  const query = {
+    text: deleteU,
+    values: [userid, eventid],
+  } 
+
+  const {rows} = await pool.query(query);
+  console.log(rows.length);
+  return (rows.length);
+
+}
 
 console.log(`Connected to database '${process.env.DB}'`);
