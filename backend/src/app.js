@@ -36,7 +36,7 @@ app.post('/api/users/signup', users.signup);
 //app.get('/api/users/:userid/events', users.getEvents); incomplete, use getUserEvents
 app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
 app.get('/api/users/getUserEvents', auth.authenticateUserJWT, users.getEvents)
-app.post('/api/users/removeUserAttending', auth.authenticateUserJWT, users.removeUserAttending);
+app.delete('/api/users/removeUserAttending', auth.authenticateUserJWT, users.removeUserAttending);
 
 // Business routes
 app.post('/api/businesses/login', businesses.login);

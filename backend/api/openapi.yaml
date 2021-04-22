@@ -136,7 +136,7 @@ paths:
           description: User account with given email not found
 
   /users/removeUserAttending:
-    post:
+    delete:
       description: remove a user from the given event 
       tags:
         - users
