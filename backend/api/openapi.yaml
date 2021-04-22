@@ -134,6 +134,27 @@ paths:
           description: Incorrect password
         404:
           description: User account with given email not found
+
+  /users/removeUserAttending:
+    post:
+      description: remove a user from the given event 
+      tags:
+        - users
+      requestBody:
+        description: eventid
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEvent'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successful delete
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
   /users/{userid}/events:
     get:
       description: Retrieves all events that a user has signed up for
@@ -493,6 +514,16 @@ components:
           type: string
       required:
         - auth_token
+    UserEvent:
+      type: object
+      maxProperties: 1
+      additionalProperties: false
+      properties:
+        eventid:
+          type: string
+          format: uuid
+      required: 
+        - eventid
 
     Event:
       type: object
