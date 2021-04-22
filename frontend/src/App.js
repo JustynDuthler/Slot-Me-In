@@ -12,6 +12,7 @@ import Home from './Home';
 import AuthTest from './AuthTest';
 import CreateEvent from './CreateEvent';
 import ViewEvents from './ViewEvents';
+import Profile from './Profile';
 const Auth = require('./libs/Auth');
 
 import {ButtonGroup, Button, Toolbar, AppBar, makeStyles} from '@material-ui/core';
@@ -237,6 +238,9 @@ function App() {
               authed={authState}
               component={ViewEvents}
             />
+            <Route path="/profile">
+              {authState &&  !businessState ? <Profile/> : <Redirect to="/"/>}
+            </Route>
             <Route path="/">
               <Home />
             </Route>
