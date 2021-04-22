@@ -59,10 +59,7 @@ export default function ViewEvents() {
         getEvents();
     }, []);
 
-    const bull = <span className={classes.bullet}>•</span>;
-
     return (
-
         <Grid
             container
             spacing={4}
