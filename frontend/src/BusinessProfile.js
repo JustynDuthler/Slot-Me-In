@@ -1,35 +1,26 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Context from './Context';
 import Auth from './libs/Auth';
-import IndividualEvent from './IndividualEvent';
 
 
 
 
-
-
-export default function UserProfile() {
+export default function BusinessProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
-  const [eventViewID, setEventViewID] = React.useState(null);
-
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   function removeUserAttending(eventid) {
     console.log(eventid);
-    var apicall = 'http://localhost:3010/api/users/removeUserAttending';
+    var apicall = 'http://localhost:3010/api/business/removeUserAttending';
     fetch(apicall, {
       method: 'DELETE',
       body: JSON.stringify({"eventid":eventid}),
@@ -40,22 +31,16 @@ export default function UserProfile() {
     });
   };
 
-  function removeUserAndReload(eventid, eventKey, eventValue, eventList) {
-    removeUserAttending(eventid);                                 // call API to remove user from attendees table
-    eventList[eventKey].splice(eventValue, 1);                    // splice out event
-    let updatedEventList = JSON.parse(JSON.stringify(eventList)); // copy eventlist into a new object so state can update
-    if (updatedEventList[eventKey].length == 0) {                 // if no more events for a business remove business from dict
-      delete updatedEventList[eventKey];
-    }
-    setEventList(updatedEventList);                               // update eventList state
+  function removeUserAndReload(eventid) {
+    removeUserAttending(eventid);
   };
-  
+
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this
   // should only ever run once
   React.useEffect(async () => {
-    const userRes = fetch('http://localhost:3010/api/users/getUser', {
+    const userRes = fetch('http://localhost:3010/api/businesses/getBusiness', {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
     }).then(res => res.json())
@@ -66,7 +51,7 @@ export default function UserProfile() {
         setError(error);
       }
     )
-    const eventRes = fetch('http://localhost:3010/api/users/getUserEvents', {
+    const eventRes = fetch('http://localhost:3010/api/businesses/getBusinessEvents', {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
     }).then(res => res.json())
@@ -93,7 +78,6 @@ export default function UserProfile() {
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
-      flexGrow:1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -106,50 +90,24 @@ export default function UserProfile() {
     return <div>Loading...</div>;
   } else {
     const items = [];
-    
-    // Var key is the business name
     for (var key in eventList) {
-      let eventListJSX = [];
-      // Value is the index of the event
+      items.push(<h1 key={key}>{key}</h1>);
       for (var value in eventList[key]){
         let eventid = eventList[key][value].eventid;
-        let eventName = eventList[key][value].eventname;
-        let startDate = new Date(eventList[key][value].starttime);
-        let dateString = (startDate.getHours() % 12) + ":" + startDate.getMinutes() + (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
-        let eventKey = key;
-        let eventValue = value;
-
-        eventListJSX.push(
-          <ListItem button={true} onClick={() => setEventViewID(eventid)} key={eventid}>
-            <ListItemText
-              primary={eventName}
-              secondary={dateString}
-            />
-            <ListItemSecondaryAction>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => {removeUserAndReload(eventid, eventKey, eventValue, eventList)}}
-              >
-                Cancel event
-              </Button>
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
+        console.log(eventid);
+        items.push(
+        <h3
+          key={eventList[key][value].eventid}>{eventList[key][value].eventname}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={() => {removeUserAndReload(eventid)}}
+          >
+            Cancel event
+          </Button>
+        </h3>);
       }
-
-      items.push(
-        <Grid item item xs={12} md={6}>
-          <Typography variant="h6">
-            {key}
-          </Typography>
-          <Divider/>
-          <List>
-          {eventListJSX}
-          </List>
-        </Grid>
-      );
     }
     return (
       <Container component="main" maxWidth="md">
@@ -160,9 +118,7 @@ export default function UserProfile() {
           <Typography component="h1" variant="h4">
             {userData.email}
           </Typography>
-          <Grid container spacing={8}>
-            {items}
-          </Grid>
+          {items}
         </div>
       </Container>
     );
