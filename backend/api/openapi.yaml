@@ -540,7 +540,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Event"
+                $ref: "#/components/schemas/AttendeesList"
         404:
           description: Event with specified ID not found
         default:
@@ -708,3 +708,18 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Event"
+    Attendees:
+      type: object
+      additionalProperties: false
+      properties:
+        eventid:
+          type: string
+          format: uuid
+        userid:
+          type: string
+          format: uuid
+    AttendeesList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Attendees"
+

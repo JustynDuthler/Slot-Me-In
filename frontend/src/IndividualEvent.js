@@ -12,6 +12,7 @@ const IndividualEvent = (props) => {
   const { params } = match;
   const { eventid } = params;
   const [eventData, setEventData] = useState({});
+  const [attendeesData, setAttendeesData] = useState([]);
   const [signupError, setSignupError] = useState(false);
 
   /* API call to sign up for events */
@@ -60,8 +61,31 @@ const IndividualEvent = (props) => {
     });
   };
 
+  /* API call to get total attendees */
+  function getTotalAttendees() {
+    var apicall = 'http://localhost:3010/api/attendees/'+eventid;
+    console.log('api call: ' + apicall);
+    fetch(apicall, {
+      method: 'GET',
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        return response.json();
+      }
+    })
+    .then((json) => {
+      setAttendeesData(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
   useEffect(() => {
     getEventData();
+    getTotalAttendees();
   }, []);
 
   const body = {
@@ -78,7 +102,7 @@ const IndividualEvent = (props) => {
       <p>End Time: {new Date(eventData.endtime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
                   year: 'numeric', hour: 'numeric', minute: 'numeric'})}</p>
-      <p>Capacity: {eventData.capacity}</p>
+      <p>Capacity: {attendeesData.length}/{eventData.capacity}</p>
       <Button variant="contained" color="secondary" onClick={signUp}>
         Sign Up
       </Button>
