@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Context from './Context';
 import Auth from './libs/Auth';
+import TextField from '@material-ui/core/TextField';
 
 
 
@@ -14,25 +15,41 @@ import Auth from './libs/Auth';
 export default function BusinessProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
-  const [userData, setUserData] = React.useState([]);
+  const [businessData, setBusinessData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
-  function removeUserAttending(eventid) {
+  function deleteEvent(eventid) {
     console.log(eventid);
-    var apicall = 'http://localhost:3010/api/business/removeUserAttending';
-    fetch(apicall, {
+    var apicall = 'http://localhost:3010/api/events/'+eventid;
+    return fetch(apicall, {
       method: 'DELETE',
-      body: JSON.stringify({"eventid":eventid}),
       headers: Auth.JWTHeaderJson(),
+    }).then((response)=>{
+      if (!response.ok) {
+        throw response;
+      }
+      return response;
+    }).then((json)=>{
+      console.log(json);
+      return 1;
     })
     .catch((error) => {
       console.log(error);
+      return -1;
     });
   };
 
-  function removeUserAndReload(eventid) {
-    removeUserAttending(eventid);
+  async function deleteEventAndReload(eventid, eventList) {
+    const test = await deleteEvent(eventid);                      // call API to remove event from events table
+    if (test !== 1) {                                             // if delete failed, don't remove event from list.
+      console.log("Could not remove event");
+      return;
+    }
+    console.log("Deleted event",eventList[eventid]);
+    var eventListCopy = JSON.parse(JSON.stringify(eventList));    // copy eventlist
+    delete eventListCopy[eventid];                                // delete event
+    setEventList(eventListCopy);                                  // update eventList state
   };
 
   // I wrote this how react recommends
@@ -40,12 +57,12 @@ export default function BusinessProfile() {
   // Since the dependents array provided at the end is empty, this
   // should only ever run once
   React.useEffect(async () => {
-    const userRes = fetch('http://localhost:3010/api/businesses/getBusiness', {
+    const businessRes = fetch('http://localhost:3010/api/businesses/getBusiness', {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
     }).then(res => res.json())
     .then((data) => {
-        setUserData(data);
+        setBusinessData(data);
       },
       (error) => {
         setError(error);
@@ -57,20 +74,17 @@ export default function BusinessProfile() {
     }).then(res => res.json())
     .then((data) => {
       // The value is an array of events for that business
-          let eventDict = {};
-          for (var index in data) {
-            if (eventDict[data[index].businessname] == null) {
-              eventDict[data[index].businessname] = [];
-            }
-      eventDict[data[index].businessname].push(data[index]);
-    }
+      let eventDict = {};
+      for (var index in data) {
+        eventDict[data[index].eventid] = data[index];
+      }
     setEventList(eventDict);
     },
       (error) => {
         setError(error);
         }
       )
-    await Promise.all([userRes, eventRes]);
+    await Promise.all([businessRes, eventRes]);
     setIsLoaded(true);
   }, []);
 
@@ -91,32 +105,29 @@ export default function BusinessProfile() {
   } else {
     const items = [];
     for (var key in eventList) {
-      items.push(<h1 key={key}>{key}</h1>);
-      for (var value in eventList[key]){
-        let eventid = eventList[key][value].eventid;
-        console.log(eventid);
-        items.push(
-        <h3
-          key={eventList[key][value].eventid}>{eventList[key][value].eventname}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={() => {removeUserAndReload(eventid)}}
-          >
-            Cancel event
-          </Button>
-        </h3>);
-      }
+      let eventid = eventList[key].eventid;
+      items.push(
+      <h3
+        key={eventList[key].eventid}>{eventList[key].eventname}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={() => {deleteEventAndReload(eventid, eventList)}}
+        >
+          Cancel event
+        </Button>
+      </h3>);
+
     }
     return (
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
           <Typography component="h1" variant="h1">
-            {userData.username}
+            {businessData.businessname}
           </Typography>
           <Typography component="h1" variant="h4">
-            {userData.email}
+            {businessData.email}
           </Typography>
           {items}
         </div>
