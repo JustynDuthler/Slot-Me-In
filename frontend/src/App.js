@@ -245,7 +245,7 @@ function App() {
             <Route path="/profile">
               {(authState) ? (businessState === false) ? <UserProfile/> : <BusinessProfile/> : <Redirect to="/"/>}
             </Route>
-            <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
+            <Route exact path="/events" render={<ViewEvents />} />
             <Route
               exact path="/event/:eventid"
               render={(props) => <IndividualEvent {...props} />}

@@ -697,6 +697,9 @@ components:
           type: integer
         repeat:
           type: boolean
+        repeatid:
+          type: string
+          format: uuid
         businessname:
           type: string
       required:

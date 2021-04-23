@@ -267,7 +267,6 @@ exports.removeUserAttending = async (eventid, userid) => {
   }
 
   const {rows} = await pool.query(query);
-  console.log(rows.length);
   return (rows.length);
 
 }

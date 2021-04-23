@@ -33,7 +33,7 @@ exports.JWTHeaderJson = () => {
         return {'Authorization': 'Bearer ' + jwt,
         'Content-Type':'application/json'};
     } else {
-        return null;
+        return {'Authorization':''};
     }
 };
 exports.updateToken = async () => {

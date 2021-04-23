@@ -33,11 +33,9 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ViewEvents(props) {
+export default function ViewEvents() {
   const classes = useStyles();
-  const { history } = props;
   const [rows, getRows] = React.useState([]);
-  const [eventData, setEventData] = useState({});
 
   /* API call to get event data */
   function getEvents() {
