@@ -634,13 +634,13 @@ components:
         - email
     Business:
       type: object
-      maxProperties: 3
+      maxProperties: 4
       additionalProperties: false
       properties:
         businessid:
           type: string
           format: uuid
-        username:
+        businessname:
           type: string
         email:
           type: string
@@ -651,7 +651,7 @@ components:
           example: "123-456-7890"
       required:
         - businessid
-        - username
+        - businessname
         - email
     UserToken:
       type: object
@@ -726,4 +726,3 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Attendees"
-
