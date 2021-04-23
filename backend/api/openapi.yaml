@@ -586,6 +586,8 @@ components:
           type: integer
         repeat:
           type: boolean
+        businessname:
+          type: string
       required:
         - eventname
         - starttime

@@ -1,4 +1,5 @@
-import { isThisMinute } from 'date-fns';
+import Container from '@material-ui/core/Container';
+
 import React from 'react';
 import Auth from './libs/Auth';
 import Button from '@material-ui/core/Button';
@@ -46,7 +47,7 @@ export default function Profile() {
       )
   }, []);
 
-  // Once userData has been set, get user attending information
+  // Get user attending information
   React.useEffect(() => {
     fetch('http://localhost:3010/api/users/getUserEvents', {
       method: 'GET',
@@ -60,7 +61,7 @@ export default function Profile() {
           setError(error);
         }
       )
-  }, [userData]);
+  }, []);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -68,23 +69,26 @@ export default function Profile() {
     return <div>Loading...</div>;
   } else {
     return (
-      <div>
+      <Container>
         <h1>Profile</h1>
         {userData.username}
         <br/>
         {userData.email}
         <br/>
         {eventList.map(item => (
-          <h2 key={item.eventid}>{item.eventname}
-          <Button  
+          <h2 key={item.eventid}>
+            {item.eventname}
+            {item.businessname}
+            <Button  
               type="submit"
               variant="contained"
               color="primary"
-            >Cancel event 
+            >
+              Cancel event 
             </Button>
           </h2>
         ))}
-      </div>
+      </Container>
     );
   }
 }

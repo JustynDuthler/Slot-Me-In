@@ -197,9 +197,12 @@ exports.getBusinessPass = async (email) => {
   return rows[0].password;
 }
 
-// This is not working, error: e.userid does not exist
+// returns list of events for which userid is attending, had to join so that I could get the business name
 exports.getUsersEvents = async (userid) => {
-  const queryText = 'SELECT * FROM Events WHERE eventid IN (SELECT eventid FROM Attendees WHERE userid = $1)';
+  const queryText = 
+    'SELECT eventid, eventname, events.businessid, starttime, endtime, capacity, businessname ' + // Gets relevant information
+      'FROM Events INNER JOIN Businesses ON Events.businessid = Businesses.businessid ' + // Join the events and business table where businessid is the same
+        'WHERE eventid IN (SELECT eventid FROM attendees where userid = $1)'; // Matches events with the event id from attending when userid is the one given
   const query = {
     text: queryText,
     values: [userid],
