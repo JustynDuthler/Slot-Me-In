@@ -36,6 +36,7 @@ app.post('/api/users/signup', users.signup);
 //app.get('/api/users/:userid/events', users.getEvents); incomplete, use getUserEvents
 app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
 app.get('/api/users/getUserEvents', auth.authenticateUserJWT, users.getEvents)
+app.delete('/api/users/removeUserAttending', auth.authenticateUserJWT, users.removeUserAttending);
 
 // Business routes
 app.post('/api/businesses/login', businesses.login);
@@ -47,6 +48,7 @@ app.get('/api/businesses/checkBusinessID', auth.authenticateBusinessJWT, busines
 app.post('/api/events', auth.authenticateBusinessJWT, events.create);
 app.get('/api/events', events.getEvents);
 app.get('/api/events/:eventid', events.getEventByID);
+app.delete('/api/events/:eventid', auth.authenticateBusinessJWT, events.delete);
 app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup)
 
 // Generates a token which expires in 1 minute

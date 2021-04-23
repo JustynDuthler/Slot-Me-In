@@ -11,6 +11,7 @@ import Register from './Register';
 import Home from './Home';
 import AuthTest from './AuthTest';
 import CreateEvent from './CreateEvent';
+import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
 import Profile from './Profile';
 const Auth = require('./libs/Auth');

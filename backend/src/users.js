@@ -73,3 +73,16 @@ exports.getEvents = async (req, res, next) => {
     next(error);
   });
 };
+
+exports.removeUserAttending = async (req, res) => {
+  const userID = req.payload.id;
+  const eventID = req.body.eventid;
+
+  const ret = db.removeUserAttending(eventID, userID);
+  if (ret) {
+    res.status(200).send();
+  } else {
+    res.status(403).send();
+  }
+  
+};

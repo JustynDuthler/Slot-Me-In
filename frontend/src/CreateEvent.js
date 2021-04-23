@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -15,6 +16,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Context from './Context';
@@ -30,11 +34,17 @@ export default function CreateEvent() {
   const[startDateTime, changeStartDateTime] = React.useState(null);
   const[endDateTime, changeEndDateTime] = React.useState(null);
   const[capacity, changeCapacity] = React.useState("");
+  const[description, changeDescription] = React.useState("");
   const[repeat, changeRepeat] = React.useState(false);
+  const[repeatDays,changeRepeatDays] = React.useState({"Monday":false,"Tuesday":false,"Wednesday":false,"Thursday":false,"Friday":false,"Saturday":false,"Sunday":false});
+  const [repeatError,setRepeatError] = React.useState(false);
   const [nameError, setNameError] = React.useState(false);
   const [startError, setStartError] = React.useState(false);
   const [endError, setEndError] = React.useState(false);
+  const [precedeError, setPrecedeError] = React.useState(false);
   const [capacityError, setCapacityError] = React.useState(false);
+  const [descriptionError, setDescriptionError] = React.useState(false);
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
   /**
    * Handles form submission
@@ -50,6 +60,7 @@ export default function CreateEvent() {
           "starttime":startDateTime.toISOString(),
           "endtime":endDateTime.toISOString(),
           "capacity":parseInt(capacity),
+          "description":description,
           "repeat":repeat,
         }),
         headers: Auth.JWTHeaderJson(),
@@ -77,7 +88,7 @@ export default function CreateEvent() {
       backgroundColor: theme.palette.primary.main,
     },
     form: {
-      width: '100%', // Fix IE 11 issue.
+      width: '420px', // Fix IE 11 issue.
       marginTop: theme.spacing(1),
     },
     dateselect: {
@@ -95,11 +106,15 @@ export default function CreateEvent() {
     (!eventName) ? setNameError(true) : setNameError(false);
     (!startDateTime) ? setStartError(true) : setStartError(false);
     (!endDateTime) ? setEndError(true) : setEndError(false);
+    // start date must precede end date
+    (startDateTime && endDateTime && startDateTime > endDateTime) ? setPrecedeError(true) : setPrecedeError(false);
+    // repeat days must include day of start date
+    (repeat && startDateTime && !repeatDays[days[startDateTime.getDay()]]) ? setRepeatError(true) : setRepeatError(false);
     // make sure capacity is an integer
-    (!capacity || capacity % 1 !== 0) 
+    (!capacity || capacity % 1 !== 0)
         ? setCapacityError(true) : setCapacityError(false);
     // only submit if all fields are filled out
-    if (!eventName || !startDateTime || !endDateTime || !capacity) {
+    if (!eventName || !startDateTime || !endDateTime || !capacity || precedeError || repeatError) {
       return;
     } else {
       setNameError(false);
@@ -161,8 +176,8 @@ export default function CreateEvent() {
             </MuiPickersUtilsProvider>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DateTimePicker
-                error={endError}
-                helperText={endError ? "End date/time is required." : ""}
+                error={endError || precedeError}
+                helperText={precedeError ? "End date/time must follow Start date/time." : endError ? "End date/time is required." : ""}
                 clearable
                 className={classes.dateselect}
                 label="End Date/Time"
@@ -172,6 +187,42 @@ export default function CreateEvent() {
                 onKeyPress={handleKeypress}
               />
             </MuiPickersUtilsProvider>
+            <FormControlLabel
+              control={<Checkbox value="repeat" color="primary" onChange={(event) => {changeRepeat(event.target.checked);}}/>}
+              label="Repeat"
+            />
+            {repeat && <FormControl required error={repeatError} component="fieldset"><FormGroup row>
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="monday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Sunday"]: event.target.checked });}}/>}
+                label="S"
+              />
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="tuesday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Monday"]: event.target.checked });}}/>}
+                label="M"
+              />
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="wednesday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Tuesday"]: event.target.checked });}}/>}
+                label="T"
+              />
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="thursday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Wednesday"]: event.target.checked });}}/>}
+                label="W"
+              />
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="friday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Thursday"]: event.target.checked });}}/>}
+                label="T"
+              />
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="saturday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Friday"]: event.target.checked });}}/>}
+                label="F"
+              />
+              <FormControlLabel
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="sunday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Saturday"]: event.target.checked });}}/>}
+                label="S"
+              />
+              </FormGroup>
+              {repeatError && <FormHelperText>Selected days must include day of start date</FormHelperText>}
+              </FormControl>}
             <TextField
               error={capacityError}
               helperText={capacityError ? "Capacity is required and must be an integer." : ""}
@@ -185,7 +236,20 @@ export default function CreateEvent() {
               onChange={(event) => {changeCapacity(event.target.value);}}
               onKeyPress={handleKeypress}
             />
-
+            <TextField
+              error={descriptionError}
+              helperText={descriptionError ? "Description is required." : ""}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              id="description"
+              label="Description"
+              name="description"
+              multiline
+              placeholder="Brief Description of Event"
+              onChange={(event) => {changeDescription(event.target.value);}}
+              onKeyPress={handleKeypress}
+            />
             <Button
               type="submit"
               fullWidth

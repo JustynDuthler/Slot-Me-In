@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { Pool } = require('pg')
+const { Pool } = require('pg');
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -34,6 +34,17 @@ exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity
   const {rows} = await pool.query(query);
   return rows[0].eventid;
 };
+
+exports.deleteEvent = async (eventid) => {
+  const del = 'DELETE FROM Events WHERE eventid = $1';
+  const query = {
+    text: del,
+    values: [eventid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
 
 exports.insertBusinessAccount = async (businessname, password, phonenumber, businessemail) => {
   const insert = 'INSERT INTO Businesses (businessname, Password, phonenumber, businessemail) VALUES ($1, $2, $3, $4) RETURNING businessid';
@@ -188,10 +199,14 @@ exports.getBusinessPass = async (email) => {
 
 // returns list of events for which userid is attending, had to join so that I could get the business name
 exports.getUsersEvents = async (userid) => {
+<<<<<<< HEAD
   const queryText = 
     'SELECT eventid, eventname, events.businessid, starttime, endtime, capacity, businessname ' + // Gets relevant information
       'FROM Events INNER JOIN Businesses ON Events.businessid = Businesses.businessid ' + // Join the events and business table where businessid is the same
         'WHERE eventid IN (SELECT eventid FROM attendees where userid = $1)'; // Matches events with the event id from attending when userid is the one given
+=======
+  const queryText = 'SELECT * FROM Events WHERE eventid IN (SELECT eventid FROM Attendees WHERE userid = $1)';
+>>>>>>> eb217ae3ded34a27e295f0988010b1c4785184aa
   const query = {
     text: queryText,
     values: [userid],
@@ -212,5 +227,18 @@ exports.checkUserAttending = async (eventid, userid) => {
   return (rows.length > 0);
 }
 
+// Removes user from the attendees table
+exports.removeUserAttending = async (eventid, userid) => {
+  const deleteU = 'DELETE FROM Attendees a WHERE a.userid = $1 AND a.eventid = $2 RETURNING a.eventid';
+  const query = {
+    text: deleteU,
+    values: [userid, eventid],
+  } 
+
+  const {rows} = await pool.query(query);
+  console.log(rows.length);
+  return (rows.length);
+
+}
 
 console.log(`Connected to database '${process.env.DB}'`);
