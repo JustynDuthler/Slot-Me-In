@@ -13,6 +13,11 @@ const IndividualEvent = (props) => {
   const { eventid } = params;
   const [eventData, setEventData] = useState({});
 
+  /* API call to sign up for events */
+  function signUp() {
+    console.log("signing up for event");
+  };
+
   /* API call to get event data */
   function getEventData() {
     var apicall = 'http://localhost:3010/api/events/'+eventid;
@@ -54,7 +59,7 @@ const IndividualEvent = (props) => {
                 {weekday: 'long', month: 'short', day: 'numeric',
                   year: 'numeric', hour: 'numeric', minute: 'numeric'})}</p>
       <p>Capacity: {eventData.capacity}</p>
-      <Button size="small" variant="contained" color="primary">
+      <Button variant="contained" color="secondary" onClick={signUp}>
         Sign Up
       </Button>
 
