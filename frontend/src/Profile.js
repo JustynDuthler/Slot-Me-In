@@ -1,12 +1,20 @@
-import Container from '@material-ui/core/Container';
-
 import React from 'react';
-import Auth from './libs/Auth';
+import Container from '@material-ui/core/Container';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+
+import Auth from './libs/Auth';
+
+
+
 
 export default function Profile() {
   const [error, setError] = React.useState(null);
-  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [isLoaded1, setIsLoaded1] = React.useState(false);
+  const [isLoaded2, setIsLoaded2] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState([]);
 
@@ -38,10 +46,10 @@ export default function Profile() {
       .then(res => res.json())
       .then((data) => {
           setUserData(data);
-          setIsLoaded(true);
+          setIsLoaded1(true);
         },
         (error) => {
-          setIsLoaded(true);
+          setIsLoaded1(true);
           setError(error);
         }
       )
@@ -55,39 +63,60 @@ export default function Profile() {
     })
       .then(res => res.json())
       .then((data) => {
-          setEventList(data);
+
+          // Create a dict with businessname as key
+          // The value is an array of events for that business
+          let eventDict = {};
+          for (var index in data) {
+            if (eventDict[data[index].businessname] == null) {
+              eventDict[data[index].businessname] = [];
+            }
+            eventDict[data[index].businessname].push(data[index]);
+          }
+          setEventList(eventDict);
+          setIsLoaded2(true);
         },
         (error) => {
           setError(error);
+          setIsLoaded2(true);
         }
       )
   }, []);
 
+
+  const useStyles = makeStyles((theme) => ({
+    paper: {
+      marginTop: theme.spacing(8),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+  }));
+  const classes = useStyles();
+
   if (error) {
     return <div>Error: {error.message}</div>;
-  } else if (!isLoaded) {
+  } else if (!isLoaded1 || !isLoaded2) {
     return <div>Loading...</div>;
   } else {
+    const items = [];
+    for (var key in eventList) {
+      items.push(<h1 key={key}>{key}</h1>);
+      for (var value in eventList[key]){
+        items.push(<h3 key={eventList[key][value].eventid}>{eventList[key][value].eventname}</h3>);
+      }
+    }
     return (
-      <Container>
-        <h1>Profile</h1>
-        {userData.username}
-        <br/>
-        {userData.email}
-        <br/>
-        {eventList.map(item => (
-          <h2 key={item.eventid}>
-            {item.eventname}
-            {item.businessname}
-            <Button  
-              type="submit"
-              variant="contained"
-              color="primary"
-            >
-              Cancel event 
-            </Button>
-          </h2>
-        ))}
+      <Container component="main" maxWidth="md">
+        <div className={classes.paper}>
+          <Typography component="h1" variant="h1">
+            {userData.username}
+          </Typography>
+          <Typography component="h1" variant="h4">
+            {userData.email}
+          </Typography>
+          {items}
+        </div>
       </Container>
     );
   }
