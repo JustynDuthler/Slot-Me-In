@@ -12,7 +12,7 @@ import Divider from '@material-ui/core/Divider';
 import Context from './Context';
 import Auth from './libs/Auth';
 import IndividualEvent from './IndividualEvent';
-
+import Paper from '@material-ui/core/Paper';
 
 
 
@@ -27,10 +27,9 @@ export default function UserProfile() {
 
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
-  function removeUserAttending(eventid) {
-    console.log(eventid);
+  async function removeUserAttending(eventid) {
     var apicall = 'http://localhost:3010/api/users/removeUserAttending';
-    fetch(apicall, {
+    return fetch(apicall, {
       method: 'DELETE',
       body: JSON.stringify({"eventid":eventid}),
       headers: Auth.JWTHeaderJson(),
@@ -40,7 +39,6 @@ export default function UserProfile() {
       }
       return response;
     }).then((json)=>{
-      console.log(json);
       return 1;
     })
     .catch((error) => {
@@ -50,7 +48,7 @@ export default function UserProfile() {
   };
 
   async function removeUserAndReload(eventid, eventKey, eventValue, eventList) {
-    const test = await removeUserAttending(eventid);                                 // call API to remove user from attendees table
+    const test = await removeUserAttending(eventid);                        // call API to remove user from attendees table
     if (test !== 1) {                                             // if withdraw failed, don't remove event from list.
       console.log("Could not withdraw from event");
       return;
@@ -111,15 +109,43 @@ export default function UserProfile() {
       flexDirection: 'column',
       alignItems: 'center',
     },
+    eventStyle: {
+      marginTop: theme.spacing(2),
+      flexGrow:1,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    typography: {
+      flexGrow:1,
+    },
   }));
   const classes = useStyles();
+
+
+  // UI Stuff
+  const items = [];
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
     return <div>Loading...</div>;
+  
+  } else if (eventViewID !== null) { 
+    items.push(
+      <div key="event" className={classes.eventStyle}>
+        <Button 
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={() => setEventViewID(null)}
+        >
+          Back
+        </Button>
+        <IndividualEvent eventID={eventViewID}/>
+      </div>
+    );
   } else {
-    const items = [];
-
+    const items2 = [];
     // Var key is the business name
     for (var key in eventList) {
       let eventListJSX = [];
@@ -152,8 +178,8 @@ export default function UserProfile() {
         );
       }
 
-      items.push(
-        <Grid item item xs={12} md={6} key={key}>
+      items2.push(
+        <Grid item xs={12} md={6} key={key}>
           <Typography variant="h6">
             {key}
           </Typography>
@@ -164,20 +190,24 @@ export default function UserProfile() {
         </Grid>
       );
     }
-    return (
-      <Container component="main" maxWidth="md">
+
+    items.push(<Grid key="eventList" container spacing={8}>{items2}</Grid>);
+  }
+
+  return (
+    <Paper>
+      <Container component="main" maxWidth="md" >
         <div className={classes.paper}>
-          <Typography component="h1" variant="h1">
-            {userData.username}
-          </Typography>
-          <Typography component="h1" variant="h4">
-            {userData.email}
-          </Typography>
-          <Grid container spacing={8}>
-            {items}
-          </Grid>
+            <Typography className={classes.typography} variant="h1">
+              {userData.username}
+            </Typography>
+            <Typography className={classes.typography} variant="h4">
+              {userData.email}
+            </Typography>
+          {items}
         </div>
       </Container>
-    );
-  }
+    </Paper>
+  );
+  
 }
