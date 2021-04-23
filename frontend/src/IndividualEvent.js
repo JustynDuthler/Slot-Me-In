@@ -29,7 +29,7 @@ const IndividualEvent = (props) => {
             setSignupError(true);
           } else {
             setSignupError(false);
-            return response.json();
+            return response;
           }
       })
       .then((json) => {
