@@ -248,6 +248,15 @@ function App() {
           </Switch>
         </Context.Provider>
       </Container>
+
+      <Switch>
+        <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
+        <Route
+          exact path="/event/:eventid"
+          render={(props) => <IndividualEvent {...props} />}
+        />
+      </Switch>
+
     </Router>
   );
 }
@@ -263,5 +272,6 @@ function PrivateRoute ({component: Component, authed, ...rest}) {
     />
   )
 }
+
 
 export default App;

@@ -39,17 +39,6 @@ export default function ViewEvents(props) {
   const [rows, getRows] = React.useState([]);
   const [eventData, setEventData] = useState({});
 
-  const App = () => (
-    <Switch>
-      <Route exact path="/" render={(props) => <ViewEvents {...props} />} />
-      <Route
-        exact
-        path="/:eventID"
-        render={(props) => <IndividualEvent {...props} />}
-      />
-    </Switch>
-  );
-      
   function getEvents() {
     var apicall = 'http://localhost:3010/api/events';
     fetch(apicall, {
@@ -75,6 +64,10 @@ export default function ViewEvents(props) {
     getEvents();
   }, []);
 
+  /* 
+    This function gets the individual event data for each card and displays it. When the card
+    is clicked, it goes to URL /event/{eventid}.
+  */
   function getCard(row) {
     return (
       <Grid item xs={12} sm={6} md={4} key={row.eventid}>

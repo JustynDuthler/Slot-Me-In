@@ -8,10 +8,10 @@ import { ButtonGroup } from '@material-ui/core';
  *
  * @return {object} JSX
  */
-export default function IndividualEvent(props) {
+const IndividualEvent = (props) => {
   const { match } = props;
   const { params } = match;
-  const { eventID } = params;
+  const { eventid } = params;
 
   const body = {
     textAlign: 'center',
@@ -19,8 +19,10 @@ export default function IndividualEvent(props) {
 
   return (
     <div style={body}>
-      <h1>Individual Event Page for EventID: ${eventID}</h1>
+      <h1>Individual Event Page for EventID: ${eventid}</h1>
     </div>
 
   );
-}
+};
+
+export default IndividualEvent;
