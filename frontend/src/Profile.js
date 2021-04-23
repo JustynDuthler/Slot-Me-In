@@ -109,6 +109,8 @@ export default function Profile() {
     for (var key in eventList) {
       items.push(<h1 key={key}>{key}</h1>);
       for (var value in eventList[key]){
+        let eventid = eventList[key][value].eventid;
+        console.log(eventid);
         items.push(
         <h3
           key={eventList[key][value].eventid}>{eventList[key][value].eventname}
@@ -116,7 +118,7 @@ export default function Profile() {
             type="submit"
             variant="contained"
             color="primary"
-            onClick={() => {removeUserAndReload(eventList[key][value].eventid)}}
+            onClick={() => {removeUserAndReload(eventid)}}
           >
             Cancel event
           </Button>
