@@ -242,20 +242,18 @@ function App() {
             <Route path="/profile">
               {authState &&  !businessState ? <Profile/> : <Redirect to="/"/>}
             </Route>
+            <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
+            <Route
+              exact path="/event/:eventid"
+              render={(props) => <IndividualEvent {...props} />}
+            />
             <Route path="/">
               <Home />
             </Route>
           </Switch>
+
         </Context.Provider>
       </Container>
-
-      <Switch>
-        <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
-        <Route
-          exact path="/event/:eventid"
-          render={(props) => <IndividualEvent {...props} />}
-        />
-      </Switch>
 
     </Router>
   );
