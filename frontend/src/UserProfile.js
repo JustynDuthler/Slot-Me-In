@@ -132,7 +132,7 @@ export default function UserProfile() {
                 color="primary"
                 onClick={() => {removeUserAndReload(eventid, eventKey, eventValue, eventList)}}
               >
-                Cancel event
+                Withdraw
               </Button>
             </ListItemSecondaryAction>
           </ListItem>
