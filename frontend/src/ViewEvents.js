@@ -44,6 +44,7 @@ export default function ViewEvents(props) {
     var apicall = 'http://localhost:3010/api/events';
     fetch(apicall, {
       method: 'GET',
+      headers: Auth.JWTHeaderJson(),
     })
       .then((response) => {
         if (!response.ok) {
@@ -65,7 +66,7 @@ export default function ViewEvents(props) {
     getEvents();
   }, []);
 
-  /* 
+  /*
     This function gets the individual event data for each card and displays it. When the card
     is clicked, it goes to URL /event/{eventid}.
   */

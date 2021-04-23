@@ -38,8 +38,14 @@ exports.getEvents = async (req, res) => {
     res.status(200).json(events);
   } else {
     // if no queries provided, query DB for all events
-    const events = await db.getEvents();
-    res.status(200).json(events);
+    // if the account is a business account, only show the events made by that business
+    if (req.payload.userType == "business") {
+      const events = await db.getBusinessEvents(req.payload.id);
+      res.status(200).json(events);
+    } else if (req.payload.userType == "user") {
+      const events = await db.getEvents();
+      res.status(200).json(events);
+    }
   }
 };
 

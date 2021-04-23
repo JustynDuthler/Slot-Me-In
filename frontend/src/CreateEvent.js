@@ -152,7 +152,6 @@ export default function CreateEvent() {
               helperText={nameError ? "Event name is required." : ""}
               variant="outlined"
               margin="normal"
-              required
               fullWidth
               id="eventname"
               label="Event Name"
