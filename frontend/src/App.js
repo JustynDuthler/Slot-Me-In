@@ -243,7 +243,7 @@ function App() {
               component={ViewEvents}
             />
             <Route path="/profile">
-              {(authState && businessState !== undefined) ? <Profile/> : <Redirect to="/"/>}
+              {(authState) ? <Profile/> : <Redirect to="/"/>}
             </Route>
             <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
             <Route
