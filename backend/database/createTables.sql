@@ -39,6 +39,6 @@ CREATE TABLE Events (
 CREATE TABLE Attendees (
 	eventid uuid,
 	userid uuid,
-	FOREIGN KEY (eventid) REFERENCES Events,
+	FOREIGN KEY (eventid) REFERENCES Events ON DELETE CASCADE,
 	FOREIGN KEY (userid) REFERENCES Users
 );
