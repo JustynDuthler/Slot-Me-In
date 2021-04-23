@@ -16,6 +16,8 @@ import IndividualEvent from './IndividualEvent';
 
 
 
+
+
 export default function UserProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
@@ -38,8 +40,14 @@ export default function UserProfile() {
     });
   };
 
-  function removeUserAndReload(eventid) {
-    removeUserAttending(eventid);
+  function removeUserAndReload(eventid, eventKey, eventValue, eventList) {
+    removeUserAttending(eventid);                                 // call API to remove user from attendees table
+    eventList[eventKey].splice(eventValue, 1);                    // splice out event
+    let updatedEventList = JSON.parse(JSON.stringify(eventList)); // copy eventlist into a new object so state can update
+    if (updatedEventList[eventKey].length == 0) {                 // if no more events for a business remove business from dict
+      delete updatedEventList[eventKey];
+    }
+    setEventList(updatedEventList);                               // update eventList state
   };
   
   // I wrote this how react recommends
@@ -108,7 +116,9 @@ export default function UserProfile() {
         let eventName = eventList[key][value].eventname;
         let startDate = new Date(eventList[key][value].starttime);
         let dateString = (startDate.getHours() % 12) + ":" + startDate.getMinutes() + (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
-        
+        let eventKey = key;
+        let eventValue = value;
+
         eventListJSX.push(
           <ListItem button={true} onClick={() => setEventViewID(eventid)} key={eventid}>
             <ListItemText
@@ -120,7 +130,7 @@ export default function UserProfile() {
                 type="submit"
                 variant="contained"
                 color="primary"
-                onClick={() => {removeUserAndReload(eventid)}}
+                onClick={() => {removeUserAndReload(eventid, eventKey, eventValue, eventList)}}
               >
                 Cancel event
               </Button>
