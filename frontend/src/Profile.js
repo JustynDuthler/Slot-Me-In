@@ -104,7 +104,18 @@ export default function Profile() {
     for (var key in eventList) {
       items.push(<h1 key={key}>{key}</h1>);
       for (var value in eventList[key]){
-        items.push(<h3 key={eventList[key][value].eventid}>{eventList[key][value].eventname}</h3>);
+        items.push(
+        <h3 
+          key={eventList[key][value].eventid}>{eventList[key][value].eventname}             
+          <Button  
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={() => {removeUserAndReload(eventList[key][value].eventid)}}
+          >
+            Cancel event 
+          </Button>
+        </h3>);
       }
     }
     return (
