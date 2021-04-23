@@ -113,14 +113,11 @@ export default function CreateEvent() {
     // make sure capacity is an integer
     (!capacity || capacity % 1 !== 0)
         ? setCapacityError(true) : setCapacityError(false);
+    (description.length > 500 ? setDescriptionError(true) : setDescriptionError(false));
     // only submit if all fields are filled out
-    if (!eventName || !startDateTime || !endDateTime || !capacity || precedeError || repeatError) {
+    if (!eventName || !startDateTime || !endDateTime || !capacity || precedeError || repeatError || descriptionError) {
       return;
     } else {
-      setNameError(false);
-      setStartError(false);
-      setEndError(false);
-      setCapacityError(false);
       handleSubmit(event);
     }
   }
@@ -237,7 +234,7 @@ export default function CreateEvent() {
             />
             <TextField
               error={descriptionError}
-              helperText={descriptionError ? "Description is required." : ""}
+              helperText={descriptionError ? "Description must be less than 500 characters." : ""}
               variant="outlined"
               margin="normal"
               fullWidth
