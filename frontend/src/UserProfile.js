@@ -11,6 +11,8 @@ import Auth from './libs/Auth';
 
 
 
+
+
 export default function UserProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
@@ -31,8 +33,14 @@ export default function UserProfile() {
     });
   };
 
-  function removeUserAndReload(eventid) {
-    removeUserAttending(eventid);
+  function removeUserAndReload(eventid, eventKey, eventValue, eventList) {
+    removeUserAttending(eventid);                                 // call API to remove user from attendees table
+    eventList[eventKey].splice(eventValue, 1);                    // splice out event
+    let updatedEventList = JSON.parse(JSON.stringify(eventList)); // copy eventlist into a new object so state can update
+    if (updatedEventList[eventKey].length == 0) {                 // if no more events for a business remove business from dict
+      delete updatedEventList[eventKey];
+    }
+    setEventList(updatedEventList);                               // update eventList state
   };
   
   // I wrote this how react recommends
@@ -94,7 +102,8 @@ export default function UserProfile() {
       items.push(<h1 key={key}>{key}</h1>);
       for (var value in eventList[key]){
         let eventid = eventList[key][value].eventid;
-        console.log(eventid);
+        let eventKey = key;
+        let eventValue = value;
         items.push(
         <h3
           key={eventList[key][value].eventid}>{eventList[key][value].eventname}
@@ -102,7 +111,7 @@ export default function UserProfile() {
             type="submit"
             variant="contained"
             color="primary"
-            onClick={() => {removeUserAndReload(eventid)}}
+            onClick={() => {removeUserAndReload(eventid, eventKey, eventValue, eventList)}}
           >
             Cancel event
           </Button>
