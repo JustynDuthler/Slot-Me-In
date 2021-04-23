@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+const Auth = require('./libs/Auth');
 
 /**
  *
@@ -12,16 +12,37 @@ const IndividualEvent = (props) => {
   const { params } = match;
   const { eventid } = params;
   const [eventData, setEventData] = useState({});
+  const [signupError, setSignupError] = useState(false);
 
   /* API call to sign up for events */
+  // this does not work
   function signUp() {
     console.log("signing up for event");
+    var apicall = 'http://localhost:3010/api/events/'+eventid+'/signup';
+    fetch(apicall, {
+        method: 'PUT',
+        headers: Auth.JWTHeaderJson(),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 409)
+            setSignupError(true);
+          } else {
+            setSignupError(false);
+            return response.json();
+          }
+      })
+      .then((json) => {
+        console.log(json);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   /* API call to get event data */
   function getEventData() {
     var apicall = 'http://localhost:3010/api/events/'+eventid;
-    console.log(apicall);
     fetch(apicall, {
       method: 'GET',
     })
@@ -30,10 +51,10 @@ const IndividualEvent = (props) => {
         throw response;
       } else {
         return response.json();
-    }
+      }
     })
     .then((json) => {
-      setEventData(json)
+      setEventData(json);
     })
     .catch((error) => {
       console.log(error);
