@@ -11,7 +11,7 @@ import Auth from './libs/Auth';
 
 
 
-export default function Profile() {
+export default function UserProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
@@ -34,6 +34,7 @@ export default function Profile() {
   function removeUserAndReload(eventid) {
     removeUserAttending(eventid);
   };
+  
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this
