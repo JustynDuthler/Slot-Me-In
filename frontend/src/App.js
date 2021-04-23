@@ -14,6 +14,7 @@ import CreateEvent from './CreateEvent';
 import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
 import UserProfile from './UserProfile';
+import BusinessProfile from './BusinessProfile';
 const Auth = require('./libs/Auth');
 
 import {ButtonGroup, Button, Toolbar, AppBar, makeStyles} from '@material-ui/core';
@@ -51,10 +52,8 @@ function App() {
     }).then((response) => {
       if (response.status === 200) {
         setBusinessState(true);
-        console.log("update");
       } else {
         setBusinessState(false);
-        console.log("update2");
       }
     })
     .catch((error) => {
@@ -74,7 +73,9 @@ function App() {
   React.useEffect(() => {
     validateBusiness();
   }, []);
-
+  if (businessState == undefined) {
+    return <div><h1>Loading...</h1></div>
+  }
   // RightSide navigation changes depending on if the user is
   // logged in or not
   let rightSide;
@@ -87,7 +88,6 @@ function App() {
           color="primary"
           size="large"
           variant="contained"
-          onClick={() => {console.log("test click bus state",businessState)}}
         >
           Profile
         </Button>
@@ -243,7 +243,7 @@ function App() {
               component={ViewEvents}
             />
             <Route path="/profile">
-              {(authState) ? <UserProfile/> : <Redirect to="/"/>}
+              {(authState) ? (businessState === false) ? <UserProfile/> : <BusinessProfile/> : <Redirect to="/"/>}
             </Route>
             <Route exact path="/events" render={<ViewEvents />} />
             <Route
