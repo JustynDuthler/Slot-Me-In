@@ -55,7 +55,10 @@ function App() {
       } else {
         setBusinessState(false);
       }
-    })
+      if (!response.ok) {
+        throw response;
+      }
+    }).then((json) => {console.log("json",json)})
     .catch((error) => {
       console.log(error);
     });
@@ -207,7 +210,6 @@ function App() {
       </Box>
       );
   }
-  console.log("business STATE", businessState, authState);
   return (
     <Router>
       <CssBaseline /> {/* I moved Css basline to here so that it applies to the whole project */}
