@@ -71,7 +71,12 @@ function App() {
   };
 
   React.useEffect(() => {
-    validateBusiness();
+    if (Auth.getJWT() === null)  {
+      setBusinessState(false);
+      setAuthState(false);
+    } else {
+      validateBusiness();
+    }
   }, []);
   if (businessState == undefined) {
     return <div><h1>Loading...</h1></div>
