@@ -24,6 +24,9 @@ export default function Profile() {
     });
   };
 
+  function removeUserAndReload(eventid) {
+    removeUserAttending(eventid);
+  };
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this 
@@ -81,7 +84,7 @@ export default function Profile() {
               type="submit"
               variant="contained"
               color="primary"
-              onClick={removeUserAttending(item.eventid)}
+              onClick={removeUserAndReload(item.eventid)}
             >
               Cancel event 
             </Button>
