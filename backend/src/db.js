@@ -160,6 +160,19 @@ exports.selectUser = async (userid) => {
   return rows[0];
 };
 
+// Returns row for a specific businessid
+exports.selectBusiness = async (businessid) => {
+  const select = 'SELECT * FROM Businesses WHERE businessid = $1';
+  const query = {
+    text: select,
+    values: [businessid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows[0];
+};
+
+
 // check if an email is already in use
 exports.checkUserEmailTaken = async (email) => {
   const insert = 'SELECT * FROM Users u WHERE u.useremail = $1';
@@ -210,7 +223,7 @@ exports.getBusinessPass = async (email) => {
 
 // returns list of events for which userid is attending, had to join so that I could get the business name
 exports.getUsersEvents = async (userid) => {
-  const queryText = 
+  const queryText =
     'SELECT eventid, eventname, events.businessid, starttime, endtime, capacity, businessname ' + // Gets relevant information
       'FROM Events INNER JOIN Businesses ON Events.businessid = Businesses.businessid ' + // Join the events and business table where businessid is the same
         'WHERE eventid IN (SELECT eventid FROM attendees where userid = $1)'; // Matches events with the event id from attending when userid is the one given
@@ -222,6 +235,17 @@ exports.getUsersEvents = async (userid) => {
   const {rows} = await pool.query(query);
   return rows;
 };
+// returns list of events created by businessid
+exports.getBusinessEvents = async (businessid) => {
+  const queryText = 'SELECT * FROM Events e WHERE e.businessid = $1';
+  const query = {
+    text: queryText,
+    values: [businessid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
 
 exports.checkUserAttending = async (eventid, userid) => {
   const select = 'SELECT * FROM Attendees a WHERE a.eventid = $1 AND a.userid = $2';
@@ -240,7 +264,7 @@ exports.removeUserAttending = async (eventid, userid) => {
   const query = {
     text: deleteU,
     values: [userid, eventid],
-  } 
+  }
 
   const {rows} = await pool.query(query);
   console.log(rows.length);

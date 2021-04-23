@@ -34,14 +34,16 @@ app.use(
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
 //app.get('/api/users/:userid/events', users.getEvents); incomplete, use getUserEvents
-app.get('/api/users/getUser', auth.authenticateJWT, users.getInfo);
+app.get('/api/users/getUser', auth.authenticateUserJWT, users.getInfo);
 app.get('/api/users/getUserEvents', auth.authenticateUserJWT, users.getEvents);
 app.delete('/api/users/removeUserAttending', auth.authenticateUserJWT, users.removeUserAttending);
 
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
-app.get('/api/businesses/:businessid/events', businesses.getEvents);
+//app.get('/api/businesses/:businessid/events', businesses.getEvents); incomplete, pass businessid via token instead
+app.get('/api/users/getBusiness', auth.authenticateBusinessJWT, businesses.getInfo);
+app.get('/api/businesses/getBusinessEvents', auth.authenticateBusinessJWT, businesses.getEvents);
 app.get('/api/businesses/checkBusinessID', auth.authenticateBusinessJWT, businesses.validID);
 
 // Event routes

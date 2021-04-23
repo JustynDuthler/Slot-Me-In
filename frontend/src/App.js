@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [authState, setAuthState] = React.useState(null);
-  const [businessState, setBusinessState] = React.useState();
+  const [businessState, setBusinessState] = React.useState(undefined);
 
 
   function validateBusiness() {
@@ -51,15 +51,17 @@ function App() {
     }).then((response) => {
       if (response.status === 200) {
         setBusinessState(true);
+        console.log("update");
       } else {
         setBusinessState(false);
+        console.log("update2");
       }
     })
     .catch((error) => {
       console.log(error);
     });
   };
-  
+
   if (Auth.getJWT() !== authState) {
     setAuthState(Auth.getJWT());
   }
@@ -70,10 +72,8 @@ function App() {
   };
 
   React.useEffect(() => {
-    if (authState !== null) {
-      validateBusiness();
-    }
-  }, [authState]);
+    validateBusiness();
+  }, []);
 
   // RightSide navigation changes depending on if the user is
   // logged in or not
@@ -83,10 +83,11 @@ function App() {
       <ButtonGroup>
         <Button
           startIcon={<AccountBoxIcon />}
-          href="/profile" 
+          href="/profile"
           color="primary"
           size="large"
           variant="contained"
+          onClick={() => {console.log("test click bus state",businessState)}}
         >
           Profile
         </Button>
@@ -108,9 +109,9 @@ function App() {
         horizonal: 'right',
       }}
     >
-      <Button 
+      <Button
         startIcon={<AccountIcon />}
-        href="/register" 
+        href="/register"
         color="primary"
         size="large"
         variant="contained"
@@ -118,9 +119,9 @@ function App() {
         Register Account
       </Button>
 
-      <Button 
+      <Button
         startIcon={<LockOutlinedIcon />}
-        href="/Login" 
+        href="/Login"
         color="primary"
         size="large"
         variant="contained"
@@ -201,7 +202,7 @@ function App() {
       </Box>
       );
   }
-
+  console.log("business STATE", businessState, authState);
   return (
     <Router>
       <CssBaseline /> {/* I moved Css basline to here so that it applies to the whole project */}
@@ -218,7 +219,7 @@ function App() {
       {/* Used a container so that there would be top margin between nav and content */}
       <Container className={classes.content}>
         <Context.Provider value={{
-            authState, setAuthState, 
+            authState, setAuthState,
             businessState, setBusinessState
           }}>
           <Switch>
@@ -231,18 +232,18 @@ function App() {
             <Route path="/authtest">
               <AuthTest />
             </Route>
-            <PrivateRoute 
+            <PrivateRoute
               path="/events/create"
               authed={authState}
               component={CreateEvent}
             />
-            <PrivateRoute 
+            <PrivateRoute
               path="/events"
               authed={authState}
               component={ViewEvents}
             />
             <Route path="/profile">
-              {authState &&  !businessState ? <Profile/> : <Redirect to="/"/>}
+              {(authState && businessState !== undefined) ? <Profile/> : <Redirect to="/"/>}
             </Route>
             <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
             <Route

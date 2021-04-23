@@ -6,6 +6,17 @@ dotenv.config();
 
 const auth = require('./auth');
 
+exports.getInfo = async (req, res) => {
+  const business = await db.selectBusiness(req.payload.id);
+  const businessData = {
+    businessid: business.userid,
+    username: business.username,
+    email: business.businessemail,
+    phonenumber: business.phonenumber,
+  };
+  res.status(200).json(businessData);
+}
+
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
   bcrypt.hash(req.body.password, 10, async (error, hash) => {
@@ -39,7 +50,7 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(req.body.password, pass);
     // if passwords match, generate JWT and send 200
     if (match) {
-      const token = 
+      const token =
           await auth.generateJWT(account.businessemail, account.businessid, 'business');
       res.status(200).json({'auth_token': token});
     }
@@ -52,12 +63,19 @@ exports.login = async (req, res) => {
 };
 
 exports.getEvents = async (req, res) => {
-  // const businessID = req.params.businessID;
-  const account = undefined;  // TODO: replace to query db for user once db is implemented
-  if (!account) res.status(404).send();
-  // TODO: query DB for all events this business has created
-  const events = [];
-  res.status(200).json(events);
+  // now takes businessID from payload
+  const businessID = req.payload.id;
+  if (businessID == null) {
+    throw new Error('businessID was null');
+  }
+  db.getBusinessEvents(businessID)
+  .then((events) => {
+    res.status(200).send(events);
+  })
+  .catch(error => {
+    error.status=500;
+    next(error);
+  });
 };
 
 exports.validID = async (req, res) => {

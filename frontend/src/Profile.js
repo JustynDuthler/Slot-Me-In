@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-
+import Context from './Context';
 import Auth from './libs/Auth';
 
 
@@ -17,7 +17,7 @@ export default function Profile() {
   const [isLoaded2, setIsLoaded2] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState([]);
-
+  const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   function removeUserAttending(eventid) {
     console.log(eventid);
@@ -37,10 +37,14 @@ export default function Profile() {
   };
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
-  // Since the dependents array provided at the end is empty, this 
+  // Since the dependents array provided at the end is empty, this
   // should only ever run once
   React.useEffect(() => {
-    fetch('http://localhost:3010/api/users/getUser', {
+    console.log(context);
+    console.log(context.businessState);
+    const apicall = 'http://localhost:3010/api/' + (context.businessState ? 'businesses/getBusiness' : 'users/getUser');
+    console.log(apicall);
+    fetch(apicall, {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
     })
@@ -58,7 +62,9 @@ export default function Profile() {
 
   // Get user attending information
   React.useEffect(() => {
-    fetch('http://localhost:3010/api/users/getUserEvents', {
+    const apicall = 'http://localhost:3010/api/' + (context.businessState ? 'businesses/getBusinessEvents' : 'users/getUserEvents');
+    console.log(apicall);
+    fetch(apicall, {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
     })
@@ -94,7 +100,6 @@ export default function Profile() {
     },
   }));
   const classes = useStyles();
-
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded1 || !isLoaded2) {
@@ -105,15 +110,15 @@ export default function Profile() {
       items.push(<h1 key={key}>{key}</h1>);
       for (var value in eventList[key]){
         items.push(
-        <h3 
-          key={eventList[key][value].eventid}>{eventList[key][value].eventname}             
-          <Button  
+        <h3
+          key={eventList[key][value].eventid}>{eventList[key][value].eventname}
+          <Button
             type="submit"
             variant="contained"
             color="primary"
             onClick={() => {removeUserAndReload(eventList[key][value].eventid)}}
           >
-            Cancel event 
+            Cancel event
           </Button>
         </h3>);
       }
