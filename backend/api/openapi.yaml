@@ -698,6 +698,7 @@ components:
         repeat:
           type: boolean
         repeatid:
+          nullable: true
           type: string
           format: uuid
         businessname:
