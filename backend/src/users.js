@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getEvents = async (req, res) => {
+exports.getEvents = async (req, res, next) => {
   const userID = req.payload.id;
   if (userID == null) {
     throw new Error('UserID was null');
@@ -68,7 +68,8 @@ exports.getEvents = async (req, res) => {
   .then((events) => {
     res.status(200).send(events);
   })
-  .catch((error) => {
-    console.log('GetEvents error: ', error);
+  .catch(error => {
+    error.status=500;
+    next(error);
   });
 };

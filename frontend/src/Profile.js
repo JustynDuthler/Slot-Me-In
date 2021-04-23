@@ -30,7 +30,7 @@ export default function Profile() {
       )
   }, []);
 
-  // Once userData has been set, get user attending information
+  // Get user attending information
   React.useEffect(() => {
     fetch('http://localhost:3010/api/users/getUserEvents', {
       method: 'GET',
@@ -44,7 +44,7 @@ export default function Profile() {
           setError(error);
         }
       )
-  }, [userData]);
+  }, []);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -59,7 +59,7 @@ export default function Profile() {
         {userData.email}
         <br/>
         {eventList.map(item => (
-          <h2 key={item.eventid}>{item.eventname}</h2> 
+          <h2 key={item.eventid}>{item.eventname}{item.businessname}</h2> 
         ))}
       </Container>
     );
