@@ -82,7 +82,7 @@ function App() {
     }
   }, []);
   if (businessState == undefined) {
-    return <div><h1>Loading...</h1></div>
+    return <div></div>
   }
   // RightSide navigation changes depending on if the user is
   // logged in or not

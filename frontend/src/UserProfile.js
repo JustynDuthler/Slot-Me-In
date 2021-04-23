@@ -49,7 +49,7 @@ export default function UserProfile() {
     }
     setEventList(updatedEventList);                               // update eventList state
   };
-  
+
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this
@@ -106,7 +106,7 @@ export default function UserProfile() {
     return <div>Loading...</div>;
   } else {
     const items = [];
-    
+
     // Var key is the business name
     for (var key in eventList) {
       let eventListJSX = [];
@@ -121,12 +121,12 @@ export default function UserProfile() {
 
         eventListJSX.push(
           <ListItem button={true} onClick={() => setEventViewID(eventid)} key={eventid}>
-            <ListItemText
+            <ListItemText key={eventid}
               primary={eventName}
               secondary={dateString}
             />
-            <ListItemSecondaryAction>
-              <Button
+            <ListItemSecondaryAction key={eventid}>
+              <Button key={eventid}
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -140,7 +140,7 @@ export default function UserProfile() {
       }
 
       items.push(
-        <Grid item item xs={12} md={6}>
+        <Grid item item xs={12} md={6} key={key}>
           <Typography variant="h6">
             {key}
           </Typography>
