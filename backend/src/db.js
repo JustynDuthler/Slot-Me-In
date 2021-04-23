@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { Pool } = require('pg')
+const { Pool } = require('pg');
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -34,6 +34,17 @@ exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity
   const {rows} = await pool.query(query);
   return rows[0].eventid;
 };
+
+exports.deleteEvent = async (eventid) => {
+  const del = 'DELETE FROM Events WHERE eventid = $1';
+  const query = {
+    text: del,
+    values: [eventid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}
 
 exports.insertBusinessAccount = async (businessname, password, phonenumber, businessemail) => {
   const insert = 'INSERT INTO Businesses (businessname, Password, phonenumber, businessemail) VALUES ($1, $2, $3, $4) RETURNING businessid';
@@ -188,7 +199,7 @@ exports.getBusinessPass = async (email) => {
 
 // This is not working, error: e.userid does not exist
 exports.getUsersEvents = async (userid) => {
-  const queryText = 'SELECT * FROM Events WHERE eventid IN (SELECT eventid FROM attendees where userid = $1)';
+  const queryText = 'SELECT * FROM Events WHERE eventid IN (SELECT eventid FROM Attendees WHERE userid = $1)';
   const query = {
     text: queryText,
     values: [userid],

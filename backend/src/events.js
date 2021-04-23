@@ -12,6 +12,17 @@ exports.create = async (req, res) => {
   res.status(201).send(event);
 };
 
+exports.delete = async (req, res) => {
+  const event = await db.getEventByID(req.params.eventid);
+  // 404 if event not found, otherwise delete and send 200
+  if (!event) {
+    res.status(404).send();
+  } else {
+    await db.deleteEvent(req.params.eventid);
+    res.status(200).send();
+  }
+};
+
 exports.getEvents = async (req, res) => {
   if (req.query.start && req.query.end) {
     // if start and end query provided, query DB for events in between

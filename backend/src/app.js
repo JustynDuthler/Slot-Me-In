@@ -48,6 +48,7 @@ app.get('/api/businesses/checkBusinessID', auth.authenticateBusinessJWT, busines
 app.post('/api/events', auth.authenticateBusinessJWT, events.create);
 app.get('/api/events', events.getEvents);
 app.get('/api/events/:eventid', events.getEventByID);
+app.delete('/api/events/:eventid', auth.authenticateBusinessJWT, events.delete);
 app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup)
 
 // Generates a token which expires in 1 minute
