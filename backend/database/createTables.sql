@@ -43,16 +43,16 @@ CREATE TABLE RepeatingEvents (
 CREATE TABLE Events (
 	eventid uuid UNIQUE DEFAULT uuid_generate_v4(),
 	eventname TEXT NOT NULL,
-    description VARCHAR(500) DEFAULT '',
+  description VARCHAR(500) DEFAULT '',
 	businessid uuid,
 	starttime TIMESTAMP NOT NULL,
 	endtime TIMESTAMP NOT NULL,
 	capacity INTEGER,
-    repeat BOOLEAN NOT NULL DEFAULT false,
-    repeatid uuid,
+  repeat BOOLEAN NOT NULL DEFAULT false,
+  repeatid uuid,
 	PRIMARY KEY (eventid),
 	FOREIGN KEY (businessid) REFERENCES Businesses,
-    FOREIGN KEY (repeatid) REFERENCES RepeatingEvents
+  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents
 );
 
 -- Attendees Table
