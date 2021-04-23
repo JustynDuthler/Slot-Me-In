@@ -11,12 +11,11 @@ import Auth from './libs/Auth';
 
 
 
-export default function Profile() {
+export default function UserProfile() {
   const [error, setError] = React.useState(null);
-  const [isLoaded1, setIsLoaded1] = React.useState(false);
-  const [isLoaded2, setIsLoaded2] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
-  const [eventList, setEventList] = React.useState([]);
+  const [eventList, setEventList] = React.useState({});
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   function removeUserAttending(eventid) {
@@ -35,59 +34,44 @@ export default function Profile() {
   function removeUserAndReload(eventid) {
     removeUserAttending(eventid);
   };
+  
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this
   // should only ever run once
-  React.useEffect(() => {
-    console.log(context);
-    console.log(context.businessState);
-    const apicall = 'http://localhost:3010/api/' + (context.businessState ? 'businesses/getBusiness' : 'users/getUser');
-    console.log(apicall);
-    fetch(apicall, {
+  React.useEffect(async () => {
+    const userRes = fetch('http://localhost:3010/api/users/getUser', {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
-    })
-      .then(res => res.json())
-      .then((data) => {
-          setUserData(data);
-          setIsLoaded1(true);
-        },
-        (error) => {
-          setIsLoaded1(true);
-          setError(error);
-        }
-      )
-  }, []);
-
-  // Get user attending information
-  React.useEffect(() => {
-    const apicall = 'http://localhost:3010/api/' + (context.businessState ? 'businesses/getBusinessEvents' : 'users/getUserEvents');
-    console.log(apicall);
-    fetch(apicall, {
+    }).then(res => res.json())
+    .then((data) => {
+        setUserData(data);
+      },
+      (error) => {
+        setError(error);
+      }
+    )
+    const eventRes = fetch('http://localhost:3010/api/users/getUserEvents', {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
-    })
-      .then(res => res.json())
-      .then((data) => {
-
-          // Create a dict with businessname as key
-          // The value is an array of events for that business
+    }).then(res => res.json())
+    .then((data) => {
+      // The value is an array of events for that business
           let eventDict = {};
           for (var index in data) {
             if (eventDict[data[index].businessname] == null) {
               eventDict[data[index].businessname] = [];
             }
-            eventDict[data[index].businessname].push(data[index]);
-          }
-          setEventList(eventDict);
-          setIsLoaded2(true);
-        },
-        (error) => {
-          setError(error);
-          setIsLoaded2(true);
+      eventDict[data[index].businessname].push(data[index]);
+    }
+    setEventList(eventDict);
+    },
+      (error) => {
+        setError(error);
         }
       )
+    await Promise.all([userRes, eventRes]);
+    setIsLoaded(true);
   }, []);
 
 
@@ -102,7 +86,7 @@ export default function Profile() {
   const classes = useStyles();
   if (error) {
     return <div>Error: {error.message}</div>;
-  } else if (!isLoaded1 || !isLoaded2) {
+  } else if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
     const items = [];

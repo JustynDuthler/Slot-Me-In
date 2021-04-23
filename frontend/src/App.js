@@ -13,7 +13,7 @@ import AuthTest from './AuthTest';
 import CreateEvent from './CreateEvent';
 import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
-import Profile from './Profile';
+import UserProfile from './UserProfile';
 const Auth = require('./libs/Auth');
 
 import {ButtonGroup, Button, Toolbar, AppBar, makeStyles} from '@material-ui/core';
@@ -243,7 +243,7 @@ function App() {
               component={ViewEvents}
             />
             <Route path="/profile">
-              {(authState) ? <Profile/> : <Redirect to="/"/>}
+              {(authState) ? <UserProfile/> : <Redirect to="/"/>}
             </Route>
             <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
             <Route
