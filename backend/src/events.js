@@ -55,6 +55,7 @@ exports.getEventByID = async (req, res) => {
 
 exports.signup = async (req, res) => {
   const eventid = req.params.eventid;
+  console.log('in signup route');
   const userid = req.payload.id;  // this doesn't work, userID is undefined
   const event = await db.getEventByID(req.params.eventid);
   // 404 if event not found
