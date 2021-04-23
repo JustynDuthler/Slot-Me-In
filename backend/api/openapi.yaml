@@ -72,6 +72,12 @@ paths:
       responses:
         401:
           $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         200:
           description: Sending user info
           content:
@@ -137,7 +143,7 @@ paths:
 
   /users/removeUserAttending:
     delete:
-      description: remove a user from the given event 
+      description: remove a user from the given event
       tags:
         - users
       requestBody:
@@ -244,6 +250,52 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /businesses/getBusiness:
+    get:
+      description: Gets business information
+      tags:
+        - business
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Sending business info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+
+
+  /businesses/getBusinessEvents:
+    get:
+      description: Gets events a business has created based on JWT
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Sending business events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
   /businesses/{businessid}/events:
     get:
       description: Retrieves all events that a business has created
@@ -276,7 +328,7 @@ paths:
   /businesses/checkBusinessID:
     get:
       description: get the business info
-      tags: 
+      tags:
         - businesses
       security:
         - bearerAuth: []
@@ -353,6 +405,8 @@ paths:
             type: string
             format: date-time
           description: Get only events ending before a given timestamp (optional)
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: Successfully retrieved events
@@ -360,6 +414,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EventList"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         default:
           description: Unexpected Error
           content:
@@ -570,6 +632,27 @@ components:
         - userid
         - username
         - email
+    Business:
+      type: object
+      maxProperties: 3
+      additionalProperties: false
+      properties:
+        businessid:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        phonenumber:
+          type: string
+          pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+          example: "123-456-7890"
+      required:
+        - businessid
+        - username
+        - email
     UserToken:
       type: object
       maxProperties: 1
@@ -587,7 +670,7 @@ components:
         eventid:
           type: string
           format: uuid
-      required: 
+      required:
         - eventid
 
     Event:

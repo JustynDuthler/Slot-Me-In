@@ -24,11 +24,11 @@ exports.dbTest = async() => {
 
 // Inserts a new event entry into the database
 // Returns the newly created event eventid
-exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity=100) => {
-  const insert = 'INSERT INTO Events (eventname, starttime, endtime, businessid, capacity) VALUES ($1, $2, $3, $4, $5) RETURNING eventid';
+exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity=100, description) => {
+  const insert = 'INSERT INTO Events (eventname, starttime, endtime, businessid, capacity, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING eventid';
   const query = {
     text: insert,
-    values: [eventname, starttime, endtime, businessid, capacity],
+    values: [eventname, starttime, endtime, businessid, capacity, description],
   };
 
   const {rows} = await pool.query(query);

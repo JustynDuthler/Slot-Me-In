@@ -9,8 +9,8 @@ const auth = require('./auth');
 exports.getInfo = async (req, res) => {
   const business = await db.selectBusiness(req.payload.id);
   const businessData = {
-    businessid: business.userid,
-    username: business.username,
+    businessid: business.businessid,
+    businessname: business.businessname,
     email: business.businessemail,
     phonenumber: business.phonenumber,
   };
