@@ -15,7 +15,6 @@ const IndividualEvent = (props) => {
   const [signupError, setSignupError] = useState(false);
 
   /* API call to sign up for events */
-  // this does not work
   function signUp() {
     console.log("signing up for event");
     var apicall = 'http://localhost:3010/api/events/'+eventid+'/signup';
@@ -83,6 +82,7 @@ const IndividualEvent = (props) => {
       <Button variant="contained" color="secondary" onClick={signUp}>
         Sign Up
       </Button>
+
 
     </div>
 

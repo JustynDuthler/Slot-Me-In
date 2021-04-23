@@ -10,6 +10,7 @@ const auth = require('./auth');
 const users = require('./users');
 const businesses = require('./businesses');
 const events = require('./events');
+const attendees = require('./attendees');
 const db = require('./db');
 
 const app = express();
@@ -55,7 +56,10 @@ or user account
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.authenticateBusinessJWT, events.delete);
-app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup)
+app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup);
+
+// Attendees routes
+app.get('/api/attendees/:eventid', attendees.getTotalAttendees);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {

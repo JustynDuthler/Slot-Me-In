@@ -459,6 +459,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /attendees/{eventid}:
+    get:
+      description: Retrieves number of attendees for an event
+      tags:
+        - attendees
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved attendees
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   responses:
