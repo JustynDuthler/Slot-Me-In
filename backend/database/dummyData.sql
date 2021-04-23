@@ -70,7 +70,7 @@ VALUES ('00000000-0002-0000-0000-000000000000', 'Test Event 2', '10000000-0000-0
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description)
 VALUES ('00000000-0003-0000-0000-000000000000', 'Test Event 3', '20000000-0000-0000-0000-000000000000', '2021-05-03T13:30:00.000Z', '2021-05-03T16:00:00.000Z', 3, 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description)
-VALUES ('00000000-0004-0000-0000-000000000000', 'Test Event 4', '30000000-0000-0000-0000-000000000000', '2021-05-03T08:20:00.000Z', '2021-05-03T09:22:00.000Z', 4, 'This is the description for Test Event 4.');
+VALUES ('00000000-0004-0000-0000-000000000000', 'Test Event 4', '30000000-0000-0000-0000-000000000000', '2021-05-03T08:20:00.000Z', '2021-05-03T09:22:00.000Z', 5, 'This is the description for Test Event 4.');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description)
 VALUES ('00000000-0005-0000-0000-000000000000', 'Test Event 5', '40000000-0000-0000-0000-000000000000', '2021-05-03T16:30:00.000Z', '2021-05-03T18:00:00.000Z', 8, 'This is the description for Test Event 5.');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description)
