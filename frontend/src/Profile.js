@@ -18,22 +18,23 @@ export default function Profile() {
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState([]);
 
-/*
-  function handleSubmit(event) {
-    event.preventDefault(eventid);
+  // handles removing the user from the event id the button click corresponds to
+  function removeUserAttending(eventid) {
+    console.log(eventid);
     var apicall = 'http://localhost:3010/api/users/removeUserAttending';
     fetch(apicall, {
       method: 'DELETE',
       body: JSON.stringify({"eventid":eventid}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: Auth.JWTHeaderJson(),
     })
-        .then((response) => {
-        
-        })
+    .catch((error) => {
+      console.log(error);
+    });
   };
-  */
+
+  function removeUserAndReload(eventid) {
+    removeUserAttending(eventid);
+  };
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
   // Since the dependents array provided at the end is empty, this 

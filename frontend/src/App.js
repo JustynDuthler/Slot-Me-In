@@ -244,12 +244,19 @@ function App() {
             <Route path="/profile">
               {authState &&  !businessState ? <Profile/> : <Redirect to="/"/>}
             </Route>
+            <Route exact path="/events" render={(props) => <ViewEvents {...props} />} />
+            <Route
+              exact path="/event/:eventid"
+              render={(props) => <IndividualEvent {...props} />}
+            />
             <Route path="/">
               <Home />
             </Route>
           </Switch>
+
         </Context.Provider>
       </Container>
+
     </Router>
   );
 }
@@ -265,5 +272,6 @@ function PrivateRoute ({component: Component, authed, ...rest}) {
     />
   )
 }
+
 
 export default App;
