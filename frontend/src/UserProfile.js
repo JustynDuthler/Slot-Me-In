@@ -34,14 +34,27 @@ export default function UserProfile() {
       method: 'DELETE',
       body: JSON.stringify({"eventid":eventid}),
       headers: Auth.JWTHeaderJson(),
+    }).then((response)=>{
+      if (!response.ok) {
+        throw response;
+      }
+      return response;
+    }).then((json)=>{
+      console.log(json);
+      return 1;
     })
     .catch((error) => {
       console.log(error);
+      return -1;
     });
   };
 
-  function removeUserAndReload(eventid, eventKey, eventValue, eventList) {
-    removeUserAttending(eventid);                                 // call API to remove user from attendees table
+  async function removeUserAndReload(eventid, eventKey, eventValue, eventList) {
+    const test = await removeUserAttending(eventid);                                 // call API to remove user from attendees table
+    if (test !== 1) {                                             // if withdraw failed, don't remove event from list.
+      console.log("Could not withdraw from event");
+      return;
+    }
     eventList[eventKey].splice(eventValue, 1);                    // splice out event
     let updatedEventList = JSON.parse(JSON.stringify(eventList)); // copy eventlist into a new object so state can update
     if (updatedEventList[eventKey].length == 0) {                 // if no more events for a business remove business from dict
