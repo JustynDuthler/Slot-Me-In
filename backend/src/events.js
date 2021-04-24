@@ -4,11 +4,53 @@ dotenv.config();
 
 exports.create = async (req, res) => {
   const event = req.body;
-  const eventid =
-      await db.insertEvent(event.eventname, event.starttime, event.endtime,
-      req.payload.id, event.capacity, event.description);
-  // add generated event ID to event object before returning
-  event.eventid = eventid;
+  // --- REPEATING EVENT ---
+  if (event.repeat) {
+    // insert to RepeatingEvents and get repeatid, add to event object
+    event.repeatid =
+        await db.insertRepeatingEvent(event.eventname, event.description,
+          req.payload.id, event.starttime, event.endtime, event.capacity,
+          event.repeatdays["Sunday"], event.repeatdays["Monday"],
+          event.repeatdays["Tuesday"], event.repeatdays["Wednesday"],
+          event.repeatdays["Thursday"], event.repeatdays["Friday"],
+          event.repeatdays["Saturday"], event.repeattype, event.repeatend);
+    // create days array for use with getDay() (ex: if date.getDay() is 0, days[0] is Sunday)
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    // create Date objects for easy manipulation
+    const start = new Date(event.starttime);
+    const end = new Date(event.endtime);
+    const repeatend = new Date(event.repeatend);
+    // continue repeating event insert until event is after specified repeatend date
+    // create currentDay obj without hours/minutes to ignore time in date comparison
+    // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
+    let currentDay = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(),
+        start.getUTCDate()));
+    while (currentDay.getTime() <= repeatend.getTime()) {
+      // only insert to Events table if on a repeat day
+      // use days array to get current day name
+      if (event.repeatdays[days[start.getDay()]]) {
+        const eventid =
+            await db.insertEvent(event.eventname, start.toISOString(), end.toISOString(),
+            req.payload.id, event.capacity, event.description, event.repeatid);
+        // set eventid on first inserted event only
+        if (!event.eventid) event.eventid = eventid;
+      }
+      // increment event start and end dates by 1 day
+      start.setDate(start.getDate() + 1);
+      end.setDate(end.getDate() + 1);
+      // update currentDay object
+      currentDay = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(),
+          start.getUTCDate()));
+    }
+  } else {
+  // --- NON REPEATING EVENT ---
+    // for non-repeating event, insert to Events table
+    const eventid =
+        await db.insertEvent(event.eventname, event.starttime, event.endtime,
+        req.payload.id, event.capacity, event.description);
+    event.eventid = eventid;
+  }
+  // return 201 with event
   res.status(201).send(event);
 };
 

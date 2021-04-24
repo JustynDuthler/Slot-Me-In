@@ -24,15 +24,30 @@ exports.dbTest = async() => {
 
 // Inserts a new event entry into the database
 // Returns the newly created event eventid
-exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity=100, description) => {
-  const insert = 'INSERT INTO Events (eventname, starttime, endtime, businessid, capacity, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING eventid';
+exports.insertEvent = async (eventname, starttime, endtime, businessid, capacity=100, description, repeatid=null) => {
+  const insert = 'INSERT INTO Events (eventname, starttime, endtime, businessid, capacity, description, repeatid) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING eventid';
   const query = {
     text: insert,
-    values: [eventname, starttime, endtime, businessid, capacity, description],
+    values: [eventname, starttime, endtime, businessid, capacity, description, repeatid],
   };
 
   const {rows} = await pool.query(query);
   return rows[0].eventid;
+};
+
+exports.insertRepeatingEvent = async (eventname, description, businessid, starttime, endtime, capacity,
+                                      sunday, monday, tuesday, wednesday, thursday, friday, saturday,
+                                      repeattype='w', repeatend) => {
+  const insert = 'INSERT INTO RepeatingEvents (eventname, description, businessid, starttime, endtime, capacity, sunday, monday, tuesday, wednesday, thursday, friday, saturday, repeattype, repeatend) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING repeatid';
+  const query = {
+    text: insert,
+    values: [eventname, description, businessid, starttime, endtime, capacity,
+            sunday, monday, tuesday, wednesday, thursday, friday ,saturday,
+            repeattype, repeatend],
+  }
+
+  const {rows} = await pool.query(query);
+  return rows[0].repeatid;
 };
 
 exports.deleteEvent = async (eventid) => {

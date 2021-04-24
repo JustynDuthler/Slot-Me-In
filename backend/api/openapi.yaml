@@ -697,6 +697,14 @@ components:
           type: integer
         repeat:
           type: boolean
+        repeattype:
+          type: string
+          maxLength: 1
+        repeatdays:
+          $ref: "#/components/schemas/RepeatDays"
+        repeatend:
+          type: string
+          format: date-time
         repeatid:
           nullable: true
           type: string
@@ -712,6 +720,24 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Event"
+    RepeatDays:
+      type: object
+      additionalProperties: false
+      properties:
+        Sunday:
+          type: boolean
+        Monday:
+          type: boolean
+        Tuesday:
+          type: boolean
+        Wednesday:
+          type: boolean
+        Thursday:
+          type: boolean
+        Friday:
+          type: boolean
+        Saturday:
+          type: boolean
     Attendees:
       type: object
       additionalProperties: false

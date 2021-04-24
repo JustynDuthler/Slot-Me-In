@@ -8,7 +8,6 @@ exports.getTotalAttendees = async (req, res) => {
   if (!attendees) {
     res.status(404).send();
   } else {
-    console.log('# attendees: ' + attendees.length);
     res.status(200).json(attendees);
   }
 };

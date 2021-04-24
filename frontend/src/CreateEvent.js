@@ -23,7 +23,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Context from './Context';
 import DateFnsUtils from '@date-io/date-fns';
-import { DateTimePicker, KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { DatePicker, DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useHistory } from "react-router-dom";
 const Auth = require('./libs/Auth');
 /**
@@ -31,13 +31,17 @@ const Auth = require('./libs/Auth');
  */
 export default function CreateEvent() {
   const context = React.useContext(Context);
-  const[eventName, changeName] = React.useState("");
-  const[startDateTime, changeStartDateTime] = React.useState(null);
-  const[endDateTime, changeEndDateTime] = React.useState(null);
-  const[capacity, changeCapacity] = React.useState("");
-  const[description, changeDescription] = React.useState("");
-  const[repeat, changeRepeat] = React.useState(false);
-  const[repeatDays,changeRepeatDays] = React.useState({"Monday":false,"Tuesday":false,"Wednesday":false,"Thursday":false,"Friday":false,"Saturday":false,"Sunday":false});
+  const [eventName, changeName] = React.useState("");
+  const [startDateTime, changeStartDateTime] = React.useState(null);
+  const [endDateTime, changeEndDateTime] = React.useState(null);
+  const [capacity, changeCapacity] = React.useState("");
+  const [description, changeDescription] = React.useState("");
+  const [repeat, changeRepeat] = React.useState(false);
+  const [repeatDays,changeRepeatDays] = React.useState({"Monday":false,"Tuesday":false,"Wednesday":false,"Thursday":false,"Friday":false,"Saturday":false,"Sunday":false});
+  const [repeatEnd, changeRepeatEnd] = React.useState(null);
+  const [repeatEndError,setRepeatEndError] = React.useState(false);
+  const [repeatDaysError, setRepeatDaysError] = React.useState(false);
+  const [repeatPrecedeError,setRepeatPrecedeError] = React.useState(false);
   const [repeatError,setRepeatError] = React.useState(false);
   const [nameError, setNameError] = React.useState(false);
   const [startError, setStartError] = React.useState(false);
@@ -54,17 +58,24 @@ export default function CreateEvent() {
    */
   function handleSubmit(event) {
     event.preventDefault();
+    const eventObj = {};
+    // properties for all events
+    eventObj.eventname = eventName;
+    eventObj.starttime = startDateTime.toISOString();
+    eventObj.endtime = endDateTime.toISOString();
+    eventObj.capacity = parseInt(capacity);
+    eventObj.description = description;
+    eventObj.repeat = repeat;
+    // properties for repeating events only
+    if (repeat) {
+      eventObj.repeattype = 'w';
+      eventObj.repeatdays = repeatDays;
+      eventObj.repeatend = repeatEnd.toISOString();
+    }
     if (context.businessState) {
       fetch('http://localhost:3010/api/events', {
         method: "POST",
-        body: JSON.stringify({
-          "eventname":eventName,
-          "starttime":startDateTime.toISOString(),
-          "endtime":endDateTime.toISOString(),
-          "capacity":parseInt(capacity),
-          "description":description,
-          "repeat":repeat,
-        }),
+        body: JSON.stringify(eventObj),
         headers: Auth.JWTHeaderJson(),
       }).then((response) => {
         if (!response.ok) {
@@ -113,16 +124,23 @@ export default function CreateEvent() {
     (!eventName) ? setNameError(true) : setNameError(false);
     (!startDateTime) ? setStartError(true) : setStartError(false);
     (!endDateTime) ? setEndError(true) : setEndError(false);
+    (repeat && !repeatEnd) ? setRepeatEndError(true) : setRepeatEndError(false);
     // start date must precede end date
     (startDateTime && endDateTime && startDateTime > endDateTime) ? setPrecedeError(true) : setPrecedeError(false);
     // repeat days must include day of start date
     (repeat && startDateTime && !repeatDays[days[startDateTime.getDay()]]) ? setRepeatError(true) : setRepeatError(false);
+    // start date must precede repeat end date
+    (repeat && repeatEnd && startDateTime > repeatEnd) ? setRepeatPrecedeError(true) : setRepeatPrecedeError(false);
+    // at least one repeat day must be selected
+    (repeat && !repeatDays["Sunday"] && !repeatDays["Monday"] && !repeatDays["Tuesday"] && !repeatDays["Wednesday"] &&
+    !repeatDays["Thursday"] && !repeatDays["Friday"] && !repeatDays["Saturday"]) ? setRepeatDaysError(true) : setRepeatDaysError(false);
     // make sure capacity is an integer
     (!capacity || capacity % 1 !== 0)
         ? setCapacityError(true) : setCapacityError(false);
     (description.length > 500 ? setDescriptionError(true) : setDescriptionError(false));
     // only submit if all fields are filled out
-    if (!eventName || !startDateTime || !endDateTime || !capacity || precedeError || repeatError || descriptionError) {
+    if (!eventName || !startDateTime || !endDateTime || !capacity ||
+        precedeError || repeatError || descriptionError || repeatEndError || repeatDaysError) {
       return;
     } else {
       handleSubmit(event);
@@ -194,7 +212,7 @@ export default function CreateEvent() {
               control={<Checkbox value="repeat" color="primary" onChange={(event) => {changeRepeat(event.target.checked);}}/>}
               label="Repeat"
             />
-            {repeat && <FormControl required error={repeatError} component="fieldset"><FormGroup row>
+            {repeat && <FormControl required error={repeatError || repeatDaysError} component="fieldset"><FormGroup row>
               <FormControlLabel
                 control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="monday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Sunday"]: event.target.checked });}}/>}
                 label="S"
@@ -225,7 +243,22 @@ export default function CreateEvent() {
               />
               </FormGroup>
               {repeatError && <FormHelperText>Selected days must include day of start date</FormHelperText>}
+              {repeatDaysError && <FormHelperText>Must select at least one day to repeat on</FormHelperText>}
               </FormControl>}
+              {repeat && <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                  error={repeatEndError || repeatPrecedeError}
+                  helperText={repeatPrecedeError ? "Repeat end date must follow Start date/time." :
+                              repeatEndError ? "Repeat end date is required." : ""}
+                  clearable
+                  className={classes.dateselect}
+                  label="Repeat End Date"
+                  inputVariant="outlined"
+                  value={repeatEnd}
+                  onChange={changeRepeatEnd}
+                  onKeyPress={handleKeypress}
+                />
+              </MuiPickersUtilsProvider>}
             <TextField
               error={capacityError}
               helperText={capacityError ? "Capacity is required and must be an integer." : ""}
@@ -246,7 +279,7 @@ export default function CreateEvent() {
               margin="normal"
               fullWidth
               id="description"
-              label="Description"
+              label="Description (max 500 chars)"
               name="description"
               multiline
               placeholder="Brief Description of Event"

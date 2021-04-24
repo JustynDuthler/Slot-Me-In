@@ -25,8 +25,12 @@ CREATE TABLE Businesses (
 -- Repeating Events Table
 CREATE TABLE RepeatingEvents (
   repeatid uuid UNIQUE DEFAULT uuid_generate_v4(),
+  eventname TEXT NOT NULL,
+  description VARCHAR(500) DEFAULT '',
   businessid uuid,
-  repeattype CHAR(1) DEFAULT 'w',     -- currently only 'w' for weekly, can implement more types later
+  starttime TIMESTAMP NOT NULL,
+  endtime TIMESTAMP NOT NULL,
+  capacity INTEGER,
   sunday BOOLEAN,
   monday BOOLEAN,
   tuesday BOOLEAN,
@@ -34,24 +38,24 @@ CREATE TABLE RepeatingEvents (
   thursday BOOLEAN,
   friday BOOLEAN,
   saturday BOOLEAN,
-  enddate TIMESTAMP,
+  repeattype CHAR(1) DEFAULT 'w',     -- currently only 'w' for weekly, can implement more types later
+  repeatend TIMESTAMP,
   PRIMARY KEY (repeatid),
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
 
 -- Events Table
 CREATE TABLE Events (
-	eventid uuid UNIQUE DEFAULT uuid_generate_v4(),
-	eventname TEXT NOT NULL,
+  eventid uuid UNIQUE DEFAULT uuid_generate_v4(),
+  eventname TEXT NOT NULL,
   description VARCHAR(500) DEFAULT '',
-	businessid uuid,
-	starttime TIMESTAMP NOT NULL,
-	endtime TIMESTAMP NOT NULL,
-	capacity INTEGER,
-  repeat BOOLEAN NOT NULL DEFAULT false,
+  businessid uuid,
+  starttime TIMESTAMP NOT NULL,
+  endtime TIMESTAMP NOT NULL,
+  capacity INTEGER,
   repeatid uuid,
-	PRIMARY KEY (eventid),
-	FOREIGN KEY (businessid) REFERENCES Businesses,
+  PRIMARY KEY (eventid),
+  FOREIGN KEY (businessid) REFERENCES Businesses,
   FOREIGN KEY (repeatid) REFERENCES RepeatingEvents
 );
 
