@@ -225,7 +225,6 @@ export default function BusinessProfile() {
           autoComplete="email"
           onChange={(event) => {setEmailInput(event.target.value);}}
           onKeyPress={handleKeypress}
-          autoFocus
         />
         <Button
           type="submit"
