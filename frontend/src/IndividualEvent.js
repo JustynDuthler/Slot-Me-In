@@ -36,7 +36,7 @@ const IndividualEvent = (props) => {
       .then((json) => {
         console.log(json);
         if (signupType != undefined) {
-          setSignupType(true);
+          setSignupType(false);
         }
       })
       .catch((error) => {
@@ -58,7 +58,7 @@ const IndividualEvent = (props) => {
     }).then((json)=>{
       console.log(json);
       if (signupType != undefined) {
-        setSignupType(false);
+        setSignupType(true);
       }
     })
     .catch((error) => {
