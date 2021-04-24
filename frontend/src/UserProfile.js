@@ -215,7 +215,7 @@ export default function UserProfile() {
           {items}
         </div>
       </Container>
-    </Paper>
   );
 
+}
 }
