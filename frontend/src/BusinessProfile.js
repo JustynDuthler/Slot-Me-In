@@ -8,6 +8,10 @@ import Divider from '@material-ui/core/Divider';
 import Context from './Context';
 import Auth from './libs/Auth';
 import TextField from '@material-ui/core/TextField';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 
 
@@ -104,22 +108,43 @@ export default function BusinessProfile() {
     return <div>Loading...</div>;
   } else {
     const items = [];
+    let eventListJSX = [];
     for (var key in eventList) {
       let eventid = eventList[key].eventid;
-      items.push(
-      <h3
-        key={eventList[key].eventid}>{eventList[key].eventname}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={() => {deleteEventAndReload(eventid, eventList)}}
-        >
-          Cancel event
-        </Button>
-      </h3>);
+      let eventName = eventList[key].eventname;
+      let startDate = new Date(eventList[key].starttime);
+      let dateString = (startDate.getHours() % 12) + ":" + startDate.getMinutes() + (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
+      eventListJSX.push(
+        <ListItem key={eventid}>
+          <ListItemText key={eventid}
+            primary={eventName}
+            secondary={dateString}
+          />
+          <ListItemSecondaryAction key={eventid}>
+            <Button key={eventid}
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={() => {deleteEventAndReload(eventid, eventList)}}
+            >
+              Cancel event
+            </Button>
+          </ListItemSecondaryAction>
+        </ListItem>
+      );
 
     }
+    items.push(
+      <Grid item item xs={6} md={6} key={businessData.businessname}>
+        <Typography variant="h6">
+          Created Events
+        </Typography>
+        <Divider/>
+        <List>
+        {eventListJSX}
+        </List>
+      </Grid>
+    );
     return (
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
@@ -129,7 +154,9 @@ export default function BusinessProfile() {
           <Typography component="h1" variant="h4">
             {businessData.email}
           </Typography>
-          {items}
+          <Grid container justify="center" spacing={8}>
+            {items}
+          </Grid>
         </div>
       </Container>
     );
