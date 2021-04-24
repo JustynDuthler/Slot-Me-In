@@ -164,6 +164,7 @@ export default function UserProfile() {
         </Grid>
       );
     }
+
     return (
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
@@ -173,6 +174,18 @@ export default function UserProfile() {
           <Typography component="h1" variant="h4">
             {userData.email}
           </Typography>
+          {items.length === 0 && <Typography component="h1" variant="h5">
+          No registered events.
+          </Typography>}
+          {items.length === 0 &&
+          <Button
+            href="/events"
+            color="primary"
+            size="large"
+            variant="contained"
+          >
+            Find Events
+          </Button>}
           <Grid container spacing={8}>
             {items}
           </Grid>
