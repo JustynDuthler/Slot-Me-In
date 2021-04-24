@@ -257,7 +257,7 @@ function App() {
             </Route>
             <Route
               exact path="/event/:eventid"
-              render={props => <IndividualEvent {...props} />}
+              render={props => <IndividualEvent eventID={props.match.params.eventid} {...props} />}
             />
             <Route path="/">
               <Home />

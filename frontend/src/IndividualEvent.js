@@ -8,7 +8,9 @@ const Auth = require('./libs/Auth');
  * @return {object} JSX
  */
 const IndividualEvent = (props) => {
-  const { eventid } = props.eventID;
+  const eventid = props.eventID;
+
+
   const [eventData, setEventData] = useState({});
   const [attendeesData, setAttendeesData] = useState([]);
   const [signupError, setSignupError] = useState(false);
