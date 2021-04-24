@@ -20,6 +20,7 @@ export default function BusinessProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [businessData, setBusinessData] = React.useState([]);
+  const [memberData, setMemberData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
   const [emailInput, setEmailInput] = React.useState("");
   const [emailError, setEmailError] = React.useState(false);
@@ -91,6 +92,18 @@ export default function BusinessProfile() {
         setError(error);
         }
       )
+    /* Uncomment this when the get member api route is made */
+    // const memberRes = fetch('http://localhost:3010/api/businesses/members', {
+    //   method: 'GET',
+    //   headers: Auth.JWTHeaderJson(),
+    // }).then(res => res.json())
+    // .then((data) => {
+    //     setMemberData(data);
+    //   },
+    //   (error) => {
+    //     setError(error);
+    //   }
+    // )
     await Promise.all([businessRes, eventRes]);
     setIsLoaded(true);
   }, []);
@@ -139,6 +152,7 @@ export default function BusinessProfile() {
     return <div>Loading...</div>;
   } else {
     const items = [];
+    const members = [];
     let eventListJSX = [];
     for (var key in eventList) {
       let eventid = eventList[key].eventid;
@@ -174,6 +188,17 @@ export default function BusinessProfile() {
         <List>
         {eventListJSX}
         </List>
+        {eventListJSX.length === 0 && <Typography>
+          Currently created 0 events
+        </Typography>}
+        {eventListJSX.length === 0 && <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            href="/events/create"
+        >
+          Create Events
+        </Button>}
       </Grid>
     );
     items.push(
@@ -182,6 +207,12 @@ export default function BusinessProfile() {
           Members
         </Typography>
         <Divider/>
+        <List>
+        {members}
+        </List>
+        {members.length === 0 && <Typography>
+          Currently added 0 members
+        </Typography>}
         <TextField
           error={emailError}
           helperText={emailError ? emailMsg : ""}
