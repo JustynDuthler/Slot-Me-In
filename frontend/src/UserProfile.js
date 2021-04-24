@@ -15,17 +15,27 @@ import IndividualEvent from './IndividualEvent';
 import Paper from '@material-ui/core/Paper';
 
 
+// TODO:
+// 1. Once public business pages are implemented, add a link to them.
+// 2. Once users can become linked to businesses by email for membership
+//    Make business names persists even if the user is not currently signed up for events
+//    from the business.
+// 3. Add a past events section for events that are in the past.
 
 
-
+// The userprofile page makes 2 api calls initally on load to get user information
+// and list information for that user. It then displays the events a user is signed
+// up grouped by business name. The eventList state holds the currently signed up for
+// events and must be updated(by replacing the reference since it is an object) when a
+// user withdraws from an event. eventState is either null or an eventid. If it's an 
+// eventid, then display the individualevent page for the event
 export default function UserProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
-  const [eventViewID, setEventViewID] = React.useState(null);
+  const [eventState, setEventState] = React.useState(null);
 
-  const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   async function removeUserAttending(eventid) {
     var apicall = 'http://localhost:3010/api/users/removeUserAttending';
@@ -53,6 +63,7 @@ export default function UserProfile() {
       console.log("Could not withdraw from event");
       return;
     }
+
     eventList[eventKey].splice(eventValue, 1);                    // splice out event
     let updatedEventList = JSON.parse(JSON.stringify(eventList)); // copy eventlist into a new object so state can update
     if (updatedEventList[eventKey].length == 0) {                 // if no more events for a business remove business from dict
@@ -63,8 +74,8 @@ export default function UserProfile() {
 
   // I wrote this how react recommends
   // https://reactjs.org/docs/faq-ajax.html
-  // Since the dependents array provided at the end is empty, this
-  // should only ever run once
+  // I added event state to the dependant list so that it will re fetch data
+  // in case an event is removed while in the individual event view.
   React.useEffect(async () => {
     const userRes = fetch('http://localhost:3010/api/users/getUser', {
       method: 'GET',
@@ -98,7 +109,7 @@ export default function UserProfile() {
       )
     await Promise.all([userRes, eventRes]);
     setIsLoaded(true);
-  }, []);
+  }, [eventState]);
 
 
   const useStyles = makeStyles((theme) => ({
@@ -111,7 +122,8 @@ export default function UserProfile() {
     },
     eventStyle: {
       marginTop: theme.spacing(2),
-      flexGrow:1,
+      marginBottom: theme.spacing(2),
+      flexGrow: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -130,20 +142,38 @@ export default function UserProfile() {
   } else if (!isLoaded) {
     return <div>Loading...</div>;
 
-  } else if (eventViewID !== null) {
+  } else if (eventState !== null) {
+    // if the eventState is set to an eventID then show an individualEvent page with a back button
     items.push(
       <div key="event" className={classes.eventStyle}>
         <Button
           type="submit"
           variant="contained"
           color="primary"
-          onClick={() => setEventViewID(null)}
+          onClick={() => {setIsLoaded(null); setEventState(null)}}
         >
           Back
         </Button>
-        <IndividualEvent eventID={eventViewID}/>
+        <IndividualEvent eventID={eventState}/>
       </div>
     );
+  } else if (Object.keys(eventList) == 0) {
+    // If there are no events in the event list, then put a link to the event signup page
+    items.push(
+      <div key="findEvents" className={classes.eventStyle}>
+      <Typography>
+        Currently signed up for 0 events
+      </Typography>
+      <Button 
+        type="submit"
+        variant="contained"
+        color="primary"
+        href="/events"
+      >
+        Find Events
+      </Button>
+      </div>
+    )
   } else {
     const items2 = [];
     // Var key is the business name
@@ -159,7 +189,15 @@ export default function UserProfile() {
         let eventValue = value;
 
         eventListJSX.push(
-          <ListItem button={true} onClick={() => setEventViewID(eventid)} key={eventid}>
+          <ListItem 
+            button={true}
+            key={eventid} 
+            onClick={
+                () => {
+                  setEventState(eventid);
+                }
+              }
+          >
             <ListItemText key={eventid}
               primary={eventName}
               secondary={dateString}
@@ -195,17 +233,17 @@ export default function UserProfile() {
 
   return (
     <Paper>
-    <Container component="main" maxWidth="md">
-      <div className={classes.paper}>
-        <Typography className={classes.typography} variant="h1">
-          {userData.username}
-        </Typography>
-        <Typography className={classes.typography} variant="h4">
-          {userData.email}
-        </Typography>        
-        {items}
-      </div>
-    </Container>
+      <Container component="main" maxWidth="md">
+        <div className={classes.paper}>
+          <Typography className={classes.typography} variant="h1">
+            {userData.username}
+          </Typography>
+          <Typography className={classes.typography} variant="h4">
+            {userData.email}
+          </Typography>        
+          {items}
+        </div>
+      </Container>
     </Paper>
   );
 }
