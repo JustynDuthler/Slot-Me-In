@@ -176,6 +176,40 @@ export default function BusinessProfile() {
         </List>
       </Grid>
     );
+    items.push(
+      <Grid item item xs={6} md={6} key={"test"}>
+        <Typography variant="h6">
+          Members
+        </Typography>
+        <Divider/>
+        <TextField
+          error={emailError}
+          helperText={emailError ? emailMsg : ""}
+          variant="filled"
+          margin="normal"
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          onChange={(event) => {setEmailInput(event.target.value);}}
+          onKeyPress={handleKeypress}
+          autoFocus
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={validateInput}
+        >
+          Add Member
+        </Button>
+      </Grid>
+    );
+    const items2 = [];
+    items2.push(<Grid key="eventList" container spacing={8}>{items}</Grid>);
     return (
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
@@ -185,41 +219,8 @@ export default function BusinessProfile() {
           <Typography className={classes.typography} variant="h4">
             {businessData.email}
           </Typography>
-          <Grid container justify="center" spacing={8}>
-            {items}
-          </Grid>
+          {items2}
         </div>
-
-        <Container component="main" maxWidth="xs">
-        <Divider/>
-          <Typography className={classes.typography} variant="h6">
-            Add Member
-          </Typography>
-          <TextField
-            error={emailError}
-            helperText={emailError ? emailMsg : ""}
-            variant="filled"
-            margin="normal"
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            onChange={(event) => {setEmailInput(event.target.value);}}
-            onKeyPress={handleKeypress}
-            autoFocus
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={validateInput}
-          >
-            Add
-          </Button>
-        </Container>
       </Container>
     );
   }
