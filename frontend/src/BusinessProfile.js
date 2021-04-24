@@ -21,6 +21,9 @@ export default function BusinessProfile() {
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [businessData, setBusinessData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
+  const [emailInput, setEmailInput] = React.useState("");
+  const [emailError, setEmailError] = React.useState(false);
+  const [emailMsg, setEmailMsg] = React.useState("");
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   function deleteEvent(eventid) {
@@ -91,7 +94,25 @@ export default function BusinessProfile() {
     await Promise.all([businessRes, eventRes]);
     setIsLoaded(true);
   }, []);
-
+  function handleSubmit(event) {
+    event.preventDefault();
+  }
+  const validateInput = (event) => {
+    // regex to check for valid email format
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(emailInput)) {
+      setEmailError(true);
+      setEmailMsg("Invalid email.");
+    } else {
+      handleSubmit(event);
+    }
+  }
+  const handleKeypress = (event) => {
+    // only start submit process if enter is pressed
+    if (event.key === "Enter") {
+      validateInput(event);
+    }
+  }
 
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -99,6 +120,16 @@ export default function BusinessProfile() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+    },
+    eventStyle: {
+      marginTop: theme.spacing(2),
+      flexGrow:1,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    typography: {
+      flexGrow:1,
     },
   }));
   const classes = useStyles();
@@ -148,16 +179,47 @@ export default function BusinessProfile() {
     return (
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
-          <Typography component="h1" variant="h1">
+          <Typography className={classes.typography} variant="h1">
             {businessData.businessname}
           </Typography>
-          <Typography component="h1" variant="h4">
+          <Typography className={classes.typography} variant="h4">
             {businessData.email}
           </Typography>
           <Grid container justify="center" spacing={8}>
             {items}
           </Grid>
         </div>
+
+        <Container component="main" maxWidth="xs">
+        <Divider/>
+          <Typography className={classes.typography} variant="h6">
+            Add Member
+          </Typography>
+          <TextField
+            error={emailError}
+            helperText={emailError ? emailMsg : ""}
+            variant="filled"
+            margin="normal"
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            onChange={(event) => {setEmailInput(event.target.value);}}
+            onKeyPress={handleKeypress}
+            autoFocus
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={validateInput}
+          >
+            Add
+          </Button>
+        </Container>
       </Container>
     );
   }
