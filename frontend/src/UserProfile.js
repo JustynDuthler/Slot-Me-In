@@ -89,6 +89,7 @@ export default function UserProfile() {
               eventDict[data[index].businessname] = [];
             }
       eventDict[data[index].businessname].push(data[index]);
+      console.log(data);
     }
     setEventList(eventDict);
     },
@@ -200,10 +201,10 @@ export default function UserProfile() {
           <Typography className={classes.typography} variant="h4">
             {userData.email}
           </Typography>
-          {items.length === 0 && <Typography component="h1" variant="h5">
+          {items2.length === 0 && <Typography component="h1" variant="h5">
           No registered events.
           </Typography>}
-          {items.length === 0 &&
+          {items2.length === 0 &&
           <Button
             href="/events"
             color="primary"
@@ -212,7 +213,7 @@ export default function UserProfile() {
           >
             Find Events
           </Button>}
-          {items}
+          {items2}
         </div>
       </Container>
   );
