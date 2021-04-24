@@ -191,8 +191,9 @@ export default function UserProfile() {
         </Grid>
       );
     }
-
+    items.push(<Grid key="eventList" container spacing={8}>{items2}</Grid>);
     return (
+      <Paper>
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
           <Typography className={classes.typography} variant="h1">
@@ -213,9 +214,10 @@ export default function UserProfile() {
           >
             Find Events
           </Button>}
-          {items2}
+          {items}
         </div>
       </Container>
+      </Paper>
   );
 
 }
