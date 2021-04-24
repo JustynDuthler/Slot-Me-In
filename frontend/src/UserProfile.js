@@ -89,7 +89,6 @@ export default function UserProfile() {
               eventDict[data[index].businessname] = [];
             }
       eventDict[data[index].businessname].push(data[index]);
-      console.log(data);
     }
     setEventList(eventDict);
     },

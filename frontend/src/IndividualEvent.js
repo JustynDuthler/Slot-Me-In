@@ -125,6 +125,7 @@ const IndividualEvent = (props) => {
             if (data[index].eventid === eventid) {
               setSignupType(true);
             }
+            return;
           }
           setSignupType(false);
     }).catch((error)=>{
