@@ -18,6 +18,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Context from './Context';
+import { useHistory } from "react-router-dom";
 const Auth = require('./libs/Auth');
 
 /**
@@ -32,6 +33,7 @@ export default function Login() {
   const [emailMsg, setEmailMsg] = React.useState("");
   const [passError, setPassError] = React.useState(false);
   const context = React.useContext(Context);
+  const history = useHistory();
   /**
    * Handles form submission
    * @param {event} event
@@ -77,6 +79,8 @@ export default function Login() {
           Auth.saveJWT(json.auth_token);
           context.setAuthState(Auth.getJWT());
           console.log(json);
+          context.setBusinessState(showBusiness);
+          history.push('/');
         })
         .catch((error) => {
           console.log(error);
@@ -124,10 +128,6 @@ export default function Login() {
   const classes = useStyles();
 
   // if authenticated already, redirect to homepage
-  if (context.authState !== null) {
-    return <Redirect to={{pathname: '/'}}/>
-  }
-
   return (
     <div>
       <Container component="main" maxWidth="xs">

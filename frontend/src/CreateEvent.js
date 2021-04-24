@@ -24,6 +24,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Context from './Context';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, KeyboardDateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { useHistory } from "react-router-dom";
 const Auth = require('./libs/Auth');
 /**
  * CreateEvent Function
@@ -45,6 +46,7 @@ export default function CreateEvent() {
   const [capacityError, setCapacityError] = React.useState(false);
   const [descriptionError, setDescriptionError] = React.useState(false);
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+  const history = useHistory();
 
   /**
    * Handles form submission
@@ -64,9 +66,14 @@ export default function CreateEvent() {
           "repeat":repeat,
         }),
         headers: Auth.JWTHeaderJson(),
-      }).then(response => response.json())
-      .then((json) => {
+      }).then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json();
+      }).then((json) => {
         console.log(json);
+        history.push('/events/');
       })
       .catch((error) => {
         console.log(error);

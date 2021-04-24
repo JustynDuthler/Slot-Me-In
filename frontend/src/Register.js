@@ -19,8 +19,10 @@ import FilledInput from '@material-ui/core/FilledInput';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/material.css'
+import PhoneInput from 'react-phone-input-2';
+import Context from './Context';
+import { useHistory } from "react-router-dom";
+import 'react-phone-input-2/lib/material.css';
 const Auth = require('./libs/Auth');
 /**
  * Register function
@@ -34,6 +36,8 @@ export default function Register() {
   const [showPassword, setVisibility] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
   const [emailMsg, setEmailMsg] = React.useState("");
+  const context = React.useContext(Context);
+  const history = useHistory();
   /**
   * Handles form submission
   * @param {event} event
@@ -68,7 +72,9 @@ export default function Register() {
         })
         .then((json) => {
           Auth.saveJWT(json.auth_token);
+          context.setAuthState(Auth.getJWT());
           console.log(json);
+          history.push('/');
         })
         .catch((error) => {
           console.log(error);
@@ -121,6 +127,7 @@ export default function Register() {
     },
   }));
   const classes = useStyles();
+
   return (
     <div>
       <Container component="main" maxWidth="xs">
