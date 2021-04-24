@@ -192,33 +192,21 @@ export default function UserProfile() {
       );
     }
     items.push(<Grid key="eventList" container spacing={8}>{items2}</Grid>);
-    return (
-      <Paper>
-      <Container component="main" maxWidth="md">
-        <div className={classes.paper}>
-          <Typography className={classes.typography} variant="h1">
-            {userData.username}
-          </Typography>
-          <Typography className={classes.typography} variant="h4">
-            {userData.email}
-          </Typography>
-          {items2.length === 0 && <Typography component="h1" variant="h5">
-          No registered events.
-          </Typography>}
-          {items2.length === 0 &&
-          <Button
-            href="/events"
-            color="primary"
-            size="large"
-            variant="contained"
-          >
-            Find Events
-          </Button>}
-          {items}
-        </div>
-      </Container>
-      </Paper>
-  );
+  }
 
-}
+  return (
+    <Paper>
+    <Container component="main" maxWidth="md">
+      <div className={classes.paper}>
+        <Typography className={classes.typography} variant="h1">
+          {userData.username}
+        </Typography>
+        <Typography className={classes.typography} variant="h4">
+          {userData.email}
+        </Typography>        
+        {items}
+      </div>
+    </Container>
+    </Paper>
+  );
 }
