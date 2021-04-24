@@ -121,13 +121,17 @@ const IndividualEvent = (props) => {
       return res.json();
     }) .then((data) => {
       // The value is an array of events for that business
+
           for (var index in data) {
             if (data[index].eventid === eventid) {
-              setSignupType(true);
+
+              setSignupType(false);
+              return;
             }
-            return;
+
           }
-          setSignupType(false);
+
+          setSignupType(true);
     }).catch((error)=>{
       console.log(error);
     })
