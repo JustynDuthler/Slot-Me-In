@@ -4,8 +4,8 @@ dotenv.config();
 
 exports.create = async (req, res) => {
   const event = req.body;
-  // --- REPEATING EVENT ---
   if (event.repeat) {
+  // --- REPEATING EVENT ---
     // insert to RepeatingEvents and get repeatid, add to event object
     event.repeatid =
         await db.insertRepeatingEvent(event.eventname, event.description,
@@ -56,11 +56,19 @@ exports.create = async (req, res) => {
 
 exports.delete = async (req, res) => {
   const event = await db.getEventByID(req.params.eventid);
-  // 404 if event not found, otherwise delete and send 200
   if (!event) {
+    // 404 if event not found
     res.status(404).send();
   } else {
-    await db.deleteEvent(req.params.eventid);
+    if (req.query.deleteAll && event.repeatid) {
+      // deleteAll is true and event is an instance of a repeating event
+      // deletion of RepeatingEvent will cascade to Events
+      await db.deleteRepeatingEvent(event.repeatid);
+    } else {
+      // deleteAll is false, or event is not part of a repeating event
+      await db.deleteEvent(req.params.eventid);
+    }
+    // 200 after successful deletion
     res.status(200).send();
   }
 };

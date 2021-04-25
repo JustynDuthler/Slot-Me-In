@@ -468,6 +468,12 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: deleteAll
+          in: query
+          description: For a repeating event, delete all other instances of this event
+          required: false
+          schema:
+            type: boolean
       security:
         - bearerAuth: []
       responses:

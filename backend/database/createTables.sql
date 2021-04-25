@@ -56,7 +56,7 @@ CREATE TABLE Events (
   repeatid uuid,
   PRIMARY KEY (eventid),
   FOREIGN KEY (businessid) REFERENCES Businesses,
-  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents
+  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE
 );
 
 -- Attendees Table

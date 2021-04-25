@@ -44,7 +44,7 @@ exports.insertRepeatingEvent = async (eventname, description, businessid, startt
     values: [eventname, description, businessid, starttime, endtime, capacity,
             sunday, monday, tuesday, wednesday, thursday, friday ,saturday,
             repeattype, repeatend],
-  }
+  };
 
   const {rows} = await pool.query(query);
   return rows[0].repeatid;
@@ -59,7 +59,18 @@ exports.deleteEvent = async (eventid) => {
 
   const {rows} = await pool.query(query);
   return rows;
-}
+};
+
+exports.deleteRepeatingEvent = async (repeatid) => {
+  const del = 'DELETE FROM RepeatingEvents WHERE repeatid = $1';
+  const query = {
+    text: del,
+    values: [repeatid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
 
 exports.insertBusinessAccount = async (businessname, password, phonenumber, businessemail) => {
   const insert = 'INSERT INTO Businesses (businessname, Password, phonenumber, businessemail) VALUES ($1, $2, $3, $4) RETURNING businessid';
