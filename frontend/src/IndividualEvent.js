@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
@@ -61,6 +61,7 @@ const IndividualEvent = (props) => {
   const eventid = props.eventID;
 
   const [eventData, setEventData] = useState({});
+  const [businessData, setBusinessData] = useState({});
   const [attendeesData, setAttendeesData] = useState([]);
   const [signupError, setSignupError] = useState(false);
   const [signupType, setSignupType] = useState(undefined);
@@ -120,6 +121,7 @@ const IndividualEvent = (props) => {
         }
         throw response;
       }
+      setNumAttendees(numAttendees-1)
       return response;
     }).then((json)=>{
       console.log(json);
@@ -133,9 +135,33 @@ const IndividualEvent = (props) => {
     });
   };
 
+  /* API call to get business data */
+  function getBusinessData(businessid) {
+    var apicall = 'http://localhost:3010/api/businesses/'+businessid;
+    console.log('business call: ' + apicall);
+    fetch(apicall, {
+      method: 'GET',
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        return response.json();
+      }
+    })
+    .then((json) => {
+      setBusinessData(json);
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
   /* API call to get event data */
   function getEventData() {
     var apicall = 'http://localhost:3010/api/events/'+eventid;
+    console.log('event call: ' + apicall);
     fetch(apicall, {
       method: 'GET',
     })
@@ -148,6 +174,7 @@ const IndividualEvent = (props) => {
     })
     .then((json) => {
       setEventData(json);
+      getBusinessData(json.businessid);
     })
     .catch((error) => {
       console.log(error);
@@ -157,7 +184,7 @@ const IndividualEvent = (props) => {
   /* API call to get total attendees */
   function getTotalAttendees() {
     var apicall = 'http://localhost:3010/api/attendees/'+eventid;
-    console.log('api call: ' + apicall);
+    console.log('attendees call: ' + apicall);
     fetch(apicall, {
       method: 'GET',
     })
@@ -261,13 +288,31 @@ const IndividualEvent = (props) => {
         </Box>
 
         <p>Capacity: {numAttendees}/{eventData.capacity}</p>
-        {signupType !== undefined && (<Button variant="contained" color="secondary" onClick={() => {signupType === true ? signUp() : withdraw()}}>
-          {signupType === true ? "Sign Up" : "Withdraw"}
-        </Button>)}
+        {signupType !== undefined && 
+          (<Button variant="contained" color="secondary" 
+            disabled={signupType && numAttendees == eventData.capacity}
+            onClick={() => {signupType === true ? signUp() : withdraw()}}>
+              {signupType === true ? "Sign Up" : "Withdraw"}
+          </Button>)
+        }
 
       </TabPanel>
       <TabPanel value={value} index={1} style={body}>
-        Business info will go here
+        <h1>{businessData.businessname}</h1>
+        <Box mb={-2}>
+          <h3>Contact Information</h3>
+        </Box>
+        <Box mt={-2} mb={-2}>
+          <p>
+            Email: {businessData.email}
+          </p>
+        </Box>
+        <Box mt={-2}>
+          <p>
+            Phone Number: {businessData.phonenumber}
+          </p>
+        </Box>
+
       </TabPanel>
 
 
