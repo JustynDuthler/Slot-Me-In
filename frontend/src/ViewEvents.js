@@ -86,13 +86,14 @@ export default function ViewEvents() {
           </Typography>
           <Typography className={classes.pos} color="textSecondary" variant="body2" align="center">
             Start Time: {new Date(row.starttime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric', hour: 'numeric', minute: 'numeric'})}
+              {weekday: 'long', month: 'short', day: 'numeric',
+              year: 'numeric'})} at {new Date(row.starttime).toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
           </Typography>
+
           <Typography className={classes.pos} color="textSecondary" variant="body2" align="center">
-            End Time: &nbsp;{new Date(row.endtime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric', hour: 'numeric', minute: 'numeric'})}
+            End Time: {new Date(row.endtime).toLocaleString('en-US',
+              {weekday: 'long', month: 'short', day: 'numeric',
+              year: 'numeric'})} at {new Date(row.endtime).toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
           </Typography>
         </CardContent>
         <CardActions>
@@ -111,7 +112,7 @@ export default function ViewEvents() {
       <h1 style={{ margin:12 }}>Events</h1>
       <Grid
         container
-        spacing={4}
+        spacing={5}
         className={classes.gridContainer}
         justify="center"
       >
