@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
@@ -6,7 +6,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 
 const Auth = require('./libs/Auth');
 
@@ -251,7 +250,7 @@ const IndividualEvent = (props) => {
         <h1>{eventData.eventname}</h1>
       </Box>
       <AppBar position="static" style={body}>
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" centered>
         <Tab label="Event Info" {...a11yProps(0)} />
         <Tab label="Business Info" {...a11yProps(1)} />
         </Tabs>
