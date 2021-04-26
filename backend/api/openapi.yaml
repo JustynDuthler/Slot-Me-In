@@ -347,6 +347,23 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /businesses/deletemember:
+    delete:
+      description: Deletes a single member from the member list
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Email string
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              format: email
+      responses:
+        200
   /events:
     post:
       description: Create a new event
@@ -744,6 +761,7 @@ components:
           type: boolean
         Saturday:
           type: boolean
+
     Attendees:
       type: object
       additionalProperties: false
@@ -754,6 +772,7 @@ components:
         userid:
           type: string
           format: uuid
+          
     AttendeesList:
       type: array
       items:

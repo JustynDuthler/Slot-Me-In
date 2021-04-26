@@ -83,3 +83,8 @@ exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
   res.status(200).send();
 }
+
+
+exports.deleteMember = async (req, res) => {
+  
+}
