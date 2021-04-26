@@ -10,12 +10,12 @@ exports.create = async (req, res) => {
     event.repeatid =
         await db.insertRepeatingEvent(event.eventname, event.description,
           req.payload.id, event.starttime, event.endtime, event.capacity,
-          event.repeatdays["Sunday"], event.repeatdays["Monday"],
-          event.repeatdays["Tuesday"], event.repeatdays["Wednesday"],
-          event.repeatdays["Thursday"], event.repeatdays["Friday"],
-          event.repeatdays["Saturday"], event.repeattype, event.repeatend);
+          event.repeatdays["sunday"], event.repeatdays["monday"],
+          event.repeatdays["tuesday"], event.repeatdays["wednesday"],
+          event.repeatdays["thursday"], event.repeatdays["friday"],
+          event.repeatdays["saturday"], event.repeattype, event.repeatend);
     // create days array for use with getDay() (ex: if date.getDay() is 0, days[0] is Sunday)
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
     // create Date objects for easy manipulation
     const start = new Date(event.starttime);
     const end = new Date(event.endtime);

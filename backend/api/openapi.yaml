@@ -747,19 +747,19 @@ components:
       type: object
       additionalProperties: false
       properties:
-        Sunday:
+        sunday:
           type: boolean
-        Monday:
+        monday:
           type: boolean
-        Tuesday:
+        tuesday:
           type: boolean
-        Wednesday:
+        wednesday:
           type: boolean
-        Thursday:
+        thursday:
           type: boolean
-        Friday:
+        friday:
           type: boolean
-        Saturday:
+        saturday:
           type: boolean
 
     Attendees:

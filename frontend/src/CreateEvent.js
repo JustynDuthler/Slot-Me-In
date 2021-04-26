@@ -37,7 +37,7 @@ export default function CreateEvent() {
   const [capacity, changeCapacity] = React.useState("");
   const [description, changeDescription] = React.useState("");
   const [repeat, changeRepeat] = React.useState(false);
-  const [repeatDays,changeRepeatDays] = React.useState({"Monday":false,"Tuesday":false,"Wednesday":false,"Thursday":false,"Friday":false,"Saturday":false,"Sunday":false});
+  const [repeatDays,changeRepeatDays] = React.useState({"monday":false,"tuesday":false,"wednesday":false,"thursday":false,"friday":false,"saturday":false,"sunday":false});
   const [repeatEnd, changeRepeatEnd] = React.useState(null);
   const [repeatEndError,setRepeatEndError] = React.useState(false);
   const [repeatDaysError, setRepeatDaysError] = React.useState(false);
@@ -49,7 +49,7 @@ export default function CreateEvent() {
   const [precedeError, setPrecedeError] = React.useState(false);
   const [capacityError, setCapacityError] = React.useState(false);
   const [descriptionError, setDescriptionError] = React.useState(false);
-  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+  const days = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
   const history = useHistory();
 
   /**
@@ -136,8 +136,8 @@ export default function CreateEvent() {
     // start date must precede repeat end date
     (repeat && repeatEnd && startDateTime > repeatEnd) ? setRepeatPrecedeError(true) : setRepeatPrecedeError(false);
     // at least one repeat day must be selected
-    (repeat && !repeatDays["Sunday"] && !repeatDays["Monday"] && !repeatDays["Tuesday"] && !repeatDays["Wednesday"] &&
-    !repeatDays["Thursday"] && !repeatDays["Friday"] && !repeatDays["Saturday"]) ? setRepeatDaysError(true) : setRepeatDaysError(false);
+    (repeat && !repeatDays["sunday"] && !repeatDays["monday"] && !repeatDays["tuesday"] && !repeatDays["wednesday"] &&
+    !repeatDays["thursday"] && !repeatDays["friday"] && !repeatDays["saturday"]) ? setRepeatDaysError(true) : setRepeatDaysError(false);
     // make sure capacity is an integer
     (!capacity || capacity % 1 !== 0)
         ? setCapacityError(true) : setCapacityError(false);
@@ -218,31 +218,31 @@ export default function CreateEvent() {
             />
             {repeat && <FormControl required error={repeatError || repeatDaysError} component="fieldset"><FormGroup row>
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="monday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Sunday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="monday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["sunday"]: event.target.checked });}}/>}
                 label="S"
               />
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="tuesday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Monday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="tuesday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["monday"]: event.target.checked });}}/>}
                 label="M"
               />
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="wednesday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Tuesday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="wednesday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["tuesday"]: event.target.checked });}}/>}
                 label="T"
               />
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="thursday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Wednesday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="thursday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["wednesday"]: event.target.checked });}}/>}
                 label="W"
               />
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="friday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Thursday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="friday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["thursday"]: event.target.checked });}}/>}
                 label="T"
               />
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="saturday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Friday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="saturday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["friday"]: event.target.checked });}}/>}
                 label="F"
               />
               <FormControlLabel
-                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="sunday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["Saturday"]: event.target.checked });}}/>}
+                control={<Checkbox icon={<RadioButtonUncheckedIcon />} checkedIcon={<RadioButtonCheckedIcon />} value="sunday" color="primary" onChange={(event) => {changeRepeatDays({ ...repeatDays, ["saturday"]: event.target.checked });}}/>}
                 label="S"
               />
               </FormGroup>
