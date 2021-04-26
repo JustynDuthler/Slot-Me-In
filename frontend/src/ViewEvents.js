@@ -60,7 +60,7 @@ export default function ViewEvents() {
       })
       .then((json) => {
         getRows(json);
-        console.log(rows);
+        console.log(json);
       })
       .catch((error) => {
         console.log(error);

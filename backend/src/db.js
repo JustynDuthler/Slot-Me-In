@@ -84,14 +84,32 @@ exports.insertBusinessAccount = async (businessname, password, phonenumber, busi
 };
 
 exports.getEvents = async () => {
-  const select = 'SELECT * FROM Events';
+  const select =
+  'SELECT e.eventid, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, e.description,'+
+    'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+
+      'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)';
   const query = {
     text: select,
     values: [],
   };
-
+  const days = {'sunday':0,'monday':1,'tuesday':2,'wednesday':3,'thursday':4,'friday':5,'saturday':6};
   const {rows} = await pool.query(query);
-  return rows;
+  const rows2 = [];
+  for (let i in rows) {
+    let row = {};
+    let row_days = {};
+    for (let j in rows[i]) {
+      if (rows[i][j] === null) {continue;}
+      if (j in days) {row_days[j] = rows[i][j];}
+      else {row[j] = rows[i][j];}
+    }
+    if (rows[i]["repeatid"] !== null) {
+      row["repeatdays"] = row_days;
+    }
+    rows2.push(row);
+  }
+  console.log(rows2);
+  return rows2;
 }
 
 
@@ -250,22 +268,41 @@ exports.getBusinessPass = async (email) => {
 // returns list of events for which userid is attending, had to join so that I could get the business name
 exports.getUsersEvents = async (userid) => {
   const queryText =
-    'SELECT eventid, eventname, events.businessid, starttime, endtime, capacity, businessname ' + // Gets relevant information
-      'FROM Events INNER JOIN Businesses ON Events.businessid = Businesses.businessid ' + // Join the events and business table where businessid is the same
-        'WHERE eventid IN (SELECT eventid FROM attendees where userid = $1)'; // Matches events with the event id from attending when userid is the one given
+    'SELECT e.eventid, e.description, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, Businesses.businessname ' + // Gets relevant information
+      'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+
+      'FROM Events e INNER JOIN Businesses ON e.businessid = Businesses.businessid ' + // Join the events and business table where businessid is the same
+        'LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid ' +
+        'WHERE e.eventid IN (SELECT eventid FROM attendees where userid = $1)'; // Matches events with the event id from attending when userid is the one given
   const query = {
     text: queryText,
     values: [userid],
   };
 
+  const days = {'sunday':0,'monday':1,'tuesday':2,'wednesday':3,'thursday':4,'friday':5,'saturday':6};
   const {rows} = await pool.query(query);
-  return rows;
+  const rows2 = [];
+  for (let i in rows) {
+    let row = {};
+    let row_days = {};
+    for (let j in rows[i]) {
+      if (rows[i][j] === null) {continue;}
+      if (j in days) {row_days[j] = rows[i][j];}
+      else {row[j] = rows[i][j];}
+    }
+    if (rows[i]["repeatid"] !== null) {
+      row["repeatdays"] = row_days;
+    }
+    rows2.push(row);
+  }
+  console.log(rows2);
+  return rows2;
 };
 // returns list of events created by businessid
 exports.getBusinessEvents = async (businessid) => {
   const queryText =
-  'SELECT eventid, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, e.description,'+
-    'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) WHERE e.businessid = $1';
+  'SELECT e.eventid, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, e.description,'+
+    'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+
+      'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) WHERE e.businessid = $1';
   const query = {
     text: queryText,
     values: [businessid],
@@ -326,9 +363,9 @@ exports.removeMember = async (buisnessid, userid) => {
   return (rows.length);
 }
 
-/* for the moment we will use this function to remove a user from events after they are removed from 
+/* for the moment we will use this function to remove a user from events after they are removed from
 *  the members table. In order to cascade in the db we must indicate if the event is for users only,
-*  so we can change that but for a demo we can use this 
+*  so we can change that but for a demo we can use this
 */
 exports.removeMemberFromAttendees = async (buisnessid, userid) => {
   // select all eventids for the business and remove the user from the attendees table
