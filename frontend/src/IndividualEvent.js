@@ -65,6 +65,8 @@ const IndividualEvent = (props) => {
   const [signupError, setSignupError] = useState(false);
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
+  const [businessid, setBusinessID] = useState(undefined);
+
 
   const [value, setValue] = React.useState(0);
 
@@ -120,6 +122,7 @@ const IndividualEvent = (props) => {
         }
         throw response;
       }
+      setNumAttendees(numAttendees-1)
       return response;
     }).then((json)=>{
       console.log(json);
@@ -148,6 +151,29 @@ const IndividualEvent = (props) => {
     })
     .then((json) => {
       setEventData(json);
+      setBusinessID(json.businessid);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
+  /* API call to get business data */
+  function getEventData() {
+    var apicall = 'http://localhost:3010/api/businesses/'+businessid;
+    fetch(apicall, {
+      method: 'GET',
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        return response.json();
+      }
+    })
+    .then((json) => {
+      setEventData(json);
+      console.log(json);
     })
     .catch((error) => {
       console.log(error);
@@ -207,6 +233,11 @@ const IndividualEvent = (props) => {
       console.log(error);
     })
     };
+  
+  function getBusinessInfo() {
+
+
+  }
 
   useEffect(() => {
     getEventData();
@@ -267,7 +298,7 @@ const IndividualEvent = (props) => {
 
       </TabPanel>
       <TabPanel value={value} index={1} style={body}>
-        Business info will go here
+        {eventData.businessid}
       </TabPanel>
 
 

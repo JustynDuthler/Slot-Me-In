@@ -347,6 +347,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /businesses/{businessid}:
+    get:
+      description: Retrieves business information associated with a specified businessID
+      tags:
+        - businesses
+      parameters:
+        - name: businessid
+          in: path
+          description: ID of business to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /events:
     post:
       description: Create a new event

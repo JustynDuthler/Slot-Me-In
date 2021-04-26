@@ -17,6 +17,16 @@ exports.getInfo = async (req, res) => {
   res.status(200).json(businessData);
 }
 
+exports.getBusinessByID = async (req, res) => {
+  const event = await db.selectBusiness(req.params.businessid);
+  // 200 if event found, 404 if not found
+  if (!event) {
+    res.status(404).send();
+  } else {
+    res.status(200).json(event);
+  }
+};
+
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
   bcrypt.hash(req.body.password, 10, async (error, hash) => {
