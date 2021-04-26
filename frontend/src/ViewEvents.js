@@ -6,9 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Grid } from "@material-ui/core";
-import Link from '@material-ui/core/Link';
-import { Route, Switch } from "react-router-dom";
-import IndividualEvent from './IndividualEvent';
+import Box from '@material-ui/core/Box';
 
 const Auth = require('./libs/Auth');
 
@@ -36,6 +34,9 @@ const useStyles = makeStyles({
 export default function ViewEvents() {
   const classes = useStyles();
   const [rows, getRows] = React.useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const usersPerPage = 10;
+  const pagesVisited = pageNumber * usersPerPage;
 
   /* API call to get event data */
   function getEvents() {
@@ -60,9 +61,13 @@ export default function ViewEvents() {
       });
   };
 
-  useEffect(() => {
+  useEffect((eventid) => {
     getEvents();
   }, []);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   /*
     This function gets the individual event data for each card and displays it. When the card
@@ -73,24 +78,21 @@ export default function ViewEvents() {
       <Grid item xs={12} sm={6} md={4} key={row.eventid}>
         <Card>
         <CardContent>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" component="h2" align="center">
             {row.eventname}
           </Typography>
-          <Typography className={classes.pos} color="textSecondary">
+          <Typography className={classes.pos} variant="body2" align="center" noWrap>
+            Description: {row.description ? row.description : "N/A"}
+          </Typography>
+          <Typography className={classes.pos} color="textSecondary" variant="body2" align="center">
             Start Time: {new Date(row.starttime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
                   year: 'numeric', hour: 'numeric', minute: 'numeric'})}
           </Typography>
-          <Typography className={classes.pos} color="textSecondary">
+          <Typography className={classes.pos} color="textSecondary" variant="body2" align="center">
             End Time: &nbsp;{new Date(row.endtime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
                   year: 'numeric', hour: 'numeric', minute: 'numeric'})}
-          </Typography>
-          <Typography className={classes.pos} variant="body2" noWrap>
-            Description: {row.description ? row.description : "N/A"}
-          </Typography>
-          <Typography variant="body2" component="p">
-            Capacity: {row.capacity}
           </Typography>
         </CardContent>
         <CardActions>
@@ -105,15 +107,18 @@ export default function ViewEvents() {
   };
 
   return (
-    <Grid
-      container
-      spacing={4}
-      className={classes.gridContainer}
-      justify="center"
-    >
-      {rows.map((row) =>
-        getCard(row)
-      )}
-    </Grid>
-  );
+    <Box mt={5} mb={5}>
+      <h1 style={{ margin:12 }}>Events</h1>
+      <Grid
+        container
+        spacing={4}
+        className={classes.gridContainer}
+        justify="center"
+      >
+        {rows.map((row) =>
+          getCard(row)
+        )}
+      </Grid>
+    </Box>
+);
 }

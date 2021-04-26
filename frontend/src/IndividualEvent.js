@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 
 const Auth = require('./libs/Auth');
 
@@ -15,6 +16,7 @@ const IndividualEvent = (props) => {
   const [attendeesData, setAttendeesData] = useState([]);
   const [signupError, setSignupError] = useState(false);
   const [signupType, setSignupType] = useState(undefined);
+  const [numAttendees, setNumAttendees] = useState(undefined);
 
   /* API call to sign up for events */
   function signUp() {
@@ -30,6 +32,7 @@ const IndividualEvent = (props) => {
             setSignupError(true);
           } else {
             setSignupError(false);
+            setNumAttendees(numAttendees+1)
             return response;
           }
       })
@@ -104,6 +107,7 @@ const IndividualEvent = (props) => {
     })
     .then((json) => {
       setAttendeesData(json);
+      setNumAttendees(json.length);
     })
     .catch((error) => {
       console.log(error);
@@ -148,16 +152,41 @@ const IndividualEvent = (props) => {
   };
 
   return (
-    <div style={body}>
-      <h1>{eventData.eventname}</h1>
-      <h3>{eventData.description}</h3>
-      <p>Start Time: {new Date(eventData.starttime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric', hour: 'numeric', minute: 'numeric'})}</p>
-      <p>End Time: {new Date(eventData.endtime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric', hour: 'numeric', minute: 'numeric'})}</p>
-      <p>Capacity: {attendeesData.length}/{eventData.capacity}</p>
+    <div>
+      <Box mt={10}>
+        <h1>{eventData.eventname}</h1>
+      </Box>
+
+      <Box mb={-2}>
+        <h3>Description</h3>
+      </Box>
+      <Box mt={-2}>
+        <p>{eventData.description ? eventData.description : "N/A"}</p>
+      </Box>
+
+      <Box mb={-2}>
+        <h3>Start Time</h3>
+      </Box>
+      <Box mt={-2}>
+        <p>
+          {new Date(eventData.starttime).toLocaleString('en-US',
+          {weekday: 'long', month: 'short', day: 'numeric',
+          year: 'numeric', hour: 'numeric', minute: 'numeric'})}
+        </p>
+      </Box>
+
+      <Box mb={-2}>
+        <h3>End Time</h3>
+      </Box>
+      <Box mt={-2}>
+        <p>
+          {new Date(eventData.endtime).toLocaleString('en-US',
+          {weekday: 'long', month: 'short', day: 'numeric',
+          year: 'numeric', hour: 'numeric', minute: 'numeric'})}
+        </p>
+      </Box>
+
+      <p>Capacity: {numAttendees}/{eventData.capacity}</p>
       {signupType !== undefined && (<Button variant="contained" color="secondary" onClick={() => {signupType === true ? signUp() : withdraw()}}>
         {signupType === true ? "Sign Up" : "Withdraw"}
       </Button>)}
