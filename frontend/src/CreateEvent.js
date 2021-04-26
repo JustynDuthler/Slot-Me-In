@@ -79,6 +79,10 @@ export default function CreateEvent() {
         headers: Auth.JWTHeaderJson(),
       }).then((response) => {
         if (!response.ok) {
+          if (response.status === 401) {
+            Auth.removeJWT();
+            context.setAuthState(null);
+          }
           throw response;
         }
         return response.json();
