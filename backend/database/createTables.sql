@@ -66,3 +66,14 @@ CREATE TABLE Attendees (
 	FOREIGN KEY (eventid) REFERENCES Events ON DELETE CASCADE,
 	FOREIGN KEY (userid) REFERENCES Users
 );
+
+-- members tables
+CREATE TABLE Members (
+  businessid uuid,
+  memberemail TEXT,
+  userid uuid,
+  PRIMARY KEY (businessid, userid),
+  FOREIGN KEY (businessid) REFERENCES Businesses,
+  FOREIGN KEY (userid) REFERENCES Users,
+  FOREIGN KEY (memberemail) REFERENCES Users(useremail)
+);
