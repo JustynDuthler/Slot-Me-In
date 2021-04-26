@@ -708,6 +708,9 @@ components:
           maxLength: 1
         repeatdays:
           $ref: "#/components/schemas/RepeatDays"
+        repeatstart:
+          type: string
+          format: date-time
         repeatend:
           type: string
           format: date-time
