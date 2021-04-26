@@ -85,6 +85,7 @@ exports.validID = async (req, res) => {
 }
 
 
+// Expects a single email in the request body
 exports.deleteMember = async (req, res) => {
   
 }
