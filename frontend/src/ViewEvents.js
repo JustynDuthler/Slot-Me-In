@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { Grid } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 
+import Context from './Context';
 const Auth = require('./libs/Auth');
 
 const useStyles = makeStyles({
@@ -37,6 +38,7 @@ export default function ViewEvents() {
   const [pageNumber, setPageNumber] = useState(0);
   const usersPerPage = 10;
   const pagesVisited = pageNumber * usersPerPage;
+  const context = React.useContext(Context);
 
   /* API call to get event data */
   function getEvents() {
@@ -47,6 +49,10 @@ export default function ViewEvents() {
     })
       .then((response) => {
         if (!response.ok) {
+          if (response.status === 401) {
+            Auth.removeJWT();
+            context.setAuthState(null);
+          }
           throw response;
         } else {
           return response.json();

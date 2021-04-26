@@ -14,7 +14,6 @@ import Auth from './libs/Auth';
 import IndividualEvent from './IndividualEvent';
 import Paper from '@material-ui/core/Paper';
 
-
 // TODO:
 // 1. Once public business pages are implemented, add a link to them.
 // 2. Once users can become linked to businesses by email for membership
@@ -27,7 +26,7 @@ import Paper from '@material-ui/core/Paper';
 // and list information for that user. It then displays the events a user is signed
 // up grouped by business name. The eventList state holds the currently signed up for
 // events and must be updated(by replacing the reference since it is an object) when a
-// user withdraws from an event. eventState is either null or an eventid. If it's an 
+// user withdraws from an event. eventState is either null or an eventid. If it's an
 // eventid, then display the individualevent page for the event
 export default function UserProfile() {
   const [error, setError] = React.useState(null);
@@ -35,7 +34,7 @@ export default function UserProfile() {
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
   const [eventState, setEventState] = React.useState(null);
-
+  const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   async function removeUserAttending(eventid) {
     var apicall = 'http://localhost:3010/api/users/removeUserAttending';
@@ -45,6 +44,10 @@ export default function UserProfile() {
       headers: Auth.JWTHeaderJson(),
     }).then((response)=>{
       if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(null);
+        }
         throw response;
       }
       return response;
@@ -164,7 +167,7 @@ export default function UserProfile() {
       <Typography>
         Currently signed up for 0 events
       </Typography>
-      <Button 
+      <Button
         type="submit"
         variant="contained"
         color="primary"
@@ -189,9 +192,9 @@ export default function UserProfile() {
         let eventValue = value;
 
         eventListJSX.push(
-          <ListItem 
+          <ListItem
             button={true}
-            key={eventid} 
+            key={eventid}
             onClick={
                 () => {
                   setEventState(eventid);
@@ -240,7 +243,7 @@ export default function UserProfile() {
           </Typography>
           <Typography className={classes.typography} variant="h4">
             {userData.email}
-          </Typography>        
+          </Typography>
           {items}
         </div>
       </Container>

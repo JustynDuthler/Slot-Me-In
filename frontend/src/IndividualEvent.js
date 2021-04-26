@@ -82,6 +82,10 @@ const IndividualEvent = (props) => {
     })
       .then((response) => {
         if (!response.ok) {
+          if (response.status === 401) {
+            Auth.removeJWT();
+            context.setAuthState(null);
+          }
           if (response.status === 409)
             setSignupError(true);
           } else {
@@ -110,6 +114,10 @@ const IndividualEvent = (props) => {
       headers: Auth.JWTHeaderJson(),
     }).then((response)=>{
       if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(null);
+        }
         throw response;
       }
       return response;
@@ -175,6 +183,10 @@ const IndividualEvent = (props) => {
       headers: Auth.JWTHeaderJson(),
     }).then((res) => {
       if (!res.ok) {
+        if (res.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(null);
+        }
         throw res;
       }
       return res.json();

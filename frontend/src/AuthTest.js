@@ -19,6 +19,12 @@ const Auth = require('./libs/Auth');
     setToken(token);
   };
 
+  async function get_invalid_token(){
+    const token = 'invalid_token';
+    Auth.saveJWT(token);
+    setToken(token);
+  };
+
   const remove_token = () => {
     Auth.removeJWT();
     setToken("");
@@ -27,7 +33,7 @@ const Auth = require('./libs/Auth');
 
   const test_token = async () => {
     const foundToken = localStorage.getItem('auth_token');
-    if (foundToken) { 
+    if (foundToken) {
       await fetch("http://localhost:3010/api/test/test_token", {
         method : "POST",
         headers : Auth.JWTHeader(),
@@ -38,7 +44,7 @@ const Auth = require('./libs/Auth');
   };
 
 
-  if (!auth) { 
+  if (!auth) {
     const foundToken = Auth.getJWT();
     if (foundToken) {
       setToken(foundToken);
@@ -49,6 +55,7 @@ const Auth = require('./libs/Auth');
   return (
     <div>
       <button onClick={get_token}>Get Token</button>
+      <button onClick={get_invalid_token}>Get Invalid Token</button>
       <button onClick={remove_token}>Remove Token</button>
       <button onClick={test_token}>Test Token</button>
 
@@ -58,4 +65,3 @@ const Auth = require('./libs/Auth');
     </div>
   );
 }
-  
