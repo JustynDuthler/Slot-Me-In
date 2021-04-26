@@ -13,7 +13,6 @@ import Context from './Context';
 import Auth from './libs/Auth';
 import IndividualEvent from './IndividualEvent';
 import Paper from '@material-ui/core/Paper';
-import Context from './Context';
 
 // TODO:
 // 1. Once public business pages are implemented, add a link to them.
