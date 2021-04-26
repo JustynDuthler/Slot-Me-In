@@ -561,6 +561,8 @@ paths:
       description: adds member emails to members table
       tags:
         -members
+      security:
+        - bearerAuth: []
       requestBody:
         description: array of member emails
         required: true
