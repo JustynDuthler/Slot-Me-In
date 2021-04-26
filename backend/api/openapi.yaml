@@ -761,3 +761,12 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Attendees"
+
+    emails:
+      type: string
+      format: email
+    emailList:
+      type: array
+      items: 
+        $ref: "#/components/schemas/emails"
+
