@@ -87,8 +87,16 @@ export default function BusinessProfile() {
     .then((data) => {
       // The value is an array of events for that business
       let eventDict = {};
+      let repeatDict = {};
       for (var index in data) {
-        eventDict[data[index].eventid] = data[index];
+        if ('repeatid' in data[index]) {
+          if (!(data[index].repeatid in repeatDict)) {
+            repeatDict[data[index].repeatid] = data[index];
+            eventDict[data[index].eventid] = data[index];
+          }
+        } else {
+          eventDict[data[index].eventid] = data[index];
+        }
       }
       console.log(eventDict);
     setEventList(eventDict);
@@ -151,7 +159,7 @@ export default function BusinessProfile() {
     },
   }));
   function repeatInfo(repeatinfo) {
-    
+
   }
   const classes = useStyles();
   if (error) {
@@ -175,9 +183,8 @@ export default function BusinessProfile() {
         <ListItem key={eventid}>
           <ListItemText key={eventid}
             primary={eventName}
-            secondary={dateString}
+            secondary={"Repeating; next event: "+dateString}
           />
-
           <ListItemSecondaryAction key={eventid}>
             <Button key={eventid}
               type="submit"
@@ -188,10 +195,10 @@ export default function BusinessProfile() {
               Cancel event
             </Button>
             <br/>
-            <FormControlLabel
+            {eventList[key].repeatid && <FormControlLabel
               control={<Checkbox value="repeat" color="primary" onChange={(event) => {}}/>}
               label="Delete All"
-            />
+            />}
           </ListItemSecondaryAction>
         </ListItem>
       );

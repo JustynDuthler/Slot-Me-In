@@ -85,7 +85,7 @@ exports.insertBusinessAccount = async (businessname, password, phonenumber, busi
 
 exports.getEvents = async () => {
   const select =
-  'SELECT e.eventid, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, e.description,'+
+  'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime as repeatstart, e.endtime, e.capacity, e.description,'+
     'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+
       'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)';
   const query = {
@@ -111,6 +111,7 @@ exports.getEvents = async () => {
   console.log(rows2);
   return rows2;
 }
+
 
 
 exports.getEventByID = async (eventid) => {
@@ -268,7 +269,7 @@ exports.getBusinessPass = async (email) => {
 // returns list of events for which userid is attending, had to join so that I could get the business name
 exports.getUsersEvents = async (userid) => {
   const queryText =
-    'SELECT e.eventid, e.description, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, Businesses.businessname ' + // Gets relevant information
+    'SELECT e.eventid, e.description, e.eventname, e.businessid, e.starttime, r.starttime as repeatstart, e.endtime, e.capacity, Businesses.businessname, ' + // Gets relevant information
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+
       'FROM Events e INNER JOIN Businesses ON e.businessid = Businesses.businessid ' + // Join the events and business table where businessid is the same
         'LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid ' +
@@ -294,13 +295,13 @@ exports.getUsersEvents = async (userid) => {
     }
     rows2.push(row);
   }
-  console.log(rows2);
+  console.log("r2",rows2);
   return rows2;
 };
 // returns list of events created by businessid
 exports.getBusinessEvents = async (businessid) => {
   const queryText =
-  'SELECT e.eventid, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, e.description,'+
+  'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime as repeatstart, e.endtime, e.capacity, e.description,'+
     'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+
       'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) WHERE e.businessid = $1';
   const query = {
