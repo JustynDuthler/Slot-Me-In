@@ -74,7 +74,8 @@ exports.getEvents = async (req, res) => {
   })
   .catch(error => {
     error.status=500;
-    next(error);
+    console.log(error);
+    res.status(500).send(error);
   });
 };
 

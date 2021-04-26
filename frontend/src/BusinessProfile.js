@@ -12,8 +12,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-
-
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 export default function BusinessProfile() {
@@ -90,6 +90,7 @@ export default function BusinessProfile() {
       for (var index in data) {
         eventDict[data[index].eventid] = data[index];
       }
+      console.log(eventDict);
     setEventList(eventDict);
     },
       (error) => {
@@ -149,6 +150,9 @@ export default function BusinessProfile() {
       flexGrow:1,
     },
   }));
+  function repeatInfo(repeatinfo) {
+    
+  }
   const classes = useStyles();
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -169,6 +173,7 @@ export default function BusinessProfile() {
             primary={eventName}
             secondary={dateString}
           />
+
           <ListItemSecondaryAction key={eventid}>
             <Button key={eventid}
               type="submit"
@@ -178,6 +183,11 @@ export default function BusinessProfile() {
             >
               Cancel event
             </Button>
+            <br/>
+            <FormControlLabel
+              control={<Checkbox value="repeat" color="primary" onChange={(event) => {}}/>}
+              label="Delete All"
+            />
           </ListItemSecondaryAction>
         </ListItem>
       );

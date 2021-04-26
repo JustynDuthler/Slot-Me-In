@@ -103,9 +103,9 @@ export default function ViewEvents() {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" variant="contained" color="primary" href={ '/event/' + row.eventid }
+          <Button size="small" variant="contained" color="primary" href={context.businessState === false ? '/event/' + row.eventid : '/profile/'}
           style={{ margin: "auto" }}>
-            View Event
+            {context.businessState === false ? 'View Event' : 'View Event in Profile'}
           </Button>
         </CardActions>
         </Card>

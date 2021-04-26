@@ -263,14 +263,31 @@ exports.getUsersEvents = async (userid) => {
 };
 // returns list of events created by businessid
 exports.getBusinessEvents = async (businessid) => {
-  const queryText = 'SELECT * FROM Events e WHERE e.businessid = $1';
+  const queryText =
+  'SELECT eventid, e.eventname, e.businessid, e.starttime, e.endtime, e.capacity, e.description,'+
+    'monday,tuesday,wednesday,thursday,friday,saturday,sunday,r.repeattype,r.repeatend,e.repeatid '+'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) WHERE e.businessid = $1';
   const query = {
     text: queryText,
     values: [businessid],
   };
-
+  const days = {'sunday':0,'monday':1,'tuesday':2,'wednesday':3,'thursday':4,'friday':5,'saturday':6};
   const {rows} = await pool.query(query);
-  return rows;
+  const rows2 = [];
+  for (let i in rows) {
+    let row = {};
+    let row_days = {};
+    for (let j in rows[i]) {
+      if (rows[i][j] === null) {continue;}
+      if (j in days) {row_days[j] = rows[i][j];}
+      else {row[j] = rows[i][j];}
+    }
+    if (rows[i]["repeatid"] !== null) {
+      row["repeatdays"] = row_days;
+    }
+    rows2.push(row);
+  }
+  console.log(rows2);
+  return rows2;
 }
 
 exports.checkUserAttending = async (eventid, userid) => {
