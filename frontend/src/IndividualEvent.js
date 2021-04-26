@@ -287,9 +287,13 @@ const IndividualEvent = (props) => {
         </Box>
 
         <p>Capacity: {numAttendees}/{eventData.capacity}</p>
-        {signupType !== undefined && (<Button variant="contained" color="secondary" onClick={() => {signupType === true ? signUp() : withdraw()}}>
-          {signupType === true ? "Sign Up" : "Withdraw"}
-        </Button>)}
+        {signupType !== undefined && 
+          (<Button variant="contained" color="secondary" 
+            disabled={signupType && numAttendees == eventData.capacity}
+            onClick={() => {signupType === true ? signUp() : withdraw()}}>
+              {signupType === true ? "Sign Up" : "Withdraw"}
+          </Button>)
+        }
 
       </TabPanel>
       <TabPanel value={value} index={1} style={body}>
