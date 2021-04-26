@@ -297,4 +297,33 @@ exports.removeUserAttending = async (eventid, userid) => {
 
 }
 
+// removes user from members table
+exports.removeMember = async (buisnessid, userid) => {
+  const deleteM = 'DELETE FROM Members m WHERE m.buisnessid = $1 AND m.userid = $2 RETURNING m.userid';
+  const query = {
+    text: deleteM,
+    values: [buisnessid, userid],
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows.length);
+}
+
+/* for the moment we will use this function to remove a user from events after they are removed from 
+*  the members table. In order to cascade in the db we must indicate if the event is for users only,
+*  so we can change that but for a demo we can use this 
+*/
+exports.removeMemberFromAttendees = async (buisnessid, userid) => {
+  // select all eventids for the business and remove the user from the attendees table
+  const deleteM = 'DELETE FROM Attendees a WHERE a.userid = $2 AND a.eventid IN (SELECT e.eventid \
+                   FROM Events e WHERE e.businessid = $1) RETURNING *'; // return rows deleted
+  const query = {
+    text: deleteM,
+    values: [buisnessid, userid],
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows.length);
+}
+
 console.log(`Connected to database '${process.env.DB}'`);
