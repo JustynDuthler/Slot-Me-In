@@ -352,6 +352,28 @@ exports.removeUserAttending = async (eventid, userid) => {
 
 }
 
+exports.getUserIDByEmail = async (useremail) => {
+  const select = 'SELECT u.userid FROM Users u WHERE u.useremail = $1';
+  const query = {
+    text: select,
+    values: [useremail],
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows[0].userid);
+}
+
+exports.insertMembers = async (memberlist) => {
+  const insert = 'INSERT INTO members(businessid, memberemail, userid) VALUES $1 RETURNING userid';
+  const query = {
+    text: insert,
+    values: [memberlist],
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows.length);
+}
+
 // removes user from members table
 exports.removeMember = async (buisnessid, userid) => {
   const deleteM = 'DELETE FROM Members m WHERE m.buisnessid = $1 AND m.userid = $2 RETURNING m.userid';
