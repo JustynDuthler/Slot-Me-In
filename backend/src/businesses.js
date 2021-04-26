@@ -17,6 +17,17 @@ exports.getInfo = async (req, res) => {
   res.status(200).json(businessData);
 }
 
+exports.getBusinessByID = async (req, res) => {
+  const business = await db.selectBusiness(req.params.businessid);
+  const businessData = {
+    businessid: business.businessid,
+    businessname: business.businessname,
+    email: business.businessemail,
+    phonenumber: business.phonenumber,
+  };
+  res.status(200).json(businessData);
+};
+
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
   bcrypt.hash(req.body.password, 10, async (error, hash) => {

@@ -14,6 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import IndividualEvent from './IndividualEvent';
 
 
 export default function BusinessProfile() {
@@ -25,6 +26,7 @@ export default function BusinessProfile() {
   const [emailInput, setEmailInput] = React.useState("");
   const [emailError, setEmailError] = React.useState(false);
   const [emailMsg, setEmailMsg] = React.useState("");
+  const [eventState, setEventState] = React.useState(null);
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   function deleteEvent(eventid) {
@@ -87,8 +89,16 @@ export default function BusinessProfile() {
     .then((data) => {
       // The value is an array of events for that business
       let eventDict = {};
+      let repeatDict = {};
       for (var index in data) {
-        eventDict[data[index].eventid] = data[index];
+        if ('repeatid' in data[index]) {
+          if (!(data[index].repeatid in repeatDict)) {
+            repeatDict[data[index].repeatid] = data[index];
+            eventDict[data[index].eventid] = data[index];
+          }
+        } else {
+          eventDict[data[index].eventid] = data[index];
+        }
       }
       console.log(eventDict);
     setEventList(eventDict);
@@ -151,7 +161,14 @@ export default function BusinessProfile() {
     },
   }));
   function repeatInfo(repeatinfo) {
-    
+
+  }
+  function formatDate(dateString) {
+    return (dateString.getHours() % 12) + ":" +
+    // display 2 digit minutes if less than 10 minutes
+    // https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
+    ((dateString.getMinutes()<10?'0':'') + dateString.getMinutes()) +
+    (dateString.getHours() / 12 >= 1 ? "PM" : "AM") + " " + dateString.toDateString();
   }
   const classes = useStyles();
   if (error) {
@@ -160,104 +177,113 @@ export default function BusinessProfile() {
     return <div>Loading...</div>;
   } else {
     const items = [];
+    const items2 = [];
     const members = [];
     let eventListJSX = [];
     for (var key in eventList) {
       let eventid = eventList[key].eventid;
       let eventName = eventList[key].eventname;
       let startDate = new Date(eventList[key].starttime);
-      let dateString = (startDate.getHours() % 12) + ":" +
-      // display 2 digit minutes if less than 10 minutes
-      // https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
-      ((startDate.getMinutes()<10?'0':'') + startDate.getMinutes()) +
-      (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
+      let dateString = formatDate(startDate);
+      let repeatDateString = eventList[key].repeatid ? formatDate(new Date(eventList[key].repeatstart)) : '';
       eventListJSX.push(
         <ListItem key={eventid}>
           <ListItemText key={eventid}
             primary={eventName}
-            secondary={dateString}
+            secondary={eventList[key].repeatid ? ("Next: \n "+repeatDateString) : dateString}
           />
-
           <ListItemSecondaryAction key={eventid}>
             <Button key={eventid}
               type="submit"
               variant="contained"
               color="primary"
-              onClick={() => {deleteEventAndReload(eventid, eventList)}}
+              onClick={() => {eventList[key].repeatid ? setEventState(eventid) : deleteEventAndReload(eventid, eventList)}}
             >
-              Cancel event
+              {eventList[key].repeatid ? "See more" : "Cancel event"}
             </Button>
-            <br/>
-            <FormControlLabel
-              control={<Checkbox value="repeat" color="primary" onChange={(event) => {}}/>}
-              label="Delete All"
-            />
           </ListItemSecondaryAction>
         </ListItem>
       );
 
     }
-    items.push(
-      <Grid item item xs={6} md={6} key={businessData.businessname}>
-        <Typography variant="h6">
-          Created Events
-        </Typography>
-        <Divider/>
-        <List>
-        {eventListJSX}
-        </List>
-        {eventListJSX.length === 0 && <Typography>
-          Currently created 0 events
-        </Typography>}
-        {eventListJSX.length === 0 && <Button
+    if (eventState !== null) {
+      // if the eventState is set to an eventID then show an individualEvent page with a back button
+      console.log("gamer time");
+      items2.push(
+        <div key="event" className={classes.eventStyle}>
+          <Button
             type="submit"
             variant="contained"
             color="primary"
-            href="/events/create"
-        >
-          Create Events
-        </Button>}
-      </Grid>
-    );
-    items.push(
-      <Grid item item xs={6} md={6} key={"test"}>
-        <Typography variant="h6">
-          Members
-        </Typography>
-        <Divider/>
-        <List>
-        {members}
-        </List>
-        {members.length === 0 && <Typography>
-          Currently added 0 members
-        </Typography>}
-        <TextField
-          error={emailError}
-          helperText={emailError ? emailMsg : ""}
-          variant="filled"
-          margin="normal"
-          fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
-          onChange={(event) => {setEmailInput(event.target.value);}}
-          onKeyPress={handleKeypress}
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          onClick={validateInput}
-        >
-          Add Member
-        </Button>
-      </Grid>
-    );
-    const items2 = [];
-    items2.push(<Grid key="eventList" container spacing={8}>{items}</Grid>);
+            onClick={() => {setEventState(null)}}
+          >
+            Back
+          </Button>
+          <IndividualEvent eventID={eventState}/>
+        </div>
+      );
+    } else {
+      items.push(
+        <Grid item item xs={6} md={6} key={businessData.businessname}>
+          <Typography variant="h6">
+            Created Events
+          </Typography>
+          <Divider/>
+          <List>
+          {eventListJSX}
+          </List>
+          {eventListJSX.length === 0 && <Typography>
+            Currently created 0 events
+          </Typography>}
+          {eventListJSX.length === 0 && <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              href="/events/create"
+          >
+            Create Events
+          </Button>}
+        </Grid>
+      );
+      items.push(
+        <Grid item item xs={6} md={6} key={"test"}>
+          <Typography variant="h6">
+            Members
+          </Typography>
+          <Divider/>
+          <List>
+          {members}
+          </List>
+          {members.length === 0 && <Typography>
+            Currently added 0 members
+          </Typography>}
+          <TextField
+            error={emailError}
+            helperText={emailError ? emailMsg : ""}
+            variant="filled"
+            margin="normal"
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            onChange={(event) => {setEmailInput(event.target.value);}}
+            onKeyPress={handleKeypress}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={validateInput}
+          >
+            Add Member
+          </Button>
+        </Grid>
+      );
+      items2.push(<Grid key="eventList" container spacing={8}>{items}</Grid>);
+    }
     return (
       <Container component="main" maxWidth="md">
         <div className={classes.paper}>
