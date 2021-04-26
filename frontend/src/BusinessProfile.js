@@ -166,7 +166,11 @@ export default function BusinessProfile() {
       let eventid = eventList[key].eventid;
       let eventName = eventList[key].eventname;
       let startDate = new Date(eventList[key].starttime);
-      let dateString = (startDate.getHours() % 12) + ":" + startDate.getMinutes() + (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
+      let dateString = (startDate.getHours() % 12) + ":" +
+      // display 2 digit minutes if less than 10 minutes
+      // https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
+      ((startDate.getMinutes()<10?'0':'') + startDate.getMinutes()) +
+      (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
       eventListJSX.push(
         <ListItem key={eventid}>
           <ListItemText key={eventid}
