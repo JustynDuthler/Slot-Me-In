@@ -765,5 +765,5 @@ components:
     emailList:
       type: array
       items: 
-        $ref: "#/components/schemaa/emails"
+        $ref: "#/components/schemas/emails"
 
