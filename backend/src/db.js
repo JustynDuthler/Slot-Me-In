@@ -364,10 +364,9 @@ exports.getUserIDByEmail = async (useremail) => {
 }
 
 exports.insertMembers = async (memberlist) => {
-  const insert = 'INSERT INTO members(businessid, memberemail, userid) VALUES $1 RETURNING userid';
+  const insert = 'INSERT INTO members(businessid, memberemail, userid) VALUES ' + memberlist + ' RETURNING userid';
   const query = {
     text: insert,
-    values: [memberlist],
   }
 
   const {rows} = await pool.query(query);
