@@ -18,13 +18,14 @@ exports.getInfo = async (req, res) => {
 }
 
 exports.getBusinessByID = async (req, res) => {
-  const event = await db.selectBusiness(req.params.businessid);
-  // 200 if event found, 404 if not found
-  if (!event) {
-    res.status(404).send();
-  } else {
-    res.status(200).json(event);
-  }
+  const business = await db.selectBusiness(req.params.businessid);
+  const businessData = {
+    businessid: business.businessid,
+    businessname: business.businessname,
+    email: business.businessemail,
+    phonenumber: business.phonenumber,
+  };
+  res.status(200).json(businessData);
 };
 
 exports.signup = async (req, res) => {
