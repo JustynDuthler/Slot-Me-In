@@ -590,6 +590,8 @@ paths:
       description: adds member emails to members table
       tags:
         - members
+      security:
+        - bearerAuth: []
       requestBody:
         description: array of member emails
         required: true
@@ -597,8 +599,6 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/EmailList"
-      security:
-        - bearerAuth: []
       responses:
         201:
           description: Successfully inserted emails
