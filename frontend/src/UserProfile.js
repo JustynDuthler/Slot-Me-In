@@ -13,7 +13,11 @@ import Context from './Context';
 import Auth from './libs/Auth';
 import IndividualEvent from './IndividualEvent';
 import Paper from '@material-ui/core/Paper';
-
+import DateFnsUtils from '@date-io/date-fns';
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import clsx from "clsx";
+import format from "date-fns/format";
+import {IconButton} from "@material-ui/core";
 // TODO:
 // 1. Once public business pages are implemented, add a link to them.
 // 2. Once users can become linked to businesses by email for membership
@@ -34,6 +38,8 @@ export default function UserProfile() {
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
   const [eventState, setEventState] = React.useState(null);
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [showAll, setShowAll] = React.useState(false);
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   async function removeUserAttending(eventid) {
@@ -134,9 +140,79 @@ export default function UserProfile() {
     typography: {
       flexGrow:1,
     },
+    select: {
+      background: theme.palette.secondary.main,
+      color: theme.palette.common.white,
+    },
+    noselect: {
+      background: theme.palette.secondary.light,
+      color: theme.palette.common.white,
+    },
+    highlight: {
+      background: theme.palette.primary.light,
+      color: theme.palette.common.white,
+    },
+    highlight2: {
+      background: theme.palette.primary.main,
+      color: theme.palette.common.white,
+    },
+    nonCurrentMonthDay: {
+      color: theme.palette.text.disabled,
+    },
+    day: {
+      width: 36,
+      height: 36,
+      fontSize: theme.typography.caption.fontSize,
+      margin: "0 2px",
+      color: "inherit",
+    },
+    customDayHighlight: {
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: "2px",
+      right: "2px",
+      border: `1px solid ${theme.palette.secondary.main}`,
+      borderRadius: "50%",
+    },
   }));
   const classes = useStyles();
 
+  const renderWrappedDays = (date, selectedDate, dayInCurrentMonth) => {
+    let dateClone = new Date(date);
+    let selectedDateClone = new Date(selectedDate);
+    let currentDay = dateClone.getDate() == selectedDate.getDate() && dateClone.getMonth() == selectedDate.getMonth() && dateClone.getYear() == selectedDate.getYear();
+
+    let isEvent = false;
+    for (let business in eventList) {
+      for (let e in eventList[business]) {
+        let date = new Date(eventList[business][e].starttime);
+        if (date.getDate() == dateClone.getDate()&&date.getMonth() == dateClone.getMonth()&&date.getYear() == dateClone.getYear()) {
+          isEvent = true;
+          break;
+        }
+      }
+    }
+    const wrapperClassName = clsx({
+      [classes.select]: isEvent && currentDay && dayInCurrentMonth,
+      [classes.noselect]: !isEvent && currentDay && dayInCurrentMonth,
+      [classes.highlight]: isEvent && dateClone.getDay() % 2 && !currentDay && dayInCurrentMonth,
+      [classes.highlight2]: isEvent && dateClone.getDay() % 2 === 0 && !currentDay && dayInCurrentMonth,
+      [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
+    });
+
+    const dayClassName = clsx(classes.day, {
+      [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth,
+    });
+
+    return (
+      <div className={wrapperClassName}>
+        <IconButton className={dayClassName}>
+          <span> {format(dateClone, "d")} </span>
+        </IconButton>
+      </div>
+    );
+  }
 
   // UI Stuff
   const items = [];
@@ -194,7 +270,7 @@ export default function UserProfile() {
         (startDate.getHours() / 12 >= 1 ? "PM" : "AM") + " " + startDate.toDateString();
         let eventKey = key;
         let eventValue = value;
-
+        if (showAll || (startDate.getDate() == selectedDate.getDate()&&startDate.getMonth() == selectedDate.getMonth()&&startDate.getYear() == selectedDate.getYear()))
         eventListJSX.push(
           <ListItem
             button={true}
@@ -222,20 +298,53 @@ export default function UserProfile() {
           </ListItem>
         );
       }
-
+      if (eventListJSX.length > 0) {
+        items2.push(
+          <Grid item xs={12} key={key}>
+            <Typography variant="h6">
+              {key}
+            </Typography>
+            <Divider/>
+            <List>
+            {eventListJSX}
+            </List>
+          </Grid>
+        );
+      }
+    }
+    if (items2.length === 0) {
       items2.push(
-        <Grid item xs={12} md={6} key={key}>
+        <Grid container item xs={12} key="noEvents" alignItems="center" justify="center" direction="column">
           <Typography variant="h6">
-            {key}
-          </Typography>
-          <Divider/>
-          <List>
-          {eventListJSX}
-          </List>
+            No events for selected date
+          </Typography><br/>
+          <Button key="showAll"
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={() => {setShowAll(true)}}
+          >
+            Show All Registered Events
+          </Button>
         </Grid>
       );
+    } else {
+      items2.push(
+      <Grid container item xs={12} key="hasEvents" alignItems="center" justify="center" direction="column">
+        <div key="event" className={classes.eventStyle} key="showAll">
+        <Button key="showAll"
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={() => {setShowAll(!showAll)}}
+        >
+          {showAll ? "Show Only For Date" : "Show All Registered Events"}
+        </Button>
+        </div>
+      </Grid>
+      );
     }
-    items.push(<Grid key="eventList" container spacing={8}>{items2}</Grid>);
+    items.push(<Grid item key="eventList" container justify="flex-end" spacing={8}>{items2}</Grid>);
   }
 
   return (
@@ -248,7 +357,22 @@ export default function UserProfile() {
           <Typography className={classes.typography} variant="h4">
             {userData.email}
           </Typography>
-          {items}
+          <Grid container justify="center" direction="row" spacing={8}>
+            {eventState === null &&<Grid item xs={6} container justify="flex-start">
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePicker
+                variant="static"
+                label="Event select"
+                value={selectedDate}
+                onChange={(date) => {setSelectedDate(date)}}
+                renderDay={renderWrappedDays}
+              />
+              </MuiPickersUtilsProvider>
+            </Grid>}
+            <Grid item container xs={6} md={6}>
+            {items}
+            </Grid>
+          </Grid>
         </div>
       </Container>
     </Paper>
