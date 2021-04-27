@@ -233,21 +233,8 @@ export default function BusinessProfile() {
       background: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
-    firstHighlight: {
-      extend: "highlight",
-      borderTopLeftRadius: "50%",
-      borderBottomLeftRadius: "50%",
-    },
-    endHighlight: {
-      extend: "highlight",
-      borderTopRightRadius: "50%",
-      borderBottomRightRadius: "50%",
-    },
     nonCurrentMonthDay: {
       color: theme.palette.text.disabled,
-    },
-    highlightNonCurrentMonthDay: {
-      color: "#676767",
     },
     day: {
       width: 36,
@@ -386,6 +373,7 @@ export default function BusinessProfile() {
         let startDate = new Date(eventList[key].starttime);
         let dateString = formatDate(startDate);
         let repeatDateString = eventList[key].repeatid ? formatDate(new Date(eventList[key].repeatstart)) : '';
+        if (startDate.getDate() == selectedDate.getDate() && startDate.getMonth() == selectedDate.getMonth() && startDate.getYear() == selectedDate.getYear())
         eventListJSX.push(
           <ListItem button onClick={() => {setEventState(eventid);}} key={eventid}>
             <ListItemText key={eventid}
@@ -443,10 +431,10 @@ export default function BusinessProfile() {
           <List>
           {eventListJSX}
           </List>
-          {eventListJSX.length === 0 && <Typography>
+          {eventList.length === 0 && <Typography>
             Currently created 0 events
           </Typography>}
-          {eventListJSX.length === 0 && <Button
+          {eventList.length === 0 && <Button
               type="submit"
               variant="contained"
               color="primary"
