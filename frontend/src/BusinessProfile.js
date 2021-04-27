@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import {makeStyles} from '@material-ui/core/styles';
+import {IconButton} from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid';
@@ -15,7 +16,11 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import IndividualEvent from './IndividualEvent';
+import DateFnsUtils from '@date-io/date-fns';
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Box from '@material-ui/core/Box';
+import clsx from "clsx";
+import format from "date-fns/format";
 
 
 export default function BusinessProfile() {
@@ -28,8 +33,8 @@ export default function BusinessProfile() {
   const [emailError, setEmailError] = React.useState(false);
   const [emailMsg, setEmailMsg] = React.useState("");
   const [eventState, setEventState] = React.useState(null);
-  const [showRepeating, setShowRepeating] = React.useState(false);
   const [repeatingEventList,setRepeatingEventList] = React.useState({});
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   function deleteEvent(eventid,all) {
@@ -212,20 +217,122 @@ export default function BusinessProfile() {
     typography: {
       flexGrow:1,
     },
+    select: {
+      background: theme.palette.secondary.main,
+      color: theme.palette.common.white,
+    },
+    noselect: {
+      background: theme.palette.secondary.light,
+      color: theme.palette.common.white,
+    },
+    highlight: {
+      background: theme.palette.primary.light,
+      color: theme.palette.common.white,
+    },
+    highlight2: {
+      background: theme.palette.primary.main,
+      color: theme.palette.common.white,
+    },
+    firstHighlight: {
+      extend: "highlight",
+      borderTopLeftRadius: "50%",
+      borderBottomLeftRadius: "50%",
+    },
+    endHighlight: {
+      extend: "highlight",
+      borderTopRightRadius: "50%",
+      borderBottomRightRadius: "50%",
+    },
+    nonCurrentMonthDay: {
+      color: theme.palette.text.disabled,
+    },
+    highlightNonCurrentMonthDay: {
+      color: "#676767",
+    },
+    day: {
+      width: 36,
+      height: 36,
+      fontSize: theme.typography.caption.fontSize,
+      margin: "0 2px",
+      color: "inherit",
+    },
+    customDayHighlight: {
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: "2px",
+      right: "2px",
+      border: `1px solid ${theme.palette.secondary.main}`,
+      borderRadius: "50%",
+    },
   }));
-  function repeatInfo(eventid) {
-    setEventState(eventid);
-    setShowRepeating(true);
-    var repeating = [];
-  }
-  function formatDate(dateString) {
+
+  function formatDate(dateString,includeDate=true) {
     return (dateString.getHours() % 12) + ":" +
     // display 2 digit minutes if less than 10 minutes
     // https://stackoverflow.com/questions/8935414/getminutes-0-9-how-to-display-two-digit-numbers
     ((dateString.getMinutes()<10?'0':'') + dateString.getMinutes()) +
-    (dateString.getHours() / 12 >= 1 ? "PM" : "AM") + " " + dateString.toDateString();
+    (dateString.getHours() / 12 >= 1 ? "PM" : "AM") + " " + (includeDate ? dateString.toDateString():'');
   }
   const classes = useStyles();
+  const renderWrappedDays = (date, selectedDate, dayInCurrentMonth) => {
+    let dateClone = new Date(date);
+    let selectedDateClone = new Date(selectedDate);
+    let currentDay = dateClone.getDate() == selectedDate.getDate() && dateClone.getMonth() == selectedDate.getMonth() && dateClone.getYear() == selectedDate.getYear();
+
+    let isEvent = false;
+    if (eventState) {
+      let rev = repeatingEventList[eventList[eventState].repeatid];
+      for (let re in rev) {
+        let reDate = new Date(rev[re].starttime);
+        if (reDate.getDate() == dateClone.getDate()) {
+        }
+        if (reDate.getDate() == dateClone.getDate()&&reDate.getMonth() == dateClone.getMonth()&&reDate.getYear() == dateClone.getYear()) {
+          isEvent = true;
+          break;
+        }
+      }
+    } else {
+      for (let e in eventList) {
+        if (eventList[e].repeatid) {
+          let rev = repeatingEventList[eventList[e].repeatid];
+          for (let re in rev) {
+            let reDate = new Date(rev[re].starttime);
+            if (reDate.getDate() == dateClone.getDate()&&reDate.getMonth() == dateClone.getMonth()&&reDate.getYear() == dateClone.getYear()) {
+              isEvent = true;
+              break;
+            }
+          }
+          if (isEvent) {break};
+        } else {
+          let date = new Date(eventList[e].starttime);
+          if (date.getDate() == dateClone.getDate()&&date.getMonth() == dateClone.getMonth()&&date.getYear() == dateClone.getYear()) {
+            isEvent = true;
+            break;
+          }
+        }
+      }
+    }
+    const wrapperClassName = clsx({
+      [classes.select]: isEvent && currentDay && dayInCurrentMonth,
+      [classes.noselect]: !isEvent && currentDay && dayInCurrentMonth,
+      [classes.highlight]: isEvent && dateClone.getDay() % 2 && !currentDay && dayInCurrentMonth,
+      [classes.highlight2]: isEvent && dateClone.getDay() % 2 === 0 && !currentDay && dayInCurrentMonth,
+      [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
+    });
+
+    const dayClassName = clsx(classes.day, {
+      [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth,
+    });
+
+    return (
+      <div className={wrapperClassName}>
+        <IconButton className={dayClassName}>
+          <span> {format(dateClone, "d")} </span>
+        </IconButton>
+      </div>
+    );
+  }
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
@@ -237,63 +344,20 @@ export default function BusinessProfile() {
     let eventListJSX = [];
     let repEventListJSX = [];
     for (var key in eventList) {
-      let eventid = eventList[key].eventid;
-      let eventName = eventList[key].eventname;
-      let startDate = new Date(eventList[key].starttime);
-      let dateString = formatDate(startDate);
-      let repeatDateString = eventList[key].repeatid ? formatDate(new Date(eventList[key].repeatstart)) : '';
-      eventListJSX.push(
-        <ListItem button onClick={() => {setEventState(eventid);setShowRepeating(false);}} key={eventid}>
-          <ListItemText key={eventid}
-            primary={eventName}
-            secondary={eventList[key].repeatid ? ("Next: \n "+dateString) : dateString}
-          />
-          <ListItemSecondaryAction key={eventid}>
-            <Button key={eventid}
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={() => {eventList[key].repeatid ? repeatInfo(eventid) : deleteEventAndReload(eventid, null)}}
-            >
-              {eventList[key].repeatid ? "See more" : "Cancel event"}
-            </Button>
-          </ListItemSecondaryAction>
-        </ListItem>
-      );
-
-    }
-    if (eventState !== null) {
-      // if the eventState is set to an eventID then show an individualEvent page with a back button
-      if (!showRepeating) {
-        items2.push(
-          <div key="event" className={classes.eventStyle}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={() => {setEventState(null)}}
-            >
-              Back
-            </Button>
-            <IndividualEvent eventID={eventState}/>
-          </div>
-        );
-      } else {
-        let rev = repeatingEventList[eventList[eventState].repeatid];
-        let eventName = "";
-        for (var key in rev) {
-          let eventid = rev[key].eventid;
-          eventName = rev[key].eventname;
-          let startDate = new Date(rev[key].starttime);
-          let endDate = new Date(rev[key].endtime);
+      if (eventList[key].repeatid) {
+        let rev = repeatingEventList[eventList[key].repeatid];
+        for (let re in rev) {
+          let eventid = rev[re].eventid;
+          let eventName = rev[re].eventname;
+          let startDate = new Date(rev[re].starttime);
           let dateString = formatDate(startDate);
-          let rid = rev[key].repeatid;
-          let repeatDateString = rid ? formatDate(new Date(rev[key].repeatstart)) : '';
-          repEventListJSX.push(
-            <ListItem key={eventid}>
+          let rid = rev[re].repeatid;
+          if (startDate.getDate() == selectedDate.getDate() && startDate.getMonth() == selectedDate.getMonth() && startDate.getYear() == selectedDate.getYear())
+          eventListJSX.push(
+            <ListItem button onClick={() => {setEventState(eventid);}} key={eventid}>
               <ListItemText key={eventid}
-                primary={"Starts: "+dateString}
-                secondary={"Ends: "+formatDate(endDate)}
+                primary={eventName}
+                secondary={rid ? ("Next: \n "+dateString) : dateString}
               />
               <ListItemSecondaryAction key={eventid}>
                 <Button key={eventid}
@@ -302,41 +366,62 @@ export default function BusinessProfile() {
                   color="primary"
                   onClick={() => {deleteEventAndReload(eventid, rid)}}
                 >
-                  Cancel event
+                  Cancel Event
+                </Button><br/>
+                <Button key={rid}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {deleteEventAndReload(eventid, rid,true)}}
+                >
+                  Delete All
                 </Button>
               </ListItemSecondaryAction>
             </ListItem>
           );
-
         }
-        items.push(
-          <Grid item item xs={6} md={6} key={businessData.businessname}>
-            <Typography variant="h6">
-              {eventName}
-            </Typography>
-            <Divider/>
-            <List>
-            {repEventListJSX}
-            </List>
-          </Grid>
+      } else {
+        let eventid = eventList[key].eventid;
+        let eventName = eventList[key].eventname;
+        let startDate = new Date(eventList[key].starttime);
+        let dateString = formatDate(startDate);
+        let repeatDateString = eventList[key].repeatid ? formatDate(new Date(eventList[key].repeatstart)) : '';
+        eventListJSX.push(
+          <ListItem button onClick={() => {setEventState(eventid);}} key={eventid}>
+            <ListItemText key={eventid}
+              primary={eventName}
+              secondary={eventList[key].repeatid ? ("Next: \n "+dateString) : dateString}
+            />
+            <ListItemSecondaryAction key={eventid}>
+              <Button key={eventid}
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={() => {deleteEventAndReload(eventid, null)}}
+              >
+                {eventList[key].repeatid ? "See more" : "Cancel event"}
+              </Button>
+            </ListItemSecondaryAction>
+          </ListItem>
         );
-        items2.push(<div key="buttons"><Button
-          key="backbutton"
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={() => {setEventState(null)}}
-        > Back
-        </Button><Button
-          key="deleteall"
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={() => {deleteEventAndReload(rev[0].eventid,rev[0].repeatid,true)}}
-        > Delete All
-        </Button></div>);
-        items2.push(<Grid key="eventList" container justify="center" spacing={8}>{items}</Grid>);
       }
+
+    }
+    if (eventState !== null) {
+      // if the eventState is set to an eventID then show an individualEvent page with a back button
+      items2.push(
+        <div key="event" className={classes.eventStyle}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={() => {setEventState(null)}}
+          >
+            Back
+          </Button>
+          <IndividualEvent eventID={eventState}/>
+        </div>
+      );
     } else {
       items.push(
         <Grid item item xs={6} md={6} key={businessData.businessname}>
@@ -344,6 +429,17 @@ export default function BusinessProfile() {
             Created Events
           </Typography>
           <Divider/>
+          <Grid container justify="center">
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DatePicker
+            variant="static"
+            label="Event select"
+            value={selectedDate}
+            onChange={(date) => {setSelectedDate(date)}}
+            renderDay={renderWrappedDays}
+          />
+          </MuiPickersUtilsProvider>
+          </Grid>
           <List>
           {eventListJSX}
           </List>
@@ -409,6 +505,7 @@ export default function BusinessProfile() {
             {businessData.email}
           </Typography>
           {items2}
+
         </div>
       </Container>
     );

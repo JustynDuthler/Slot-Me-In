@@ -60,7 +60,7 @@ exports.delete = async (req, res) => {
     // 404 if event not found
     res.status(404).send();
   } else {
-    if (req.query.deleteAll && event.repeatid) {
+    if (req.body.deleteAll && event.repeatid) {
       // deleteAll is true and event is an instance of a repeating event
       // deletion of RepeatingEvent will cascade to Events
       await db.deleteRepeatingEvent(event.repeatid);
