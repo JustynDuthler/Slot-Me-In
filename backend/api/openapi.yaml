@@ -602,14 +602,17 @@ paths:
       responses:
         201:
           description: Successfully inserted emails
+        409:
+          description: emails already members or not users
         500:
-          description: cannot insert emails
+          description: cannot insert into database
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        
       
       
 
