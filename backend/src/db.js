@@ -108,7 +108,6 @@ exports.getEvents = async () => {
     }
     rows2.push(row);
   }
-  console.log(rows2);
   return rows2;
 }
 
@@ -295,7 +294,6 @@ exports.getUsersEvents = async (userid) => {
     }
     rows2.push(row);
   }
-  console.log("r2",rows2);
   return rows2;
 };
 // returns list of events created by businessid
@@ -324,7 +322,6 @@ exports.getBusinessEvents = async (businessid) => {
     }
     rows2.push(row);
   }
-  console.log(rows2);
   return rows2;
 }
 
@@ -364,7 +361,7 @@ exports.getUserIDByEmail = async (useremail) => {
 }
 
 exports.insertMembers = async (memberlist) => {
-  const insert = 'INSERT INTO members(businessid, memberemail, userid) VALUES ' + memberlist + ' RETURNING userid';
+  const insert = 'INSERT INTO Members(businessid, memberemail, userid) VALUES ' + memberlist + ' RETURNING userid';
   const query = {
     text: insert,
   }

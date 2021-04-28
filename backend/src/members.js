@@ -9,10 +9,10 @@ exports.addMembers = async (req, res) => {
     const businessid = req.payload.id;
     /* create an array of userIDs */
     let userID = []
-    console.log(req.body);
+    
     let length = req.body.length;
     /* fill userID array with userIDs corresponding to the emails in the
-       same order */   
+       same order */
     for(i = 0; i < length; i++) {
         userID[i] = await db.getUserIDByEmail(req.body[i]);
     }
@@ -28,7 +28,7 @@ exports.addMembers = async (req, res) => {
             if(userID[i] == existingMembers[j].userid) {
                 existFlag = 1;
             }
-        } 
+        }
         /* if userid is already a member or not a user skip it */
         if (existFlag == 1 || userID[i] == null) {
             existFlag = 0;
@@ -55,4 +55,3 @@ exports.addMembers = async (req, res) => {
         res.status(409).send();
     }
 }
-

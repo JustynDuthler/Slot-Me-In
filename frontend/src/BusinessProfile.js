@@ -36,6 +36,7 @@ export default function BusinessProfile() {
   const [repeatingEventList,setRepeatingEventList] = React.useState({});
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const context = React.useContext(Context);
+  var uniquekey = 0;
   // handles removing the user from the event id the button click corresponds to
   function deleteEvent(eventid,all) {
     console.log(eventid);
@@ -177,7 +178,7 @@ export default function BusinessProfile() {
     //     setError(error);
     //   }
     // )
-    // await Promise.all([businessRes, eventRes]);
+    await Promise.all([businessRes, eventRes]);
     setIsLoaded(true);
   }, []);
   function handleSubmit(event,memberlist) {
@@ -189,10 +190,14 @@ export default function BusinessProfile() {
     })
     .then((response) => {
       if (!response.ok) {
+        if (response.status === 409) {
+          setEmailError(true);
+          setEmailMsg("Error: Either some members don't exist or are already added")
+        }
         throw response;
       } else {
         setEmailError(false);
-        return response.json();
+        return response;
       }
     })
     .then((json) => {
@@ -210,11 +215,11 @@ export default function BusinessProfile() {
     for (let e in memberArray) {
       if (!emailRegex.test(memberArray[e])) {
         setEmailError(true);
-        setEmailMsg("Invalid email.");
+        setEmailMsg("One or more invalid email(s).");
         return;
       }
     }
-    handleSubmit(event);
+    handleSubmit(event,memberArray);
   }
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
@@ -484,7 +489,7 @@ export default function BusinessProfile() {
         </Grid>
       );
       items.push(
-        <Grid item item xs={6} md={6} key={"test"}>
+        <Grid key="member list" item item xs={6} md={6} key={"test"}>
           <Typography variant="h6">
             Members
           </Typography>
@@ -521,7 +526,7 @@ export default function BusinessProfile() {
           </Button>
         </Grid>
       );
-      items2.push(<Grid key="eventList" container spacing={8}>{items}</Grid>);
+      items2.push(<Grid key="eventList2" container spacing={8}>{items}</Grid>);
     }
     return (
       <Container component="main" maxWidth="md">
