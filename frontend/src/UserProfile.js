@@ -39,7 +39,7 @@ export default function UserProfile() {
   const [eventList, setEventList] = React.useState({});
   const [eventState, setEventState] = React.useState(null);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
-  const [showAll, setShowAll] = React.useState(false);
+  const [showAll, setShowAll] = React.useState(true);
   const context = React.useContext(Context);
   // handles removing the user from the event id the button click corresponds to
   async function removeUserAttending(eventid) {
@@ -149,7 +149,7 @@ export default function UserProfile() {
       color: theme.palette.common.white,
     },
     highlight: {
-      background: theme.palette.primary.light,
+      background: theme.palette.primary.main,
       color: theme.palette.common.white,
     },
     highlight2: {
@@ -196,8 +196,7 @@ export default function UserProfile() {
     const wrapperClassName = clsx({
       [classes.select]: isEvent && currentDay && dayInCurrentMonth,
       [classes.noselect]: !isEvent && currentDay && dayInCurrentMonth,
-      [classes.highlight]: isEvent && dateClone.getDay() % 2 && !currentDay && dayInCurrentMonth,
-      [classes.highlight2]: isEvent && dateClone.getDay() % 2 === 0 && !currentDay && dayInCurrentMonth,
+      [classes.highlight]: isEvent && !currentDay && dayInCurrentMonth,
       [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
     });
 
@@ -358,7 +357,7 @@ export default function UserProfile() {
             {userData.email}
           </Typography>
           <Grid container justify="center" direction="row" spacing={8}>
-            {eventState === null &&<Grid item xs={6} container justify="flex-start">
+            {(eventState === null && showAll === false)&&<Grid item xs={6} container justify="flex-start">
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DatePicker
                 variant="static"
