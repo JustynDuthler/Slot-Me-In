@@ -21,9 +21,13 @@ exports.addMembers = async (req, res) => {
     let memberListString = '';
     let existFlag = 0;
     let firstInsert = 0;
+    let lengthExisting = 0;
+    if (existingMembers !== undefined) {
+        lengthExisting = existingMembers.length;
+    } 
     for(i = 0; i < length; i++) {
         /* set flag if userid is already a member */
-        for (j = 0; j < existingMembers.length; j++) {
+        for (j = 0; j < lengthExisting; j++) {
             if(userID[i] == existingMembers[j].userid) {
                 existFlag = 1;
             }
