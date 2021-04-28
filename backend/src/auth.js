@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
+exports.tokenType = (req,res) => {
+  res.status(200).send({"auth":req.payload.userType});
+}
 // Middleware for authenticating JWT
 exports.authenticateJWT = (req, res, next) => {
     const authHeader = req.headers['authorization'];

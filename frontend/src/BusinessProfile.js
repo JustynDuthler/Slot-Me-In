@@ -47,7 +47,7 @@ export default function BusinessProfile() {
       if (!response.ok) {
         if (response.status === 401) {
           Auth.removeJWT();
-          context.setAuthState(null);
+          context.setAuthState(false);
         }
         throw response;
       }

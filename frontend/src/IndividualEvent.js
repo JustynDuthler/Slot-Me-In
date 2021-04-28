@@ -85,7 +85,7 @@ const IndividualEvent = (props) => {
         if (!response.ok) {
           if (response.status === 401) {
             Auth.removeJWT();
-            context.setAuthState(null);
+            context.setAuthState(false);
           }
           if (response.status === 409)
             setSignupError(true);
@@ -117,7 +117,7 @@ const IndividualEvent = (props) => {
       if (!response.ok) {
         if (response.status === 401) {
           Auth.removeJWT();
-          context.setAuthState(null);
+          context.setAuthState(false);
         }
         throw response;
       }
@@ -212,7 +212,7 @@ const IndividualEvent = (props) => {
       if (!res.ok) {
         if (res.status === 401) {
           Auth.removeJWT();
-          context.setAuthState(null);
+          context.setAuthState(false);
         }
         throw res;
       }
@@ -288,8 +288,8 @@ const IndividualEvent = (props) => {
         </Box>
 
         <p>Capacity: {numAttendees}/{eventData.capacity}</p>
-        {signupType !== undefined && 
-          (<Button variant="contained" color="secondary" 
+        {signupType !== undefined &&
+          (<Button variant="contained" color="secondary"
             disabled={signupType && numAttendees == eventData.capacity}
             onClick={() => {signupType === true ? signUp() : withdraw()}}>
               {signupType === true ? "Sign Up" : "Withdraw"}

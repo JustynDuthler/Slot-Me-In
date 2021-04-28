@@ -66,7 +66,7 @@ export default function Login() {
               setEmailError(false);
               setPassError(true);
             }
-            context.setAuthState(null);
+            context.setAuthState(false);
             throw response;
           } else {
             setEmailError(false);
@@ -77,7 +77,7 @@ export default function Login() {
         .then((json) => {
           // save JWT and set authState after logging in
           Auth.saveJWT(json.auth_token);
-          context.setAuthState(Auth.getJWT());
+          context.setAuthState(true);
           console.log(json);
           context.setBusinessState(showBusiness);
           history.push('/');

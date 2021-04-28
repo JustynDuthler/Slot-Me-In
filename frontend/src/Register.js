@@ -72,7 +72,7 @@ export default function Register() {
         })
         .then((json) => {
           Auth.saveJWT(json.auth_token);
-          context.setAuthState(Auth.getJWT());
+          context.setAuthState(true);
           console.log(json);
           history.push('/');
         })
