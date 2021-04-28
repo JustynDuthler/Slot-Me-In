@@ -863,7 +863,6 @@ components:
     Emails:
       type: string
       format: email
-
     EmailList:
       type: array
       items:
