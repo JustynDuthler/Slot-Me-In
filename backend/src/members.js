@@ -9,7 +9,6 @@ exports.addMembers = async (req, res) => {
     const businessid = req.payload.id;
     /* create an array of userIDs */
     let userID = []
-    
     let length = req.body.length;
     /* fill userID array with userIDs corresponding to the emails in the
        same order */
@@ -22,9 +21,13 @@ exports.addMembers = async (req, res) => {
     let memberListString = '';
     let existFlag = 0;
     let firstInsert = 0;
+    let lengthExisting = 0;
+    if (existingMembers !== undefined) {
+        lengthExisting = existingMembers.length;
+    } 
     for(i = 0; i < length; i++) {
         /* set flag if userid is already a member */
-        for (j = 0; j < existingMembers.length; j++) {
+        for (j = 0; j < lengthExisting; j++) {
             if(userID[i] == existingMembers[j].userid) {
                 existFlag = 1;
             }
@@ -53,5 +56,32 @@ exports.addMembers = async (req, res) => {
         }
     } else {
         res.status(409).send();
+    }
+}
+
+exports.getMembers = async (res, req) => {
+    const businessid = req.payload.id;
+    /* query to get all userids of members */
+    const memberIDs = await db.getMembersForBusiness(businessid);
+    if (memberIDs === undefined) {
+        res.status(409).send();
+    } else {
+        /* construct userid list for query */
+        let useridvalues = '';
+        let firstInsert = 0;
+        let length = memberIDs.length;
+        for(i = 0; i < length; i++) {
+            if (firstInsert == 0) {
+                useridvalues = useridvalues + '(' + memberIDs[i] + ')';
+                firstInsert = 1;
+            } else {
+                useridvalues = useridvalues + ', (\'' + memberIDs[i] + '\')';
+            }
+        }
+        console.log(useridvalues);
+
+        const users = await db.getMemberUserInfo(useridvalues);
+        console.log(users);
+        res.status(200).json(users);
     }
 }
