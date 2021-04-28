@@ -407,7 +407,16 @@ exports.getMembersForBusiness = async (buisnessid) => {
   }
 
   const {rows} = await pool.query(query);
-  return rows;
+  return (rows.length > 0 ? rows : undefined);
 }
 
+exports.getMemberUserInfo = async (useridlist) => {
+  const select = 'SELECT u.userid, u.username, u.useremail FROM Users u WHERE (u.userid) IN ( VALUES ' + useridlist + ')';
+  const query = {
+    text: select,
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows);
+}
 console.log(`Connected to database '${process.env.DB}'`);

@@ -606,6 +606,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        409:
+          description: no members exist
         default:
           description: Unexpected Error
           content:
