@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
   Switch,
@@ -285,12 +284,6 @@ function App() {
     </Router>
   );
 }
-
-// Prop types for PrivateRoute
-PrivateRoute.propTypes = {
-  component: PropTypes.Component,
-  authed: PropTypes.string,
-};
 
 /**
  * PrivateRoute
