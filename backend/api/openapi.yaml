@@ -38,6 +38,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthTestSchema"
+  /test/get_token_type:
+    get:
+      description: Returns whether token is a business or user token
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: User Type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTestSchema"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /users/getUserEvents:
     get:
