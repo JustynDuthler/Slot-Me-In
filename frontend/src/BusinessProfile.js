@@ -308,7 +308,7 @@ export default function BusinessProfile() {
               color="primary"
               onClick={() => {deleteEventAndReload(eventid, null)}}
             >
-              {eventList[key].repeatid ? "See more" : "Cancel event"}
+              {"Cancel event"}
             </Button>
           </ListItemSecondaryAction>
         </ListItem>
