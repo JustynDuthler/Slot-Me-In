@@ -64,6 +64,7 @@ function App() {
       if (!response.ok) {
         throw response;
       }
+      return response;
     }).then((json) => {
       console.log('json', json);
     })
@@ -288,7 +289,7 @@ function App() {
 
 // Prop types for PrivateRoute
 PrivateRoute.propTypes = {
-  component: PropTypes.Component,
+  component: PropTypes.func,
   authed: PropTypes.string,
 };
 
