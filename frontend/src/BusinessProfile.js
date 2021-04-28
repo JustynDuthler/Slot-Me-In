@@ -27,7 +27,7 @@ export default function BusinessProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [businessData, setBusinessData] = React.useState([]);
-  const [memberData, setMemberData] = React.useState([]);
+  const [memberList, setMemberList] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
   const [emailInput, setEmailInput] = React.useState("");
   const [emailError, setEmailError] = React.useState(false);
@@ -165,7 +165,7 @@ export default function BusinessProfile() {
         setError(error);
         }
       )
-    /* Uncomment this when the get member api route is made */
+    /* Uncomment when member retrieval api is done */
     // const memberRes = fetch('http://localhost:3010/api/businesses/members', {
     //   method: 'GET',
     //   headers: Auth.JWTHeaderJson(),
@@ -177,21 +177,44 @@ export default function BusinessProfile() {
     //     setError(error);
     //   }
     // )
-    await Promise.all([businessRes, eventRes]);
+    // await Promise.all([businessRes, eventRes]);
     setIsLoaded(true);
   }, []);
-  function handleSubmit(event) {
+  function handleSubmit(event,memberlist) {
     event.preventDefault();
+    fetch('http://localhost:3010/api/members/insertMembers', {
+      method: 'POST',
+      body: JSON.stringify(memberlist),
+      headers: Auth.JWTHeaderJson(),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        setEmailError(false);
+        return response.json();
+      }
+    })
+    .then((json) => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
   const validateInput = (event) => {
     // regex to check for valid email format
+
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emailRegex.test(emailInput)) {
-      setEmailError(true);
-      setEmailMsg("Invalid email.");
-    } else {
-      handleSubmit(event);
+    const memberArray = emailInput.split(',');
+    for (let e in memberArray) {
+      if (!emailRegex.test(memberArray[e])) {
+        setEmailError(true);
+        setEmailMsg("Invalid email.");
+        return;
+      }
     }
+    handleSubmit(event);
   }
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
@@ -330,6 +353,22 @@ export default function BusinessProfile() {
     const members = [];
     let eventListJSX = [];
     let repEventListJSX = [];
+    for (var m in memberList) {
+      const member = memberList[m];
+      <ListItem button={true} key={member.userid} onClick={() => {/* Link to public user profile page ? */}}>
+        <ListItemText key={member.userid} primary={member.username} secondary={member.email}/>
+        <ListItemSecondaryAction>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={() => {removeMember(member.userid)}}
+          >
+            Remove
+          </Button>
+        </ListItemSecondaryAction>
+      </ListItem>
+    }
     for (var key in eventList) {
       if (eventList[key].repeatid) {
         let rev = repeatingEventList[eventList[key].repeatid];
@@ -463,9 +502,10 @@ export default function BusinessProfile() {
             margin="normal"
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email Addresses"
             name="email"
             autoComplete="email"
+            multiline
             onChange={(event) => {setEmailInput(event.target.value);}}
             onKeyPress={handleKeypress}
           />
@@ -477,7 +517,7 @@ export default function BusinessProfile() {
             className={classes.submit}
             onClick={validateInput}
           >
-            Add Member
+            Add Members
           </Button>
         </Grid>
       );
