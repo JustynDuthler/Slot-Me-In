@@ -584,6 +584,72 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /members/getMembers:
+    get:
+      description: gets the members of a business
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully retrieved members
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /members/insertMembers:
+    post:
+      description: adds member emails to members table
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: array of member emails
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailList"
+      responses:
+        201:
+          description: Successfully inserted emails
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        409:
+          description: emails already members or not users
+        500:
+          description: cannot insert into database
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
 
 components:
   responses:
@@ -667,6 +733,10 @@ components:
         - userid
         - username
         - email
+    UserList:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
     Business:
       type: object
       maxProperties: 4
@@ -790,12 +860,10 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Attendees"
-
-    emails:
+    Emails:
       type: string
       format: email
-    emailList:
+    EmailList:
       type: array
-      items: 
-        $ref: "#/components/schemas/emails"
-
+      items:
+        $ref: "#/components/schemas/Emails"

@@ -108,7 +108,6 @@ exports.getEvents = async () => {
     }
     rows2.push(row);
   }
-  console.log(rows2);
   return rows2;
 }
 
@@ -295,7 +294,6 @@ exports.getUsersEvents = async (userid) => {
     }
     rows2.push(row);
   }
-  console.log("r2",rows2);
   return rows2;
 };
 // returns list of events created by businessid
@@ -324,7 +322,6 @@ exports.getBusinessEvents = async (businessid) => {
     }
     rows2.push(row);
   }
-  console.log(rows2);
   return rows2;
 }
 
@@ -350,6 +347,27 @@ exports.removeUserAttending = async (eventid, userid) => {
   const {rows} = await pool.query(query);
   return (rows.length);
 
+}
+
+exports.getUserIDByEmail = async (useremail) => {
+  const select = 'SELECT u.userid FROM Users u WHERE u.useremail = $1';
+  const query = {
+    text: select,
+    values: [useremail],
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows.length > 0 ? rows[0].userid : null);
+}
+
+exports.insertMembers = async (memberlist) => {
+  const insert = 'INSERT INTO Members(businessid, memberemail, userid) VALUES ' + memberlist + ' RETURNING userid';
+  const query = {
+    text: insert,
+  }
+
+  const {rows} = await pool.query(query);
+  return (rows.length);
 }
 
 // removes user from members table
@@ -379,6 +397,17 @@ exports.removeMemberFromAttendees = async (buisnessid, userid) => {
 
   const {rows} = await pool.query(query);
   return (rows.length);
+}
+
+exports.getMembersForBusiness = async (buisnessid) => {
+  const select = 'SELECT m.userid FROM Members m WHERE m.businessid = $1';
+  const query = {
+    text: select,
+    values: [buisnessid],
+  }
+
+  const {rows} = await pool.query(query);
+  return rows;
 }
 
 console.log(`Connected to database '${process.env.DB}'`);
