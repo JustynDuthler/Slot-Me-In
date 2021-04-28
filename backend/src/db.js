@@ -360,7 +360,7 @@ exports.getUserIDByEmail = async (useremail) => {
   }
 
   const {rows} = await pool.query(query);
-  return (rows[0].userid);
+  return (rows.length > 0 ? rows[0].userid : null);
 }
 
 exports.insertMembers = async (memberlist) => {
@@ -400,6 +400,17 @@ exports.removeMemberFromAttendees = async (buisnessid, userid) => {
 
   const {rows} = await pool.query(query);
   return (rows.length);
+}
+
+exports.getMembersForBusiness = async (buisnessid) => {
+  const select = 'SELECT m.userid FROM Members m WHERE m.businessid = $1';
+  const query = {
+    text: select,
+    values: [buisnessid],
+  }
+
+  const {rows} = await pool.query(query);
+  return rows;
 }
 
 console.log(`Connected to database '${process.env.DB}'`);
