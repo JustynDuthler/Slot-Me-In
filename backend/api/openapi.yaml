@@ -591,26 +591,27 @@ paths:
         - members
       security:
         - bearerAuth: []
-      200:
-        description: Successfully retrieved members
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserList"
-      401:
-        $ref: '#/components/responses/UnauthorizedError'
-      403:
-        description: Authorization Error
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Error"
-      default:
-        description: Unexpected Error
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Error"
+      responses:
+        200:
+          description: Successfully retrieved members
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserList"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /members/insertMembers:
     post:
       description: adds member emails to members table
@@ -628,7 +629,6 @@ paths:
       responses:
         201:
           description: Successfully inserted emails
-
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
