@@ -289,7 +289,7 @@ function App() {
 // Prop types for PrivateRoute
 PrivateRoute.propTypes = {
   component: PropTypes.Component,
-  authed: PropTypes.bool,
+  authed: PropTypes.string,
 };
 
 /**
