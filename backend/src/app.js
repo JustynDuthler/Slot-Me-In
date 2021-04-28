@@ -47,7 +47,7 @@ app.post('/api/businesses/signup', businesses.signup);
 app.get('/api/businesses/getBusiness', auth.authenticateBusinessJWT, businesses.getInfo);
 app.get('/api/businesses/getBusinessEvents', auth.authenticateBusinessJWT, businesses.getEvents);
 app.get('/api/businesses/checkBusinessID', auth.authenticateBusinessJWT, businesses.validID);
-app.get('/api/businesses/:businessid', businesses.getBusinessByID)
+app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 
 // Event routes
 app.post('/api/events', auth.authenticateBusinessJWT, events.create);
@@ -77,6 +77,8 @@ app.get('/api/test/get_token', async (req, res) => {
 app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
   res.status(200).json({auth: "authenticated"});
 });
+
+app.get('/api/test/get_token_type',auth.authenticateJWT,auth.tokenType);
 
 // simple database test
 app.get('/db/test', async(req, res) => {

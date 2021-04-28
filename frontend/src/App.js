@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function App() {
   const classes = useStyles();
-  const [authState, setAuthState] = React.useState(null);
+  const [authState, setAuthState] = React.useState(false);
   const [businessState, setBusinessState] = React.useState(undefined);
 
   /**
@@ -52,30 +52,32 @@ function App() {
    * Determines whether logged in user is a business or user
    */
   function validateBusiness() {
-    fetch('http://localhost:3010/api/businesses/checkBusinessID', {
+    fetch('http://localhost:3010/api/test/get_token_type', {
       method: 'GET',
       headers: Auth.JWTHeaderJson(),
     }).then((response) => {
       if (response.status === 200) {
-        setBusinessState(true);
-      } else {
-        setBusinessState(false);
+        return response.json();
       }
       if (!response.ok) {
+        setBusinessState(false);
         throw response;
       }
       return response;
     }).then((json) => {
-      console.log('json', json);
+      if (json.auth === "business") {
+        setBusinessState(true);
+      } else {
+        setBusinessState(false);
+      }
+      console.log('user type:', json);
     })
         .catch((error) => {
           console.log(error);
         });
   };
 
-  if (Auth.getJWT() !== authState) {
-    setAuthState(Auth.getJWT());
-  }
+
 
   /**
    * logout()
@@ -83,7 +85,7 @@ function App() {
    */
   const logout = () => {
     Auth.removeJWT();
-    setAuthState(null);
+    setAuthState(false);
   };
 
   React.useEffect(() => {
@@ -91,6 +93,7 @@ function App() {
       setBusinessState(false);
       setAuthState(false);
     } else {
+      setAuthState(true);
       validateBusiness();
     }
   }, []);
@@ -290,7 +293,7 @@ function App() {
 // Prop types for PrivateRoute
 PrivateRoute.propTypes = {
   component: PropTypes.func,
-  authed: PropTypes.string,
+  authed: PropTypes.bool,
 };
 
 /**
@@ -303,7 +306,7 @@ function PrivateRoute({component: Component, authed, ...rest}) {
   return (
     <Route
       {...rest}
-      render={(props) => authed !== null ?
+      render={(props) => authed ?
         <Component {...props} /> : <Redirect to={{pathname: '/login'}} />}
     />
   );

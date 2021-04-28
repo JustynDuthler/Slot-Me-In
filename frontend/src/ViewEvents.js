@@ -58,11 +58,8 @@ export default function ViewEvents() {
           if (!response.ok) {
             if (response.status === 401) {
               Auth.removeJWT();
-              context.setAuthState(null);
+              context.setAuthState(false);
             }
-            throw response;
-          } else {
-            return response.json();
           }
         })
         .then((json) => {

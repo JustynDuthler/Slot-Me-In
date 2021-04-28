@@ -99,7 +99,7 @@ const IndividualEvent = (props) => {
           if (!response.ok) {
             if (response.status === 401) {
               Auth.removeJWT();
-              context.setAuthState(null);
+              context.setAuthState(false);
             } else if (response.status === 409) {
               // setSignupError(true);
             } else {
@@ -134,7 +134,7 @@ const IndividualEvent = (props) => {
       if (!response.ok) {
         if (response.status === 401) {
           Auth.removeJWT();
-          context.setAuthState(null);
+          context.setAuthState(false);
         }
         throw response;
       }
@@ -239,7 +239,7 @@ const IndividualEvent = (props) => {
       if (!res.ok) {
         if (res.status === 401) {
           Auth.removeJWT();
-          context.setAuthState(null);
+          context.setAuthState(false);
         }
         throw res;
       }
