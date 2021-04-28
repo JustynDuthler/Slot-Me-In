@@ -35,7 +35,6 @@ export default function BusinessProfile() {
   const [eventState, setEventState] = React.useState(null);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const context = React.useContext(Context);
-  var uniquekey = 0;
   // handles removing the user from the event id the button click corresponds to
   function deleteEvent(eventid,all) {
     console.log(eventid);
@@ -63,14 +62,22 @@ export default function BusinessProfile() {
     });
   };
 
-  async function deleteEventAndReload(eventid, repeatid=null,all=false) {
+  async function deleteEventAndReload(eventid,all=false) {
     const test = await deleteEvent(eventid,all);                      // call API to remove event from events table
     if (test !== 1) {                                             // if delete failed, don't remove event from list.
       return;
     }
-
     var eventListCopy = JSON.parse(JSON.stringify(eventList));    // copy eventlist
-    delete eventListCopy[eventid];                                // delete event
+    if (all) {
+      for (let event in eventList) {
+        if (eventList[event].repeatid == eventList[eventid].repeatid) {
+          delete eventListCopy[event];
+        }
+      }
+    }
+    else {
+      delete eventListCopy[eventid];                                // delete event
+    }
     setEventList(eventListCopy);                                  // update eventList state
   };
 
@@ -306,10 +313,18 @@ export default function BusinessProfile() {
               type="submit"
               variant="contained"
               color="primary"
-              onClick={() => {deleteEventAndReload(eventid, null)}}
+              onClick={() => {deleteEventAndReload(eventid, false)}}
             >
               {"Cancel event"}
-            </Button>
+            </Button><br/>
+            {eventList[key].repeatid&&<Button key={eventList[key].repeatid}
+              type="submit"
+              variant="contained"
+              color="secondary"
+              onClick={() => {deleteEventAndReload(eventid,true)}}
+            >
+              {"Delete All"}
+            </Button>}
           </ListItemSecondaryAction>
         </ListItem>
       );
