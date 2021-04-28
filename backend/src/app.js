@@ -47,6 +47,7 @@ app.get('/api/businesses/getBusiness', auth.authenticateBusinessJWT, businesses.
 app.get('/api/businesses/getBusinessEvents', auth.authenticateBusinessJWT, businesses.getEvents);
 app.get('/api/businesses/checkBusinessID', auth.authenticateBusinessJWT, businesses.validID);
 app.delete('/api/businesses/deletemember', auth.authenticateBusinessJWT, businesses.deleteMember);
+app.get('/api/businesses/:businessid', businesses.getBusinessByID)
 
 // Event routes
 app.post('/api/events', auth.authenticateBusinessJWT, events.create);
