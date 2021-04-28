@@ -43,17 +43,16 @@ exports.addMembers = async (req, res) => {
             memberListString = memberListString + ', (\'' + businessid + '\', \'' + req.body[i] + '\', \'' + userID[i] +'\')' ;
         }
     }
-    /* if new members insert, else throw 400 */
     if (memberListString.length != 0) {
         const insertNum = await db.insertMembers(memberListString);
         console.log(insertNum);
         if (insertNum == 0) {
-            res.status(400).send();
+            res.status(500).send();
         } else {
             res.status(200).send();
         }
     } else {
-        res.status(400).send();
+        res.status(409).send();
     }
 }
 

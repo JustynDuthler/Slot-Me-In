@@ -628,6 +628,7 @@ paths:
       responses:
         201:
           description: Successfully inserted emails
+
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -636,14 +637,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        409:
+          description: emails already members or not users
         500:
-          description: cannot insert emails
+          description: cannot insert into database
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
 
 
 
