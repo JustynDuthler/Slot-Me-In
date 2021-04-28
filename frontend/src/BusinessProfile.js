@@ -33,7 +33,6 @@ export default function BusinessProfile() {
   const [emailError, setEmailError] = React.useState(false);
   const [emailMsg, setEmailMsg] = React.useState("");
   const [eventState, setEventState] = React.useState(null);
-  const [repeatingEventList,setRepeatingEventList] = React.useState({});
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const context = React.useContext(Context);
   var uniquekey = 0;
@@ -69,50 +68,10 @@ export default function BusinessProfile() {
     if (test !== 1) {                                             // if delete failed, don't remove event from list.
       return;
     }
-    if (repeatid) {
-      var repeatingEventListCopy = JSON.parse(JSON.stringify(repeatingEventList));
-      var eventListCopy = JSON.parse(JSON.stringify(eventList));
-      if (all) { // to delete all of a repeating event, remove the event from the event list and delete the entry in the repeating event dict
-        delete eventListCopy[eventid];
-        delete repeatingEventListCopy[repeatid];
-        setEventState(null);
-        setEventList(eventListCopy);
-        setRepeatingEventList(repeatingEventListCopy);
-        return;
-      }
-      // gets index of to-be deleted event in repeated event array
-      var index = -1;
-      for (let e in repeatingEventListCopy[repeatid]) {
-        if (repeatingEventListCopy[repeatid][e].eventid === eventid) {
-          index = e;
-          break;
-        }
-      }
-      var newEventState = null;
-      // if only one element is left, we need to delete the repeated event entry
-      if (index > -1 && repeatingEventListCopy[repeatid].length === 1) {delete eventListCopy[eventid]; delete repeatingEventListCopy[repeatid];newEventState = null;}
-      // else if we delete the first element, we need to update the event list
-      else if (index == 0) {
-        delete eventListCopy[eventid]; eventListCopy[repeatingEventListCopy[repeatid][1].eventid] = repeatingEventListCopy[repeatid][1];
-        newEventState = repeatingEventListCopy[repeatid][1].eventid;
-        repeatingEventListCopy[repeatid].splice(index,1);
-      }
-      // otherwise just splice the element
-      else if (index > -1) {
-        repeatingEventListCopy[repeatid].splice(index,1);
-        newEventState = eventState;
-      }
-      // kinda jank, but it will prevent the full page from being loaded before everything has updated
-      setIsLoaded(false);
-      setEventList(eventListCopy);
-      setEventState(newEventState);
-      setRepeatingEventList(repeatingEventListCopy);
-      setIsLoaded(true);
-    } else {
-      var eventListCopy = JSON.parse(JSON.stringify(eventList));    // copy eventlist
-      delete eventListCopy[eventid];                                // delete event
-      setEventList(eventListCopy);                                  // update eventList state
-    }
+
+    var eventListCopy = JSON.parse(JSON.stringify(eventList));    // copy eventlist
+    delete eventListCopy[eventid];                                // delete event
+    setEventList(eventListCopy);                                  // update eventList state
   };
 
   // I wrote this how react recommends
@@ -138,29 +97,10 @@ export default function BusinessProfile() {
     .then((data) => {
       // The value is an array of events for that business
       let eventDict = {};
-      let repeatDict = {};
-      // holds all repeating events by repeat id
-      let repeatEvents = {};
       for (var index in data) {
-        if ('repeatid' in data[index]) {
-          if (!(data[index].repeatid in repeatDict)) {
-            repeatDict[data[index].repeatid] = data[index];
-            repeatEvents[data[index].repeatid] = [];
-            repeatEvents[data[index].repeatid].push(data[index]);
-          } else {
-            repeatEvents[data[index].repeatid].push(data[index]);
-          }
-        } else {
-          eventDict[data[index].eventid] = data[index];
-        }
-      }
-      var sortdates = (event1,event2) => {return (new Date(event1.starttime) > new Date(event2.endtime));}
-      for (let repeatid in repeatEvents) {
-        repeatEvents[repeatid].sort(sortdates);
-        eventDict[repeatEvents[repeatid][0].eventid]=repeatEvents[repeatid][0];
+        eventDict[data[index].eventid] = data[index];
       }
       setEventList(eventDict);
-      setRepeatingEventList(repeatEvents);
     },
       (error) => {
         setError(error);
@@ -296,36 +236,12 @@ export default function BusinessProfile() {
     let currentDay = dateClone.getDate() == selectedDate.getDate() && dateClone.getMonth() == selectedDate.getMonth() && dateClone.getYear() == selectedDate.getYear();
 
     let isEvent = false;
-    if (eventState) {
-      let rev = repeatingEventList[eventList[eventState].repeatid];
-      for (let re in rev) {
-        let reDate = new Date(rev[re].starttime);
-        if (reDate.getDate() == dateClone.getDate()) {
-        }
-        if (reDate.getDate() == dateClone.getDate()&&reDate.getMonth() == dateClone.getMonth()&&reDate.getYear() == dateClone.getYear()) {
-          isEvent = true;
-          break;
-        }
-      }
-    } else {
-      for (let e in eventList) {
-        if (eventList[e].repeatid) {
-          let rev = repeatingEventList[eventList[e].repeatid];
-          for (let re in rev) {
-            let reDate = new Date(rev[re].starttime);
-            if (reDate.getDate() == dateClone.getDate()&&reDate.getMonth() == dateClone.getMonth()&&reDate.getYear() == dateClone.getYear()) {
-              isEvent = true;
-              break;
-            }
-          }
-          if (isEvent) {break};
-        } else {
-          let date = new Date(eventList[e].starttime);
-          if (date.getDate() == dateClone.getDate()&&date.getMonth() == dateClone.getMonth()&&date.getYear() == dateClone.getYear()) {
-            isEvent = true;
-            break;
-          }
-        }
+
+    for (let e in eventList) {
+      let date = new Date(eventList[e].starttime);
+      if (date.getDate() == dateClone.getDate()&&date.getMonth() == dateClone.getMonth()&&date.getYear() == dateClone.getYear()) {
+        isEvent = true;
+        break;
       }
     }
     const wrapperClassName = clsx({
@@ -357,7 +273,6 @@ export default function BusinessProfile() {
     const items2 = [];
     const members = [];
     let eventListJSX = [];
-    let repEventListJSX = [];
     for (var m in memberList) {
       const member = memberList[m];
       <ListItem button={true} key={member.userid} onClick={() => {/* Link to public user profile page ? */}}>
@@ -375,68 +290,29 @@ export default function BusinessProfile() {
       </ListItem>
     }
     for (var key in eventList) {
-      if (eventList[key].repeatid) {
-        let rev = repeatingEventList[eventList[key].repeatid];
-        for (let re in rev) {
-          let eventid = rev[re].eventid;
-          let eventName = rev[re].eventname;
-          let startDate = new Date(rev[re].starttime);
-          let dateString = formatDate(startDate);
-          let rid = rev[re].repeatid;
-          if (startDate.getDate() == selectedDate.getDate() && startDate.getMonth() == selectedDate.getMonth() && startDate.getYear() == selectedDate.getYear())
-          eventListJSX.push(
-            <ListItem button onClick={() => {setEventState(eventid);}} key={eventid}>
-              <ListItemText key={eventid}
-                primary={eventName}
-                secondary={rid ? ("Next: \n "+dateString) : dateString}
-              />
-              <ListItemSecondaryAction key={eventid}>
-                <Button key={eventid}
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {deleteEventAndReload(eventid, rid)}}
-                >
-                  Cancel Event
-                </Button><br/>
-                <Button key={rid}
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {deleteEventAndReload(eventid, rid,true)}}
-                >
-                  Delete All
-                </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
-          );
-        }
-      } else {
-        let eventid = eventList[key].eventid;
-        let eventName = eventList[key].eventname;
-        let startDate = new Date(eventList[key].starttime);
-        let dateString = formatDate(startDate);
-        let repeatDateString = eventList[key].repeatid ? formatDate(new Date(eventList[key].repeatstart)) : '';
-        if (startDate.getDate() == selectedDate.getDate() && startDate.getMonth() == selectedDate.getMonth() && startDate.getYear() == selectedDate.getYear())
-        eventListJSX.push(
-          <ListItem button onClick={() => {setEventState(eventid);}} key={eventid}>
-            <ListItemText key={eventid}
-              primary={eventName}
-              secondary={eventList[key].repeatid ? ("Next: \n "+dateString) : dateString}
-            />
-            <ListItemSecondaryAction key={eventid}>
-              <Button key={eventid}
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => {deleteEventAndReload(eventid, null)}}
-              >
-                {eventList[key].repeatid ? "See more" : "Cancel event"}
-              </Button>
-            </ListItemSecondaryAction>
-          </ListItem>
-        );
-      }
+      let eventid = eventList[key].eventid;
+      let eventName = eventList[key].eventname;
+      let startDate = new Date(eventList[key].starttime);
+      let dateString = formatDate(startDate);
+      if (startDate.getDate() == selectedDate.getDate() && startDate.getMonth() == selectedDate.getMonth() && startDate.getYear() == selectedDate.getYear())
+      eventListJSX.push(
+        <ListItem button onClick={() => {setEventState(eventid);}} key={eventid}>
+          <ListItemText key={eventid}
+            primary={eventName}
+            secondary={dateString}
+          />
+          <ListItemSecondaryAction key={eventid}>
+            <Button key={eventid}
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={() => {deleteEventAndReload(eventid, null)}}
+            >
+              {eventList[key].repeatid ? "See more" : "Cancel event"}
+            </Button>
+          </ListItemSecondaryAction>
+        </ListItem>
+      );
 
     }
     if (eventState !== null) {
