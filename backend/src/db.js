@@ -474,7 +474,7 @@ exports.getMembersForBusiness = async (businessid) => {
 
 exports.getMemberUserInfo = async (useridlist) => {
   const select = 'SELECT u.userid, u.username, u.useremail ' +
-      'FROM Users u WHERE (u.userid) IN ( VALUES ' + useridlist + ')';
+      'FROM Users u WHERE (u.userid::text) IN ( VALUES ' + useridlist + ')';
   const query = {
     text: select,
   };

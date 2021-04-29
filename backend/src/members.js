@@ -62,7 +62,7 @@ exports.addMembers = async (req, res) => {
   }
 };
 
-exports.getMembers = async (res, req) => {
+exports.getMembers = async (req, res) => {
   const businessid = req.payload.id;
   /* query to get all userids of members */
   const memberIDs = await db.getMembersForBusiness(businessid);
@@ -75,10 +75,10 @@ exports.getMembers = async (res, req) => {
     const length = memberIDs.length;
     for (i = 0; i < length; i++) {
       if (firstInsert == 0) {
-        useridvalues = useridvalues + '(' + memberIDs[i] + ')';
+        useridvalues = useridvalues + '(\'' + memberIDs[i].userid + '\')';
         firstInsert = 1;
       } else {
-        useridvalues = useridvalues + ', (\'' + memberIDs[i] + '\')';
+        useridvalues = useridvalues + ', (\'' + memberIDs[i].userid + '\')';
       }
     }
     console.log(useridvalues);

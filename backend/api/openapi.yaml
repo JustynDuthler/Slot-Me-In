@@ -748,13 +748,13 @@ components:
           format: uuid
         username:
           type: string
-        email:
+        useremail:
           type: string
           format: email
       required:
         - userid
         - username
-        - email
+        - useremail
     UserList:
       type: array
       items:
