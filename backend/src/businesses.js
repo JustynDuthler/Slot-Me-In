@@ -41,9 +41,9 @@ exports.signup = async (req, res) => {
       } else {
         // dummy phone number
         const businessid = await db.insertBusinessAccount(
-            req.body.name, hash, '123-456-7890', req.body.email);
+            req.body.name, hash, '123-456-7890', req.body.email.toLowerCase());
         const token = await auth.generateJWT(
-            req.body.email, businessid, 'business');
+            req.body.email.toLowerCase(), businessid, 'business');
         console.log('Business added!');
         res.status(201).json({auth_token: token});
       }

@@ -280,6 +280,7 @@ const IndividualEvent = (props) => {
       </Box>
       <AppBar position="static" style={body}>
         <Tabs value={value}
+          centered
           onChange={handleChange}
           aria-label="simple tabs example">
           <Tab label="Event Info" {...a11yProps(0)} />

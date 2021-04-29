@@ -203,10 +203,14 @@ export default function BusinessProfile() {
       '[a-zA-Z]{2,}))$'].join(''));
     const memberArray = emailInput.split(',');
     for (const e in memberArray) {
-      if (!emailRegex.test(memberArray[e])) {
-        setEmailError(true);
-        setEmailMsg('One or more invalid email(s).');
-        return;
+      if (memberArray.hasOwnProperty(e)) {
+        // convert emails to lowercase to avoid errors in backend
+        memberArray[e] = memberArray[e].toLowerCase();
+        if (!emailRegex.test(memberArray[e])) {
+          setEmailError(true);
+          setEmailMsg('One or more invalid email(s).');
+          return;
+        }
       }
     }
     handleSubmit(event, memberArray);
