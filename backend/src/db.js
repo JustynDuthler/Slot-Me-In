@@ -219,7 +219,7 @@ exports.selectBusiness = async (businessid) => {
 
 // check if an email is already in use
 exports.checkUserEmailTaken = async (email) => {
-  const insert = 'SELECT * FROM Users u WHERE u.useremail = $1';
+  const insert = 'SELECT * FROM Users u WHERE u.useremail ILIKE $1';
   const query = {
     text: insert,
     values: [email],
@@ -231,7 +231,7 @@ exports.checkUserEmailTaken = async (email) => {
 
 // get a user hashed password
 exports.getUserPass = async (email) => {
-  const insert = 'SELECT password FROM Users u WHERE u.useremail = $1';
+  const insert = 'SELECT password FROM Users u WHERE u.useremail ILIKE $1';
   const query = {
     text: insert,
     values: [email],
@@ -350,7 +350,7 @@ exports.removeUserAttending = async (eventid, userid) => {
 }
 
 exports.getUserIDByEmail = async (useremail) => {
-  const select = 'SELECT u.userid FROM Users u WHERE u.useremail = $1';
+  const select = 'SELECT u.userid FROM Users u WHERE u.useremail ILIKE $1';
   const query = {
     text: select,
     values: [useremail],
@@ -399,11 +399,11 @@ exports.removeMemberFromAttendees = async (buisnessid, userid) => {
   return (rows.length);
 }
 
-exports.getMembersForBusiness = async (buisnessid) => {
+exports.getMembersForBusiness = async (businessid) => {
   const select = 'SELECT m.userid FROM Members m WHERE m.businessid = $1';
   const query = {
     text: select,
-    values: [buisnessid],
+    values: [businessid],
   }
 
   const {rows} = await pool.query(query);
