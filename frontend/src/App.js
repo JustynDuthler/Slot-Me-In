@@ -54,7 +54,7 @@ function App() {
   function validateBusiness() {
     fetch('http://localhost:3010/api/test/get_token_type', {
       method: 'GET',
-      headers: Auth.JWTHeaderJson(),
+      headers: Auth.headerJsonJWT(),
     }).then((response) => {
       if (response.status === 200) {
         return response.json();
@@ -65,7 +65,7 @@ function App() {
       }
       return response;
     }).then((json) => {
-      if (json.auth === "business") {
+      if (json.auth === 'business') {
         setBusinessState(true);
       } else {
         setBusinessState(false);
@@ -76,8 +76,6 @@ function App() {
           console.log(error);
         });
   };
-
-
 
   /**
    * logout()
@@ -228,19 +226,21 @@ function App() {
   }
   return (
     <Router>
-      {/* I moved Css basline to here so that it applies to the whole project */}
+      {/* I moved Css basline here so that it applies to the whole project */}
       <CssBaseline />
       <AppBar
         position="static"
       >
         <Toolbar>
-          {/* classes.leftMenu has flexGrow: 1 so it will try to take up as much space as possible
+          {/* classes.leftMenu has flexGrow: 1 so it will try to take up
+          as much space as possible
           this will push the content outside of the box to the right */}
           {leftSide}
           {rightSide}
         </Toolbar>
       </AppBar>
-      {/* Used a container so that there would be top margin between nav and content */}
+      {/* Used a container so that there would be
+      top margin between nav and content */}
       <Container className={classes.content}>
         <Context.Provider value={{
           authState, setAuthState,
@@ -276,7 +276,8 @@ function App() {
             <Route
               exact path="/event/:eventid"
               render={(props) =>
-                <IndividualEvent eventID={props.match.params.eventid} {...props} />}
+                <IndividualEvent eventID={props.match.params.eventid}
+                  {...props} />}
             />
             <Route path="/">
               <Home />
@@ -300,7 +301,7 @@ PrivateRoute.propTypes = {
  * PrivateRoute
  * @param {*} component Component to protect behind PrivateRoute
  * @param {*} authed current authState
- * @return {Route} PrivateRoute component that redirects to login if authed is null
+ * @return {object} PrivateRoute that redirects to login if authed is null
  */
 function PrivateRoute({component: Component, authed, ...rest}) {
   return (

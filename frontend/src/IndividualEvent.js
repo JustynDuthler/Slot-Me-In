@@ -93,7 +93,7 @@ const IndividualEvent = (props) => {
     const apicall = 'http://localhost:3010/api/events/'+eventid+'/signup';
     fetch(apicall, {
       method: 'PUT',
-      headers: Auth.JWTHeaderJson(),
+      headers: Auth.headerJsonJWT(),
     })
         .then((response) => {
           if (!response.ok) {
@@ -102,17 +102,14 @@ const IndividualEvent = (props) => {
               context.setAuthState(false);
             } else if (response.status === 409) {
               // setSignupError(true);
+              setSignupType(true);
             } else {
               // setSignupError(false);
-              setNumAttendees(numAttendees+1);
-              return response;
             }
-          }
-        })
-        .then((json) => {
-          console.log(json);
-          if (signupType != undefined) {
+          } else {
             setSignupType(false);
+            setNumAttendees(numAttendees+1);
+            return response;
           }
         })
         .catch((error) => {
@@ -129,7 +126,7 @@ const IndividualEvent = (props) => {
     fetch(apicall, {
       method: 'DELETE',
       body: JSON.stringify({'eventid': eventid}),
-      headers: Auth.JWTHeaderJson(),
+      headers: Auth.headerJsonJWT(),
     }).then((response)=>{
       if (!response.ok) {
         if (response.status === 401) {
@@ -137,19 +134,15 @@ const IndividualEvent = (props) => {
           context.setAuthState(false);
         }
         throw response;
-      }
-      setNumAttendees(numAttendees-1);
-      return response;
-    }).then((json)=>{
-      console.log(json);
-      if (signupType != undefined) {
+      } else {
         setSignupType(true);
+        setNumAttendees(numAttendees-1);
+        return response;
       }
-    })
-        .catch((error) => {
-          console.log(error);
-          return -1;
-        });
+    }).catch((error) => {
+      console.log(error);
+      return -1;
+    });
   };
 
   /**
@@ -234,7 +227,7 @@ const IndividualEvent = (props) => {
   function getRegistration() {
     fetch('http://localhost:3010/api/users/getUserEvents', {
       method: 'GET',
-      headers: Auth.JWTHeaderJson(),
+      headers: Auth.headerJsonJWT(),
     }).then((res) => {
       if (!res.ok) {
         if (res.status === 401) {
@@ -274,7 +267,9 @@ const IndividualEvent = (props) => {
         <h1>{eventData.eventname}</h1>
       </Box>
       <AppBar position="static" style={body}>
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+        <Tabs value={value}
+          onChange={handleChange}
+          aria-label="simple tabs example">
           <Tab label="Event Info" {...a11yProps(0)} />
           <Tab label="Business Info" {...a11yProps(1)} />
         </Tabs>
@@ -295,7 +290,8 @@ const IndividualEvent = (props) => {
           <p>
             {new Date(eventData.starttime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at {new Date(eventData.starttime).toLocaleString(
+                  year: 'numeric'})} at
+            {new Date(eventData.starttime).toLocaleString(
                 'en-US', {hour: 'numeric', minute: 'numeric'})}
           </p>
         </Box>
@@ -307,7 +303,8 @@ const IndividualEvent = (props) => {
           <p>
             {new Date(eventData.endtime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at {new Date(eventData.endtime).toLocaleString(
+                  year: 'numeric'})} at
+            {new Date(eventData.endtime).toLocaleString(
                 'en-US', {hour: 'numeric', minute: 'numeric'})}
           </p>
         </Box>

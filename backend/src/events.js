@@ -113,7 +113,6 @@ exports.signup = async (req, res) => {
   const eventid = req.params.eventid;
   const userid = req.payload.id;  // this doesn't work, userID is undefined
   const event = await db.getEventByID(req.params.eventid);
-  console.log(event.capacity);
   // 404 if event not found
   if (!event) {
     res.status(404).send();
@@ -125,7 +124,6 @@ exports.signup = async (req, res) => {
     } else {
       // if capacity is full
       const capacity = await db.checkRemainingEventCapacity(eventid);
-      console.log(capacity.length);
       if (capacity.length === event.capacity) {
         console.log("Event is already full.");
       } else {

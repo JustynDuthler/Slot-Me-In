@@ -4,41 +4,41 @@ VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUK
 INSERT INTO Users(userid, username, password, useremail)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Aaron', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'aaron@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000002', 'Julia', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Julia@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000002', 'Julia', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'julia@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000003', 'Spencer', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Spencer@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000003', 'Spencer', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'spencer@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000004', 'Caitlyn', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Caitlyn@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000004', 'Caitlyn', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'caitlyn@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000005', 'Andrew', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Andrew@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000005', 'Andrew', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'andrew@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000006', 'Derek', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Derek@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000006', 'Derek', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'derek@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000007', 'Mary', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Mary@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000007', 'Mary', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'mary@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000008', 'Takashi', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Takashi@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000008', 'Takashi', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'takashi@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000009', 'Tim', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Tim@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000009', 'Tim', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'tim@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000010', 'Bobby', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Bobby@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000010', 'Bobby', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'bobby@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000011', 'Kai', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Kai@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000011', 'Kai', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'kai@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000012', 'Vanessa', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Vanessa@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000012', 'Vanessa', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'vanessa@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000013', 'Rosa', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Rosa@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000013', 'Rosa', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'rosa@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000014', 'Patrick', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Patrick@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000014', 'Patrick', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'patrick@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000015', 'James', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'James@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000015', 'James', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'james@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000016', 'Kevin', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Kevin@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000016', 'Kevin', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'kevin@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000017', 'Katie', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Katie@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000017', 'Katie', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'katie@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000018', 'Alex', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Alex@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000018', 'Alex', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'alex@ucsc.edu');
 INSERT INTO Users(userid, username, password, useremail)
-VALUES ('00000000-0000-0000-0000-000000000019', 'Elle', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'Elle@ucsc.edu');
+VALUES ('00000000-0000-0000-0000-000000000019', 'Elle', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'elle@ucsc.edu');
 
 -- 10 Businesses. Every password is password
 INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail)

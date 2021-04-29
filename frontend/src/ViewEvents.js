@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -38,10 +38,10 @@ const useStyles = makeStyles({
  */
 export default function ViewEvents() {
   const classes = useStyles();
-  const [rows, getRows] = React.useState([]);
-  const [pageNumber, setPageNumber] = useState(0);
-  const usersPerPage = 10;
-  const pagesVisited = pageNumber * usersPerPage;
+  const [eventList, setEventList] = React.useState([]);
+  // const [pageNumber, setPageNumber] = React.useState(0);
+  // const usersPerPage = 10;
+  // const pagesVisited = pageNumber * usersPerPage;
   const context = React.useContext(Context);
 
   /**
@@ -52,26 +52,24 @@ export default function ViewEvents() {
     const apicall = 'http://localhost:3010/api/events';
     fetch(apicall, {
       method: 'GET',
-      headers: Auth.JWTHeaderJson(),
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setEventList(json);
     })
-        .then((response) => {
-          if (!response.ok) {
-            if (response.status === 401) {
-              Auth.removeJWT();
-              context.setAuthState(false);
-            }
-          }
-        })
-        .then((json) => {
-          getRows(json);
-          console.log(json);
-        })
         .catch((error) => {
           console.log(error);
         });
   };
 
-  useEffect((eventid) => {
+  React.useEffect(() => {
     getEvents();
   }, []);
 
@@ -80,13 +78,14 @@ export default function ViewEvents() {
    * Changes current events view page
    * @param {*} param0
    */
-  const changePage = ({selected}) => {
-    setPageNumber(selected);
-  };
+  // const changePage = ({selected}) => {
+  //   setPageNumber(selected);
+  // };
 
   /**
    * getCard
-   * This function gets the individual event data for each card and displays it. When the card
+   * This function gets the individual event data
+   * for each card and displays it. When the card
    * is clicked, it goes to URL /event/{eventid}.
    * @param {*} row
    * @return {object} JSX
@@ -99,31 +98,36 @@ export default function ViewEvents() {
             <Typography variant='h5' component='h2' align='center'>
               {row.eventname}
             </Typography>
-            <Typography className={classes.pos} variant='body2' align='center' noWrap>
+            <Typography className={classes.pos}
+              variant='body2' align='center' noWrap>
               Description: {row.description ? row.description : 'N/A'}
             </Typography>
             <Typography className={classes.pos}
               color='textSecondary' variant='body2' align='center'>
               Start Time: {new Date(row.starttime).toLocaleString('en-US',
                   {weekday: 'long', month: 'short', day: 'numeric',
-                    year: 'numeric'})} at {new Date(row.starttime).toLocaleString(
-                  'en-US', {hour: 'numeric', minute: 'numeric'})}
+                    year: 'numeric'})} at {new Date(row.starttime)
+                  .toLocaleString(
+                      'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
               color='textSecondary' variant='body2' align='center'>
               End Time: {new Date(row.endtime).toLocaleString('en-US',
                   {weekday: 'long', month: 'short', day: 'numeric',
-                    year: 'numeric'})} at {new Date(row.endtime).toLocaleString(
-                  'en-US', {hour: 'numeric', minute: 'numeric'})}
+                    year: 'numeric'})} at {new Date(row.endtime)
+                  .toLocaleString(
+                      'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
           </CardContent>
           <CardActions>
             <Button size='small'
               variant='contained'
               color='primary'
-              href={context.businessState === false ? '/event/' + row.eventid : '/profile/'}
+              href={context.businessState === false ?
+                '/event/' + row.eventid : '/profile/'}
               style={{margin: 'auto'}}>
-              {context.businessState === false ? 'View Event' : 'View Event in Profile'}
+              {context.businessState === false ?
+                'View Event' : 'View Event in Profile'}
             </Button>
           </CardActions>
         </Card>
@@ -140,7 +144,7 @@ export default function ViewEvents() {
         className={classes.gridContainer}
         justify='center'
       >
-        {rows.map((row) =>
+        {eventList.map((row) =>
           getCard(row),
         )}
       </Grid>

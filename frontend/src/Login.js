@@ -92,7 +92,11 @@ export default function Login() {
    */
   const validateInput = (event) => {
     // regex to check for valid email format
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = new RegExp([
+      '^(([^<>()[\\]\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\.,;:\\s@\"]+)*)',
+      '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.',
+      '[0-9]{1,3}\])|(([a-zA-Z\\-0-9]+\\.)+',
+      '[a-zA-Z]{2,}))$'].join(''));
     if (!emailRegex.test(email)) {
       setEmailError(true);
       setEmailMsg('Invalid email.');

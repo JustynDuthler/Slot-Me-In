@@ -88,8 +88,13 @@ export default function Register() {
    */
   const validateInput = (event) => {
     // regex to check for valid email and phone
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    const emailRegex = new RegExp([
+      '^(([^<>()[\\]\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\.,;:\\s@\"]+)*)',
+      '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.',
+      '[0-9]{1,3}\])|(([a-zA-Z\\-0-9]+\\.)+',
+      '[a-zA-Z]{2,}))$'].join(''));
+    const phoneRegex =
+        /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
     if (!emailRegex.test(email)) {
       // don't submit and display error if email is invalid
       setEmailError(true);
@@ -182,7 +187,9 @@ export default function Register() {
             />
 
             <FormControl className={classes.form} variant='outlined'>
-              <InputLabel htmlFor='outlined-adornment-password'>Password</InputLabel>
+              <InputLabel htmlFor='outlined-adornment-password'>
+                Password
+              </InputLabel>
               <OutlinedInput
                 variant='outlined'
                 required
@@ -222,7 +229,9 @@ export default function Register() {
             {showBusiness && <PhoneInput
               isValid={(value) => {
                 // show error if phone number is invalid
-                if (!value.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/)) {
+                if (!value.match(
+                    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+                )) {
                   return 'Invalid phone number.';
                 } else {
                   return true;
