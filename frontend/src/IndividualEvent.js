@@ -302,9 +302,8 @@ const IndividualEvent = (props) => {
           <p>
             {new Date(eventData.starttime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at
-            {new Date(eventData.starttime).toLocaleString(
-                'en-US', {hour: 'numeric', minute: 'numeric'})}
+                  year: 'numeric'})} at {new Date(eventData.starttime)
+                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
           </p>
         </Box>
 
@@ -315,9 +314,8 @@ const IndividualEvent = (props) => {
           <p>
             {new Date(eventData.endtime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at
-            {new Date(eventData.endtime).toLocaleString(
-                'en-US', {hour: 'numeric', minute: 'numeric'})}
+                  year: 'numeric'})} at {new Date(eventData.endtime)
+                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
           </p>
         </Box>
 
