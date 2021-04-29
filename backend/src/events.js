@@ -9,29 +9,35 @@ exports.create = async (req, res) => {
     // insert to RepeatingEvents and get repeatid, add to event object
     event.repeatid =
         await db.insertRepeatingEvent(event.eventname, event.description,
-          req.payload.id, event.starttime, event.endtime, event.capacity,
-          event.repeatdays["sunday"], event.repeatdays["monday"],
-          event.repeatdays["tuesday"], event.repeatdays["wednesday"],
-          event.repeatdays["thursday"], event.repeatdays["friday"],
-          event.repeatdays["saturday"], event.repeattype, event.repeatend);
-    // create days array for use with getDay() (ex: if date.getDay() is 0, days[0] is Sunday)
-    const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+            req.payload.id, event.starttime, event.endtime, event.capacity,
+            event.repeatdays['sunday'], event.repeatdays['monday'],
+            event.repeatdays['tuesday'], event.repeatdays['wednesday'],
+            event.repeatdays['thursday'], event.repeatdays['friday'],
+            event.repeatdays['saturday'], event.repeattype, event.repeatend);
+    // create days array for use with getDay()
+    // (ex: if date.getDay() is 0, days[0] is Sunday)
+    const days =
+        ['sunday', 'monday', 'tuesday', 'wednesday',
+          'thursday', 'friday', 'saturday'];
     // create Date objects for easy manipulation
     const start = new Date(event.starttime);
     const end = new Date(event.endtime);
     const repeatend = new Date(event.repeatend);
-    // continue repeating event insert until event is after specified repeatend date
-    // create currentDay obj without hours/minutes to ignore time in date comparison
-    // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
-    let currentDay = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(),
-        start.getUTCDate()));
+    // continue repeating event insert until after specified repeatend date
+    // create currentDay obj w/o hrs/mins to ignore time in date comparison
+    // https://stackoverflow.com/questions/2698725/
+    let currentDay = new Date(
+        Date.UTC(start.getUTCFullYear(), start.getUTCMonth(),
+            start.getUTCDate()));
     while (currentDay.getTime() <= repeatend.getTime()) {
       // only insert to Events table if on a repeat day
       // use days array to get current day name
       if (event.repeatdays[days[start.getDay()]]) {
         const eventid =
-            await db.insertEvent(event.eventname, start.toISOString(), end.toISOString(),
-            req.payload.id, event.capacity, event.description, event.repeatid);
+            await db.insertEvent(
+                event.eventname, start.toISOString(), end.toISOString(),
+                req.payload.id, event.capacity, event.description,
+                event.repeatid);
         // set eventid on first inserted event only
         if (!event.eventid) event.eventid = eventid;
       }
@@ -39,15 +45,16 @@ exports.create = async (req, res) => {
       start.setDate(start.getDate() + 1);
       end.setDate(end.getDate() + 1);
       // update currentDay object
-      currentDay = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(),
-          start.getUTCDate()));
+      currentDay = new Date(
+          Date.UTC(start.getUTCFullYear(), start.getUTCMonth(),
+              start.getUTCDate()));
     }
   } else {
   // --- NON REPEATING EVENT ---
     // for non-repeating event, insert to Events table
     const eventid =
         await db.insertEvent(event.eventname, event.starttime, event.endtime,
-        req.payload.id, event.capacity, event.description);
+            req.payload.id, event.capacity, event.description);
     event.eventid = eventid;
   }
   // return 201 with event
@@ -79,7 +86,7 @@ exports.getEvents = async (req, res) => {
     const events = await db.getEventsByRange(req.query.start, req.query.end);
     res.status(200).json(events);
   } else if (req.query.start) {
-    // if only start query provided, query DB for events starting after that time
+    // if only start query provided, query for events starting after that time
     const events = await db.getEventsByStart(req.query.start);
     res.status(200).json(events);
   } else if (req.query.end) {
@@ -88,11 +95,11 @@ exports.getEvents = async (req, res) => {
     res.status(200).json(events);
   } else {
     // if no queries provided, query DB for all events
-    // if the account is a business account, only show the events made by that business
-    if (req.payload.userType == "business") {
+    // if business account, only show the events made by that business
+    if (req.payload.userType == 'business') {
       const events = await db.getBusinessEvents(req.payload.id);
       res.status(200).json(events);
-    } else if (req.payload.userType == "user") {
+    } else if (req.payload.userType == 'user') {
       const events = await db.getEvents();
       res.status(200).json(events);
     }
@@ -111,9 +118,8 @@ exports.getEventByID = async (req, res) => {
 
 exports.signup = async (req, res) => {
   const eventid = req.params.eventid;
-  const userid = req.payload.id;  // this doesn't work, userID is undefined
+  const userid = req.payload.id; // this doesn't work, userID is undefined
   const event = await db.getEventByID(req.params.eventid);
-  console.log(event.capacity);
   // 404 if event not found
   if (!event) {
     res.status(404).send();
@@ -125,9 +131,8 @@ exports.signup = async (req, res) => {
     } else {
       // if capacity is full
       const capacity = await db.checkRemainingEventCapacity(eventid);
-      console.log(capacity.length);
       if (capacity.length === event.capacity) {
-        console.log("Event is already full.");
+        console.log('Event is already full.');
       } else {
         // if not already attending, add user to attendees then send 200
         await db.insertAttendees(eventid, userid);

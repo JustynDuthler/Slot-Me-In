@@ -2,8 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { ButtonGroup } from '@material-ui/core';
-
+import {ButtonGroup} from '@material-ui/core';
 
 /**
  *
@@ -18,18 +17,18 @@ export default function Home() {
     <div style={body}>
       <h1>SlotMeIn</h1>
       <ButtonGroup>
-        <Button 
+        <Button
           startIcon={<AccountIcon />}
-          href="/register" 
+          href="/register"
           color="primary"
           size="large"
           variant="contained">
           Sign Up
         </Button>
 
-        <Button 
+        <Button
           startIcon={<LockOutlinedIcon />}
-          href="/Login" 
+          href="/Login"
           color="primary"
           size="large"
           variant="contained">

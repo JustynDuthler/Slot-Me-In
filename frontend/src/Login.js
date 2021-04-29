@@ -1,8 +1,6 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -11,26 +9,27 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Context from './Context';
-import { useHistory } from "react-router-dom";
+import {useHistory} from 'react-router-dom';
 const Auth = require('./libs/Auth');
 
 /**
- * Register class
+ * Login class
+ * @return {object} Login JSX
  */
 export default function Login() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [showBusiness, setForm] = React.useState(false);
   const [showPassword, setVisibility] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
-  const [emailMsg, setEmailMsg] = React.useState("");
+  const [emailMsg, setEmailMsg] = React.useState('');
   const [passError, setPassError] = React.useState(false);
   const context = React.useContext(Context);
   const history = useHistory();
@@ -40,12 +39,12 @@ export default function Login() {
    */
   function handleSubmit(event) {
     event.preventDefault();
-    var apicall = 'http://localhost:3010/api/'+
+    const apicall = 'http://localhost:3010/api/'+
       (showBusiness?'businesses':'users')+'/login';
     fetch(apicall, {
       method: 'POST',
-      body: JSON.stringify({"email":email,
-        "password":password}),
+      body: JSON.stringify({'email': email,
+        'password': password}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -53,20 +52,19 @@ export default function Login() {
         .then((response) => {
           if (!response.ok) {
             if (response.status === 400) {
-              setEmailError(email === "");
-              setEmailMsg("Invalid email.");
+              setEmailError(email === '');
+              setEmailMsg('Invalid email.');
               setPassError(false);
             }
             if (response.status === 404) {
               setEmailError(true);
-              setEmailMsg("Account not found.");
+              setEmailMsg('Account not found.');
               setPassError(false);
-            }
-            else if (response.status === 401) {
+            } else if (response.status === 401) {
               setEmailError(false);
               setPassError(true);
             }
-            context.setAuthState(null);
+            context.setAuthState(false);
             throw response;
           } else {
             setEmailError(false);
@@ -77,7 +75,7 @@ export default function Login() {
         .then((json) => {
           // save JWT and set authState after logging in
           Auth.saveJWT(json.auth_token);
-          context.setAuthState(Auth.getJWT());
+          context.setAuthState(true);
           console.log(json);
           context.setBusinessState(showBusiness);
           history.push('/');
@@ -87,24 +85,38 @@ export default function Login() {
         });
   };
 
+  /**
+   * validateInput
+   * Validates input on form submission
+   * @param {*} event
+   */
   const validateInput = (event) => {
     // regex to check for valid email format
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = new RegExp([
+      '^(([^<>()[\\]\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\.,;:\\s@\"]+)*)',
+      '|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.',
+      '[0-9]{1,3}\])|(([a-zA-Z\\-0-9]+\\.)+',
+      '[a-zA-Z]{2,}))$'].join(''));
     if (!emailRegex.test(email)) {
       setEmailError(true);
-      setEmailMsg("Invalid email.");
+      setEmailMsg('Invalid email.');
       setPassError(false);
     } else {
       handleSubmit(event);
     }
-  }
+  };
 
+  /**
+   * handleKeypress
+   * Checks if keypress was enter, then submits form
+   * @param {*} event Event submission event
+   */
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       validateInput(event);
     }
-  }
+  };
 
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -141,7 +153,7 @@ export default function Login() {
           <div className={classes.form}>
             <TextField
               error={emailError}
-              helperText={emailError ? emailMsg : ""}
+              helperText={emailError ? emailMsg : ''}
               variant="outlined"
               margin="normal"
               required
@@ -150,7 +162,9 @@ export default function Login() {
               label="Email Address"
               name="email"
               autoComplete="email"
-              onChange={(event) => {setEmail(event.target.value);}}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
               onKeyPress={handleKeypress}
               autoFocus
             />
@@ -158,15 +172,17 @@ export default function Login() {
             <FormControl className={classes.form} variant="outlined">
               <TextField
                 error={passError}
-                helperText={passError?"Incorrect password.":""}
+                helperText={passError?'Incorrect password.':''}
                 variant="outlined"
                 required
                 fullWidth
                 name="password"
                 label="Password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 id="password"
-                onChange={(event) => {setPassword(event.target.value);}}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
                 onKeyPress={handleKeypress}
                 autoComplete="current-password"
                 InputProps={{
@@ -174,7 +190,9 @@ export default function Login() {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={(event) => {setVisibility(!showPassword);}}
+                        onClick={(event) => {
+                          setVisibility(!showPassword);
+                        }}
                         edge="end"
                       >
                         {showPassword ? <Visibility /> : <VisibilityOff />}
@@ -184,7 +202,11 @@ export default function Login() {
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" onChange={(event) => {setForm(event.target.checked);}}/>}
+              control={<Checkbox value="remember"
+                color="primary"
+                onChange={(event) => {
+                  setForm(event.target.checked);
+                }}/>}
               label="Business Account"
             />
             <Button
@@ -205,7 +227,7 @@ export default function Login() {
               </Grid>
               <Grid item>
                 <Link href="/Register" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {'Don\'t have an account? Sign Up'}
                 </Link>
               </Grid>
             </Grid>

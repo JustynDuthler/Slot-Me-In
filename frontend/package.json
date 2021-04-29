@@ -42,7 +42,8 @@
     "globalTeardown": "./test/globalTeardown.js"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint . --ext .js",
+    "lint": "eslint . --ext .js",
+    "lintfix": "eslint . --ext .js --fix",
     "start": "react-scripts start",
     "test-start": "react-scripts start",
     "test": "jest --runInBand --testTimeout=2000"
