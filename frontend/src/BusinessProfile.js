@@ -139,18 +139,18 @@ export default function BusinessProfile() {
           setError(error);
         },
         );
-    /* Uncomment when member retrieval api is done */
-    // const memberRes = fetch('http://localhost:3010/api/businesses/members', {
+    // /* Uncomment when member retrieval api is done */
+    // const memberRes = fetch('http://localhost:3010/api/members/getMembers', {
     //   method: 'GET',
     //   headers: Auth.headerJsonJWT(),
-    // }).then(res => res.json())
-    // .then((data) => {
-    //     setMemberData(data);
-    //   },
-    //   (error) => {
-    //     setError(error);
-    //   }
-    // )
+    // }).then((res) => res.json())
+    //     .then((data) => {
+    //       setMemberData(data);
+    //     },
+    //     (error) => {
+    //       setError(error);
+    //     },
+    //     );
     await Promise.all([businessRes, eventRes]);
     setIsLoaded(true);
   }, []);
