@@ -18,6 +18,10 @@ import {DatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import clsx from 'clsx';
 import format from 'date-fns/format';
 import {IconButton} from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 // TODO:
 // 1. Once public business pages are implemented, add a link to them.
 // 2. Once users can become linked to businesses by email for membership
@@ -47,6 +51,10 @@ export default function UserProfile() {
   const [eventState, setEventState] = React.useState(null);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [showAll, setShowAll] = React.useState(true);
+  const [withdrawEventID, setWithdrawEventID] = React.useState('');
+  const [withdrawEventKey, setWithdrawEventKey] = React.useState('');
+  const [withdrawEventValue, setWithdrawEventValue] = React.useState('');
+  const [confirmDialog, setConfirmDialog] = React.useState(false);
   const context = React.useContext(Context);
 
   /**
@@ -204,6 +212,10 @@ export default function UserProfile() {
       border: `1px solid ${theme.palette.secondary.main}`,
       borderRadius: '50%',
     },
+    dialogText: {
+      marginLeft: 15,
+      marginRight: 15,
+    },
   }));
   const classes = useStyles();
 
@@ -341,8 +353,12 @@ export default function UserProfile() {
                         variant='contained'
                         color='primary'
                         onClick={() => {
-                          removeUserAndReload(
-                              eventid, eventKey, eventValue, eventList);
+                          setWithdrawEventID(eventid);
+                          setWithdrawEventKey(eventKey);
+                          setWithdrawEventValue(eventValue);
+                          setConfirmDialog(true);
+                          // removeUserAndReload(
+                          //     eventid, eventKey, eventValue, eventList);
                         }}
                       >
                         Withdraw
@@ -446,6 +462,40 @@ export default function UserProfile() {
               {items}
             </Grid>
           </Grid>
+
+          {/* Confirmation dialog for withdrawing from events */}
+          <Dialog open={confirmDialog} onClose={() => {
+            setConfirmDialog(false);
+          }}
+          aria-labelledby="confirm-dialog-title">
+            <DialogTitle id="confirm-dialog-title">
+              Withdraw From Event
+            </DialogTitle>
+            <DialogContentText className={classes.dialogText}>
+              Are you sure you want to withdraw from this event?
+            </DialogContentText>
+            <DialogActions>
+              <Button
+                color="primary"
+                onClick={() => {
+                  // Call removeUserAndReload, close dialog if user clicks Yes
+                  removeUserAndReload(
+                      withdrawEventID, withdrawEventKey,
+                      withdrawEventValue, eventList);
+                  setConfirmDialog(false);
+                }}>
+                Yes
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => {
+                  // Close dialog and don't withdraw if user clicks No
+                  setConfirmDialog(false);
+                }}>
+                No
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </Container>
     </Paper>

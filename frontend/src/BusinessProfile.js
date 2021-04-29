@@ -18,6 +18,10 @@ import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import clsx from 'clsx';
 import format from 'date-fns/format';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 /**
  * BusinessProfile component
@@ -34,6 +38,9 @@ export default function BusinessProfile() {
   const [emailMsg, setEmailMsg] = React.useState('');
   const [eventState, setEventState] = React.useState(null);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [confirmDialog, setConfirmDialog] = React.useState(false);
+  const [cancelEventID, setCancelEventID] = React.useState('');
+  const [deleteAll, setDeleteAll] = React.useState(false);
   const context = React.useContext(Context);
 
   /**
@@ -269,6 +276,10 @@ export default function BusinessProfile() {
       border: `1px solid ${theme.palette.secondary.main}`,
       borderRadius: '50%',
     },
+    dialogText: {
+      marginLeft: 15,
+      marginRight: 15,
+    },
   }));
 
   /**
@@ -312,6 +323,7 @@ export default function BusinessProfile() {
         }
       }
     }
+
     const wrapperClassName = clsx({
       [classes.select]: isEvent && currentDay && dayInCurrentMonth,
       [classes.noselect]: !isEvent && currentDay && dayInCurrentMonth,
@@ -394,7 +406,9 @@ export default function BusinessProfile() {
                     variant='contained'
                     color='primary'
                     onClick={() => {
-                      deleteEventAndReload(eventid, false);
+                      setCancelEventID(eventid);
+                      setDeleteAll(false);
+                      setConfirmDialog(true);
                     }}
                   >
                     {'Cancel event'}
@@ -405,7 +419,9 @@ export default function BusinessProfile() {
                         variant='contained'
                         color='secondary'
                         onClick={() => {
-                          deleteEventAndReload(eventid, true);
+                          setCancelEventID(eventid);
+                          setDeleteAll(true);
+                          setConfirmDialog(true);
                         }}
                       >
                         {'Delete All'}
@@ -523,6 +539,41 @@ export default function BusinessProfile() {
           </Typography>
           {items2}
 
+          {/* Confirmation dialog for cancelling events */}
+          <Dialog open={confirmDialog} onClose={() => {
+            setConfirmDialog(false);
+          }}
+          aria-labelledby="confirm-dialog-title">
+            <DialogTitle id="confirm-dialog-title">
+              {deleteAll ? 'Cancel Repeating Event' : 'Cancel Event'}
+            </DialogTitle>
+            <DialogContentText className={classes.dialogText}>
+              {/* Change message for deleting all vs. cancelling one event */}
+              {deleteAll ?
+                  'Are you sure you want to delete all instances of' +
+                  ' this repeating event?' :
+                  'Are you sure you want to cancel this event?'}
+            </DialogContentText>
+            <DialogActions>
+              <Button
+                color="primary"
+                onClick={() => {
+                  // Call deleteEventAndReload, close dialog if user clicks Yes
+                  deleteEventAndReload(cancelEventID, deleteAll);
+                  setConfirmDialog(false);
+                }}>
+                Yes
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => {
+                  // Close dialog and don't delete event if user clicks No
+                  setConfirmDialog(false);
+                }}>
+                No
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </Container>
     );
