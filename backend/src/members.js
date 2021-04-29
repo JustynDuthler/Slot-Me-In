@@ -67,7 +67,8 @@ exports.getMembers = async (req, res) => {
   /* query to get all userids of members */
   const memberIDs = await db.getMembersForBusiness(businessid);
   if (memberIDs === undefined) {
-    res.status(409).send();
+    const emptyUsers = [];
+    res.status(200).json(emptyUsers);
   } else {
     /* construct userid list for query */
     let useridvalues = '';

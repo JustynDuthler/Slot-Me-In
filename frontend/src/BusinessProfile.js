@@ -31,7 +31,7 @@ export default function BusinessProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [businessData, setBusinessData] = React.useState([]);
-  const [memberList] = React.useState([]);
+  const [memberList, setMemberList] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
   const [emailInput, setEmailInput] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
@@ -139,19 +139,19 @@ export default function BusinessProfile() {
           setError(error);
         },
         );
-    // /* Uncomment when member retrieval api is done */
-    // const memberRes = fetch('http://localhost:3010/api/members/getMembers', {
-    //   method: 'GET',
-    //   headers: Auth.headerJsonJWT(),
-    // }).then((res) => res.json())
-    //     .then((data) => {
-    //       setMemberData(data);
-    //     },
-    //     (error) => {
-    //       setError(error);
-    //     },
-    //     );
-    await Promise.all([businessRes, eventRes]);
+    /* Uncomment when member retrieval api is done */
+    const memberRes = fetch('http://localhost:3010/api/members/getMembers', {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((res) => res.json())
+        .then((data) => {
+          setMemberList(data);
+        },
+        (error) => {
+          setError(error);
+        },
+        );
+    await Promise.all([businessRes, eventRes, memberRes]);
     setIsLoaded(true);
   }, []);
 
@@ -358,14 +358,14 @@ export default function BusinessProfile() {
     for (const m in memberList) {
       if (memberList.hasOwnProperty(m)) {
         const member = memberList[m];
-        <ListItem button={true}
+        members.push(<ListItem button={true}
           key={member.userid}
           onClick={() => {
             /* Link to public user profile page ? */
           }}>
           <ListItemText key={member.userid}
             primary={member.username}
-            secondary={member.email.toLowerCase()}/>
+            secondary={member.useremail.toLowerCase()}/>
           <ListItemSecondaryAction>
             <Button
               type='submit'
@@ -378,7 +378,7 @@ export default function BusinessProfile() {
               Remove
             </Button>
           </ListItemSecondaryAction>
-        </ListItem>;
+        </ListItem>);
       }
     }
     for (const key in eventList) {
