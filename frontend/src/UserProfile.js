@@ -224,7 +224,7 @@ export default function UserProfile() {
     for (const business in eventList) {
       if (eventList.hasOwnProperty(business)) {
         for (const e in eventList[business]) {
-          if (eventList[business].hasOwnPropety(e)) {
+          if (eventList[business].hasOwnProperty(e)) {
             const date = new Date(eventList[business][e].starttime);
             if (date.getDate() == dateClone.getDate() &&
                 date.getMonth() == dateClone.getMonth() &&
@@ -425,7 +425,7 @@ export default function UserProfile() {
             {userData.username}
           </Typography>
           <Typography className={classes.typography} variant='h4'>
-            {userData.email}
+            {userData.email.toLowerCase()}
           </Typography>
           <Grid container justify='center' direction='row' spacing={8}>
             {eventState === null &&showAll === false&&

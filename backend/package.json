@@ -20,10 +20,14 @@
   "scripts": {
     "prestart": "docker-compose --env-file .env up --build -d && docker-compose --env-file .env config",
     "start": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js",
+    "lintfix": "eslint . --ext .js --fix"
   },
   "devDependencies": {
     "docker-compose": "^0.23.5",
+    "eslint": "^7.12.1",
+    "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.7"
   }
 }

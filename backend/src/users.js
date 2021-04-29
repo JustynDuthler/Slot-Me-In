@@ -1,6 +1,5 @@
-const db = require('./db')
+const db = require('./db');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -14,7 +13,7 @@ exports.getInfo = async (req, res) => {
     email: user.useremail,
   };
   res.status(200).json(userData);
-}
+};
 
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
@@ -27,14 +26,14 @@ exports.signup = async (req, res) => {
       if (emailRes) {
         res.status(409).send();
         console.log('Email already taken!');
-      }
-      else {
-        const userid = await db.insertUserAccount(req.body.name, hash, req.body.email);
+      } else {
+        const userid =
+            await db.insertUserAccount(req.body.name, hash, req.body.email);
         const token = await auth.generateJWT(req.body.email, userid, 'user');
         res.status(201).json({auth_token: token});
       }
     }
-  })
+  });
 };
 
 exports.login = async (req, res) => {
@@ -47,11 +46,10 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(req.body.password, pass);
     // if passwords match, generate JWT and send 200
     if (match) {
-      const token = 
+      const token =
           await auth.generateJWT(account.useremail, account.userid, 'user');
       res.status(200).json({auth_token: token});
-    }
-    else {
+    } else {
       // 401 if incorrect password
       res.status(401).send();
     }
@@ -65,13 +63,13 @@ exports.getEvents = async (req, res, next) => {
   }
 
   db.getUsersEvents(userID)
-  .then((events) => {
-    res.status(200).send(events);
-  })
-  .catch(error => {
-    error.status=500;
-    next(error);
-  });
+      .then((events) => {
+        res.status(200).send(events);
+      })
+      .catch((error) => {
+        error.status=500;
+        next(error);
+      });
 };
 
 exports.removeUserAttending = async (req, res) => {
@@ -84,5 +82,4 @@ exports.removeUserAttending = async (req, res) => {
   } else {
     res.status(403).send();
   }
-  
 };
