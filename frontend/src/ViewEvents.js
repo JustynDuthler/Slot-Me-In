@@ -7,8 +7,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Grid } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
-
 import Context from './Context';
+
 const Auth = require('./libs/Auth');
 
 const useStyles = makeStyles({
@@ -35,9 +35,10 @@ const useStyles = makeStyles({
 export default function ViewEvents() {
   const classes = useStyles();
   const [rows, getRows] = React.useState([]);
-  const [pageNumber, setPageNumber] = useState(0);
-  const usersPerPage = 10;
-  const pagesVisited = pageNumber * usersPerPage;
+  const [numEvents, setNumEvents] = React.useState(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+  const [postsPerPage] = useState(9);
   const context = React.useContext(Context);
 
   /* API call to get event data */
@@ -60,20 +61,16 @@ export default function ViewEvents() {
       })
       .then((json) => {
         getRows(json);
-        console.log(json);
+        setNumEvents(json.length);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  useEffect((eventid) => {
+  useEffect(() => {
     getEvents();
   }, []);
-
-  const changePage = ({ selected }) => {
-    setPageNumber(selected);
-  };
 
   /*
     This function gets the individual event data for each card and displays it. When the card
@@ -113,19 +110,63 @@ export default function ViewEvents() {
     );
   };
 
+  const Pagination = ({ postsPerPage, totalPosts }) => {
+    console.log('hi');
+    const pageNumbers = [];
+  
+    for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+  
+    return (
+      <nav>
+        <ul>
+          {pageNumbers.map(number => (
+            <li key={number}>
+              <a onClick={() => {paginate(number)}} href={'/events/'+number}>
+                {number}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+
+  const Posts = ({ posts }) => {
+    return (
+      posts.map(post => (
+          getCard(post)
+      ))
+    );
+  };
+
+  // Get current posts
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = rows.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Change page
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <Box mt={5} mb={5}>
-      <h1 style={{ margin:12 }}>Events</h1>
-      <Grid
-        container
-        spacing={5}
-        className={classes.gridContainer}
-        justify="center"
-      >
-        {rows.map((row) =>
-          getCard(row)
-        )}
-      </Grid>
+      <Box mb={5}>
+        <h1 style={{ margin:12 }}>Events</h1>
+        <Grid
+          container
+          spacing={5}
+          className={classes.gridContainer}
+          justify="center"
+        >
+          <Posts posts={currentPosts} />
+        </Grid>
+      </Box>
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={numEvents}
+        paginate={paginate}
+      />
     </Box>
-);
+  );
 }
