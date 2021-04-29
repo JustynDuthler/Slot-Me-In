@@ -10,7 +10,7 @@ exports.getInfo = async (req, res) => {
   const userData = {
     userid: user.userid,
     username: user.username,
-    email: user.useremail,
+    useremail: user.useremail,
   };
   res.status(200).json(userData);
 };

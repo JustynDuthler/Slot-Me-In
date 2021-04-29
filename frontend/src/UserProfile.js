@@ -441,7 +441,7 @@ export default function UserProfile() {
             {userData.username}
           </Typography>
           <Typography className={classes.typography} variant='h4'>
-            {userData.email.toLowerCase()}
+            {userData.useremail.toLowerCase()}
           </Typography>
           <Grid container justify='center' direction='row' spacing={8}>
             {eventState === null &&showAll === false&&
