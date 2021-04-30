@@ -35,6 +35,6 @@ module.exports = {
     },
   },
   "ignorePatterns": [
-    "*.test.js", ".eslintrc.js", "AuthTest.js",
+    "*.test.js", ".eslintrc.js",
   ],
 };
