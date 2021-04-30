@@ -368,22 +368,28 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  # /businesses/deletemember:
-  #   delete:
-  #     description: Deletes a single member from the member list
-  #     tags:
-  #       - businesses
-  #     security:
-  #       - bearerAuth: []
-  #     requestBody:
-  #       description: Email string
-  #       required: true
-  #       content:
-  #         application/json:
-  #           type: string
-  #           format: email
-  #     responses:
-  #       200
+  /members/deleteMember:
+    delete:
+      description: Deletes a single member from the member list
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Email string
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+
+      responses:
+        200:
+          description: Email successfully removed from member table
 
   /businesses/{businessid}:
     get:
