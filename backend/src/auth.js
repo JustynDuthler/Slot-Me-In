@@ -15,7 +15,6 @@ exports.authenticateJWT = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-
     // If the token is invalid send 401
     if (err) {
       return res.status(401).json(
@@ -36,7 +35,6 @@ exports.authenticateUserJWT = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-
     // If the token is invalid send 401
     if (err) {
       return res.status(401).json(
@@ -62,7 +60,6 @@ exports.authenticateBusinessJWT = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-
     // If the token is invalid send 401
     if (err) {
       return res.status(401).json(

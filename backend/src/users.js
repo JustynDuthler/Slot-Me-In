@@ -29,10 +29,10 @@ exports.signup = async (req, res) => {
       } else {
         const userid =
             await db.insertUserAccount(
-              req.body.name, hash, req.body.email.toLowerCase());
+                req.body.name, hash, req.body.email.toLowerCase());
         const token =
             await auth.generateJWT(
-              req.body.email.toLowerCase(), userid, 'user');
+                req.body.email.toLowerCase(), userid, 'user');
         res.status(201).json({auth_token: token});
       }
     }
