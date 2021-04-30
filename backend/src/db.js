@@ -430,12 +430,12 @@ exports.insertMembers = async (memberlist) => {
 };
 
 // removes user from members table
-exports.removeMember = async (buisnessid, userid) => {
-  const deleteM = 'DELETE FROM Members m WHERE m.buisnessid = $1 ' +
+exports.removeMember = async (businessid, userid) => {
+  const deleteM = 'DELETE FROM Members m WHERE m.businessid = $1 ' +
       'AND m.userid = $2 RETURNING m.userid';
   const query = {
     text: deleteM,
-    values: [buisnessid, userid],
+    values: [businessid, userid],
   };
 
   const {rows} = await pool.query(query);
@@ -448,14 +448,14 @@ exports.removeMember = async (buisnessid, userid) => {
 *  is for users only, so we can change that
 *  but for a demo we can use this
 */
-exports.removeMemberFromAttendees = async (buisnessid, userid) => {
+exports.removeMemberFromAttendees = async (businessid, userid) => {
   // select all eventids for the business, remove user from attendees table
   const deleteM = 'DELETE FROM Attendees a WHERE a.userid = $2 ' +
       'AND a.eventid IN (SELECT e.eventid FROM Events e ' +
       'WHERE e.businessid = $1) RETURNING *'; // return rows deleted
   const query = {
     text: deleteM,
-    values: [buisnessid, userid],
+    values: [businessid, userid],
   };
 
   const {rows} = await pool.query(query);
