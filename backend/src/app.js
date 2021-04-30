@@ -7,11 +7,11 @@ const path = require('path');
 const OpenApiValidator = require('express-openapi-validator');
 
 const auth = require('./auth');
-const users = require('./users');
-const businesses = require('./businesses');
-const events = require('./events');
-const attendees = require('./attendees');
-const members = require('./members');
+const users = require('./routes/users');
+const businesses = require('./routes/businesses');
+const events = require('./routes/events');
+const attendees = require('./routes/attendees');
+const members = require('./routes/members');
 const db = require('./db/db');
 
 const app = express();

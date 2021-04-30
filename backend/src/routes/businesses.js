@@ -1,9 +1,9 @@
-const db = require('./db/db');
+const db = require('../db/db');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const auth = require('./auth');
+const auth = require('../auth');
 
 exports.getInfo = async (req, res) => {
   const business = await db.selectBusiness(req.payload.id);
