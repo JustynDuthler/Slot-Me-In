@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,7 +18,9 @@ import UserProfile from './UserProfile';
 import BusinessProfile from './BusinessProfile';
 const Auth = require('./libs/Auth');
 
-import {ButtonGroup, Button, Toolbar, AppBar, makeStyles} from '@material-ui/core';
+import {
+  ButtonGroup, Button, Toolbar, AppBar, makeStyles,
+} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import AccountIcon from '@material-ui/icons/AccountCircle';
@@ -44,10 +47,13 @@ function App() {
   const [authState, setAuthState] = React.useState(null);
   const [businessState, setBusinessState] = React.useState(undefined);
 
-
+  /**
+   * validateBusiness()
+   * Determines whether logged in user is a business or user
+   */
   function validateBusiness() {
     fetch('http://localhost:3010/api/businesses/checkBusinessID', {
-      method: "GET",
+      method: 'GET',
       headers: Auth.JWTHeaderJson(),
     }).then((response) => {
       if (response.status === 200) {
@@ -58,23 +64,30 @@ function App() {
       if (!response.ok) {
         throw response;
       }
-    }).then((json) => {console.log("json",json)})
-    .catch((error) => {
-      console.log(error);
-    });
+      return response;
+    }).then((json) => {
+      console.log('json', json);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
   };
 
   if (Auth.getJWT() !== authState) {
     setAuthState(Auth.getJWT());
   }
 
+  /**
+   * logout()
+   * Removes JWT and sets authState to null upon logout
+   */
   const logout = () => {
     Auth.removeJWT();
     setAuthState(null);
   };
 
   React.useEffect(() => {
-    if (Auth.getJWT() === null)  {
+    if (Auth.getJWT() === null) {
       setBusinessState(false);
       setAuthState(false);
     } else {
@@ -82,7 +95,7 @@ function App() {
     }
   }, []);
   if (businessState == undefined) {
-    return <div></div>
+    return <div></div>;
   }
   // RightSide navigation changes depending on if the user is
   // logged in or not
@@ -104,80 +117,80 @@ function App() {
           size="large"
           variant="contained"
           onClick={logout}
-          >
-            Logout
+        >
+          Logout
         </Button>
       </ButtonGroup>
     );
   } else {
     rightSide = (
-    <ButtonGroup
-      anchororigin={{
-        vertical: 'top',
-        horizonal: 'right',
-      }}
-    >
-      <Button
-        startIcon={<AccountIcon />}
-        href="/register"
-        color="primary"
-        size="large"
-        variant="contained"
+      <ButtonGroup
+        anchororigin={{
+          vertical: 'top',
+          horizonal: 'right',
+        }}
       >
-        Register Account
-      </Button>
+        <Button
+          startIcon={<AccountIcon />}
+          href="/register"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Register Account
+        </Button>
 
-      <Button
-        startIcon={<LockOutlinedIcon />}
-        href="/Login"
-        color="primary"
-        size="large"
-        variant="contained"
-      >
-        Login
-      </Button>
-    </ButtonGroup>
+        <Button
+          startIcon={<LockOutlinedIcon />}
+          href="/Login"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Login
+        </Button>
+      </ButtonGroup>
     );
   }
 
   let leftSide;
   if (businessState == true) {
     leftSide = (
-    <Box className={classes.leftMenu}>
-      <Button
-        startIcon={<HomeIcon/>}
-        href="/home"
-        color="primary"
-        size="large"
-        variant="contained"
-      >
-        Home
-      </Button>
-      <Button
-        href="/events/create"
-        color="primary"
-        size="large"
-        variant="contained"
-      >
-        Create Event
-      </Button>
-      <Button
-        href="/events"
-        color="primary"
-        size="large"
-        variant="contained"
-      >
-        Events
-      </Button>
-      <Button
-        href="/authtest"
-        color="primary"
-        size="large"
-        variant="contained"
-      >
-        AuthTest
-      </Button>
-    </Box>
+      <Box className={classes.leftMenu}>
+        <Button
+          startIcon={<HomeIcon/>}
+          href="/home"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Home
+        </Button>
+        <Button
+          href="/events/create"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Create Event
+        </Button>
+        <Button
+          href="/events"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Events
+        </Button>
+        <Button
+          href="/authtest"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          AuthTest
+        </Button>
+      </Box>
     );
   } else {
     leftSide = (
@@ -208,16 +221,17 @@ function App() {
           AuthTest
         </Button>
       </Box>
-      );
+    );
   }
   return (
     <Router>
-      <CssBaseline /> {/* I moved Css basline to here so that it applies to the whole project */}
+      {/* I moved Css basline to here so that it applies to the whole project */}
+      <CssBaseline />
       <AppBar
         position="static"
       >
         <Toolbar>
-          {/* classes.leftMenu has flexGrow: 1 meaning it will try to take up as much space as possible
+          {/* classes.leftMenu has flexGrow: 1 so it will try to take up as much space as possible
           this will push the content outside of the box to the right */}
           {leftSide}
           {rightSide}
@@ -226,12 +240,12 @@ function App() {
       {/* Used a container so that there would be top margin between nav and content */}
       <Container className={classes.content}>
         <Context.Provider value={{
-            authState, setAuthState,
-            businessState, setBusinessState
-          }}>
+          authState, setAuthState,
+          businessState, setBusinessState,
+        }}>
           <Switch>
             <Route path="/login">
-                <Login/>
+              <Login/>
             </Route>
             <Route path="/register">
               <Register/>
@@ -250,14 +264,16 @@ function App() {
               component={ViewEvents}
             />
             <Route path="/profile">
-              {(authState) ? ((businessState === false) ? <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+              {(authState) ? ((businessState === false) ?
+              <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
             </Route>
             <Route exact path="/events">
               <ViewEvents/>
             </Route>
             <Route
               exact path="/event/:eventid"
-              render={props => <IndividualEvent eventID={props.match.params.eventid} {...props} />}
+              render={(props) =>
+                <IndividualEvent eventID={props.match.params.eventid} {...props} />}
             />
             <Route path="/">
               <Home />
@@ -271,16 +287,26 @@ function App() {
   );
 }
 
-// PrivateRoute that redirects to login page if not authenticated
-function PrivateRoute ({component: Component, authed, ...rest}) {
+// Prop types for PrivateRoute
+PrivateRoute.propTypes = {
+  component: PropTypes.func,
+  authed: PropTypes.string,
+};
+
+/**
+ * PrivateRoute
+ * @param {*} component Component to protect behind PrivateRoute
+ * @param {*} authed current authState
+ * @return {Route} PrivateRoute component that redirects to login if authed is null
+ */
+function PrivateRoute({component: Component, authed, ...rest}) {
   return (
     <Route
       {...rest}
-      render={(props) => authed !== null
-        ? <Component {...props} />
-        : <Redirect to={{pathname: '/login'}} />}
+      render={(props) => authed !== null ?
+        <Component {...props} /> : <Redirect to={{pathname: '/login'}} />}
     />
-  )
+  );
 }
 
 

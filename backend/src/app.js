@@ -11,6 +11,7 @@ const users = require('./users');
 const businesses = require('./businesses');
 const events = require('./events');
 const attendees = require('./attendees');
+const members = require('./members');
 const db = require('./db');
 
 const app = express();
@@ -62,6 +63,9 @@ app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup);
 
 // Attendees routes
 app.get('/api/attendees/:eventid', attendees.getTotalAttendees);
+
+// Members routes
+app.post('/api/members/insertMembers', auth.authenticateBusinessJWT, members.addMembers);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
