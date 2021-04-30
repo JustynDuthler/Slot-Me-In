@@ -12,7 +12,7 @@ const businesses = require('./businesses');
 const events = require('./events');
 const attendees = require('./attendees');
 const members = require('./members');
-const db = require('./db');
+const db = require('./db/db');
 
 const app = express();
 app.use(cors());

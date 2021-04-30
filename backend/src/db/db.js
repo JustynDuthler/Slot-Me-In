@@ -1,18 +1,4 @@
-// Database connection File
-const dotenv = require('dotenv');
-dotenv.config();
-
-const {Pool} = require('pg');
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: 'localhost',
-  database: process.env.DB,
-  password: process.env.DB_PASSWORD,
-  port: 5432,
-});
-// module.exports = pool;
-pool.connect();
+const pool = require('./dbConection');
 
 // basic testing query
 exports.dbTest = async () => {
