@@ -38,7 +38,19 @@ export default function CreateEvent() {
     React.useState({'monday': false, 'tuesday': false, 'wednesday': false,
       'thursday': false, 'friday': false, 'saturday': false, 'sunday': false});
   const [repeatEnd, changeRepeatEnd] = React.useState(null);
-  const [repeatEndError, setRepeatEndError] = React.useState(false);
+  const [errors, setErrors] = React.useState({
+    'repeatEnd': false,
+    'repeatDays': false,
+    'repeatPrecede': false,
+    'repeat': false,
+    'name': false,
+    'start': false,
+    'end': false,
+    'precede': false,
+    'capacity': false,
+    'description': false,
+  });
+  /* const [repeatEndError, setRepeatEndError] = React.useState(false);
   const [repeatDaysError, setRepeatDaysError] = React.useState(false);
   const [repeatPrecedeError, setRepeatPrecedeError] = React.useState(false);
   const [repeatError, setRepeatError] = React.useState(false);
@@ -47,7 +59,7 @@ export default function CreateEvent() {
   const [endError, setEndError] = React.useState(false);
   const [precedeError, setPrecedeError] = React.useState(false);
   const [capacityError, setCapacityError] = React.useState(false);
-  const [descriptionError, setDescriptionError] = React.useState(false);
+  const [descriptionError, setDescriptionError] = React.useState(false); */
   const days =
     ['sunday', 'monday', 'tuesday', 'wednesday',
       'thursday', 'friday', 'saturday', 'sunday'];
@@ -129,40 +141,39 @@ export default function CreateEvent() {
    * validateInput
    * @param {*} event Form submission event
    */
-  const validateInput = (event) => {
+  const validateInput = async (event) => {
     // check that all fields are filled before submitting
-    (!eventName) ? setNameError(true) : setNameError(false);
-    (!startDateTime) ? setStartError(true) : setStartError(false);
-    (!endDateTime) ? setEndError(true) : setEndError(false);
-    (repeat && !repeatEnd) ? setRepeatEndError(true) : setRepeatEndError(false);
-    // start date must precede end date
-    (startDateTime && endDateTime && startDateTime > endDateTime) ?
-      setPrecedeError(true) : setPrecedeError(false);
-    // repeat days must include day of start date
-    (repeat && startDateTime && !repeatDays[days[startDateTime.getDay()]]) ?
-      setRepeatError(true) : setRepeatError(false);
-    // start date must precede repeat end date
-    (repeat && repeatEnd && startDateTime > repeatEnd) ?
-      setRepeatPrecedeError(true) : setRepeatPrecedeError(false);
-    // at least one repeat day must be selected
-    (repeat && !repeatDays['sunday'] && !repeatDays['monday'] &&
-      !repeatDays['tuesday'] && !repeatDays['wednesday'] &&
-      !repeatDays['thursday'] && !repeatDays['friday'] &&
-      !repeatDays['saturday']) ?
-      setRepeatDaysError(true) : setRepeatDaysError(false);
-    // make sure capacity is an integer
-    (!capacity || capacity % 1 !== 0) ?
-      setCapacityError(true) : setCapacityError(false);
-    (description.length > 500 ?
-      setDescriptionError(true) : setDescriptionError(false));
+    const errors = {
+      'name': !eventName,
+      'start': !startDateTime,
+      'end': !endDateTime,
+      'repeatEnd': (repeat && !repeatEnd),
+      'precede': startDateTime && endDateTime && (startDateTime > endDateTime),
+      'repeat': (repeat && startDateTime &&
+        !repeatDays[days[startDateTime.getDay()]]),
+      'repeatPrecede': (repeat && repeatEnd && startDateTime > repeatEnd),
+      'repeatDays': (repeat && !repeatDays['sunday'] && !repeatDays['monday'] &&
+        !repeatDays['tuesday'] && !repeatDays['wednesday'] &&
+        !repeatDays['thursday'] && !repeatDays['friday'] &&
+        !repeatDays['saturday']),
+      'capacity': (!capacity || capacity % 1 !== 0),
+      'description': description.length > 500,
+    };
+
     // only submit if all fields are filled out
-    if (!eventName || !startDateTime || !endDateTime || !capacity ||
-        precedeError || repeatError || descriptionError || repeatEndError ||
-        repeatDaysError) {
-      return;
-    } else {
-      handleSubmit(event);
+    console.log('ev', !eventName);
+    for (const error in errors) {
+      if (errors.hasOwnProperty(error)) {
+        console.log(error, errors[error], errors);
+        if (errors[error]) {
+          setErrors(errors);
+          return;
+        }
+      }
     }
+    setErrors(errors);
+    handleSubmit(event);
+
   };
 
   /**
@@ -193,8 +204,8 @@ export default function CreateEvent() {
           </Typography>
           <div className={classes.form}>
             <TextField
-              error={nameError}
-              helperText={nameError ? 'Event name is required.' : ''}
+              error={errors.name}
+              helperText={errors.name ? 'Event name is required.' : ''}
               variant='outlined'
               margin='normal'
               fullWidth
@@ -211,8 +222,8 @@ export default function CreateEvent() {
               utils={DateFnsUtils}
               className={classes.form}>
               <DateTimePicker
-                error={startError}
-                helperText={startError ? 'Start date/time is required.' : ''}
+                error={errors.start}
+                helperText={errors.start ? 'Start date/time is required.' : ''}
                 clearable
                 className={classes.dateselect}
                 label='Start Date/Time'
@@ -224,9 +235,9 @@ export default function CreateEvent() {
             </MuiPickersUtilsProvider>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DateTimePicker
-                error={endError || precedeError}
-                helperText={precedeError ?
-                  'End date/time must follow Start date/time.' : endError ?
+                error={errors.end || errors.precede}
+                helperText={errors.precede ?
+                  'End date/time must follow Start date/time.' : errors.end ?
                   'End date/time is required.' : ''}
                 clearable
                 className={classes.dateselect}
@@ -245,7 +256,7 @@ export default function CreateEvent() {
               label='Repeat'
             />
             {repeat && <FormControl required
-              error={repeatError || repeatDaysError}
+              error={errors.repeat || errors.repeatDays}
               component='fieldset'>
               <FormGroup row>
                 <FormControlLabel
@@ -326,21 +337,21 @@ export default function CreateEvent() {
                   label='S'
                 />
               </FormGroup>
-              {repeatError &&
+              {errors.repeat &&
                 <FormHelperText>
                   Selected days must include day of start date
                 </FormHelperText>}
-              {repeatDaysError &&
+              {errors.repeatDays &&
                 <FormHelperText>
                   Must select at least one day to repeat on
                 </FormHelperText>}
             </FormControl>}
             {repeat && <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DatePicker
-                error={repeatEndError || repeatPrecedeError}
-                helperText={repeatPrecedeError ?
+                error={errors.repeatEnd || errors.repeatPrecede}
+                helperText={errors.repeatPrecede ?
                   'Repeat end date must follow Start date/time.' :
-                  repeatEndError ? 'Repeat end date is required.' : ''}
+                  errors.repeatEnd ? 'Repeat end date is required.' : ''}
                 clearable
                 className={classes.dateselect}
                 label='Repeat End Date'
@@ -351,8 +362,8 @@ export default function CreateEvent() {
               />
             </MuiPickersUtilsProvider>}
             <TextField
-              error={capacityError}
-              helperText={capacityError ?
+              error={errors.capacity}
+              helperText={errors.capacity ?
                 'Capacity is required and must be an integer.' : ''}
               variant='outlined'
               margin='normal'
@@ -367,8 +378,8 @@ export default function CreateEvent() {
               onKeyPress={handleKeypress}
             />
             <TextField
-              error={descriptionError}
-              helperText={descriptionError ?
+              error={errors.description}
+              helperText={errors.description ?
                 'Description must be less than 500 characters.' : ''}
               variant='outlined'
               margin='normal'
