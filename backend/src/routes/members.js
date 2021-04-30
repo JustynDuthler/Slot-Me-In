@@ -1,13 +1,14 @@
-const db = require('./db');
+const memberDb = require('../db/memberDb');
+const userDb = require('../db/userDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
 exports.deleteMember = async (req, res) => {
   const businessid = req.payload.id;
   const email = req.body.email;
-  db.getUserIDByEmail(email)
+  userDb.getUserIDByEmail(email)
     .then(id => {
-      db.removeMember(businessid, id)
+      memberDb.removeMember(businessid, id)
         .then(length => {
           res.status(200).send();
         })
@@ -33,10 +34,10 @@ exports.addMembers = async (req, res) => {
   /* fill userID array with userIDs corresponding to the emails in the
        same order */
   for (i = 0; i < length; i++) {
-    userID[i] = await db.getUserIDByEmail(req.body[i]);
+    userID[i] = await userDb.getUserIDByEmail(req.body[i]);
   }
   /* get list of already added users */
-  const existingMembers = await db.getMembersForBusiness(businessid);
+  const existingMembers = await memberDb.getMembersForBusiness(businessid);
   /* construct tuples to insert into members table */
   let memberListString = '';
   let existFlag = 0;
@@ -63,7 +64,7 @@ exports.addMembers = async (req, res) => {
       '(\'' + businessid + '\', \'' + req.body[i] + '\', \'' + userID[i] +'\')';
   }
   if (memberListString.length != 0) {
-    const insertNum = await db.insertMembers(memberListString);
+    const insertNum = await memberDb.insertMembers(memberListString);
     if (insertNum == 0) {
       res.status(500).send();
     } else {
@@ -77,7 +78,7 @@ exports.addMembers = async (req, res) => {
 exports.getMembers = async (req, res) => {
   const businessid = req.payload.id;
   /* query to get all userids of members */
-  const memberIDs = await db.getMembersForBusiness(businessid);
+  const memberIDs = await memberDb.getMembersForBusiness(businessid);
   if (memberIDs === undefined) {
     const emptyUsers = [];
     res.status(200).json(emptyUsers);
@@ -91,7 +92,7 @@ exports.getMembers = async (req, res) => {
       useridvalues += (i ? ',' : '') + '(\'' + memberIDs[i].userid + '\')';
     }
 
-    const users = await db.getMemberUserInfo(useridvalues);
+    const users = await memberDb.getMemberUserInfo(useridvalues);
     res.status(200).json(users);
   }
 };

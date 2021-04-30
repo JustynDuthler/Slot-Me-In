@@ -40,15 +40,13 @@ const useStyles = makeStyles({
 export default function ViewEvents() {
   const classes = useStyles();
   const [eventList, setEventList] = React.useState([]);
-  const [numAttendees, setNumAttendees] = React.useState([]);
   const [pageEvents, setPageEvents] = React.useState([]);
   const [postsPerPage] = React.useState(9);
   const context = React.useContext(Context);
 
   /**
    * getEvents
-   * API call to get data for an event. The events are sliced
-   * to get the events for the first page.
+   * API call to get data for an event
    */
   function getEvents() {
     const apicall = 'http://localhost:3010/api/events';
@@ -66,14 +64,6 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setEventList(json);
-
-      // call getTotalAttendees for each event and add it
-      // to the numAttendees array
-      json.map((row) =>
-        getTotalAttendees(row.eventid),
-      );
-
-      // get first 9 events for the first page
       setPageEvents(json.slice(0, postsPerPage));
     })
         .catch((error) => {
@@ -86,45 +76,14 @@ export default function ViewEvents() {
   }, []);
 
   /**
-   * getTotalAttendees
-   * API call to get attendees for an event. This is called by
-   * getEvents() and the handleChange() functions for when the user
-   * goes onto a new page
-   * @param {*} eventid
-   */
-  const getTotalAttendees = (eventid) => {
-    const apicall = 'http://localhost:3010/api/attendees/'+eventid;
-    fetch(apicall, {
-      method: 'GET',
-    })
-        .then((response) => {
-          if (!response.ok) {
-            throw response;
-          } else {
-            return response.json();
-          }
-        })
-        .then((json) => {
-          // push new total attendees number to numAttendees array
-          setNumAttendees((arr) => [...arr, json.length]);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-  };
-
-  /**
    * getCard
    * This function gets the individual event data
    * for each card and displays it. When the card
-   * is clicked, it goes to URL /event/{eventid}. It
-   * is called from the mapping function in the return
-   * statement.
+   * is clicked, it goes to URL /event/{eventid}.
    * @param {*} row
-   * @param {*} index
    * @return {object} JSX
    */
-  function getCard(row, index) {
+  function getCard(row) {
     return (
       <Grid item xs={12} sm={6} md={4} key={row.eventid}>
         <Card>
@@ -153,8 +112,9 @@ export default function ViewEvents() {
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
-              color='textSecondary' variant='body2' align='center'>
-              Capacity: {numAttendees[index]}/{row.capacity}
+              variant='body2' align='center'
+              color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
+              Capacity: {row.attendees}/{row.capacity}
             </Typography>
           </CardContent>
           <CardActions>
@@ -175,25 +135,14 @@ export default function ViewEvents() {
 
   /**
    * handleChange
-   * This function is called whenever a new page is clicked on.
-   * It gets the set of events for the new page. getTotalAttendees()
-   * is called for each new event on the page
+   * This function gets the events for a new page
    * @param {event} event
    * @param {int} value
    */
   const handleChange = (event, value) => {
-    // get the events for this page by slicing the
-    // total events
     const currentPosts = eventList.slice(((value-1)*9),
         value*9);
     setPageEvents(currentPosts);
-
-    // reset the numAttendees array and get the number 
-    // of attendees for the events on the new page
-    setNumAttendees([]);
-    currentPosts.map((row) =>
-      getTotalAttendees(row.eventid),
-    );
   };
 
   return (
@@ -205,8 +154,8 @@ export default function ViewEvents() {
         className={classes.gridContainer}
         justify='center'
       >
-        {pageEvents.map((row, index) =>
-          getCard(row, index),
+        {pageEvents.map((row) =>
+          getCard(row),
         )}
       </Grid>
       <Box mt={5} display="flex" justifyContent="center" alignItems="center">

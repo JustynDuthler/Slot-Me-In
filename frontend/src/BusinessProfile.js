@@ -178,7 +178,7 @@ export default function BusinessProfile() {
             throw response;
           } else {
             setEmailError(false);
-            return response;
+            return response.json();
           }
         })
         .then((json) => {

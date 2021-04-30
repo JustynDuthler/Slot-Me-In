@@ -848,6 +848,8 @@ components:
         endtime:
           type: string
           format: date-time
+        attendees:
+          type: integer
         capacity:
           type: integer
         repeat:

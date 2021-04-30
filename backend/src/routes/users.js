@@ -1,12 +1,14 @@
-const db = require('./db');
+const userDb = require('../db/userDb');
+const eventsDb = require('../db/eventsDb');
+const attendeesDb = require('../db/attendeesDb');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const auth = require('./auth');
+const auth = require('../auth');
 
 exports.getInfo = async (req, res) => {
-  const user = await db.selectUser(req.payload.id);
+  const user = await userDb.selectUser(req.payload.id);
   const userData = {
     userid: user.userid,
     username: user.username,
@@ -22,13 +24,13 @@ exports.signup = async (req, res) => {
       res.status(500).json(error);
     } else {
       // check if username/email is already in use
-      const emailRes = await db.checkUserEmailTaken(req.body.email);
+      const emailRes = await userDb.checkUserEmailTaken(req.body.email);
       if (emailRes) {
         res.status(409).send();
         console.log('Email already taken!');
       } else {
         const userid =
-            await db.insertUserAccount(
+            await userDb.insertUserAccount(
                 req.body.name, hash, req.body.email.toLowerCase());
         const token =
             await auth.generateJWT(
@@ -40,12 +42,12 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const account = await db.checkUserEmailTaken(req.body.email);
+  const account = await userDb.checkUserEmailTaken(req.body.email);
   // 404 if email not found
   if (!account) res.status(404).send();
   else {
     // compare given password to hashed password in db
-    const pass = await db.getUserPass(req.body.email);
+    const pass = await userDb.getUserPass(req.body.email);
     const match = await bcrypt.compare(req.body.password, pass);
     // if passwords match, generate JWT and send 200
     if (match) {
@@ -65,7 +67,7 @@ exports.getEvents = async (req, res, next) => {
     throw new Error('UserID was null');
   }
 
-  db.getUsersEvents(userID)
+  eventsDb.getUsersEvents(userID)
       .then((events) => {
         res.status(200).send(events);
       })
@@ -79,7 +81,7 @@ exports.removeUserAttending = async (req, res) => {
   const userID = req.payload.id;
   const eventID = req.body.eventid;
 
-  const ret = db.removeUserAttending(eventID, userID);
+  const ret = attendeesDb.removeUserAttending(eventID, userID);
   if (ret) {
     res.status(200).send();
   } else {
