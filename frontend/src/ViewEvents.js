@@ -111,6 +111,11 @@ export default function ViewEvents() {
                   .toLocaleString(
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
+            <Typography className={classes.pos}
+              variant='body2' align='center'
+              color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
+              Capacity: {row.attendees}/{row.capacity}
+            </Typography>
           </CardContent>
           <CardActions>
             <Button size='small'

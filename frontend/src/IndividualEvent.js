@@ -9,12 +9,16 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
+  },
+  signupButton: {
+    margin: 15,
   },
 }));
 
@@ -320,9 +324,14 @@ const IndividualEvent = (props) => {
           </p>
         </Box>
 
-        <p>Capacity: {numAttendees}/{eventData.capacity}</p>
+        <Typography
+          variant='body2' align='center'
+          color={numAttendees === eventData.capacity ? 'error' : 'textPrimary'}>
+          Capacity: {numAttendees}/{eventData.capacity}
+        </Typography>
         {signupType !== undefined &&
-          (<Button variant="contained" color="secondary"
+          (<Button className={classes.signupButton}
+            variant="contained" color="secondary"
             disabled={signupType && numAttendees == eventData.capacity}
             onClick={() => {
               signupType === true ? signUp() : setConfirmDialog(true);
