@@ -1,6 +1,30 @@
-const db = require('./db');
+const db = require('./db/db');
+const memberDb = require('./db/memberDb');
 const dotenv = require('dotenv');
 dotenv.config();
+
+exports.deleteMember = async (req, res) => {
+  const businessid = req.payload.id;
+  const email = req.body.email;
+  db.getUserIDByEmail(email)
+    .then(id => {
+      memberDb.removeMember(businessid, id)
+        .then(length => {
+          res.status(200).send();
+        })
+        .catch(err => {
+          // Couldn't remove the email
+          console.log(err);
+          res.status(409).send();
+        })
+    })
+    .catch(err => {
+      // Couldn't find userID from email
+      console.log(err);
+      res.status(409).send();
+    });
+
+}
 
 exports.addMembers = async (req, res) => {
   const businessid = req.payload.id;
@@ -40,7 +64,7 @@ exports.addMembers = async (req, res) => {
       '(\'' + businessid + '\', \'' + req.body[i] + '\', \'' + userID[i] +'\')';
   }
   if (memberListString.length != 0) {
-    const insertNum = await db.insertMembers(memberListString);
+    const insertNum = await memberDb.insertMembers(memberListString);
     if (insertNum == 0) {
       res.status(500).send();
     } else {
@@ -54,7 +78,7 @@ exports.addMembers = async (req, res) => {
 exports.getMembers = async (req, res) => {
   const businessid = req.payload.id;
   /* query to get all userids of members */
-  const memberIDs = await db.getMembersForBusiness(businessid);
+  const memberIDs = await memberDb.getMembersForBusiness(businessid);
   if (memberIDs === undefined) {
     const emptyUsers = [];
     res.status(200).json(emptyUsers);

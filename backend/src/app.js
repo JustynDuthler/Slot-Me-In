@@ -12,7 +12,7 @@ const businesses = require('./businesses');
 const events = require('./events');
 const attendees = require('./attendees');
 const members = require('./members');
-const db = require('./db');
+const db = require('./db/db');
 
 const app = express();
 app.use(cors());
@@ -74,6 +74,8 @@ app.post('/api/members/insertMembers',
     auth.authenticateBusinessJWT, members.addMembers);
 app.get('/api/members/getMembers', auth.authenticateBusinessJWT,
     members.getMembers);
+app.delete('/api/members/deleteMember', auth.authenticateBusinessJWT,
+    members.deleteMember);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
