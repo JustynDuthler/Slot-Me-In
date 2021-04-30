@@ -1,5 +1,5 @@
-const db = require('./db/db');
-const memberDb = require('./db/memberDb');
+const db = require('../db/db');
+const memberDb = require('../db/memberDb');
 const dotenv = require('dotenv');
 dotenv.config();
 

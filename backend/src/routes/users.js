@@ -1,10 +1,10 @@
-const db = require('./db/db');
-const userDb = require('./db/userDb');
+const db = require('../db/db');
+const userDb = require('../db/userDb');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const auth = require('./auth');
+const auth = require('../auth');
 
 exports.getInfo = async (req, res) => {
   const user = await userDb.selectUser(req.payload.id);
