@@ -19,6 +19,7 @@ module.exports = {
     },
   },
   'rules': {
+    "linebreak-style": ["error", (require("os").EOL === "\r\n" ? "windows" : "unix")],
     "require-jsdoc": ["error", {
         "require": {
             "FunctionDeclaration": true,
@@ -35,6 +36,6 @@ module.exports = {
     },
   },
   "ignorePatterns": [
-    "*.test.js", ".eslintrc.js", "AuthTest.js",
+    "*.test.js", ".eslintrc.js",
   ],
 };

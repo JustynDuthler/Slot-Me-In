@@ -11,35 +11,47 @@ export default function AuthTest() {
   const [auth, setAuth] = React.useState(false);
   const [serverResponse, setResponse] = React.useState('none');
 
-  async function get_token(){
-    const response = await fetch("http://localhost:3010/api/test/get_token");
+  /**
+   * getToken
+   */
+  async function getToken() {
+    const response = await fetch('http://localhost:3010/api/test/get_token');
     const res = await response.json();
     const token = res.auth_token;
     Auth.saveJWT(token);
     setToken(token);
   };
 
-  async function get_invalid_token(){
+  /**
+   * getInvalidToken
+   */
+  async function getInvalidToken() {
     const token = 'invalid_token';
     Auth.saveJWT(token);
     setToken(token);
   };
 
-  const remove_token = () => {
+  /**
+   * removeToken
+   */
+  const removeToken = () => {
     Auth.removeJWT();
-    setToken("");
+    setToken('');
     setAuth(false);
   };
 
-  const test_token = async () => {
+  /**
+   * testToken
+   */
+  const testToken = async () => {
     const foundToken = localStorage.getItem('auth_token');
     if (foundToken) {
-      await fetch("http://localhost:3010/api/test/test_token", {
-        method : "POST",
-        headers : Auth.JWTHeader(),
+      await fetch('http://localhost:3010/api/test/test_token', {
+        method: 'POST',
+        headers: Auth.headerJWT(),
       })
-      .then(res => res.json())
-      .then(data => setResponse(data.auth));
+          .then((res) => res.json())
+          .then((data) => setResponse(data.auth));
     }
   };
 
@@ -54,14 +66,14 @@ export default function AuthTest() {
 
   return (
     <div>
-      <button onClick={get_token}>Get Token</button>
-      <button onClick={get_invalid_token}>Get Invalid Token</button>
-      <button onClick={remove_token}>Remove Token</button>
-      <button onClick={test_token}>Test Token</button>
+      <button onClick={getToken}>Get Token</button>
+      <button onClick={getInvalidToken}>Get Invalid Token</button>
+      <button onClick={removeToken}>Remove Token</button>
+      <button onClick={testToken}>Test Token</button>
 
       <h1>Token Test:{serverResponse}</h1>
       <h1>Token: {token}</h1>
-      <h1>{auth ? "authenticated" : "not authenticated"}</h1>
+      <h1>{auth ? 'authenticated' : 'not authenticated'}</h1>
     </div>
   );
 }

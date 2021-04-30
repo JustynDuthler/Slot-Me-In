@@ -74,6 +74,8 @@ app.post('/api/members/insertMembers',
     auth.authenticateBusinessJWT, members.addMembers);
 app.get('/api/members/getMembers', auth.authenticateBusinessJWT,
     members.getMembers);
+app.delete('/api/members/deleteMember', auth.authenticateBusinessJWT,
+    members.deleteMember);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
@@ -88,6 +90,7 @@ app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
   res.status(200).json({auth: 'authenticated'});
 });
 
+// returns the type of the token, 200 if the token is valid.
 app.get('/api/test/get_token_type', auth.authenticateJWT, auth.tokenType);
 
 // simple database test

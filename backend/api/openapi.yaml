@@ -51,7 +51,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthTestSchema"
         401:
-          $ref: '#/components/responses/UnauthorizedError'
+          description: Token is missing or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         403:
           description: Authorization Error
           content:
@@ -367,6 +371,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /members/deleteMember:
+    delete:
+      description: Deletes a single member from the member list
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Email string
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+
+      responses:
+        200:
+          description: Email successfully removed from member table
+
   /businesses/{businessid}:
     get:
       description: Retrieves business information associated with a specified businessID
@@ -868,6 +896,7 @@ components:
           type: boolean
         saturday:
           type: boolean
+
     Attendees:
       type: object
       additionalProperties: false
@@ -878,6 +907,7 @@ components:
         userid:
           type: string
           format: uuid
+
     AttendeesList:
       type: array
       items:

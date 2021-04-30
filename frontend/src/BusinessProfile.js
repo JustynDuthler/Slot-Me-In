@@ -305,6 +305,7 @@ export default function BusinessProfile() {
 
   /**
    * renderWrappedDays
+   * determines the CSS for each day displayed on the calendar
    * @param {*} date
    * @param {*} selectedDate
    * @param {*} dayInCurrentMonth
@@ -312,10 +313,12 @@ export default function BusinessProfile() {
    */
   const renderWrappedDays = (date, selectedDate, dayInCurrentMonth) => {
     const dateClone = new Date(date);
+    // true if date is the currently selected date
     const currentDay = dateClone.getDate() == selectedDate.getDate() &&
         dateClone.getMonth() == selectedDate.getMonth() &&
         dateClone.getYear() == selectedDate.getYear();
     let isEvent = false;
+    // loops until it finds an event on the date
     for (const e in eventList) {
       if (eventList.hasOwnProperty(e)) {
         const date = new Date(eventList[e].starttime);
@@ -327,7 +330,8 @@ export default function BusinessProfile() {
         }
       }
     }
-
+    /* selected day is red, days with events are highlighted, days outside of
+    current month are faded*/
     const wrapperClassName = clsx({
       [classes.select]: isEvent && currentDay && dayInCurrentMonth,
       [classes.noselect]: !isEvent && currentDay && dayInCurrentMonth,
@@ -337,11 +341,11 @@ export default function BusinessProfile() {
           !currentDay && dayInCurrentMonth,
       [classes.nonCurrentMonthDay]: !dayInCurrentMonth,
     });
-
+    // the example needed this part as well not sure the difference specifically
     const dayClassName = clsx(classes.day, {
       [classes.highlightNonCurrentMonthDay]: !dayInCurrentMonth,
     });
-
+    // This is just the format shown for custom day CSS at https://next.material-ui.com/components/date-picker/
     return (
       <div className={wrapperClassName}>
         <IconButton className={dayClassName}>
@@ -355,8 +359,11 @@ export default function BusinessProfile() {
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
+    // items2 is the outer grid which will hold items.
     const items = [];
     const items2 = [];
+    // members will hold a list of member data
+    // eventListJSX will hold a list of event data
     const members = [];
     const eventListJSX = [];
     for (const m in memberList) {
@@ -391,6 +398,7 @@ export default function BusinessProfile() {
         const eventName = eventList[key].eventname;
         const startDate = new Date(eventList[key].starttime);
         const dateString = formatDate(startDate);
+        // only show event if it is on the date that is currently selected
         if (startDate.getDate() == selectedDate.getDate() &&
             startDate.getMonth() == selectedDate.getMonth() &&
             startDate.getYear() == selectedDate.getYear()) {
@@ -455,6 +463,7 @@ export default function BusinessProfile() {
           </div>,
       );
     } else {
+      // otherwise show calendar and eventlist
       items.push(
           <Grid item xs={6} md={6} key={businessData.businessname}>
             <Typography variant='h6'>
@@ -480,6 +489,7 @@ export default function BusinessProfile() {
             {eventList.length === 0 && <Typography>
               Currently created 0 events
             </Typography>}
+            {/* Links to create events page if you have no events*/}
             {eventList.length === 0 && <Button
               type='submit'
               variant='contained'
@@ -490,6 +500,7 @@ export default function BusinessProfile() {
             </Button>}
           </Grid>,
       );
+      // show members next to calendar and events
       items.push(
           <Grid key='member list' item xs={6} md={6}>
             <Typography variant='h6'>
