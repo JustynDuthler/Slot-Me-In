@@ -90,6 +90,7 @@ app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
   res.status(200).json({auth: 'authenticated'});
 });
 
+// returns the type of the token, 200 if the token is valid.
 app.get('/api/test/get_token_type', auth.authenticateJWT, auth.tokenType);
 
 // simple database test

@@ -57,24 +57,13 @@ exports.addMembers = async (req, res) => {
       existFlag = 0;
       continue;
     }
-    if (firstInsert == 0) {
-      memberListString = memberListString +
-          '(\'' + businessid + '\', \'' + req.body[i] +
-          '\', \'' + userID[i] +'\')';
-      firstInsert = 1;
-    } else if (i < length -1) {
-      memberListString = memberListString +
-          ', (\'' + businessid + '\', \'' + req.body[i] +
-          '\', \'' + userID[i] +'\')';
-    } else {
-      memberListString = memberListString +
-          ', (\'' + businessid + '\', \'' + req.body[i] +
-          '\', \'' + userID[i] +'\')';
-    }
+    /* Adds a comma between the values after the first element.
+    data is (businessid, email, userid) for members table */
+    memberListString += (memberListString === '' ? '' : ',') +
+      '(\'' + businessid + '\', \'' + req.body[i] + '\', \'' + userID[i] +'\')';
   }
   if (memberListString.length != 0) {
     const insertNum = await db.insertMembers(memberListString);
-    console.log(insertNum);
     if (insertNum == 0) {
       res.status(500).send();
     } else {
@@ -98,17 +87,11 @@ exports.getMembers = async (req, res) => {
     let firstInsert = 0;
     const length = memberIDs.length;
     for (i = 0; i < length; i++) {
-      if (firstInsert == 0) {
-        useridvalues = useridvalues + '(\'' + memberIDs[i].userid + '\')';
-        firstInsert = 1;
-      } else {
-        useridvalues = useridvalues + ', (\'' + memberIDs[i].userid + '\')';
-      }
+      // adds a comma if i > 0
+      useridvalues += (i ? ',' : '') + '(\'' + memberIDs[i].userid + '\')';
     }
-    console.log(useridvalues);
 
     const users = await db.getMemberUserInfo(useridvalues);
-    console.log(users);
     res.status(200).json(users);
   }
 };

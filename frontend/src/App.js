@@ -46,7 +46,6 @@ function App() {
   const classes = useStyles();
   const [authState, setAuthState] = React.useState(false);
   const [businessState, setBusinessState] = React.useState(undefined);
-
   /**
    * validateBusiness()
    * Determines whether logged in user is a business or user
@@ -60,7 +59,10 @@ function App() {
         return response.json();
       }
       if (!response.ok) {
+        /* If the response isnt ok then the token is invalid */
         setBusinessState(false);
+        setAuthState(false);
+        Auth.removeJWT();
         throw response;
       }
       return response;
