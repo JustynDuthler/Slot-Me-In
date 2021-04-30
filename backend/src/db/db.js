@@ -84,6 +84,28 @@ exports.insertBusinessAccount =
       return rows[0].businessid;
     };
 
+exports.checkRemainingEventCapacity = async (eventid) => {
+  const insert = 'SELECT * FROM Attendees a WHERE a.eventid = $1';
+  const query = {
+    text: insert,
+    values: [eventid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
+
+exports.insertAttendees = async (eventid, userid) => {
+  const insert = 'INSERT INTO Attendees (eventid, userid) VALUES ($1, $2)';
+  const query = {
+    text: insert,
+    values: [eventid, userid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
+
 exports.getEvents = async () => {
   const select =
       'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime'+
@@ -117,6 +139,8 @@ exports.getEvents = async () => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
+      row['attendees'] = attendees.length;
       rows2.push(row);
     }
   }
@@ -170,29 +194,6 @@ exports.getEventsByRange = async (starttime, endtime) => {
   const {rows} = await pool.query(query);
   return rows;
 };
-
-exports.checkRemainingEventCapacity = async (eventid) => {
-  const insert = 'SELECT * FROM Attendees a WHERE a.eventid = $1';
-  const query = {
-    text: insert,
-    values: [eventid],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows;
-};
-
-exports.insertAttendees = async (eventid, userid) => {
-  const insert = 'INSERT INTO Attendees (eventid, userid) VALUES ($1, $2)';
-  const query = {
-    text: insert,
-    values: [eventid, userid],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows;
-};
-
 
 // Returns row for a specific businessid
 exports.selectBusiness = async (businessid) => {
