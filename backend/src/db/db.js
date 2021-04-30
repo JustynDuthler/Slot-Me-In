@@ -194,30 +194,6 @@ exports.insertAttendees = async (eventid, userid) => {
 };
 
 
-exports.insertUserAccount = async (username, password, email) => {
-  const insert = 'INSERT INTO Users (username, password, useremail) ' +
-      'VALUES ($1, $2, $3) RETURNING userid';
-  const query = {
-    text: insert,
-    values: [username, password, email],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows[0].userid;
-};
-
-// Returns row for a specific userid
-exports.selectUser = async (userid) => {
-  const select = 'SELECT * FROM Users WHERE userid = $1';
-  const query = {
-    text: select,
-    values: [userid],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows[0];
-};
-
 // Returns row for a specific businessid
 exports.selectBusiness = async (businessid) => {
   const select = 'SELECT * FROM Businesses WHERE businessid = $1';
@@ -231,29 +207,6 @@ exports.selectBusiness = async (businessid) => {
 };
 
 
-// check if an email is already in use
-exports.checkUserEmailTaken = async (email) => {
-  const insert = 'SELECT * FROM Users u WHERE u.useremail ILIKE $1';
-  const query = {
-    text: insert,
-    values: [email],
-  };
-
-  const {rows} = await pool.query(query);
-  return (rows.length > 0 ? rows[0] : undefined);
-};
-
-// get a user hashed password
-exports.getUserPass = async (email) => {
-  const insert = 'SELECT password FROM Users u WHERE u.useremail ILIKE $1';
-  const query = {
-    text: insert,
-    values: [email],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows[0].password;
-};
 
 // check if a business email is already in use
 exports.checkBusinessEmailTaken = async (email) => {
@@ -404,30 +357,6 @@ exports.getUserIDByEmail = async (useremail) => {
   return (rows.length > 0 ? rows[0].userid : null);
 };
 
-exports.insertMembers = async (memberlist) => {
-  const insert = 'INSERT INTO Members(businessid, memberemail, userid) ' +
-      'VALUES ' + memberlist + ' RETURNING userid';
-  const query = {
-    text: insert,
-  };
-
-  const {rows} = await pool.query(query);
-  return (rows.length);
-};
-
-// removes user from members table
-exports.removeMember = async (businessid, userid) => {
-  const deleteM = 'DELETE FROM Members m WHERE m.businessid = $1 ' +
-      'AND m.userid = $2 RETURNING m.userid';
-  const query = {
-    text: deleteM,
-    values: [businessid, userid],
-  };
-
-  const {rows} = await pool.query(query);
-  return (rows.length);
-};
-
 /* for the moment we will use this function to remove a user
 *  from events after they are removed from the members table.
 *  In order to cascade in the db we must indicate if the event
@@ -448,17 +377,7 @@ exports.removeMemberFromAttendees = async (businessid, userid) => {
   return (rows.length);
 };
 
-exports.getMembersForBusiness = async (businessid) => {
-  const select = 'SELECT m.userid FROM Members m WHERE m.businessid = $1';
-  const query = {
-    text: select,
-    values: [businessid],
-  };
-
-  const {rows} = await pool.query(query);
-  return (rows.length > 0 ? rows : undefined);
-};
-
+// returns user for a list of user's based on userid
 exports.getMemberUserInfo = async (useridlist) => {
   const select = 'SELECT u.userid, u.username, u.useremail ' +
       'FROM Users u WHERE (u.userid::text) IN ( VALUES ' + useridlist + ')';
