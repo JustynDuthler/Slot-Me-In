@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
+// If authentication didn't fail, return the userType from the JWT.
 exports.tokenType = (req, res) => {
   res.status(200).send({'auth': req.payload.userType});
 };
@@ -14,9 +15,6 @@ exports.authenticateJWT = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-    if (err) {
-      console.log(err);
-    }
 
     // If the token is invalid send 401
     if (err) {
@@ -38,9 +36,6 @@ exports.authenticateUserJWT = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-    if (err) {
-      console.log(err);
-    }
 
     // If the token is invalid send 401
     if (err) {
@@ -67,9 +62,6 @@ exports.authenticateBusinessJWT = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-    if (err) {
-      console.log(err);
-    }
 
     // If the token is invalid send 401
     if (err) {
