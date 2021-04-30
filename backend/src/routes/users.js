@@ -1,5 +1,6 @@
-const db = require('../db/db');
 const userDb = require('../db/userDb');
+const eventsDb = require('../db/eventsDb');
+const attendeesDb = require('../db/attendeesDb');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -66,7 +67,7 @@ exports.getEvents = async (req, res, next) => {
     throw new Error('UserID was null');
   }
 
-  db.getUsersEvents(userID)
+  eventsDb.getUsersEvents(userID)
       .then((events) => {
         res.status(200).send(events);
       })
@@ -80,7 +81,7 @@ exports.removeUserAttending = async (req, res) => {
   const userID = req.payload.id;
   const eventID = req.body.eventid;
 
-  const ret = db.removeUserAttending(eventID, userID);
+  const ret = attendeesDb.removeUserAttending(eventID, userID);
   if (ret) {
     res.status(200).send();
   } else {

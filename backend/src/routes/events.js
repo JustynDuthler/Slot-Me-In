@@ -1,4 +1,5 @@
-const db = require('../db/db');
+const eventsDb = require('../db/eventsDb');
+const attendeesDb = require('../db/attendeesDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -8,7 +9,7 @@ exports.create = async (req, res) => {
   // --- REPEATING EVENT ---
     // insert to RepeatingEvents and get repeatid, add to event object
     event.repeatid =
-        await db.insertRepeatingEvent(event.eventname, event.description,
+        await eventsDb.insertRepeatingEvent(event.eventname, event.description,
             req.payload.id, event.starttime, event.endtime, event.capacity,
             event.repeatdays['sunday'], event.repeatdays['monday'],
             event.repeatdays['tuesday'], event.repeatdays['wednesday'],
@@ -34,7 +35,7 @@ exports.create = async (req, res) => {
       // use days array to get current day name
       if (event.repeatdays[days[start.getDay()]]) {
         const eventid =
-            await db.insertEvent(
+            await eventsDb.insertEvent(
                 event.eventname, start.toISOString(), end.toISOString(),
                 req.payload.id, event.capacity, event.description,
                 event.repeatid);
@@ -53,7 +54,7 @@ exports.create = async (req, res) => {
   // --- NON REPEATING EVENT ---
     // for non-repeating event, insert to Events table
     const eventid =
-        await db.insertEvent(event.eventname, event.starttime, event.endtime,
+        await eventsDb.insertEvent(event.eventname, event.starttime, event.endtime,
             req.payload.id, event.capacity, event.description);
     event.eventid = eventid;
   }
@@ -62,7 +63,7 @@ exports.create = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const event = await db.getEventByID(req.params.eventid);
+  const event = await eventsDb.getEventByID(req.params.eventid);
   if (!event) {
     // 404 if event not found
     res.status(404).send();
@@ -70,10 +71,10 @@ exports.delete = async (req, res) => {
     if (req.body.deleteAll && event.repeatid) {
       // deleteAll is true and event is an instance of a repeating event
       // deletion of RepeatingEvent will cascade to Events
-      await db.deleteRepeatingEvent(event.repeatid);
+      await eventsDb.deleteRepeatingEvent(event.repeatid);
     } else {
       // deleteAll is false, or event is not part of a repeating event
-      await db.deleteEvent(req.params.eventid);
+      await eventsDb.deleteEvent(req.params.eventid);
     }
     // 200 after successful deletion
     res.status(200).send();
@@ -83,31 +84,31 @@ exports.delete = async (req, res) => {
 exports.getEvents = async (req, res) => {
   if (req.query.start && req.query.end) {
     // if start and end query provided, query DB for events in between
-    const events = await db.getEventsByRange(req.query.start, req.query.end);
+    const events = await eventsDb.getEventsByRange(req.query.start, req.query.end);
     res.status(200).json(events);
   } else if (req.query.start) {
     // if only start query provided, query for events starting after that time
-    const events = await db.getEventsByStart(req.query.start);
+    const events = await eventsDb.getEventsByStart(req.query.start);
     res.status(200).json(events);
   } else if (req.query.end) {
     // if only end query provided, query DB for events ending before that time
-    const events = await db.getEventsByEnd(req.query.end);
+    const events = await eventsDb.getEventsByEnd(req.query.end);
     res.status(200).json(events);
   } else {
     // if no queries provided, query DB for all events
     // if business account, only show the events made by that business
     if (req.payload.userType == 'business') {
-      const events = await db.getBusinessEvents(req.payload.id);
+      const events = await eventsDb.getBusinessEvents(req.payload.id);
       res.status(200).json(events);
     } else if (req.payload.userType == 'user') {
-      const events = await db.getEvents();
+      const events = await eventsDb.getEvents();
       res.status(200).json(events);
     }
   }
 };
 
 exports.getEventByID = async (req, res) => {
-  const event = await db.getEventByID(req.params.eventid);
+  const event = await eventsDb.getEventByID(req.params.eventid);
   // 200 if event found, 404 if not found
   if (!event) {
     res.status(404).send();
@@ -119,23 +120,23 @@ exports.getEventByID = async (req, res) => {
 exports.signup = async (req, res) => {
   const eventid = req.params.eventid;
   const userid = req.payload.id; // this doesn't work, userID is undefined
-  const event = await db.getEventByID(req.params.eventid);
+  const event = await eventsDb.getEventByID(req.params.eventid);
   // 404 if event not found
   if (!event) {
     res.status(404).send();
   } else {
-    const userAttending = await db.checkUserAttending(eventid, userid);
+    const userAttending = await attendeesDb.checkUserAttending(eventid, userid);
     if (userAttending) {
       // if user already attending event, send 409
       res.status(409).send();
     } else {
       // if capacity is full
-      const capacity = await db.checkRemainingEventCapacity(eventid);
+      const capacity = await eventsDb.checkRemainingEventCapacity(eventid);
       if (capacity.length === event.capacity) {
         console.log('Event is already full.');
       } else {
         // if not already attending, add user to attendees then send 200
-        await db.insertAttendees(eventid, userid);
+        await attendeesDb.insertAttendees(eventid, userid);
         res.status(200).send();
       }
     }

@@ -1,4 +1,5 @@
-const db = require('../db/db');
+const businessDb = require('../db/businessDb');
+const eventsDb = require('../db/eventsDb');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -6,7 +7,7 @@ dotenv.config();
 const auth = require('../auth');
 
 exports.getInfo = async (req, res) => {
-  const business = await db.selectBusiness(req.payload.id);
+  const business = await businessDb.selectBusiness(req.payload.id);
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -17,7 +18,7 @@ exports.getInfo = async (req, res) => {
 };
 
 exports.getBusinessByID = async (req, res) => {
-  const business = await db.selectBusiness(req.params.businessid);
+  const business = await businessDb.selectBusiness(req.params.businessid);
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -34,13 +35,13 @@ exports.signup = async (req, res) => {
       res.status(500).json(error);
     } else {
       // check if username/email is already in use
-      const emailRes = await db.checkBusinessEmailTaken(req.body.email);
+      const emailRes = await businessDb.checkBusinessEmailTaken(req.body.email);
       if (emailRes) {
         res.status(409).send();
         console.log('Email already taken!');
       } else {
         // dummy phone number
-        const businessid = await db.insertBusinessAccount(
+        const businessid = await businessDb.insertBusinessAccount(
             req.body.name, hash, '123-456-7890', req.body.email.toLowerCase());
         const token = await auth.generateJWT(
             req.body.email.toLowerCase(), businessid, 'business');
@@ -52,12 +53,12 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const account = await db.checkBusinessEmailTaken(req.body.email);
+  const account = await businessDb.checkBusinessEmailTaken(req.body.email);
   // 404 if email not found
   if (!account) res.status(404).send();
   else {
     // compare given password to hashed password in db
-    const pass = await db.getBusinessPass(req.body.email);
+    const pass = await businessDb.getBusinessPass(req.body.email);
     const match = await bcrypt.compare(req.body.password, pass);
     // if passwords match, generate JWT and send 200
     if (match) {
@@ -78,7 +79,7 @@ exports.getEvents = async (req, res) => {
   if (businessID == null) {
     throw new Error('businessID was null');
   }
-  db.getBusinessEvents(businessID)
+  eventsDb.getBusinessEvents(businessID)
       .then((events) => {
         res.status(200).send(events);
       })

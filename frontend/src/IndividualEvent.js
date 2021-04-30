@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,12 +10,16 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
+  },
+  signupButton: {
+    margin: 15,
   },
 }));
 
@@ -76,6 +81,7 @@ function a11yProps(index) {
  * @return {object} JSX
  */
 const IndividualEvent = (props) => {
+  const history = useHistory();
   const classes = useStyles();
   const eventid = props.eventID;
 
@@ -275,7 +281,8 @@ const IndividualEvent = (props) => {
 
   return (
     <div>
-      <Box mt={5}>
+      <Box mt={3}>
+        <button onClick={() => history.goBack()}>Back</button>
         <h1>{eventData.eventname}</h1>
       </Box>
       <AppBar position="static" style={body}>
@@ -320,9 +327,14 @@ const IndividualEvent = (props) => {
           </p>
         </Box>
 
-        <p>Capacity: {numAttendees}/{eventData.capacity}</p>
+        <Typography
+          variant='body2' align='center'
+          color={numAttendees === eventData.capacity ? 'error' : 'textPrimary'}>
+          Capacity: {numAttendees}/{eventData.capacity}
+        </Typography>
         {signupType !== undefined &&
-          (<Button variant="contained" color="secondary"
+          (<Button className={classes.signupButton}
+            variant="contained" color="secondary"
             disabled={signupType && numAttendees == eventData.capacity}
             onClick={() => {
               signupType === true ? signUp() : setConfirmDialog(true);

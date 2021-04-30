@@ -92,7 +92,7 @@ export default function CreateEvent() {
         return response.json();
       }).then((json) => {
         console.log(json);
-        history.push('/events/');
+        history.push('/events');
       })
           .catch((error) => {
             console.log(error);

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
+import {useHistory} from 'react-router-dom';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -38,17 +39,20 @@ const useStyles = makeStyles({
  * @return {object} ViewEvents JSX
  */
 export default function ViewEvents() {
+  const history = useHistory();
   const classes = useStyles();
   const [eventList, setEventList] = React.useState([]);
   const [pageEvents, setPageEvents] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage] = React.useState(9);
   const context = React.useContext(Context);
 
   /**
    * getEvents
    * API call to get data for an event
+   * @param {int} pageNumber
    */
-  function getEvents() {
+  function getEvents(pageNumber) {
     const apicall = 'http://localhost:3010/api/events';
     fetch(apicall, {
       method: 'GET',
@@ -64,7 +68,15 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setEventList(json);
-      setPageEvents(json.slice(0, postsPerPage));
+
+      // events if it's on first page
+      if (pageNumber === 1) {
+        setPageEvents(json.slice(0, postsPerPage));
+      } else {
+        // events for other pages
+        setPageEvents(json.slice(((pageNumber-1)*9),
+            pageNumber*9));
+      }
     })
         .catch((error) => {
           console.log(error);
@@ -72,7 +84,16 @@ export default function ViewEvents() {
   };
 
   React.useEffect(() => {
-    getEvents();
+    // if the url is just /events, get page 1 events
+    console.log(window.location.href);
+    if (window.location.href === 'http://localhost:3000/events') {
+      getEvents(1);
+    } else {
+      // parse url to get the page number and pass it to getEvents
+      const parsedURL = (window.location.href).split('=');
+      setCurrentPage(parseInt(parsedURL[1]));
+      getEvents(parsedURL[1]);
+    }
   }, []);
 
   /**
@@ -111,6 +132,11 @@ export default function ViewEvents() {
                   .toLocaleString(
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
+            <Typography className={classes.pos}
+              variant='body2' align='center'
+              color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
+              Capacity: {row.attendees}/{row.capacity}
+            </Typography>
           </CardContent>
           <CardActions>
             <Button size='small'
@@ -135,6 +161,16 @@ export default function ViewEvents() {
    * @param {int} value
    */
   const handleChange = (event, value) => {
+    setCurrentPage(value);
+    if (value === 1) {
+      // if on first page, change url to /events
+      history.push('/events');
+    } else {
+      // if on other page, change url depending on number
+      history.push('/events?page='+value);
+    }
+
+    // get events for the current page
     const currentPosts = eventList.slice(((value-1)*9),
         value*9);
     setPageEvents(currentPosts);
@@ -155,6 +191,7 @@ export default function ViewEvents() {
       </Grid>
       <Box mt={5} display="flex" justifyContent="center" alignItems="center">
         <Pagination
+          page={currentPage}
           count={Math.ceil(eventList.length / postsPerPage)}
           variant="outlined"
           color="primary"
