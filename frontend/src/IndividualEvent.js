@@ -1,17 +1,10 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-=======
 import React, {useEffect, useState} from 'react';
->>>>>>> 3511ddaf9eedff1008550dae1b02a6f27874edb2
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
-<<<<<<< HEAD
-import { makeStyles } from '@material-ui/core/styles';
-=======
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -24,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 15,
   },
 }));
->>>>>>> 3511ddaf9eedff1008550dae1b02a6f27874edb2
 
 const Auth = require('./libs/Auth');
 
@@ -287,18 +279,12 @@ const IndividualEvent = (props) => {
         <h1>{eventData.eventname}</h1>
       </Box>
       <AppBar position="static" style={body}>
-<<<<<<< HEAD
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" centered>
-        <Tab label="Event Info" {...a11yProps(0)} />
-        <Tab label="Business Info" {...a11yProps(1)} />
-=======
         <Tabs value={value}
           centered
           onChange={handleChange}
           aria-label="simple tabs example">
           <Tab label="Event Info" {...a11yProps(0)} />
           <Tab label="Business Info" {...a11yProps(1)} />
->>>>>>> 3511ddaf9eedff1008550dae1b02a6f27874edb2
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0} style={body}>
