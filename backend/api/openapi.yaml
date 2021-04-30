@@ -51,7 +51,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthTestSchema"
         401:
-          $ref: '#/components/responses/UnauthorizedError'
+          description: Token is missing or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         403:
           description: Authorization Error
           content:
