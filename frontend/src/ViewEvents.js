@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
+import PaginationItem from '@material-ui/lab/PaginationItem';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
