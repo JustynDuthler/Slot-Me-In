@@ -2,6 +2,29 @@ const db = require('./db');
 const dotenv = require('dotenv');
 dotenv.config();
 
+exports.deleteMember = async (req, res) => {
+  const businessid = req.payload.id;
+  const email = req.body.email;
+  db.getUserIDByEmail(email)
+    .then(id => {
+      db.removeMember(businessid, id)
+        .then(length => {
+          res.status(200).send();
+        })
+        .catch(err => {
+          // Couldn't remove the email
+          console.log(err);
+          res.status(409).send();
+        })
+    })
+    .catch(err => {
+      // Couldn't find userID from email
+      console.log(err);
+      res.status(409).send();
+    });
+
+}
+
 exports.addMembers = async (req, res) => {
   const businessid = req.payload.id;
   /* create an array of userIDs */
