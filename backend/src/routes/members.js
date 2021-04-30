@@ -1,12 +1,12 @@
-const db = require('../db/db');
 const memberDb = require('../db/memberDb');
+const userDb = require('../db/userDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
 exports.deleteMember = async (req, res) => {
   const businessid = req.payload.id;
   const email = req.body.email;
-  db.getUserIDByEmail(email)
+  userDb.getUserIDByEmail(email)
     .then(id => {
       memberDb.removeMember(businessid, id)
         .then(length => {
@@ -34,10 +34,10 @@ exports.addMembers = async (req, res) => {
   /* fill userID array with userIDs corresponding to the emails in the
        same order */
   for (i = 0; i < length; i++) {
-    userID[i] = await db.getUserIDByEmail(req.body[i]);
+    userID[i] = await userDb.getUserIDByEmail(req.body[i]);
   }
   /* get list of already added users */
-  const existingMembers = await db.getMembersForBusiness(businessid);
+  const existingMembers = await memberDb.getMembersForBusiness(businessid);
   /* construct tuples to insert into members table */
   let memberListString = '';
   let existFlag = 0;
@@ -92,7 +92,7 @@ exports.getMembers = async (req, res) => {
       useridvalues += (i ? ',' : '') + '(\'' + memberIDs[i].userid + '\')';
     }
 
-    const users = await db.getMemberUserInfo(useridvalues);
+    const users = await memberDb.getMemberUserInfo(useridvalues);
     res.status(200).json(users);
   }
 };
