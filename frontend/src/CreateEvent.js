@@ -50,16 +50,6 @@ export default function CreateEvent() {
     'capacity': false,
     'description': false,
   });
-  /* const [repeatEndError, setRepeatEndError] = React.useState(false);
-  const [repeatDaysError, setRepeatDaysError] = React.useState(false);
-  const [repeatPrecedeError, setRepeatPrecedeError] = React.useState(false);
-  const [repeatError, setRepeatError] = React.useState(false);
-  const [nameError, setNameError] = React.useState(false);
-  const [startError, setStartError] = React.useState(false);
-  const [endError, setEndError] = React.useState(false);
-  const [precedeError, setPrecedeError] = React.useState(false);
-  const [capacityError, setCapacityError] = React.useState(false);
-  const [descriptionError, setDescriptionError] = React.useState(false); */
   const days =
     ['sunday', 'monday', 'tuesday', 'wednesday',
       'thursday', 'friday', 'saturday', 'sunday'];
@@ -161,10 +151,8 @@ export default function CreateEvent() {
     };
 
     // only submit if all fields are filled out
-    console.log('ev', !eventName);
     for (const error in errors) {
       if (errors.hasOwnProperty(error)) {
-        console.log(error, errors[error], errors);
         if (errors[error]) {
           setErrors(errors);
           return;
