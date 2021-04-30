@@ -7,7 +7,10 @@ module.exports = {
   'extends': [
     'google',
   ],
-  "ignorePatterns": [ 
+  'rules': {
+    "linebreak-style": ["error", (require("os").EOL === "\r\n" ? "windows" : "unix")],
+  },
+  "ignorePatterns": [
     "*.test.js", ".eslintrc.js",
   ],
 };
