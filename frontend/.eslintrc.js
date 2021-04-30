@@ -19,14 +19,13 @@ module.exports = {
     },
   },
   'rules': {
-    "linebreak-style": ["error", "windows"],
     "require-jsdoc": ["error", {
         "require": {
-            "FunctionDeclaration": false,
-            "MethodDefinition": false,
-            "ClassDeclaration": false,
-            "ArrowFunctionExpression": false,
-            "FunctionExpression": false
+            "FunctionDeclaration": true,
+            "MethodDefinition": true,
+            "ClassDeclaration": true,
+            "ArrowFunctionExpression": true,
+            "FunctionExpression": true
         }
     }]
   },
@@ -36,6 +35,6 @@ module.exports = {
     },
   },
   "ignorePatterns": [
-    "*.test.js", ".eslintrc.js", "*.js",
+    "*.test.js", ".eslintrc.js", "AuthTest.js",
   ],
 };

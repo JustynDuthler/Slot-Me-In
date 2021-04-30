@@ -17,7 +17,7 @@ exports.removeJWT = () => {
 };
 
 // Creates JWT header or returns null
-exports.JWTHeader = () => {
+exports.headerJWT = () => {
   const jwt = localStorage.getItem('auth_token');
   if (jwt) {
     return {'Authorization': 'Bearer ' + jwt};
@@ -27,7 +27,7 @@ exports.JWTHeader = () => {
 };
 
 // Creates JWT header with json Content-Type or returns null
-exports.JWTHeaderJson = () => {
+exports.headerJsonJWT = () => {
   const jwt = localStorage.getItem('auth_token');
   if (jwt) {
     return {'Authorization': 'Bearer ' + jwt,

@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function App() {
   const classes = useStyles();
-  const [authState, setAuthState] = React.useState(null);
+  const [authState, setAuthState] = React.useState(false);
   const [businessState, setBusinessState] = React.useState(undefined);
 
   /**
@@ -52,30 +52,30 @@ function App() {
    * Determines whether logged in user is a business or user
    */
   function validateBusiness() {
-    fetch('http://localhost:3010/api/businesses/checkBusinessID', {
+    fetch('http://localhost:3010/api/test/get_token_type', {
       method: 'GET',
-      headers: Auth.JWTHeaderJson(),
+      headers: Auth.headerJsonJWT(),
     }).then((response) => {
       if (response.status === 200) {
-        setBusinessState(true);
-      } else {
-        setBusinessState(false);
+        return response.json();
       }
       if (!response.ok) {
+        setBusinessState(false);
         throw response;
       }
       return response;
     }).then((json) => {
-      console.log('json', json);
+      if (json.auth === 'business') {
+        setBusinessState(true);
+      } else {
+        setBusinessState(false);
+      }
+      console.log('user type:', json);
     })
         .catch((error) => {
           console.log(error);
         });
   };
-
-  if (Auth.getJWT() !== authState) {
-    setAuthState(Auth.getJWT());
-  }
 
   /**
    * logout()
@@ -83,7 +83,7 @@ function App() {
    */
   const logout = () => {
     Auth.removeJWT();
-    setAuthState(null);
+    setAuthState(false);
   };
 
   React.useEffect(() => {
@@ -91,6 +91,7 @@ function App() {
       setBusinessState(false);
       setAuthState(false);
     } else {
+      setAuthState(true);
       validateBusiness();
     }
   }, []);
@@ -225,19 +226,21 @@ function App() {
   }
   return (
     <Router>
-      {/* I moved Css basline to here so that it applies to the whole project */}
+      {/* I moved Css basline here so that it applies to the whole project */}
       <CssBaseline />
       <AppBar
         position="static"
       >
         <Toolbar>
-          {/* classes.leftMenu has flexGrow: 1 so it will try to take up as much space as possible
+          {/* classes.leftMenu has flexGrow: 1 so it will try to take up
+          as much space as possible
           this will push the content outside of the box to the right */}
           {leftSide}
           {rightSide}
         </Toolbar>
       </AppBar>
-      {/* Used a container so that there would be top margin between nav and content */}
+      {/* Used a container so that there would be
+      top margin between nav and content */}
       <Container className={classes.content}>
         <Context.Provider value={{
           authState, setAuthState,
@@ -273,7 +276,8 @@ function App() {
             <Route
               exact path="/event/:eventid"
               render={(props) =>
-                <IndividualEvent eventID={props.match.params.eventid} {...props} />}
+                <IndividualEvent eventID={props.match.params.eventid}
+                  {...props} />}
             />
             <Route path="/">
               <Home />
@@ -290,20 +294,20 @@ function App() {
 // Prop types for PrivateRoute
 PrivateRoute.propTypes = {
   component: PropTypes.func,
-  authed: PropTypes.string,
+  authed: PropTypes.bool,
 };
 
 /**
  * PrivateRoute
  * @param {*} component Component to protect behind PrivateRoute
  * @param {*} authed current authState
- * @return {Route} PrivateRoute component that redirects to login if authed is null
+ * @return {object} PrivateRoute that redirects to login if authed is null
  */
 function PrivateRoute({component: Component, authed, ...rest}) {
   return (
     <Route
       {...rest}
-      render={(props) => authed !== null ?
+      render={(props) => authed ?
         <Component {...props} /> : <Redirect to={{pathname: '/login'}} />}
     />
   );
