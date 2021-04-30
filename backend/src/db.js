@@ -271,7 +271,7 @@ exports.getUserPass = async (email) => {
 
 // check if a business email is already in use
 exports.checkBusinessEmailTaken = async (email) => {
-  const insert = 'SELECT * FROM Businesses b WHERE b.businessemail = $1';
+  const insert = 'SELECT * FROM Businesses b WHERE b.businessemail ILIKE $1';
   const query = {
     text: insert,
     values: [email],
@@ -283,7 +283,7 @@ exports.checkBusinessEmailTaken = async (email) => {
 
 // get a business hashed password
 exports.getBusinessPass = async (email) => {
-  const insert = 'SELECT password FROM Businesses b WHERE b.businessemail = $1';
+  const insert = 'SELECT password FROM Businesses b WHERE b.businessemail ILIKE $1';
   const query = {
     text: insert,
     values: [email],

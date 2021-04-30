@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import Pagination from '@material-ui/lab/Pagination';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -39,9 +40,8 @@ const useStyles = makeStyles({
 export default function ViewEvents() {
   const classes = useStyles();
   const [eventList, setEventList] = React.useState([]);
-  // const [pageNumber, setPageNumber] = React.useState(0);
-  // const usersPerPage = 10;
-  // const pagesVisited = pageNumber * usersPerPage;
+  const [pageEvents, setPageEvents] = React.useState([]);
+  const [postsPerPage] = React.useState(9);
   const context = React.useContext(Context);
 
   /**
@@ -63,6 +63,7 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setEventList(json);
+      setPageEvents(json.slice(0, postsPerPage));
     })
         .catch((error) => {
           console.log(error);
@@ -72,15 +73,6 @@ export default function ViewEvents() {
   React.useEffect(() => {
     getEvents();
   }, []);
-
-  /**
-   * changePage
-   * Changes current events view page
-   * @param {*} param0
-   */
-  // const changePage = ({selected}) => {
-  //   setPageNumber(selected);
-  // };
 
   /**
    * getCard
@@ -135,6 +127,18 @@ export default function ViewEvents() {
     );
   };
 
+  /**
+   * handleChange
+   * This function gets the events for a new page
+   * @param {event} event
+   * @param {int} value
+   */
+  const handleChange = (event, value) => {
+    const currentPosts = eventList.slice(((value-1)*9),
+        value*9);
+    setPageEvents(currentPosts);
+  };
+
   return (
     <Box mt={5} mb={5}>
       <h1 style={{margin: 12}}>Events</h1>
@@ -144,10 +148,17 @@ export default function ViewEvents() {
         className={classes.gridContainer}
         justify='center'
       >
-        {eventList.map((row) =>
+        {pageEvents.map((row) =>
           getCard(row),
         )}
       </Grid>
+      <Box mt={5} display="flex" justifyContent="center" alignItems="center">
+        <Pagination
+          count={Math.ceil(eventList.length / postsPerPage)}
+          variant="outlined"
+          color="primary"
+          onChange={handleChange} />
+      </Box>
     </Box>
   );
 }

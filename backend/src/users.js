@@ -10,7 +10,7 @@ exports.getInfo = async (req, res) => {
   const userData = {
     userid: user.userid,
     username: user.username,
-    email: user.useremail,
+    useremail: user.useremail,
   };
   res.status(200).json(userData);
 };
@@ -28,8 +28,11 @@ exports.signup = async (req, res) => {
         console.log('Email already taken!');
       } else {
         const userid =
-            await db.insertUserAccount(req.body.name, hash, req.body.email);
-        const token = await auth.generateJWT(req.body.email, userid, 'user');
+            await db.insertUserAccount(
+              req.body.name, hash, req.body.email.toLowerCase());
+        const token =
+            await auth.generateJWT(
+              req.body.email.toLowerCase(), userid, 'user');
         res.status(201).json({auth_token: token});
       }
     }

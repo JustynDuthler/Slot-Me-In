@@ -5,7 +5,18 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
-// import {makeStyles} from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import {makeStyles} from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  dialogText: {
+    marginLeft: 15,
+    marginRight: 15,
+  },
+}));
 
 const Auth = require('./libs/Auth');
 
@@ -65,7 +76,7 @@ function a11yProps(index) {
  * @return {object} JSX
  */
 const IndividualEvent = (props) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   const eventid = props.eventID;
 
   const [eventData, setEventData] = useState({});
@@ -73,6 +84,7 @@ const IndividualEvent = (props) => {
   // const [signupError, setSignupError] = useState(false);
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
+  const [confirmDialog, setConfirmDialog] = React.useState(false);
 
   const [value, setValue] = React.useState(0);
 
@@ -268,6 +280,7 @@ const IndividualEvent = (props) => {
       </Box>
       <AppBar position="static" style={body}>
         <Tabs value={value}
+          centered
           onChange={handleChange}
           aria-label="simple tabs example">
           <Tab label="Event Info" {...a11yProps(0)} />
@@ -290,9 +303,8 @@ const IndividualEvent = (props) => {
           <p>
             {new Date(eventData.starttime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at
-            {new Date(eventData.starttime).toLocaleString(
-                'en-US', {hour: 'numeric', minute: 'numeric'})}
+                  year: 'numeric'})} at {new Date(eventData.starttime)
+                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
           </p>
         </Box>
 
@@ -303,9 +315,8 @@ const IndividualEvent = (props) => {
           <p>
             {new Date(eventData.endtime).toLocaleString('en-US',
                 {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at
-            {new Date(eventData.endtime).toLocaleString(
-                'en-US', {hour: 'numeric', minute: 'numeric'})}
+                  year: 'numeric'})} at {new Date(eventData.endtime)
+                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
           </p>
         </Box>
 
@@ -314,7 +325,7 @@ const IndividualEvent = (props) => {
           (<Button variant="contained" color="secondary"
             disabled={signupType && numAttendees == eventData.capacity}
             onClick={() => {
-              signupType === true ? signUp() : withdraw();
+              signupType === true ? signUp() : setConfirmDialog(true);
             }}>
             {signupType === true ? 'Sign Up' : 'Withdraw'}
           </Button>)
@@ -336,10 +347,39 @@ const IndividualEvent = (props) => {
             Phone Number: {businessData.phonenumber}
           </p>
         </Box>
-
       </TabPanel>
 
-
+      {/* Confirmation dialog for withdrawing from events */}
+      <Dialog open={confirmDialog} onClose={() => {
+        setConfirmDialog(false);
+      }}
+      aria-labelledby="confirm-dialog-title">
+        <DialogTitle id="confirm-dialog-title">
+          Withdraw From Event
+        </DialogTitle>
+        <DialogContentText className={classes.dialogText}>
+          Are you sure you want to withdraw from this event?
+        </DialogContentText>
+        <DialogActions>
+          <Button
+            color="primary"
+            onClick={() => {
+              // Call withdraw, close dialog if user clicks Yes
+              withdraw();
+              setConfirmDialog(false);
+            }}>
+            Yes
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => {
+              // Close dialog and don't withdraw if user clicks No
+              setConfirmDialog(false);
+            }}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
 
   );
