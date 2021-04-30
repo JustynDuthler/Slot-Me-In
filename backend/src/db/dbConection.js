@@ -14,3 +14,4 @@ const pool = new Pool({
 
 pool.connect();
 module.exports = pool;
+console.log(`Connected to database '${process.env.DB}'`);

@@ -35,7 +35,7 @@ exports.checkUserEmailTaken = async (email) => {
   
     const {rows} = await pool.query(query);
     return (rows.length > 0 ? rows[0] : undefined);
-  };
+};
 
 // get a user hashed password
 exports.getUserPass = async (email) => {
@@ -47,4 +47,15 @@ exports.getUserPass = async (email) => {
   
     const {rows} = await pool.query(query);
     return rows[0].password;
-  };
+};
+
+exports.getUserIDByEmail = async (useremail) => {
+    const select = 'SELECT u.userid FROM Users u WHERE u.useremail ILIKE $1';
+    const query = {
+      text: select,
+      values: [useremail],
+    };
+  
+    const {rows} = await pool.query(query);
+    return (rows.length > 0 ? rows[0].userid : null);
+};
