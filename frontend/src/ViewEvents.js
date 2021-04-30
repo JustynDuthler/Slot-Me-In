@@ -112,7 +112,8 @@ export default function ViewEvents() {
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
-              ariant='body2' align='center'>
+              variant='body2' align='center'
+              color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
               Capacity: {row.attendees}/{row.capacity}
             </Typography>
           </CardContent>
