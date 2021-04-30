@@ -173,7 +173,6 @@ export default function CreateEvent() {
     }
     setErrors(errors);
     handleSubmit(event);
-
   };
 
   /**
