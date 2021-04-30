@@ -39,10 +39,8 @@ exports.addMembers = async (req, res) => {
     memberListString += (memberListString === '' ? '' : ',') +
       '(\'' + businessid + '\', \'' + req.body[i] + '\', \'' + userID[i] +'\')';
   }
-  console.log(memberListString);
   if (memberListString.length != 0) {
     const insertNum = await db.insertMembers(memberListString);
-    console.log("insertNum",insertNum);
     if (insertNum == 0) {
       res.status(500).send();
     } else {
@@ -66,12 +64,8 @@ exports.getMembers = async (req, res) => {
     let firstInsert = 0;
     const length = memberIDs.length;
     for (i = 0; i < length; i++) {
-      if (firstInsert == 0) {
-        useridvalues = useridvalues + '(\'' + memberIDs[i].userid + '\')';
-        firstInsert = 1;
-      } else {
-        useridvalues = useridvalues + ', (\'' + memberIDs[i].userid + '\')';
-      }
+      // adds a comma if i > 0
+      useridvalues += (i ? ',' : '') + '(\'' + memberIDs[i].userid + '\')';
     }
 
     const users = await db.getMemberUserInfo(useridvalues);
