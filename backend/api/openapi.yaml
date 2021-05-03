@@ -372,29 +372,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /members/deleteMember:
-    delete:
-      description: Deletes a single member from the member list
-      tags:
-        - members
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Email string
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-
-      responses:
-        200:
-          description: Email successfully removed from member table
-
   /businesses/{businessid}:
     get:
       description: Retrieves business information associated with a specified businessID
@@ -632,6 +609,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
   /members/getMembers:
     get:
       description: gets the members of a business
@@ -645,7 +623,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserList"
+                $ref: "#/components/schemas/EmailList"
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -697,6 +675,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+                
+  /members/deleteMember:
+    delete:
+      description: Deletes a single member from the member list
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Email string
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        200:
+          description: Email successfully removed from member table
 
 
 
