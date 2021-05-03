@@ -7,5 +7,3 @@ exports.dbTest = async () => {
     pool.end;
   });
 };
-
-

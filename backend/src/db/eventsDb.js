@@ -248,4 +248,3 @@ exports.getBusinessEvents = async (businessid) => {
   }
   return rows2;
 };
-
