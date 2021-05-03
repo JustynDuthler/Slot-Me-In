@@ -69,11 +69,8 @@ CREATE TABLE Attendees (
 
 -- members tables
 CREATE TABLE Members (
+  memberemail TEXT NOT NULL,
   businessid uuid,
-  memberemail TEXT,
-  userid uuid,
-  PRIMARY KEY (businessid, userid),
-  FOREIGN KEY (businessid) REFERENCES Businesses,
-  FOREIGN KEY (userid) REFERENCES Users,
-  FOREIGN KEY (memberemail) REFERENCES Users(useremail)
+  PRIMARY KEY (memberemail),
+  FOREIGN KEY (businessid) REFERENCES Businesses
 );

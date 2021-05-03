@@ -37,44 +37,45 @@ app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
 // incomplete, use getUserEvents
 // app.get('/api/users/:userid/events', users.getEvents);
-app.get('/api/users/getUser', auth.authenticateUserJWT, users.getInfo);
-app.get('/api/users/getUserEvents', auth.authenticateUserJWT, users.getEvents);
+app.get('/api/users/getUser', auth.userAuth, users.getInfo);
+app.get('/api/users/getUserEvents', auth.userAuth, users.getEvents);
 app.delete('/api/users/removeUserAttending',
-    auth.authenticateUserJWT, users.removeUserAttending);
+    auth.userAuth, users.removeUserAttending);
 
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
 // incomplete, pass businessid via token instead
 // app.get('/api/businesses/:businessid/events', businesses.getEvents);
-app.get('/api/businesses/getBusiness',
-    auth.authenticateBusinessJWT, businesses.getInfo);
-app.get('/api/businesses/getBusinessEvents',
-    auth.authenticateBusinessJWT, businesses.getEvents);
-app.get('/api/businesses/checkBusinessID',
-    auth.authenticateBusinessJWT, businesses.validID);
+app.get('/api/businesses/getBusiness', 
+  auth.businessAuth, businesses.getInfo);
+app.get('/api/businesses/getBusinessEvents', 
+  auth.businessAuth, businesses.getEvents);
+app.get('/api/businesses/checkBusinessID', 
+  auth.businessAuth, businesses.validID);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 
 // Event routes
-app.post('/api/events', auth.authenticateBusinessJWT, events.create);
+app.post('/api/events', auth.businessAuth, events.create);
+
 /* I made this require a token so that I can determine whether to return all
 events or just events by the business depending on if the account is a business
 or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
 app.get('/api/events/:eventid', events.getEventByID);
-app.delete('/api/events/:eventid', auth.authenticateBusinessJWT, events.delete);
-app.put('/api/events/:eventid/signup', auth.authenticateUserJWT, events.signup);
+app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
+app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);
 
 // Attendees routes
 app.get('/api/attendees/:eventid', attendees.getTotalAttendees);
 
 // Members routes
 app.post('/api/members/insertMembers',
-    auth.authenticateBusinessJWT, members.addMembers);
-app.get('/api/members/getMembers', auth.authenticateBusinessJWT,
+    auth.businessAuth, members.addMembers);
+app.get('/api/members/getMembers', auth.businessAuth,
     members.getMembers);
-app.delete('/api/members/deleteMember', auth.authenticateBusinessJWT,
+app.delete('/api/members/deleteMember', auth.businessAuth,
     members.deleteMember);
 
 // Generates a token which expires in 1 minute
@@ -93,12 +94,6 @@ app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {
 // returns the type of the token, 200 if the token is valid.
 app.get('/api/test/get_token_type', auth.authenticateJWT, auth.tokenType);
 
-// simple database test
-app.get('/db/test', async (req, res) => {
-  const eventid = '00000000-0000-0000-0000-000000000010';
-  db.getEventByID(eventid);
-  res.status(200);
-});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
