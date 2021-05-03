@@ -1,4 +1,4 @@
-const pool = require('./dbConection');
+const pool = require('./dbConnection');
 
 exports.insertBusinessAccount =
     async (businessname, password, phonenumber, businessemail) => {

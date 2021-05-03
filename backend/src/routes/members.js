@@ -7,24 +7,23 @@ exports.deleteMember = async (req, res) => {
   const businessid = req.payload.id;
   const email = req.body.email;
   userDb.getUserIDByEmail(email)
-    .then(id => {
-      memberDb.removeMember(businessid, id)
-        .then(length => {
-          res.status(200).send();
-        })
-        .catch(err => {
-          // Couldn't remove the email
-          console.log(err);
-          res.status(409).send();
-        })
-    })
-    .catch(err => {
+      .then((id) => {
+        memberDb.removeMember(businessid, id)
+            .then((length) => {
+              res.status(200).send();
+            })
+            .catch((err) => {
+              // Couldn't remove the email
+              console.log(err);
+              res.status(409).send();
+            });
+      })
+      .catch((err) => {
       // Couldn't find userID from email
-      console.log(err);
-      res.status(409).send();
-    });
-
-}
+        console.log(err);
+        res.status(409).send();
+      });
+};
 
 exports.addMembers = async (req, res) => {
   const businessid = req.payload.id;
@@ -41,7 +40,6 @@ exports.addMembers = async (req, res) => {
   /* construct tuples to insert into members table */
   let memberListString = '';
   let existFlag = 0;
-  let firstInsert = 0;
   let lengthExisting = 0;
   if (existingMembers !== undefined) {
     lengthExisting = existingMembers.length;
@@ -85,7 +83,6 @@ exports.getMembers = async (req, res) => {
   } else {
     /* construct userid list for query */
     let useridvalues = '';
-    let firstInsert = 0;
     const length = memberIDs.length;
     for (i = 0; i < length; i++) {
       // adds a comma if i > 0

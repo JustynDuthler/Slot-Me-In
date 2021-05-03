@@ -19,7 +19,6 @@ module.exports = {
     },
   },
   'rules': {
-    "linebreak-style": ["error", (require("os").EOL === "\r\n" ? "windows" : "unix")],
     "require-jsdoc": ["error", {
         "require": {
             "FunctionDeclaration": true,

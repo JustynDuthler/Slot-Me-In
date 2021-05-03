@@ -1,4 +1,4 @@
-const pool = require('./dbConection');
+const pool = require('./dbConnection');
 
 // basic testing query
 exports.dbTest = async () => {
