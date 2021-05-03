@@ -1,5 +1,4 @@
 const pool = require('./dbConection');
-const format = require('pg-format');
 
 // Inserts a list of emails into the members table
 // If there is a conflict (email already added) it does nothing

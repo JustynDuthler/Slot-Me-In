@@ -54,8 +54,8 @@ exports.create = async (req, res) => {
   // --- NON REPEATING EVENT ---
     // for non-repeating event, insert to Events table
     const eventid =
-        await eventsDb.insertEvent(event.eventname, event.starttime, event.endtime,
-            req.payload.id, event.capacity, event.description);
+        await eventsDb.insertEvent(event.eventname, event.starttime,
+            event.endtime, req.payload.id, event.capacity, event.description);
     event.eventid = eventid;
   }
   // return 201 with event
@@ -84,7 +84,8 @@ exports.delete = async (req, res) => {
 exports.getEvents = async (req, res) => {
   if (req.query.start && req.query.end) {
     // if start and end query provided, query DB for events in between
-    const events = await eventsDb.getEventsByRange(req.query.start, req.query.end);
+    const events = await eventsDb.getEventsByRange(
+        req.query.start, req.query.end);
     res.status(200).json(events);
   } else if (req.query.start) {
     // if only start query provided, query for events starting after that time

@@ -1,4 +1,4 @@
-const pool = require('./dbConection');
+const pool = require('./dbConnection');
 
 // Inserts a new event entry into the database
 // Returns the newly created event eventid
@@ -38,39 +38,39 @@ exports.insertRepeatingEvent =
 
     const {rows} = await pool.query(query);
     return rows[0].repeatid;
-  };    
+  };
 
 exports.deleteEvent = async (eventid) => {
-    const del = 'DELETE FROM Events WHERE eventid = $1';
-    const query = {
-      text: del,
-      values: [eventid],
-    };
-  
-    const {rows} = await pool.query(query);
-    return rows;
+  const del = 'DELETE FROM Events WHERE eventid = $1';
+  const query = {
+    text: del,
+    values: [eventid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
 };
-  
+
 exports.deleteRepeatingEvent = async (repeatid) => {
-    const del = 'DELETE FROM RepeatingEvents WHERE repeatid = $1';
-    const query = {
-      text: del,
-      values: [repeatid],
-    };
-  
-    const {rows} = await pool.query(query);
-    return rows;
+  const del = 'DELETE FROM RepeatingEvents WHERE repeatid = $1';
+  const query = {
+    text: del,
+    values: [repeatid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
 };
 
 exports.checkRemainingEventCapacity = async (eventid) => {
-    const insert = 'SELECT * FROM Attendees a WHERE a.eventid = $1';
-    const query = {
-      text: insert,
-      values: [eventid],
-    };
-  
-    const {rows} = await pool.query(query);
-    return rows;
+  const insert = 'SELECT * FROM Attendees a WHERE a.eventid = $1';
+  const query = {
+    text: insert,
+    values: [eventid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
 };
 exports.getEvents = async () => {
   const select =
@@ -105,6 +105,7 @@ exports.getEvents = async () => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      // get number of attendees for each event
       const attendees = await exports.checkRemainingEventCapacity(row.eventid);
       row['attendees'] = attendees.length;
       rows2.push(row);
@@ -203,6 +204,9 @@ exports.getUsersEvents = async (userid) => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      // get number of attendees for each event
+      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
+      row['attendees'] = attendees.length;
       rows2.push(row);
     }
   }
@@ -243,9 +247,11 @@ exports.getBusinessEvents = async (businessid) => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      // get number of attendees for each event
+      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
+      row['attendees'] = attendees.length;
       rows2.push(row);
     }
   }
   return rows2;
 };
-

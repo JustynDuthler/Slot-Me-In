@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
+import {useHistory} from 'react-router-dom';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -15,6 +16,9 @@ const Auth = require('./libs/Auth');
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+  },
+  box: {
+    marginTop: -15,
   },
   bullet: {
     display: 'inline-block',
@@ -25,11 +29,17 @@ const useStyles = makeStyles({
     fontSize: 14,
   },
   pos: {
-    marginTop: 12,
+    marginTop: 8,
   },
   gridContainer: {
     paddingLeft: '10px',
     paddingRight: '10px',
+  },
+  pageBox: {
+    position: 'fixed',
+    left: '50vw',
+    bottom: 15,
+    transform: 'translate(-50%, -50%)',
   },
 });
 
@@ -38,17 +48,20 @@ const useStyles = makeStyles({
  * @return {object} ViewEvents JSX
  */
 export default function ViewEvents() {
+  const history = useHistory();
   const classes = useStyles();
   const [eventList, setEventList] = React.useState([]);
   const [pageEvents, setPageEvents] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage] = React.useState(9);
   const context = React.useContext(Context);
 
   /**
    * getEvents
    * API call to get data for an event
+   * @param {int} pageNumber
    */
-  function getEvents() {
+  function getEvents(pageNumber) {
     const apicall = 'http://localhost:3010/api/events';
     fetch(apicall, {
       method: 'GET',
@@ -64,7 +77,15 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setEventList(json);
-      setPageEvents(json.slice(0, postsPerPage));
+
+      // events if it's on first page
+      if (pageNumber === 1) {
+        setPageEvents(json.slice(0, postsPerPage));
+      } else {
+        // events for other pages
+        setPageEvents(json.slice(((pageNumber-1)*9),
+            pageNumber*9));
+      }
     })
         .catch((error) => {
           console.log(error);
@@ -72,7 +93,15 @@ export default function ViewEvents() {
   };
 
   React.useEffect(() => {
-    getEvents();
+    // if the url is just /events, get page 1 events
+    if (window.location.href === 'http://localhost:3000/events') {
+      getEvents(1);
+    } else {
+      // parse url to get the page number and pass it to getEvents
+      const parsedURL = (window.location.href).split('=');
+      setCurrentPage(parseInt(parsedURL[1]));
+      getEvents(parsedURL[1]);
+    }
   }, []);
 
   /**
@@ -97,24 +126,24 @@ export default function ViewEvents() {
             </Typography>
             <Typography className={classes.pos}
               color='textSecondary' variant='body2' align='center'>
-              Start Time: {new Date(row.starttime).toLocaleString('en-US',
-                  {weekday: 'long', month: 'short', day: 'numeric',
+              Start: {new Date(row.starttime).toLocaleString('en-US',
+                  {weekday: 'short', month: 'short', day: 'numeric',
                     year: 'numeric'})} at {new Date(row.starttime)
                   .toLocaleString(
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
               color='textSecondary' variant='body2' align='center'>
-              End Time: {new Date(row.endtime).toLocaleString('en-US',
-                  {weekday: 'long', month: 'short', day: 'numeric',
+              End: {new Date(row.endtime).toLocaleString('en-US',
+                  {weekday: 'short', month: 'short', day: 'numeric',
                     year: 'numeric'})} at {new Date(row.endtime)
                   .toLocaleString(
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
-              variant='body2' align='center'
+              variant='subtitle1' align='center'
               color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
-              Capacity: {row.attendees}/{row.capacity}
+              {row.capacity - row.attendees} of {row.capacity} spots open
             </Typography>
           </CardContent>
           <CardActions>
@@ -140,31 +169,45 @@ export default function ViewEvents() {
    * @param {int} value
    */
   const handleChange = (event, value) => {
+    setCurrentPage(value);
+    if (value === 1) {
+      // if on first page, change url to /events
+      history.push('/events');
+    } else {
+      // if on other page, change url depending on number
+      history.push('/events?page='+value);
+    }
+
+    // get events for the current page
     const currentPosts = eventList.slice(((value-1)*9),
         value*9);
     setPageEvents(currentPosts);
   };
 
   return (
-    <Box mt={5} mb={5}>
-      <h1 style={{margin: 12}}>Events</h1>
-      <Grid
-        container
-        spacing={5}
-        className={classes.gridContainer}
-        justify='center'
-      >
-        {pageEvents.map((row) =>
-          getCard(row),
-        )}
-      </Grid>
-      <Box mt={5} display="flex" justifyContent="center" alignItems="center">
-        <Pagination
-          count={Math.ceil(eventList.length / postsPerPage)}
-          variant="outlined"
-          color="primary"
-          onChange={handleChange} />
+    <React.Fragment>
+      <h1 style={{marginLeft: 12}}>Events</h1>
+      <Box mt={5} mb={5} className={classes.box}>
+        <Grid
+          container
+          spacing={2}
+          className={classes.gridContainer}
+          justify='center'
+        >
+          {pageEvents.map((row) =>
+            getCard(row),
+          )}
+        </Grid>
+        <Box mt={5} display="flex" justifyContent="center" alignItems="center"
+          className={classes.pageBox}>
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(eventList.length / postsPerPage)}
+            variant="outlined"
+            color="primary"
+            onChange={handleChange} />
+        </Box>
       </Box>
-    </Box>
+    </React.Fragment>
   );
 }

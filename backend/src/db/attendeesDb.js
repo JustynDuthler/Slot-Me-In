@@ -1,6 +1,6 @@
-const pool = require('./dbConection');
+const pool = require('./dbConnection');
 
-  /* for the moment we will use this function to remove a user
+/* for the moment we will use this function to remove a user
 *  from events after they are removed from the members table.
 *  In order to cascade in the db we must indicate if the event
 *  is for users only, so we can change that
