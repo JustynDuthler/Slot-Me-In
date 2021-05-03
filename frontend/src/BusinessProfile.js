@@ -27,6 +27,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
+import {useHistory} from 'react-router-dom';
 
 /**
  * BusinessProfile component
@@ -49,7 +50,7 @@ export default function BusinessProfile() {
   const [showAll, setShowAll] = React.useState(false);
   const [tab, setTab] = React.useState(0);
   const context = React.useContext(Context);
-
+  const history = useHistory();
   /**
    * deleteEvent
    * API call for deleting event
@@ -275,7 +276,6 @@ export default function BusinessProfile() {
     },
     eventStyle: {
       marginTop: theme.spacing(2),
-      flexGrow: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -482,6 +482,33 @@ export default function BusinessProfile() {
         }
       }
     }
+    if (eventListJSX.length === 0) {
+      eventListJSX.push(
+          <ListItem button
+            key="noEvents"
+            onClick={()=>{
+              history.push('/events/create');
+            }}
+          >
+            <ListItemText
+              primary="No events for selected date"
+              secondary="Click to create an event"
+            />
+            <ListItemSecondaryAction>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                onClick={() => {
+                  setShowAll(true);
+                }}
+              >
+                {'Show all'}
+              </Button><br/>
+            </ListItemSecondaryAction>
+          </ListItem>,
+      );
+    }
     if (eventState !== null) {
       // if the eventState is set to an eventID
       // then show an individualEvent page with a back button
@@ -671,6 +698,7 @@ export default function BusinessProfile() {
                   autoComplete='email'
                   multiline
                   onChange={(event) => {
+                    console.log(event.target.value);
                     setEmailInput(event.target.value);
                   }}
                   onKeyPress={handleKeypress}
