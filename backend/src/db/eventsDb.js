@@ -105,6 +105,7 @@ exports.getEvents = async () => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      // get number of attendees for each event
       const attendees = await exports.checkRemainingEventCapacity(row.eventid);
       row['attendees'] = attendees.length;
       rows2.push(row);
@@ -203,6 +204,9 @@ exports.getUsersEvents = async (userid) => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      // get number of attendees for each event
+      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
+      row['attendees'] = attendees.length;
       rows2.push(row);
     }
   }
@@ -243,6 +247,9 @@ exports.getBusinessEvents = async (businessid) => {
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
+      // get number of attendees for each event
+      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
+      row['attendees'] = attendees.length;
       rows2.push(row);
     }
   }
