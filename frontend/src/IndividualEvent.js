@@ -195,7 +195,6 @@ const IndividualEvent = (props) => {
         })
         .then((json) => {
           setBusinessData(json);
-          console.log(json);
         })
         .catch((error) => {
           console.log(error);

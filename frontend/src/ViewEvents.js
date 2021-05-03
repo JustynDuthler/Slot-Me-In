@@ -94,7 +94,6 @@ export default function ViewEvents() {
 
   React.useEffect(() => {
     // if the url is just /events, get page 1 events
-    console.log(window.location.href);
     if (window.location.href === 'http://localhost:3000/events') {
       getEvents(1);
     } else {
