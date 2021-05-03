@@ -17,6 +17,9 @@ const useStyles = makeStyles({
   root: {
     minWidth: 275,
   },
+  box: {
+    marginTop: -15,
+  },
   bullet: {
     display: 'inline-block',
     margin: '0 2px',
@@ -26,11 +29,17 @@ const useStyles = makeStyles({
     fontSize: 14,
   },
   pos: {
-    marginTop: 12,
+    marginTop: 8,
   },
   gridContainer: {
     paddingLeft: '10px',
     paddingRight: '10px',
+  },
+  pageBox: {
+    position: 'fixed',
+    left: '50vw',
+    bottom: 15,
+    transform: 'translate(-50%, -50%)',
   },
 });
 
@@ -118,24 +127,24 @@ export default function ViewEvents() {
             </Typography>
             <Typography className={classes.pos}
               color='textSecondary' variant='body2' align='center'>
-              Start Time: {new Date(row.starttime).toLocaleString('en-US',
-                  {weekday: 'long', month: 'short', day: 'numeric',
+              Start: {new Date(row.starttime).toLocaleString('en-US',
+                  {weekday: 'short', month: 'short', day: 'numeric',
                     year: 'numeric'})} at {new Date(row.starttime)
                   .toLocaleString(
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
               color='textSecondary' variant='body2' align='center'>
-              End Time: {new Date(row.endtime).toLocaleString('en-US',
-                  {weekday: 'long', month: 'short', day: 'numeric',
+              End: {new Date(row.endtime).toLocaleString('en-US',
+                  {weekday: 'short', month: 'short', day: 'numeric',
                     year: 'numeric'})} at {new Date(row.endtime)
                   .toLocaleString(
                       'en-US', {hour: 'numeric', minute: 'numeric'})}
             </Typography>
             <Typography className={classes.pos}
-              variant='body2' align='center'
+              variant='subtitle1' align='center'
               color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
-              Capacity: {row.attendees}/{row.capacity}
+              {row.capacity - row.attendees} of {row.capacity} spots open
             </Typography>
           </CardContent>
           <CardActions>
@@ -177,26 +186,29 @@ export default function ViewEvents() {
   };
 
   return (
-    <Box mt={5} mb={5}>
-      <h1 style={{margin: 12}}>Events</h1>
-      <Grid
-        container
-        spacing={5}
-        className={classes.gridContainer}
-        justify='center'
-      >
-        {pageEvents.map((row) =>
-          getCard(row),
-        )}
-      </Grid>
-      <Box mt={5} display="flex" justifyContent="center" alignItems="center">
-        <Pagination
-          page={currentPage}
-          count={Math.ceil(eventList.length / postsPerPage)}
-          variant="outlined"
-          color="primary"
-          onChange={handleChange} />
+    <React.Fragment>
+      <h1 style={{marginLeft: 12}}>Events</h1>
+      <Box mt={5} mb={5} className={classes.box}>
+        <Grid
+          container
+          spacing={2}
+          className={classes.gridContainer}
+          justify='center'
+        >
+          {pageEvents.map((row) =>
+            getCard(row),
+          )}
+        </Grid>
+        <Box mt={5} display="flex" justifyContent="center" alignItems="center"
+          className={classes.pageBox}>
+          <Pagination
+            page={currentPage}
+            count={Math.ceil(eventList.length / postsPerPage)}
+            variant="outlined"
+            color="primary"
+            onChange={handleChange} />
+        </Box>
       </Box>
-    </Box>
+    </React.Fragment>
   );
 }

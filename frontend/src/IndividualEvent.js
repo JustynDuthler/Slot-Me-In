@@ -328,9 +328,9 @@ const IndividualEvent = (props) => {
         </Box>
 
         <Typography
-          variant='body2' align='center'
+          variant='h6' align='center'
           color={numAttendees === eventData.capacity ? 'error' : 'textPrimary'}>
-          Capacity: {numAttendees}/{eventData.capacity}
+          {eventData.capacity - numAttendees} of {eventData.capacity} spots open
         </Typography>
         {signupType !== undefined &&
           (<Button className={classes.signupButton}
