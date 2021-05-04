@@ -623,7 +623,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/EmailList"
+                $ref: "#/components/schemas/MemberList"
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -921,3 +921,17 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Emails"
+    Members:
+      type: object
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        userid:
+          type: string
+          format: uuid
+    MemberList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Members"

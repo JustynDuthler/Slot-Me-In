@@ -37,6 +37,17 @@ exports.addMembers = async (req, res) => {
 // Returns an array of emails
 exports.getMembers = async (req, res) => {
   const businessid = req.payload.id;
-  const memberList = await memberDb.getMemberList(businessid);
+  const emailList = await memberDb.getMemberList(businessid);
+  let memberList = []
+  for(i = 0; i < emailList.length; i++) {
+    const user = await memberDb.getMemberUserId(emailList[i]);
+    console.log(user);
+    let member = {
+      email: emailList[i],
+      isUser: user.userid
+    }
+    memberList.push(member);
+  }
+  console.log(memberList);
   res.status(200).json(memberList);
 }

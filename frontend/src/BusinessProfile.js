@@ -419,7 +419,7 @@ export default function BusinessProfile() {
           }}>
           <ListItemText key={member.userid}
             primary={member.username}
-            secondary={member.useremail.toLowerCase()}/>
+            secondary={member.email.toLowerCase()}/>
           <ListItemSecondaryAction>
             <Button
               type='submit'

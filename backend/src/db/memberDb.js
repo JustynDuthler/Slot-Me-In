@@ -1,4 +1,4 @@
-const pool = require('./dbConection');
+const pool = require('./dbConnection');
 
 // Inserts a list of emails into the members table
 // If there is a conflict (email already added) it does nothing
@@ -21,6 +21,19 @@ exports.insertMembers = async (emailList, businessId) => {
     console.log("Error in insertMember response: " + error.stack);
   });
 };
+
+/* gets userids for member emails */
+exports.getMemberUserId = async (memberemail) => {
+  const select = 'SELECT userid FROM Users WHERE $1 = useremail';
+  const query = {
+    text: select,
+    values: [memberemail],
+  }
+
+  const {rows} = await pool.query(query);
+  console.log(rows);
+  return (rows.length > 0 ? rows[0] : null); // return userid or null if not member
+}
 
 // Gets all member emails and userid's from the members table
 // Returns an object with withId and with withoutId
@@ -47,7 +60,6 @@ exports.getMemberList = async (businessid) => {
 
 };
 
-
 // removes user from members table
 exports.removeMember = async (businessid, email) => {
     const deleteM = 'DELETE FROM Members WHERE businessid = $1 ' +
@@ -60,3 +72,4 @@ exports.removeMember = async (businessid, email) => {
     const {rows} = await pool.query(query);
     return (rows.length);
   };
+
