@@ -424,7 +424,7 @@ export default function BusinessProfile() {
             <Button
               type='submit'
               variant='contained'
-              color='primary'
+              color='secondary'
               onClick={() => {
                 removeMember(member.userid);
               }}
@@ -459,20 +459,20 @@ export default function BusinessProfile() {
                   <Button key={eventid}
                     type='submit'
                     variant='contained'
-                    color='primary'
+                    color='secondary'
                     onClick={() => {
                       setCancelEventID(eventid);
                       setDeleteAll(false);
                       setConfirmDialog(true);
                     }}
                   >
-                    {'Cancel event'}
+                    {'Cancel Event'}
                   </Button><br/>
                   {eventList[key].repeatid &&
                       <Button key={eventList[key].repeatid}
                         type='submit'
                         variant='contained'
-                        color='secondary'
+                        color='primary'
                         onClick={() => {
                           setCancelEventID(eventid);
                           setDeleteAll(true);
@@ -503,7 +503,7 @@ export default function BusinessProfile() {
               <Button
                 type='submit'
                 variant='contained'
-                color='primary'
+                color='secondary'
                 onClick={() => {
                   setShowAll(true);
                 }}
@@ -522,7 +522,7 @@ export default function BusinessProfile() {
             <Button
               type='submit'
               variant='contained'
-              color='primary'
+              color='secondary'
               onClick={() => {
                 setEventState(null);
               }}
@@ -558,7 +558,7 @@ export default function BusinessProfile() {
               <Button key='showAll'
                 type='submit'
                 variant='contained'
-                color='primary'
+                color='secondary'
                 onClick={() => {
                   setShowAll(true);
                 }}
@@ -578,7 +578,7 @@ export default function BusinessProfile() {
                 <Button key='showAll'
                   type='submit'
                   variant='contained'
-                  color='primary'
+                  color='secondary'
                   onClick={() => {
                     setShowAll(!showAll);
                   }}
@@ -712,7 +712,7 @@ export default function BusinessProfile() {
                   type='submit'
                   fullWidth
                   variant='contained'
-                  color='primary'
+                  color='secondary'
                   className={classes.submit}
                   onClick={validateInput}
                 >

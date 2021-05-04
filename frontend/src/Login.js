@@ -127,7 +127,7 @@ export default function Login() {
     },
     avatar: {
       margin: theme.spacing(1),
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.secondary.main,
     },
     form: {
       width: '100%', // Fix IE 11 issue.
@@ -135,6 +135,7 @@ export default function Login() {
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
+      backgroundColor: theme.palette.secondary.main,
     },
   }));
   const classes = useStyles();
@@ -213,7 +214,6 @@ export default function Login() {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
               className={classes.submit}
               onClick={validateInput}
             >

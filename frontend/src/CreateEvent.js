@@ -111,7 +111,7 @@ export default function CreateEvent() {
     },
     avatar: {
       margin: theme.spacing(1),
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.secondary.main,
     },
     form: {
       width: '420px', // Fix IE 11 issue.
@@ -123,6 +123,7 @@ export default function CreateEvent() {
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
+      backgroundColor: theme.palette.secondary.main,
     },
   }));
   const classes = useStyles();
@@ -385,7 +386,6 @@ export default function CreateEvent() {
               type='submit'
               fullWidth
               variant='contained'
-              color='primary'
               className={classes.submit}
               onClick={validateInput}
             >

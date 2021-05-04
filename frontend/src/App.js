@@ -18,16 +18,36 @@ import UserProfile from './UserProfile';
 import BusinessProfile from './BusinessProfile';
 const Auth = require('./libs/Auth');
 
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import {
   ButtonGroup, Button, Toolbar, AppBar, makeStyles,
 } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import AccountIcon from '@material-ui/icons/AccountCircle';
+import AccountCircleOutlinedIcon
+  from '@material-ui/icons/AccountCircleOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import HomeIcon from '@material-ui/icons/Home';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
+import EventIcon from '@material-ui/icons/Event';
+import AddIcon from '@material-ui/icons/Add';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#ed7f7d',
+      light: '#ffb0ac',
+      dark: '#b75051',
+    },
+    secondary: {
+      main: '#edc97c',
+      light: '#fffcac',
+      dark: '#b9984e',
+    },
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -107,16 +127,17 @@ function App() {
     rightSide = (
       <ButtonGroup>
         <Button
-          startIcon={<AccountBoxIcon />}
+          startIcon={<AccountBoxOutlinedIcon />}
           href="/profile"
-          color="primary"
+          color="secondary"
           size="large"
           variant="contained"
         >
           Profile
         </Button>
         <Button
-          color="primary"
+          startIcon={<ExitToAppIcon/>}
+          color="secondary"
           size="large"
           variant="contained"
           onClick={logout}
@@ -134,9 +155,9 @@ function App() {
         }}
       >
         <Button
-          startIcon={<AccountIcon />}
+          startIcon={<AccountCircleOutlinedIcon />}
           href="/register"
-          color="primary"
+          color="secondary"
           size="large"
           variant="contained"
         >
@@ -146,7 +167,7 @@ function App() {
         <Button
           startIcon={<LockOutlinedIcon />}
           href="/Login"
-          color="primary"
+          color="secondary"
           size="large"
           variant="contained"
         >
@@ -160,135 +181,142 @@ function App() {
   if (businessState == true) {
     leftSide = (
       <Box className={classes.leftMenu}>
-        <Button
-          startIcon={<HomeIcon/>}
-          href="/home"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          Home
-        </Button>
-        <Button
-          href="/events/create"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          Create Event
-        </Button>
-        <Button
-          href="/events"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          Events
-        </Button>
-        <Button
-          href="/authtest"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          AuthTest
-        </Button>
+        <ButtonGroup>
+          <Button
+            startIcon={<HomeIcon/>}
+            href="/home"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Home
+          </Button>
+          <Button
+            startIcon={<AddIcon/>}
+            href="/events/create"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Create Event
+          </Button>
+          <Button
+            startIcon={<EventIcon/>}
+            href="/events"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Events
+          </Button>
+          <Button
+            href="/authtest"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            AuthTest
+          </Button>
+        </ButtonGroup>
       </Box>
     );
   } else {
     leftSide = (
       <Box className={classes.leftMenu}>
-        <Button
-          startIcon={<HomeIcon/>}
-          href="/home"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          Home
-        </Button>
-        <Button
-          href="/events"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          Events
-        </Button>
-        <Button
-          href="/authtest"
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          AuthTest
-        </Button>
+        <ButtonGroup>
+          <Button
+            startIcon={<HomeIcon/>}
+            href="/home"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Home
+          </Button>
+          <Button
+            startIcon={<EventIcon/>}
+            href="/events"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Events
+          </Button>
+          <Button
+            href="/authtest"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            AuthTest
+          </Button>
+        </ButtonGroup>
       </Box>
     );
   }
   return (
     <Router>
-      {/* I moved Css basline here so that it applies to the whole project */}
-      <CssBaseline />
-      <AppBar
-        position="static"
-      >
-        <Toolbar>
-          {/* classes.leftMenu has flexGrow: 1 so it will try to take up
-          as much space as possible
-          this will push the content outside of the box to the right */}
-          {leftSide}
-          {rightSide}
-        </Toolbar>
-      </AppBar>
-      {/* Used a container so that there would be
-      top margin between nav and content */}
-      <Container className={classes.content}>
-        <Context.Provider value={{
-          authState, setAuthState,
-          businessState, setBusinessState,
-        }}>
-          <Switch>
-            <Route path="/login">
-              <Login/>
-            </Route>
-            <Route path="/register">
-              <Register/>
-            </Route>
-            <Route path="/authtest">
-              <AuthTest />
-            </Route>
-            <PrivateRoute
-              path="/events/create"
-              authed={authState}
-              component={CreateEvent}
-            />
-            <PrivateRoute
-              path="/events"
-              authed={authState}
-              component={ViewEvents}
-            />
-            <Route path="/profile">
-              {(authState) ? ((businessState === false) ?
-              <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-            </Route>
-            <Route exact path="/events">
-              <ViewEvents/>
-            </Route>
-            <Route
-              exact path="/event/:eventid"
-              render={(props) =>
-                <IndividualEvent eventID={props.match.params.eventid}
-                  {...props} />}
-            />
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-
-        </Context.Provider>
-      </Container>
-
+      <ThemeProvider theme={theme}>
+        {/* I moved Css basline here so that it applies to the whole project */}
+        <CssBaseline />
+        <AppBar
+          position="static"
+        >
+          <Toolbar>
+            {/* classes.leftMenu has flexGrow: 1 so it will try to take up
+            as much space as possible
+            this will push the content outside of the box to the right */}
+            {leftSide}
+            {rightSide}
+          </Toolbar>
+        </AppBar>
+        {/* Used a container so that there would be
+        top margin between nav and content */}
+        <Container className={classes.content}>
+          <Context.Provider value={{
+            authState, setAuthState,
+            businessState, setBusinessState,
+          }}>
+            <Switch>
+              <Route path="/login">
+                <Login/>
+              </Route>
+              <Route path="/register">
+                <Register/>
+              </Route>
+              <Route path="/authtest">
+                <AuthTest />
+              </Route>
+              <PrivateRoute
+                path="/events/create"
+                authed={authState}
+                component={CreateEvent}
+              />
+              <PrivateRoute
+                path="/events"
+                authed={authState}
+                component={ViewEvents}
+              />
+              <Route path="/profile">
+                {(authState) ? ((businessState === false) ?
+                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+              </Route>
+              <Route exact path="/events">
+                <ViewEvents/>
+              </Route>
+              <Route
+                exact path="/event/:eventid"
+                render={(props) =>
+                  <IndividualEvent eventID={props.match.params.eventid}
+                    {...props} />}
+              />
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </Context.Provider>
+        </Container>
+      </ThemeProvider>
     </Router>
   );
 }
