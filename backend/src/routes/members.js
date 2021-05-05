@@ -3,7 +3,7 @@ const userDb = require('../db/userDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Deletes row in members table based on the 
+// Deletes row in members table based on the
 // memberemail and userid
 exports.deleteMember = async (req, res) => {
   const businessid = req.payload.id;
@@ -24,7 +24,7 @@ exports.deleteMember = async (req, res) => {
 // Add members to members table
 exports.addMembers = async (req, res) => {
   const businessid = req.payload.id;
-  
+
   memberDb.insertMembers(req.body, businessid)
   .then((response) => {
     res.status(200).send();
