@@ -925,6 +925,8 @@ components:
       type: object
       additionalProperties: false
       properties:
+        username:
+          type: string
         email:
           type: string
           format: email

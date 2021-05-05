@@ -58,7 +58,7 @@ export default function BusinessProfile() {
    * @return {Number}
    */
   function deleteEvent(eventid, all) {
-    return 1;
+    return 1; // what is this?
     console.log(eventid);
     const apicall = 'http://localhost:3010/api/events/'+eventid;
     return fetch(apicall, {
@@ -344,6 +344,30 @@ export default function BusinessProfile() {
         ' ' + (includeDate ? dateString.toDateString():'');
   }
 
+  /**
+   * removeMember
+   * @param {string} email
+   */
+  async function removeMember(email) {
+    console.log(email);
+    return fetch('http://localhost:3010/api/members/deleteMember', {
+      method: 'Delete',
+      body: JSON.stringify({'email': email}),
+      headers: Auth.headerJsonJWT(),
+    }).then((response)=>{
+      if (!response.ok) {
+        throw response;
+      }
+      return response;
+    }).then((json)=>{
+      return 1;
+    })
+        .catch((error) => {
+          console.log(error);
+          return -1;
+        });
+  }
+
   const classes = useStyles();
 
   /**
@@ -426,7 +450,7 @@ export default function BusinessProfile() {
               variant='contained'
               color='secondary'
               onClick={() => {
-                removeMember(member.userid);
+                removeMember(member.email);
               }}
             >
               Remove

@@ -23,15 +23,14 @@ exports.insertMembers = async (emailList, businessId) => {
 };
 
 /* gets userids for member emails */
-exports.getMemberUserId = async (memberemail) => {
-  const select = 'SELECT userid FROM Users WHERE $1 = useremail';
+exports.getMemberUserNameID = async (memberemail) => {
+  const select = 'SELECT userid, username FROM Users WHERE $1 = useremail';
   const query = {
     text: select,
     values: [memberemail],
   }
 
   const {rows} = await pool.query(query);
-  console.log(rows);
   return (rows.length > 0 ? rows[0] : null); // return userid or null if not member
 }
 

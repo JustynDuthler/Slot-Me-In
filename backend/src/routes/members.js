@@ -8,6 +8,7 @@ dotenv.config();
 exports.deleteMember = async (req, res) => {
   const businessid = req.payload.id;
   const email = req.body.email;
+  console.log(req.body.email);
 
   memberDb.removeMember(businessid, email)
     .then(length => {
@@ -40,14 +41,13 @@ exports.getMembers = async (req, res) => {
   const emailList = await memberDb.getMemberList(businessid);
   let memberList = []
   for(i = 0; i < emailList.length; i++) {
-    const user = await memberDb.getMemberUserId(emailList[i]);
-    console.log(user);
+    const user = await memberDb.getMemberUserNameID(emailList[i]);
     let member = {
+      username: user.username,
       email: emailList[i],
-      isUser: user.userid
+      userid: user.userid
     }
     memberList.push(member);
   }
-  console.log(memberList);
   res.status(200).json(memberList);
 }
