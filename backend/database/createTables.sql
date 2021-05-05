@@ -3,6 +3,7 @@
 -- to store user data, business data, events, attendess,
 -- etc..
 
+DROP TABLE IF EXISTS Users;
 -- Users Tables
 CREATE TABLE Users (
 	userid uuid  UNIQUE DEFAULT uuid_generate_v4(), 
@@ -12,6 +13,7 @@ CREATE TABLE Users (
 	PRIMARY KEY (userid)
 );
 
+DROP TABLE IF EXISTS Businesses;
 -- Businesses Tables
 CREATE TABLE Businesses (
 	businessid uuid UNIQUE DEFAULT uuid_generate_v4(),
@@ -22,6 +24,7 @@ CREATE TABLE Businesses (
 	PRIMARY KEY (businessid)
 );
 
+DROP TABLE IF EXISTS RepeatingEvents;
 -- Repeating Events Table
 CREATE TABLE RepeatingEvents (
   repeatid uuid UNIQUE DEFAULT uuid_generate_v4(),
@@ -44,6 +47,7 @@ CREATE TABLE RepeatingEvents (
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
 
+DROP TABLE IF EXISTS Events;
 -- Events Table
 CREATE TABLE Events (
   eventid uuid UNIQUE DEFAULT uuid_generate_v4(),
@@ -59,6 +63,7 @@ CREATE TABLE Events (
   FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS Attendees;
 -- Attendees Table
 CREATE TABLE Attendees (
 	eventid uuid,
@@ -67,6 +72,7 @@ CREATE TABLE Attendees (
 	FOREIGN KEY (userid) REFERENCES Users
 );
 
+DROP TABLE IF EXISTS Members;
 -- members tables
 CREATE TABLE Members (
   memberemail TEXT NOT NULL,
