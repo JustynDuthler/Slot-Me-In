@@ -42,7 +42,6 @@ exports.addMembers = async (req, res) => {
     }
     memberList.push(member);
   }
-  console.log(memberList);
   memberDb.insertMembers(req.body, businessid)
   .then((response) => {
     res.status(200).json(memberList);
