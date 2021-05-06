@@ -655,8 +655,12 @@ paths:
             schema:
               $ref: "#/components/schemas/EmailList"
       responses:
-        201:
+        200:
           description: Successfully inserted emails
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -697,6 +701,10 @@ paths:
       responses:
         200:
           description: Email successfully removed from member table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Members"
 
 
 
@@ -927,11 +935,13 @@ components:
       properties:
         username:
           type: string
+          nullable: true
         email:
           type: string
           format: email
         userid:
           type: string
+          nullable: true
           format: uuid
     MemberList:
       type: array
