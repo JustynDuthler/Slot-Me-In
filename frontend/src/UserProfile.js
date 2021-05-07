@@ -178,11 +178,11 @@ export default function UserProfile() {
       flexGrow: 1,
     },
     select: {
-      background: theme.palette.secondary.main,
+      background: theme.palette.primary.light,
       color: theme.palette.common.white,
     },
     noselect: {
-      background: theme.palette.secondary.light,
+      background: theme.palette.primary.light,
       color: theme.palette.common.white,
     },
     highlight: {
