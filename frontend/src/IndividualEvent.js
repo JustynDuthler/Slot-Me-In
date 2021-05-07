@@ -20,17 +20,24 @@ const Auth = require('./libs/Auth');
 const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: 50,
+    marginLeft: 50,
+    marginRight: 50,
+  },
+  eventInfo: {
+    margin: '0 auto',
   },
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
   },
-  signupButton: {
-    margin: 15,
-  },
   avatar: {
-    width: theme.spacing(30),
-    height: theme.spacing(30),
+    margin: '0 auto',
+    width: theme.spacing(16),
+    height: theme.spacing(16),
+    [theme.breakpoints.up('md')]: {
+      width: theme.spacing(25),
+      height: theme.spacing(25),
+    },
   },
   date: {
     color: theme.palette.secondary.dark,
@@ -40,15 +47,12 @@ const useStyles = makeStyles((theme) => ({
   },
   capacity: {
     marginTop: theme.spacing(6),
-    margin: '0 auto',
   },
-  signup: {
-    margin: '0 auto',
+  signupButton: {
+    marginTop: 15,
   },
   share: {
     marginTop: theme.spacing(6),
-    position: 'relative',
-    left: '50%',
   },
   shareIcon: {
     color: theme.palette.secondary.main,
@@ -304,8 +308,8 @@ const IndividualEvent = (props) => {
 
   return (
     <div>
-      <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={3}>
+      <Grid container spacing={4} className={classes.grid}>
+        <Grid item xs={3} className={classes.businessInfo}>
           <Avatar
             alt={businessData.businessname}
             className={classes.avatar}
@@ -319,7 +323,7 @@ const IndividualEvent = (props) => {
           </p>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={6} className={classes.eventInfo}>
           <Typography className={classes.title} variant='h2'>
             {eventData.eventname}
           </Typography>
@@ -370,7 +374,6 @@ const IndividualEvent = (props) => {
         </Grid>
 
         <Grid item xs={3}>
-
         </Grid>
       </Grid>
 
