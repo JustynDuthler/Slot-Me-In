@@ -16,6 +16,7 @@ import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
 import UserProfile from './UserProfile';
 import BusinessProfile from './BusinessProfile';
+import AllEvents from './AllEvents';
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -45,6 +46,32 @@ const theme = createMuiTheme({
       main: '#edc97c',
       light: '#fffcac',
       dark: '#b9984e',
+    },
+    back: {
+      main: '#ffffff',
+      light: '#fffcac',
+      dark: '#dddddd',
+    },
+  },
+  typography: {
+    useNextVariants: true,
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    fontWeightMedium: 500,
+    body1: {
+      fontWeight: 500,
+    },
+    subtitle1: {
+      fontSize: 12,
     },
   },
 });
@@ -307,6 +334,9 @@ function App() {
                   <IndividualEvent eventID={props.match.params.eventid}
                     {...props} />}
               />
+              <Route path="/allevents">
+                <AllEvents/>
+              </Route>
               <Route path="/">
                 <Home />
               </Route>

@@ -655,8 +655,12 @@ paths:
             schema:
               $ref: "#/components/schemas/EmailList"
       responses:
-        201:
+        200:
           description: Successfully inserted emails
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -675,7 +679,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
+
   /members/deleteMember:
     delete:
       description: Deletes a single member from the member list
@@ -697,6 +701,10 @@ paths:
       responses:
         200:
           description: Email successfully removed from member table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Members"
 
 
 
@@ -789,7 +797,7 @@ components:
         $ref: "#/components/schemas/User"
     Business:
       type: object
-      maxProperties: 4
+      maxProperties: 5
       additionalProperties: false
       properties:
         businessid:
@@ -804,6 +812,8 @@ components:
           type: string
           pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
           example: "123-456-7890"
+        description:
+          type: string
       required:
         - businessid
         - businessname
@@ -927,11 +937,13 @@ components:
       properties:
         username:
           type: string
+          nullable: true
         email:
           type: string
           format: email
         userid:
           type: string
+          nullable: true
           format: uuid
     MemberList:
       type: array
