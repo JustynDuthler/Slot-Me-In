@@ -16,6 +16,7 @@ import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
 import UserProfile from './UserProfile';
 import BusinessProfile from './BusinessProfile';
+import AllEvents from './AllEvents';
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -310,6 +311,9 @@ function App() {
                   <IndividualEvent eventID={props.match.params.eventid}
                     {...props} />}
               />
+              <Route path="/allevents">
+                <AllEvents/>
+              </Route>
               <Route path="/">
                 <Home />
               </Route>
