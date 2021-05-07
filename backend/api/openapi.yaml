@@ -423,7 +423,7 @@ paths:
         201:
           description: successfully uploaded profile image
         400:
-          description: Unexpected property in event details
+          description: wrong file type
           content:
             application/json:
               schema:
@@ -436,6 +436,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        500:
+          description: cannot save image     
         default:
           description: Unexpected Error
           content:

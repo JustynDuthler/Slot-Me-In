@@ -2,9 +2,11 @@ const businessDb = require('../db/businessDb');
 const eventsDb = require('../db/eventsDb');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const fs = require('fs');
 dotenv.config();
 
 const auth = require('../auth');
+const pool = require('../db/dbConnection');
 
 exports.getInfo = async (req, res) => {
   const business = await businessDb.selectBusiness(req.payload.id);
@@ -94,3 +96,35 @@ exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
   res.status(200).send();
 };
+
+exports.saveProfileImage = async (req, res) => {
+  const businessID = req.payload.id;
+  console.log(req.files[0]);
+  const validExtensions = /.*\.(jpe?g|png)$/i;
+  if (!validExtensions.exec(req.files[0].originalname)) {
+    /* not a png, jpg, or jpeg */
+    res.status(400).send();
+  } else {
+    /* obtain file extension */
+    var dotIndex = req.files[0].originalname.lastIndexOf('.');
+    const fileExtension = req.files[0].originalname.substring(dotIndex);
+    /* saved file name is just businessid.extension */
+    const newFileName = req.payload.id + fileExtension;
+    /* construct path for image folder */
+    const path = __dirname + '/../../../images/businessProfileImages/' + newFileName;
+    console.log(path);
+    fs.writeFile(path, req.files[0].buffer, 'binary', (err) => {
+      if (err) { 
+        res.status(500).send(); 
+        return; 
+      }
+    });
+    /* insert file name into database */
+    const insertRet = await businessDb.insertProfileImageName(businessID, newFileName);
+    if (!insertRet) { /* throw 500 if cannot insert */
+      res.status(500).send(); 
+      return; 
+    } 
+  
+  }
+}

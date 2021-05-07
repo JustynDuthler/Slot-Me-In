@@ -50,3 +50,16 @@ exports.getBusinessPass = async (email) => {
   const {rows} = await pool.query(query);
   return rows[0].password;
 };
+
+// inserts image name into database
+exports.insertProfileImageName = async (businessid, imagename) => {
+  const insert = 'INSERT INTO Businesses (businessimagename) VALUES ($2)' +
+                 'WHERE $1 = businessid RETURNING businessid';
+  const query = {
+    text: insert,
+    values: [businessid, imagename],
+  };
+
+  const {rows} = await pool.query(query);
+  return (rows.length > 0 ? 1 : 0); // if insert was successful return 1
+}
