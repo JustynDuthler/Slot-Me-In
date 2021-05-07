@@ -400,6 +400,49 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+                
+  /businesses/uploadProfileImage:
+    post:
+      description: Upload a business profile pictures
+      tags:
+        - businesses
+      requestBody:
+        description: binary image database
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Image:
+                  type: string
+                  format: binary
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: successfully uploaded profile image
+        400:
+          description: Unexpected property in event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+            
 
   /events:
     post:
