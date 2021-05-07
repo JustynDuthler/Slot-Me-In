@@ -27,6 +27,7 @@ import PropTypes from 'prop-types';
 import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import UserInfo from './Components';
 
 /**
  * BusinessProfile component
@@ -267,27 +268,33 @@ export default function BusinessProfile() {
 
   const useStyles = makeStyles((theme) => ({
     paper: {
-      marginTop: theme.spacing(8),
-      flexGrow: 1,
-      display: 'flex',
+      padding: theme.spacing(2),
       flexDirection: 'column',
-      alignItems: 'center',
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+    paper2: {
+      backgroundColor: theme.palette.primary.main,
+    },
+    testgrid: {
+      flexGrow: 1,
     },
     eventStyle: {
       marginTop: theme.spacing(2),
-      display: 'flex',
-      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    mainGrid: {
       alignItems: 'center',
     },
     typography: {
       flexGrow: 1,
     },
     select: {
-      background: theme.palette.secondary.main,
+      background: theme.palette.primary.light,
       color: theme.palette.common.white,
     },
     noselect: {
-      background: theme.palette.secondary.light,
+      background: theme.palette.primary.light,
       color: theme.palette.common.white,
     },
     highlight: {
@@ -322,10 +329,31 @@ export default function BusinessProfile() {
       marginRight: 15,
     },
     buttonGroup: {
-      display: 'flex',
-      flexDirection: 'column',
+      color: '#dd0000',
+    },
+    buttonGroupBox: {
       alignItems: 'center',
-      margin: theme.spacing(8),
+      flexDirection: 'column',
+      backgroundColor: theme.palette.primary.main,
+    },
+    menuButton: {
+      'color': theme.palette.primary.main,
+      'paddingRight': theme.spacing(2),
+      'paddingLeft': theme.spacing(2),
+      'backgroundColor': theme.palette.secondary.main,
+      '&:hover': {
+        'backgroundColor': theme.palette.secondary.dark,
+        'color': theme.palette.primary.main,
+      },
+    },
+    menuButton2: {
+      'color': theme.palette.secondary.main,
+      'paddingRight': theme.spacing(2),
+      'paddingLeft': theme.spacing(2),
+      'backgroundColor': theme.palette.primary.main,
+      '&:hover': {
+        'backgroundColor': theme.palette.primary.light,
+      },
     },
   }));
 
@@ -619,11 +647,12 @@ export default function BusinessProfile() {
     }
 
     return (
-      <Container component='main' maxWidth='md'>
+      <Container component='main'>
         <div className={classes.paper}>
           <div className={classes.buttonGroup}>
             <ButtonGroup color="primary" aria-label="primary button group">
               <Button
+                className={classes.menuButton}
                 variant={tab === 0 ? 'contained': ''}
                 color={tab === 0 ? 'primary' : 'primary'}
                 onClick={()=>{
@@ -636,6 +665,13 @@ export default function BusinessProfile() {
                 onClick={()=>{
                   setTab(1);
                 }}>Members
+              </Button>
+              <Button
+                variant={tab === 2 ? 'contained': ''}
+                color={tab === 2 ? 'primary' : 'primary'}
+                onClick={()=>{
+                  setTab(2);
+                }}>Overview
               </Button>
             </ButtonGroup>
           </div>
@@ -746,6 +782,66 @@ export default function BusinessProfile() {
             </Grid>
           </div>}
         </div>
+        {tab === 2 && <div className={classes.testgrid}>
+          <Grid container spacing={0}>
+            <Grid item container md={12}
+              direction="row">
+              <Grid item md={3} className={classes.buttonGroupBox}>
+              </Grid>
+              <Divider orientation="vertical" flexItem
+                style={{marginRight: '-1px', color: '#ff0000'}} />
+              <Grid item container md={8} className={classes.buttonGroupBox}>
+
+                <ButtonGroup variant="text"
+                  className={classes.buttonGroup}
+                  fullWidth
+                >
+                  <Button
+                    className={tab === 0 ? classes.menuButton :
+                      classes.menuButton2}
+                    onClick={()=>{
+                      setTab(0);
+                    }}>Events
+                  </Button>
+                  <Button
+                    className={tab === 1 ? classes.menuButton :
+                      classes.menuButton2}
+                    onClick={()=>{
+                      setTab(1);
+                    }}>Members
+                  </Button>
+                  <Button
+                    className={tab === 2 ? classes.menuButton :
+                      classes.menuButton2}
+                    onClick={()=>{
+                      setTab(2);
+                    }}>Overview
+                  </Button>
+                </ButtonGroup>
+
+              </Grid>
+              <Grid item md={1} className={classes.buttonGroupBox}>
+              </Grid>
+            </Grid>
+            <Divider orientation="vertical" flexItem
+              style={{marginRight: '-1px'}} />
+            <Grid container item md={3} direction="column">
+              <UserInfo picture="picture"
+                name={businessData.businessname}
+                email={businessData.email}
+                description={businessData.description}
+                className={classes.paper2}
+                style={{height: '500px'}}
+              />
+            </Grid>
+            <Divider orientation="vertical" flexItem
+              style={{marginRight: '-1px'}} />
+            <Grid item md={9} style={{height: '200px'}}>
+              <Paper className={classes.paper}
+                style={{height: '200px'}}>md=6</Paper>
+            </Grid>
+          </Grid>
+        </div>}
       </Container>
     );
   }

@@ -13,6 +13,7 @@ exports.getInfo = async (req, res) => {
     businessname: business.businessname,
     email: business.businessemail,
     phonenumber: business.phonenumber,
+    description: business.description,
   };
   res.status(200).json(businessData);
 };
@@ -24,6 +25,7 @@ exports.getBusinessByID = async (req, res) => {
     businessname: business.businessname,
     email: business.businessemail,
     phonenumber: business.phonenumber,
+    description: business.description,
   };
   res.status(200).json(businessData);
 };
