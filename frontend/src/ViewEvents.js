@@ -9,6 +9,7 @@ import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
+import './Stylesheet.css';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -149,7 +150,7 @@ export default function ViewEvents() {
           <CardActions>
             <Button size='small'
               variant='contained'
-              color='primary'
+              className='button'
               href={context.businessState === false ?
                 '/event/' + row.eventid : '/profile/'}
               style={{margin: 'auto'}}>
