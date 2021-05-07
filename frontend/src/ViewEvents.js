@@ -148,14 +148,13 @@ export default function ViewEvents() {
   return (
     <React.Fragment>
       <input type="text" placeholder="Ignore this search bar..." />
-      <Box mt={10} ml={-30} mr={30}>
-        <h1 style={{marginLeft: 12}, {float: 'left'}}>Events</h1>
+      <Box mt={10}>
+        <h1 style={{float: 'left'}}>Events</h1>
         <Box pt={5}>
           <Link to="/allevents" style={{float: 'right'}}>
             See All Events
           </Link>
         </Box>
-        {/* <h1 style={{float: 'right'}}>link to all events</h1> */}
         <Box mt={5} mb={5} className={classes.box}>
           <Carousel breakPoints={breakPoints}>
             {eventList.map((event) =>
