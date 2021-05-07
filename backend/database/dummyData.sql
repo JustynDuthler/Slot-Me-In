@@ -41,8 +41,8 @@ INSERT INTO Users(userid, username, password, useremail)
 VALUES ('00000000-0000-0000-0000-000000000019', 'Elle', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'elle@ucsc.edu');
 
 -- 10 Businesses. Every password is password
-INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail)
-VALUES ('00000000-0000-0000-0000-000000000000', 'Test Inc.', '$2b$10$yGQjScs.rHEbbccY2NVipeYAIvtTENxUbzME65JReiU1i6fgXw0.a', '000-000-0000', 'contact@testinc.com');
+INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail, description)
+VALUES ('00000000-0000-0000-0000-000000000000', 'Test Inc.', '$2b$10$yGQjScs.rHEbbccY2NVipeYAIvtTENxUbzME65JReiU1i6fgXw0.a', '000-000-0000', 'contact@testinc.com', 'This is a test description for this test company. Follow us on Twitter at @testinc or like us on Facebook.');
 INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail)
 VALUES ('10000000-0000-0000-0000-000000000000', 'Google', '$2b$10$yGQjScs.rHEbbccY2NVipeYAIvtTENxUbzME65JReiU1i6fgXw0.a', '000-000-0001', 'contact@google.com');
 INSERT INTO Businesses(businessid, businessname, password, phonenumber, businessemail)

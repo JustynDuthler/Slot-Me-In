@@ -47,6 +47,32 @@ const theme = createMuiTheme({
       light: '#fffcac',
       dark: '#b9984e',
     },
+    back: {
+      main: '#ffffff',
+      light: '#fffcac',
+      dark: '#dddddd',
+    },
+  },
+  typography: {
+    useNextVariants: true,
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    fontWeightMedium: 500,
+    body1: {
+      fontWeight: 500,
+    },
+    subtitle1: {
+      fontSize: 12,
+    },
   },
 });
 
