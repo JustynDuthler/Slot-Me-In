@@ -53,7 +53,7 @@ export default function UserInfo({picture: path, name: name, email: email,
       alignItems="center"
       className={classes.grid}
       {...rest}>
-      <Paper className={classes.paper}>path</Paper>
+      <Paper className={classes.paper}>{path}</Paper>
       <Typography className={classes.text}>{name}
       </Typography>
       <Divider className={classes.divider}/>
@@ -77,9 +77,27 @@ UserInfo.propTypes = {
  * @return {object} EventInfo JSX
  */
 export function EventInfo() {
+  const useStyles = makeStyles((theme) => ({
+    grid: {
+      backgroundColor: theme.palette.back.dark,
+    },
+    gridbordered: {
+      backgroundColor: theme.palette.back.dark,
+      border: `1px solid ${theme.palette.primary.light}`,
+      height: 100,
+      margin: theme.spacing(2),
+    },
+  }));
+  const classes = useStyles();
   return (
-    <Grid item container md={2}>
-      <Typography>2</Typography>
+    <Grid item container md={2} className={classes.gridbordered}
+      justify="center"
+      alignItems="center"
+      direction="column">
+      <Typography>Event Name</Typography>
+      <Typography>Date/Time</Typography>
+      <Typography>Location</Typography>
+      <Typography>Capacity</Typography>
     </Grid>
   );
 }
@@ -91,12 +109,35 @@ export function ShareBar({...rest}) {
   const useStyles = makeStyles((theme) => ({
     grid: {
       backgroundColor: theme.palette.back.main,
+    },
+    gridbordered: {
+      backgroundColor: theme.palette.back.main,
       border: `1px solid ${theme.palette.primary.light}`,
     },
   }));
   const classes = useStyles();
   return (
-    <Grid item container md={9} className={classes.grid}>
+    <Grid item container className={classes.grid}
+      justify="center"
+      alignItems="center"
+      direction="row"
+      {...rest}>
+      <Grid item container md={3} className={classes.grid}
+        justify="center">
+        <Typography style={{fontSize: '20px'}}>Share</Typography>
+      </Grid>
+      <Grid item container md={3} className={classes.gridbordered}
+        justify="center">
+        <Typography>Facebook</Typography>
+      </Grid>
+      <Grid item md={3} container className={classes.gridbordered}
+        justify="center">
+        <Typography>Instagram</Typography>
+      </Grid>
+      <Grid item md={3} container className={classes.gridbordered}
+        justify="center">
+        <Typography>Twitter</Typography>
+      </Grid>
     </Grid>
   );
 }

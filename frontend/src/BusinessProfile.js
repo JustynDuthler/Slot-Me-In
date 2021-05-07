@@ -28,7 +28,7 @@ import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UserInfo from './Components';
-import {EventInfo} from './Components';
+import {EventInfo, ShareBar} from './Components';
 
 /**
  * BusinessProfile component
@@ -372,6 +372,13 @@ export default function BusinessProfile() {
       backgroundColor: theme.palette.back.main,
       border: `1px solid ${theme.palette.primary.light}`,
     },
+    grid2: {
+      backgroundColor: theme.palette.back.main,
+    },
+    divider: {
+      width: '100%',
+      backgroundColor: theme.palette.primary.light,
+    },
   }));
 
   /**
@@ -701,7 +708,7 @@ export default function BusinessProfile() {
               </Button>
             </ButtonGroup>
           </div>
-          {tab === 0 && <div>
+          {tab === 3 && <div>
             <Paper margin='2px'>
               <Container component='main' maxWidth='md'>
                 <Grid container justify='center' direction='row' spacing={8}>
@@ -764,7 +771,7 @@ export default function BusinessProfile() {
               </Container>
             </Paper>
           </div>}
-          {tab === 1 && <div>
+          {tab === 3 && <div>
             <Grid container spacing={8} justify="center">
               <Grid item container md={6} direction="column"
                 alignItems="center">
@@ -815,7 +822,7 @@ export default function BusinessProfile() {
             </Grid>
           </div>}
         </div>
-        {tab === 2 && <div className={classes.testgrid}>
+        <div className={classes.testgrid}>
           <Grid container spacing={0}>
             <Grid item container md={12}
               direction="row">
@@ -856,27 +863,111 @@ export default function BusinessProfile() {
               <Grid item md={1} className={classes.buttonGroupBox}>
               </Grid>
             </Grid>
-            <Divider orientation="vertical" flexItem
-              style={{marginRight: '-1px'}} />
             <Grid container item md={3} direction="column">
               <UserInfo picture="picture"
                 name={businessData.businessname}
                 email={businessData.email}
                 description={businessData.description}
                 className={classes.paper2}
-                style={{height: '500px'}}
+                style={{height: '650px'}}
               />
             </Grid>
+            {tab === 2 &&
             <Divider orientation="vertical" flexItem
-              style={{marginRight: '-1px'}} />
-            <Grid item md={9} style={{height: '450px'}}
+              style={{marginRight: '-1px'}} />}
+            {tab === 2 &&
+            <Grid item md={9} container style={{height: 650}}
               className={classes.grid}>
-              <Paper className={classes.paper}
-                style={{height: '20px'}}>md=6</Paper>
-              <EventInfo/>
-            </Grid>
+              <Typography style={{margin: 8, fontSize: '24px'}}>
+                Upcoming Events:</Typography>
+              <Grid item md={12} container style={{height: '400px'}}
+                className={classes.grid2}>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+              </Grid>
+              <Divider className={classes.divider}/>
+              <ShareBar style={{height: 45}}/>
+            </Grid>}
+            {tab === 1 && <Grid item container md={9} direction="column"
+              alignItems="center" style={{height: 650, overflow: 'auto',
+                maxHeight: 650}}
+              className={classes.grid}>
+              {existingmembers.length > 0 && <Typography variant='h6'>
+                Existing Members
+              </Typography>}
+              {existingmembers.length > 0 && <Divider/>}
+              {existingmembers.length > 0 && <List
+                style={{width: '100%', height: 220,
+                  maxHeight: 220, overflow: 'auto'}}>
+                {existingmembers}
+              </List>}
+              {members.length > 0 && <Typography variant='h6'>
+                Inactive Members
+              </Typography>}
+              {members.length > 0 && <Divider/>}
+              {members.length > 0 && <List
+                style={{width: '100%', height: 220,
+                  maxHeight: 220, overflow: 'auto'}}>
+                {members}
+              </List>}
+              {members.length+existingmembers.length === 0 && <Typography>
+                Currently added 0 members
+              </Typography>}
+              <TextField
+                error={emailError}
+                helperText={emailError ? emailMsg : ''}
+                variant='filled'
+                margin='normal'
+                fullWidth
+                id='email'
+                label='Email Addresses'
+                name='email'
+                autoComplete='email'
+                multiline
+                onChange={(event) => {
+                  setEmailInput(event.target.value);
+                }}
+                onKeyPress={handleKeypress}
+              />
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                color='secondary'
+                className={classes.submit}
+                onClick={validateInput}
+              >
+                Add Members
+              </Button>
+            </Grid>}
+            {tab === 0 && <Grid item container md={9} direction="column"
+              style={{height: 650, overflow: 'auto',
+                maxHeight: 650}}
+              className={classes.grid}>
+              {eventState === null &&showAll === false&&
+              <Grid style={{margin: 8}} item md={4} container justify='center'>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DatePicker
+                    variant='static'
+                    label='Event select'
+                    value={selectedDate}
+                    onChange={(date) => {
+                      setSelectedDate(date);
+                    }}
+                    renderDay={renderWrappedDays}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>}
+              <List>
+                {eventListJSX}
+              </List>
+            </Grid>}
           </Grid>
-        </div>}
+        </div>
       </Container>
     );
   }
