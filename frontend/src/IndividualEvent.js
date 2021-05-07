@@ -22,6 +22,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Context from './Context';
 const Auth = require('./libs/Auth');
+const Util = require('./libs/Util');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -158,7 +159,7 @@ const IndividualEvent = (props) => {
           </Typography> */}
           <Typography className={classes.pos}
             color='textSecondary' variant='body2' align='center'>
-            {formatDate(row.starttime, row.endtime)}
+            {Util.formatDate(row.starttime, row.endtime)}
           </Typography>
           <Typography className={classes.pos}
             variant='subtitle1' align='center'
@@ -347,58 +348,6 @@ const IndividualEvent = (props) => {
     });
   };
 
-  /**
-   * formatDate
-   * @param {string} startTimestamp start date
-   * @param {string} endTimestamp end date
-   * @return {string} formatted date string
-   */
-  function formatDate(startTimestamp, endTimestamp) {
-    const now = new Date(Date.now());
-    const start = new Date(startTimestamp);
-    const end = new Date(endTimestamp);
-
-    const startTime = start.toLocaleTimeString('en-US', {timeStyle: 'short'});
-    const endTime = end.toLocaleTimeString('en-US', {timeStyle: 'short'});
-
-    let startDate;
-    let endDate = '';
-    // if event starts and ends on same day, don't list end date separately
-    if (start.getDate() === end.getDate() &&
-    start.getMonth() === end.getMonth() &&
-    start.getFullYear() === end.getFullYear()) {
-      // don't show year if event is starting this year
-      if (start.getFullYear() === now.getFullYear()) {
-        startDate = start.toLocaleDateString('en-US',
-            {weekday: 'long', month: 'long', day: 'numeric'});
-      } else {
-        startDate = start.toLocaleDateString('en-US',
-            {weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'});
-      }
-    } else {
-      // shortened weekday and month if start and end dates are different
-      if (start.getFullYear() === now.getFullYear()) {
-        startDate = start.toLocaleDateString('en-US',
-            {weekday: 'short', month: 'short', day: 'numeric'});
-      } else {
-        startDate = start.toLocaleDateString('en-US',
-            {weekday: 'short', month: 'short', day: 'numeric',
-              year: 'numeric'});
-      }
-      // don't show year if event is ending this year
-      if (end.getFullYear() === now.getFullYear()) {
-        endDate = end.toLocaleDateString('en-US',
-            {weekday: 'short', month: 'short', day: 'numeric'});
-      } else {
-        endDate = end.toLocaleDateString('en-US',
-            {weekday: 'short', month: 'short', day: 'numeric',
-              year: 'numeric'});
-      }
-    }
-
-    return startDate + ' ' + startTime + ' - ' + endDate + ' ' + endTime;
-  }
-
   return (
     <div>
       <Grid container spacing={6} className={classes.grid}>
@@ -426,7 +375,7 @@ const IndividualEvent = (props) => {
           <Box className={classes.iconText}>
             <AccessTimeIcon className={classes.date}/>
             <Typography className={classes.date} variant='h6'>
-              {formatDate(eventData.starttime, eventData.endtime)}
+              {Util.formatDate(eventData.starttime, eventData.endtime)}
             </Typography>
           </Box>
           <Box className={classes.iconText}>
