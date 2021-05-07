@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {useHistory, useLocation} from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+// import {useHistory, useLocation} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {Grid} from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,79 +12,50 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import InstagramIcon from '@material-ui/icons/Instagram';
+const Auth = require('./libs/Auth');
 
 const useStyles = makeStyles((theme) => ({
+  grid: {
+    marginTop: 50,
+  },
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
   },
-  title: {
-    marginTop: 10,
-    display: 'inline-block',
-    position: 'relative',
-    top: 5,
-  },
   signupButton: {
     margin: 15,
   },
-  backButton: {
-    width: 35,
-    height: 35,
+  avatar: {
+    width: theme.spacing(30),
+    height: theme.spacing(30),
+  },
+  date: {
+    color: theme.palette.secondary.dark,
+  },
+  description: {
+    marginTop: theme.spacing(6),
+  },
+  capacity: {
+    marginTop: theme.spacing(6),
+    margin: '0 auto',
+  },
+  signup: {
+    margin: '0 auto',
+  },
+  share: {
+    marginTop: theme.spacing(6),
+    position: 'relative',
+    left: '50%',
+  },
+  shareIcon: {
+    color: theme.palette.secondary.main,
+    width: 50,
+    height: 50,
   },
 }));
-
-const Auth = require('./libs/Auth');
-
-/**
- * TabPanel
- * @param {object} props Props
- * @return {object} JSX
- */
-function TabPanel(props) {
-  const {children, value, index, ...other} = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-/**
- * a11yProps
- * @param {*} index
- * @return {object}
- */
-function a11yProps(index) {
-  return {
-    'id': 'simple-tab-${index}',
-    'aria-controls': 'simple-tabpanel-${index}',
-  };
-}
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//     backgroundColor: theme.palette.background.paper,
-//   },
-// }));
 
 /**
  * IndividualEvent component
@@ -93,9 +63,9 @@ function a11yProps(index) {
  * @return {object} JSX
  */
 const IndividualEvent = (props) => {
-  const history = useHistory();
   const classes = useStyles();
-  const location = useLocation();
+  // const history = useHistory();
+  // const location = useLocation();
   const eventid = props.eventID;
 
   const [eventData, setEventData] = useState({});
@@ -105,16 +75,11 @@ const IndividualEvent = (props) => {
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
 
-  const [value, setValue] = React.useState(0);
-
-  /**
-   * handleChange
-   * @param {*} event
-   * @param {*} newValue
-   */
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  useEffect(() => {
+    getEventData();
+    getTotalAttendees();
+    getRegistration();
+  }, []);
 
   /**
    * signUp
@@ -281,105 +246,134 @@ const IndividualEvent = (props) => {
     });
   };
 
-  useEffect(() => {
-    getEventData();
-    getTotalAttendees();
-    getRegistration();
-  }, []);
+  /**
+   * formatDate
+   * @param {string} startTimestamp start date
+   * @param {string} endTimestamp end date
+   * @return {string} formatted date string
+   */
+  function formatDate(startTimestamp, endTimestamp) {
+    const now = new Date(Date.now());
+    const start = new Date(startTimestamp);
+    const end = new Date(endTimestamp);
 
-  const body = {
-    textAlign: 'center',
-  };
+    const startTime = (start.getHours() % 12) + ':' +
+        ((start.getMinutes()<10?'0':'') + start.getMinutes()) +
+        (start.getHours() / 12 >= 1 ? 'PM' : 'AM');
+    const endTime = (end.getHours() % 12) + ':' +
+        ((end.getMinutes()<10?'0':'') + end.getMinutes()) +
+        (end.getHours() / 12 >= 1 ? 'PM' : 'AM');
+
+    let startDate;
+    let endDate = '';
+    // if event starts and ends on same day, don't list end date separately
+    if (start.getDate() === end.getDate() &&
+    start.getMonth() === end.getMonth() &&
+    start.getFullYear() === end.getFullYear()) {
+      // don't show year if event is starting this year
+      if (start.getFullYear() === now.getFullYear()) {
+        startDate = start.toLocaleDateString('en-US',
+            {weekday: 'long', month: 'long', day: 'numeric'});
+      } else {
+        startDate = start.toLocaleDateString('en-US',
+            {weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'});
+      }
+    } else {
+      // shortened weekday and month if start and end dates are different
+      if (start.getFullYear() === now.getFullYear()) {
+        startDate = start.toLocaleDateString('en-US',
+            {weekday: 'short', month: 'short', day: 'numeric'});
+      } else {
+        startDate = start.toLocaleDateString('en-US',
+            {weekday: 'short', month: 'short', day: 'numeric',
+              year: 'numeric'});
+      }
+      // don't show year if event is ending this year
+      if (end.getFullYear() === now.getFullYear()) {
+        endDate = end.toLocaleDateString('en-US',
+            {weekday: 'short', month: 'short', day: 'numeric'});
+      } else {
+        endDate = end.toLocaleDateString('en-US',
+            {weekday: 'short', month: 'short', day: 'numeric',
+              year: 'numeric'});
+      }
+    }
+
+    return startDate + ' ' + startTime + ' - ' + endDate + ' ' + endTime;
+  }
 
   return (
     <div>
-      <Box mt={3}>
-        {/* don't show back button if viewing event from profile */}
-        {location.pathname !== '/profile' ?
-          <IconButton
-            onClick={() => history.goBack()}>
-            <ArrowBackIcon
-              className={classes.backButton}
-            />
-          </IconButton> : ''
-        }
-        <h1 className={classes.title}>{eventData.eventname}</h1>
-      </Box>
-      <AppBar position="static" style={body}>
-        <Tabs value={value}
-          centered
-          onChange={handleChange}
-          aria-label="simple tabs example">
-          <Tab label="Event Info" {...a11yProps(0)} />
-          <Tab label="Business Info" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0} style={body}>
-
-        <Box mb={-2}>
-          <h3>Description</h3>
-        </Box>
-        <Box mt={-2}>
-          <p>{eventData.description ? eventData.description : 'N/A'}</p>
-        </Box>
-
-        <Box mb={-2}>
-          <h3>Start Time</h3>
-        </Box>
-        <Box mt={-2}>
-          <p>
-            {new Date(eventData.starttime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at {new Date(eventData.starttime)
-                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
-          </p>
-        </Box>
-
-        <Box mb={-2}>
-          <h3>End Time</h3>
-        </Box>
-        <Box mt={-2}>
-          <p>
-            {new Date(eventData.endtime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at {new Date(eventData.endtime)
-                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
-          </p>
-        </Box>
-
-        <Typography
-          variant='h6' align='center'
-          color={numAttendees === eventData.capacity ? 'error' : 'textPrimary'}>
-          {eventData.capacity - numAttendees} of {eventData.capacity} spots open
-        </Typography>
-        {signupType !== undefined &&
-          (<Button className={classes.signupButton}
-            variant="contained" color="secondary"
-            disabled={signupType && numAttendees == eventData.capacity}
-            onClick={() => {
-              signupType === true ? signUp() : setConfirmDialog(true);
-            }}>
-            {signupType === true ? 'Sign Up' : 'Withdraw'}
-          </Button>)
-        }
-
-      </TabPanel>
-      <TabPanel value={value} index={1} style={body}>
-        <h1>{businessData.businessname}</h1>
-        <Box mb={-2}>
-          <h3>Contact Information</h3>
-        </Box>
-        <Box mt={-2} mb={-2}>
+      <Grid container spacing={3} className={classes.grid}>
+        <Grid item xs={3}>
+          <Avatar
+            alt={businessData.businessname}
+            className={classes.avatar}
+          />
+          <h1>{businessData.businessname}</h1>
           <p>
             Email: {businessData.email}
           </p>
-        </Box>
-        <Box mt={-2}>
           <p>
             Phone Number: {businessData.phonenumber}
           </p>
-        </Box>
-      </TabPanel>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography className={classes.title} variant='h2'>
+            {eventData.eventname}
+          </Typography>
+          <Typography className={classes.date} variant='h6'>
+            {formatDate(eventData.starttime, eventData.endtime)}
+          </Typography>
+          <Typography className={classes.location} variant='h6'>
+            Science &amp; Engineering Library
+          </Typography>
+
+          <Typography className={classes.description} variant='body1'>
+            {eventData.description ?
+                  eventData.description :
+                  'No description available for this event.'}
+          </Typography>
+
+          <Typography
+            className={classes.capacity}
+            variant='h6'
+            color={numAttendees === eventData.capacity ?
+              'error' : 'textPrimary'}>
+            {eventData.capacity-numAttendees}
+            &nbsp;of {eventData.capacity} spots open
+          </Typography>
+
+          {signupType !== undefined &&
+            (<Button className={classes.signupButton}
+              variant="contained" color="secondary"
+              disabled={signupType && numAttendees == eventData.capacity}
+              onClick={() => {
+                signupType === true ? signUp() : setConfirmDialog(true);
+              }}>
+              {signupType === true ? 'Sign Up' : 'Withdraw'}
+            </Button>)
+          }
+
+          <Box className={classes.share}>
+            <IconButton>
+              <FacebookIcon className={classes.shareIcon}/>
+            </IconButton>
+            <IconButton>
+              <TwitterIcon className={classes.shareIcon}/>
+            </IconButton>
+            <IconButton>
+              <InstagramIcon className={classes.shareIcon}/>
+            </IconButton>
+          </Box>
+        </Grid>
+
+        <Grid item xs={3}>
+
+        </Grid>
+      </Grid>
+
 
       {/* Confirmation dialog for withdrawing from events */}
       <Dialog open={confirmDialog} onClose={() => {
