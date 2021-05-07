@@ -15,45 +15,72 @@ import IconButton from '@material-ui/core/IconButton';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Context from './Context';
 const Auth = require('./libs/Auth');
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
   grid: {
-    marginTop: 50,
+    marginTop: 20,
   },
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
   },
-  signupButton: {
-    margin: 15,
-  },
   avatar: {
-    width: theme.spacing(30),
-    height: theme.spacing(30),
+    margin: '0 auto',
+    width: theme.spacing(16),
+    height: theme.spacing(16),
+    [theme.breakpoints.up('md')]: {
+      width: theme.spacing(25),
+      height: theme.spacing(25),
+    },
+  },
+  businessName: {
+    marginTop: theme.spacing(3),
+  },
+  iconText: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
   date: {
     color: theme.palette.secondary.dark,
   },
   description: {
-    marginTop: theme.spacing(6),
+    marginTop: theme.spacing(3),
   },
   capacity: {
-    marginTop: theme.spacing(6),
-    margin: '0 auto',
+    marginTop: theme.spacing(3),
   },
-  signup: {
-    margin: '0 auto',
+  signupButton: {
+    marginTop: 15,
   },
   share: {
-    marginTop: theme.spacing(6),
-    position: 'relative',
-    left: '50%',
+    marginTop: theme.spacing(3),
   },
   shareIcon: {
     color: theme.palette.secondary.main,
     width: 50,
     height: 50,
+  },
+  card: {
+    [theme.breakpoints.up('lg')]: {
+      width: 300,
+    },
+    [theme.breakpoints.down('md')]: {
+      width: 175,
+    },
+    margin: '0 auto',
+    marginTop: theme.spacing(3),
   },
 }));
 
@@ -64,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
  */
 const IndividualEvent = (props) => {
   const classes = useStyles();
+  const context = React.useContext(Context);
   // const history = useHistory();
   // const location = useLocation();
   const eventid = props.eventID;
@@ -74,12 +102,85 @@ const IndividualEvent = (props) => {
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
+  const [eventList, setEventList] = React.useState([]);
 
   useEffect(() => {
+    getEvents();
     getEventData();
     getTotalAttendees();
     getRegistration();
   }, []);
+
+  /**
+   * getEvents
+   * API call to get events
+   */
+  function getEvents() {
+    const apicall = 'http://localhost:3010/api/events';
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setEventList(json.slice(0, 3));
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
+  /**
+   * getCard
+   * This function gets the individual event data
+   * for each card and displays it. When the card
+   * is clicked, it goes to URL /event/{eventid}.
+   * @param {*} row
+   * @return {object} JSX
+   */
+  function getCard(row) {
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography variant='h5' component='h2' align='center'>
+            {row.eventname}
+          </Typography>
+          {/* <Typography className={classes.pos}
+            variant='body2' align='center' noWrap>
+            Description: {row.description ? row.description : 'N/A'}
+          </Typography> */}
+          <Typography className={classes.pos}
+            color='textSecondary' variant='body2' align='center'>
+            {formatDate(row.starttime, row.endtime)}
+          </Typography>
+          <Typography className={classes.pos}
+            variant='subtitle1' align='center'
+            color={row.attendees === row.capacity ?
+                'primary' : 'textPrimary'}>
+            {row.capacity - row.attendees} of {row.capacity} spots open
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size='small'
+            variant='contained'
+            color='secondary'
+            href={context.businessState === false ?
+              '/event/' + row.eventid : '/profile/'}
+            style={{margin: 'auto'}}>
+            {context.businessState === false ?
+              'View Event' : 'View Event in Profile'}
+          </Button>
+        </CardActions>
+      </Card>
+    );
+  };
 
   /**
    * signUp
@@ -257,12 +358,8 @@ const IndividualEvent = (props) => {
     const start = new Date(startTimestamp);
     const end = new Date(endTimestamp);
 
-    const startTime = (start.getHours() % 12) + ':' +
-        ((start.getMinutes()<10?'0':'') + start.getMinutes()) +
-        (start.getHours() / 12 >= 1 ? 'PM' : 'AM');
-    const endTime = (end.getHours() % 12) + ':' +
-        ((end.getMinutes()<10?'0':'') + end.getMinutes()) +
-        (end.getHours() / 12 >= 1 ? 'PM' : 'AM');
+    const startTime = start.toLocaleTimeString('en-US', {timeStyle: 'short'});
+    const endTime = end.toLocaleTimeString('en-US', {timeStyle: 'short'});
 
     let startDate;
     let endDate = '';
@@ -304,31 +401,40 @@ const IndividualEvent = (props) => {
 
   return (
     <div>
-      <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={3}>
+      <Grid container spacing={6} className={classes.grid}>
+        <Grid item xs={3} className={classes.businessInfo}>
           <Avatar
             alt={businessData.businessname}
             className={classes.avatar}
           />
-          <h1>{businessData.businessname}</h1>
-          <p>
-            Email: {businessData.email}
-          </p>
-          <p>
-            Phone Number: {businessData.phonenumber}
-          </p>
+          <Typography className={classes.businessName}
+            variant='h2' align='center'>
+            {businessData.businessname}
+          </Typography>
+          <Typography variant='body1' align='center'>
+            {businessData.email}
+          </Typography>
+          <Typography variant='body1' align='center'>
+            {businessData.phonenumber}
+          </Typography>
         </Grid>
 
-        <Grid item xs={6}>
-          <Typography className={classes.title} variant='h2'>
+        <Grid item xs={6} className={classes.eventInfo}>
+          <Typography className={classes.title} variant='h1'>
             {eventData.eventname}
           </Typography>
-          <Typography className={classes.date} variant='h6'>
-            {formatDate(eventData.starttime, eventData.endtime)}
-          </Typography>
-          <Typography className={classes.location} variant='h6'>
-            Science &amp; Engineering Library
-          </Typography>
+          <Box className={classes.iconText}>
+            <AccessTimeIcon className={classes.date}/>
+            <Typography className={classes.date} variant='h6'>
+              {formatDate(eventData.starttime, eventData.endtime)}
+            </Typography>
+          </Box>
+          <Box className={classes.iconText}>
+            <LocationOnOutlinedIcon/>
+            <Typography className={classes.location} variant='h6'>
+              Science &amp; Engineering Library
+            </Typography>
+          </Box>
 
           <Typography className={classes.description} variant='body1'>
             {eventData.description ?
@@ -370,7 +476,14 @@ const IndividualEvent = (props) => {
         </Grid>
 
         <Grid item xs={3}>
-
+          <Typography variant='h5' align='center'>
+            Suggested Events
+          </Typography>
+          <Box className={classes.eventCards}>
+            {eventList.map((event) =>
+              getCard(event),
+            )}
+          </Box>
         </Grid>
       </Grid>
 
