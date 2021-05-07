@@ -254,29 +254,26 @@ function App() {
       </Box>
     );
   }
+
+  const menu = authState ? 
+  (
+    <AppBar position="static">
+      <Toolbar>
+        {leftSide}
+        {rightSide}
+      </Toolbar>
+    </AppBar>
+  ) : null;
+
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        {/* I moved Css basline here so that it applies to the whole project */}
-        <CssBaseline />
-        <AppBar
-          position="static"
-        >
-          <Toolbar>
-            {/* classes.leftMenu has flexGrow: 1 so it will try to take up
-            as much space as possible
-            this will push the content outside of the box to the right */}
-            {leftSide}
-            {rightSide}
-          </Toolbar>
-        </AppBar>
-        {/* Used a container so that there would be
-        top margin between nav and content */}
-        <Container className={classes.content}>
-          <Context.Provider value={{
-            authState, setAuthState,
-            businessState, setBusinessState,
-          }}>
+        <Context.Provider value={{
+          authState, setAuthState,
+          businessState, setBusinessState,
+        }}>
+          <CssBaseline />
+          {menu}
             <Switch>
               <Route path="/login">
                 <Login/>
@@ -314,8 +311,7 @@ function App() {
                 <Home />
               </Route>
             </Switch>
-          </Context.Provider>
-        </Container>
+        </Context.Provider>
       </ThemeProvider>
     </Router>
   );
