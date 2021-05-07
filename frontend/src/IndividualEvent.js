@@ -15,6 +15,8 @@ import IconButton from '@material-ui/core/IconButton';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
   },
   grid: {
-    marginTop: 50,
+    marginTop: 20,
   },
   dialogText: {
     marginLeft: 15,
@@ -45,20 +47,25 @@ const useStyles = makeStyles((theme) => ({
   businessName: {
     marginTop: theme.spacing(3),
   },
+  iconText: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
   date: {
     color: theme.palette.secondary.dark,
   },
   description: {
-    marginTop: theme.spacing(6),
+    marginTop: theme.spacing(3),
   },
   capacity: {
-    marginTop: theme.spacing(6),
+    marginTop: theme.spacing(3),
   },
   signupButton: {
     marginTop: 15,
   },
   share: {
-    marginTop: theme.spacing(6),
+    marginTop: theme.spacing(3),
   },
   shareIcon: {
     color: theme.palette.secondary.main,
@@ -67,10 +74,10 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     [theme.breakpoints.up('lg')]: {
-      width: 250,
+      width: 300,
     },
     [theme.breakpoints.down('md')]: {
-      width: 200,
+      width: 175,
     },
     margin: '0 auto',
     marginTop: theme.spacing(3),
@@ -351,12 +358,8 @@ const IndividualEvent = (props) => {
     const start = new Date(startTimestamp);
     const end = new Date(endTimestamp);
 
-    const startTime = (start.getHours() % 12) + ':' +
-        ((start.getMinutes()<10?'0':'') + start.getMinutes()) +
-        (start.getHours() / 12 >= 1 ? 'PM' : 'AM');
-    const endTime = (end.getHours() % 12) + ':' +
-        ((end.getMinutes()<10?'0':'') + end.getMinutes()) +
-        (end.getHours() / 12 >= 1 ? 'PM' : 'AM');
+    const startTime = start.toLocaleTimeString('en-US', {timeStyle: 'short'});
+    const endTime = end.toLocaleTimeString('en-US', {timeStyle: 'short'});
 
     let startDate;
     let endDate = '';
@@ -420,12 +423,18 @@ const IndividualEvent = (props) => {
           <Typography className={classes.title} variant='h1'>
             {eventData.eventname}
           </Typography>
-          <Typography className={classes.date} variant='h6'>
-            {formatDate(eventData.starttime, eventData.endtime)}
-          </Typography>
-          <Typography className={classes.location} variant='h6'>
-            Science &amp; Engineering Library
-          </Typography>
+          <Box className={classes.iconText}>
+            <AccessTimeIcon className={classes.date}/>
+            <Typography className={classes.date} variant='h6'>
+              {formatDate(eventData.starttime, eventData.endtime)}
+            </Typography>
+          </Box>
+          <Box className={classes.iconText}>
+            <LocationOnOutlinedIcon/>
+            <Typography className={classes.location} variant='h6'>
+              Science &amp; Engineering Library
+            </Typography>
+          </Box>
 
           <Typography className={classes.description} variant='body1'>
             {eventData.description ?
