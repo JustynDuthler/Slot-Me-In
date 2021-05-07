@@ -422,7 +422,7 @@ export default function UserProfile() {
                   setShowAll(!showAll);
                 }}
               >
-                {showAll ? 'Show Only For Date' : 'Show All Registered Events'}
+                {showAll ? 'Calendar View' : 'Show All Registered Events'}
               </Button>
             </div>
           </Grid>,

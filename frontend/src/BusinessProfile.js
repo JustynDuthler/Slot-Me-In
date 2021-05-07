@@ -22,12 +22,11 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import {useHistory} from 'react-router-dom';
+import Paper from '@material-ui/core/Paper';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 /**
  * BusinessProfile component
@@ -59,7 +58,7 @@ export default function BusinessProfile() {
    * @return {Number}
    */
   function deleteEvent(eventid, all) {
-    return 1;
+    return 1; // what is this?
     console.log(eventid);
     const apicall = 'http://localhost:3010/api/events/'+eventid;
     return fetch(apicall, {
@@ -322,6 +321,12 @@ export default function BusinessProfile() {
       marginLeft: 15,
       marginRight: 15,
     },
+    buttonGroup: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      margin: theme.spacing(8),
+    },
   }));
 
   /**
@@ -337,6 +342,30 @@ export default function BusinessProfile() {
     ((dateString.getMinutes()<10?'0':'') + dateString.getMinutes()) +
     (dateString.getHours() / 12 >= 1 ? 'PM' : 'AM') +
         ' ' + (includeDate ? dateString.toDateString():'');
+  }
+
+  /**
+   * removeMember
+   * @param {string} email
+   */
+  async function removeMember(email) {
+    console.log(email);
+    return fetch('http://localhost:3010/api/members/deleteMember', {
+      method: 'Delete',
+      body: JSON.stringify({'email': email}),
+      headers: Auth.headerJsonJWT(),
+    }).then((response)=>{
+      if (!response.ok) {
+        throw response;
+      }
+      return response;
+    }).then((json)=>{
+      return 1;
+    })
+        .catch((error) => {
+          console.log(error);
+          return -1;
+        });
   }
 
   const classes = useStyles();
@@ -414,14 +443,14 @@ export default function BusinessProfile() {
           }}>
           <ListItemText key={member.userid}
             primary={member.username}
-            secondary={member.useremail.toLowerCase()}/>
+            secondary={member.email.toLowerCase()}/>
           <ListItemSecondaryAction>
             <Button
               type='submit'
               variant='contained'
-              color='primary'
+              color='secondary'
               onClick={() => {
-                removeMember(member.userid);
+                removeMember(member.email);
               }}
             >
               Remove
@@ -454,20 +483,20 @@ export default function BusinessProfile() {
                   <Button key={eventid}
                     type='submit'
                     variant='contained'
-                    color='primary'
+                    color='secondary'
                     onClick={() => {
                       setCancelEventID(eventid);
                       setDeleteAll(false);
                       setConfirmDialog(true);
                     }}
                   >
-                    {'Cancel event'}
+                    {'Cancel Event'}
                   </Button><br/>
                   {eventList[key].repeatid &&
                       <Button key={eventList[key].repeatid}
                         type='submit'
                         variant='contained'
-                        color='secondary'
+                        color='primary'
                         onClick={() => {
                           setCancelEventID(eventid);
                           setDeleteAll(true);
@@ -498,7 +527,7 @@ export default function BusinessProfile() {
               <Button
                 type='submit'
                 variant='contained'
-                color='primary'
+                color='secondary'
                 onClick={() => {
                   setShowAll(true);
                 }}
@@ -517,7 +546,7 @@ export default function BusinessProfile() {
             <Button
               type='submit'
               variant='contained'
-              color='primary'
+              color='secondary'
               onClick={() => {
                 setEventState(null);
               }}
@@ -553,7 +582,7 @@ export default function BusinessProfile() {
               <Button key='showAll'
                 type='submit'
                 variant='contained'
-                color='primary'
+                color='secondary'
                 onClick={() => {
                   setShowAll(true);
                 }}
@@ -573,7 +602,7 @@ export default function BusinessProfile() {
                 <Button key='showAll'
                   type='submit'
                   variant='contained'
-                  color='primary'
+                  color='secondary'
                   onClick={() => {
                     setShowAll(!showAll);
                   }}
@@ -588,92 +617,92 @@ export default function BusinessProfile() {
         container justify='flex-end' spacing={8}>{items}
       </Grid>);
     }
-    /**
-     * tabProps
-     * @param {*} index
-     * @return {object}
-     */
-    function tabProps(index) {
-      return {
-        'id': 'simple-tab-${index}',
-        'aria-controls': 'simple-tabpanel-${index}',
-      };
-    }
-    const body = {
-      textAlign: 'center',
-    };
+
     return (
       <Container component='main' maxWidth='md'>
         <div className={classes.paper}>
-          <AppBar position="static">
-            <Tabs value={tab}
-              centered
-              onChange={(event, newTab)=>{
-                setTab(newTab);
-              }}
-              aria-label="business tabs">
-              <Tab label="Created Events" {...tabProps(0)} />
-              <Tab label="Members" {...tabProps(1)} />
-            </Tabs>
-          </AppBar>
-          <TabPanel value={tab} index={0}>
-            <Grid container justify='center' direction='row' spacing={8}>
-              {eventState === null &&showAll === false&&
-              <Grid item xs={6} container justify='center'>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <DatePicker
-                    variant='static'
-                    label='Event select'
-                    value={selectedDate}
-                    onChange={(date) => {
-                      setSelectedDate(date);
-                    }}
-                    renderDay={renderWrappedDays}
-                  />
-                </MuiPickersUtilsProvider>
-              </Grid>}
-              <Grid item container xs={6} md={showAll ? 12 : 6}>
-                {items2}
-              </Grid>
-            </Grid>
+          <div className={classes.buttonGroup}>
+            <ButtonGroup color="primary" aria-label="primary button group">
+              <Button
+                variant={tab === 0 ? 'contained': ''}
+                color={tab === 0 ? 'primary' : 'primary'}
+                onClick={()=>{
+                  setTab(0);
+                }}>Events
+              </Button>
+              <Button
+                variant={tab === 1 ? 'contained': ''}
+                color={tab === 1 ? 'primary' : 'primary'}
+                onClick={()=>{
+                  setTab(1);
+                }}>Members
+              </Button>
+            </ButtonGroup>
+          </div>
+          {tab === 0 && <div>
+            <Paper margin='2px'>
+              <Container component='main' maxWidth='md'>
+                <Grid container justify='center' direction='row' spacing={8}>
+                  {eventState === null &&showAll === false&&
+                  <Grid item xs={6} container justify='center'>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <DatePicker
+                        variant='static'
+                        label='Event select'
+                        value={selectedDate}
+                        onChange={(date) => {
+                          setSelectedDate(date);
+                        }}
+                        renderDay={renderWrappedDays}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </Grid>}
+                  <Grid item container xs={6} md={showAll ? 12 : 6}>
+                    {items2}
+                  </Grid>
+                </Grid>
 
-            {/* Confirmation dialog for cancelling events */}
-            <Dialog open={confirmDialog} onClose={() => {
-              setConfirmDialog(false);
-            }}
-            aria-labelledby="confirm-dialog-title">
-              <DialogTitle id="confirm-dialog-title">
-                {deleteAll ? 'Cancel Repeating Event' : 'Cancel Event'}
-              </DialogTitle>
-              <DialogContentText className={classes.dialogText}>
-                {/* Change message for deleting all vs. cancelling one event */}
-                {deleteAll ?
-                    'Are you sure you want to delete all instances of' +
-                    ' this repeating event?' :
-                    'Are you sure you want to cancel this event?'}
-              </DialogContentText>
-              <DialogActions>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    // Call deleteEventAndReload,close dialog if user clicks Yes
-                    deleteEventAndReload(cancelEventID, deleteAll);
-                    setConfirmDialog(false);
-                  }}>
-                  Yes
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    // Close dialog and don't delete event if user clicks No
-                    setConfirmDialog(false);
-                  }}>
-                  No
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </TabPanel>
-          <TabPanel value={tab} index={1} style={body}>
+                {/* Confirmation dialog for cancelling events */}
+                <Dialog open={confirmDialog} onClose={() => {
+                  setConfirmDialog(false);
+                }}
+                aria-labelledby="confirm-dialog-title">
+                  <DialogTitle id="confirm-dialog-title">
+                    {deleteAll ? 'Cancel Repeating Event' : 'Cancel Event'}
+                  </DialogTitle>
+                  <DialogContentText className={classes.dialogText}>
+                    {/* Change message for deleting all vs. cancelling one
+                      event */}
+                    {deleteAll ?
+                        'Are you sure you want to delete all instances of' +
+                        ' this repeating event?' :
+                        'Are you sure you want to cancel this event?'}
+                  </DialogContentText>
+                  <DialogActions>
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        /* Call deleteEventAndReload,close dialog if user
+                        clicks Yes */
+                        deleteEventAndReload(cancelEventID, deleteAll);
+                        setConfirmDialog(false);
+                      }}>
+                      Yes
+                    </Button>
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        // Close dialog and don't delete event if user clicks No
+                        setConfirmDialog(false);
+                      }}>
+                      No
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Container>
+            </Paper>
+          </div>}
+          {tab === 1 && <div>
             <Grid container spacing={8}>
               <Grid item>
                 <Typography variant='h6'>
@@ -707,7 +736,7 @@ export default function BusinessProfile() {
                   type='submit'
                   fullWidth
                   variant='contained'
-                  color='primary'
+                  color='secondary'
                   className={classes.submit}
                   onClick={validateInput}
                 >
@@ -715,7 +744,7 @@ export default function BusinessProfile() {
                 </Button>
               </Grid>
             </Grid>
-          </TabPanel>
+          </div>}
         </div>
       </Container>
     );

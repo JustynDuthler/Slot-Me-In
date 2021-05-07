@@ -1,215 +1,348 @@
   
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import {Grid} from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import Pagination from '@material-ui/lab/Pagination';
-import {useHistory} from 'react-router-dom';
-
+import PropTypes from 'prop-types';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import Context from './Context';
+import Login from './Login';
+import Register from './Register';
+import Home from './Home';
+import AuthTest from './AuthTest';
+import CreateEvent from './CreateEvent';
+import IndividualEvent from './IndividualEvent';
+import ViewEvents from './ViewEvents';
+import UserProfile from './UserProfile';
+import BusinessProfile from './BusinessProfile';
 const Auth = require('./libs/Auth');
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  box: {
-    marginTop: -15,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginTop: 8,
-  },
-  gridContainer: {
-    paddingLeft: '10px',
-    paddingRight: '10px',
-  },
-  pageBox: {
-    position: 'fixed',
-    left: '50vw',
-    bottom: 15,
-    transform: 'translate(-50%, -50%)',
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import {
+  ButtonGroup, Button, Toolbar, AppBar, makeStyles,
+} from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+import AccountCircleOutlinedIcon
+  from '@material-ui/icons/AccountCircleOutlined';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import HomeIcon from '@material-ui/icons/Home';
+import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
+import EventIcon from '@material-ui/icons/Event';
+import AddIcon from '@material-ui/icons/Add';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#283044',
+      light: '#51596f',
+      dark: '#00071d',
+    },
+    secondary: {
+      main: '#edc97c',
+      light: '#fffcac',
+      dark: '#b9984e',
+    },
   },
 });
 
-/**
- * ViewEvents component
- * @return {object} ViewEvents JSX
- */
-export default function ViewEvents() {
-  const history = useHistory();
-  const classes = useStyles();
-  const [eventList, setEventList] = React.useState([]);
-  const [pageEvents, setPageEvents] = React.useState([]);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [postsPerPage] = React.useState(9);
-  const context = React.useContext(Context);
+const useStyles = makeStyles((theme) => ({
+  content: {
+    marginTop: theme.spacing(2),
+  },
+  leftMenu: {
+    flexGrow: 1,
+  },
+}));
 
+/**
+ *
+ * @return {object} JSX
+ */
+function App() {
+  const classes = useStyles();
+  const [authState, setAuthState] = React.useState(false);
+  const [businessState, setBusinessState] = React.useState(undefined);
   /**
-   * getEvents
-   * API call to get data for an event
-   * @param {int} pageNumber
+   * validateBusiness()
+   * Determines whether logged in user is a business or user
    */
-  function getEvents(pageNumber) {
-    const apicall = 'http://localhost:3010/api/events';
-    fetch(apicall, {
+  function validateBusiness() {
+    fetch('http://localhost:3010/api/test/get_token_type', {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
     }).then((response) => {
+      if (response.status === 200) {
+        return response.json();
+      }
       if (!response.ok) {
-        if (response.status === 401) {
-          Auth.removeJWT();
-          context.setAuthState(false);
-          throw response;
-        }
+        /* If the response isnt ok then the token is invalid */
+        setBusinessState(false);
+        setAuthState(false);
+        Auth.removeJWT();
+        throw response;
       }
-      return response.json();
+      return response;
     }).then((json) => {
-      setEventList(json);
-
-      // events if it's on first page
-      if (pageNumber === 1) {
-        setPageEvents(json.slice(0, postsPerPage));
+      if (json.auth === 'business') {
+        setBusinessState(true);
       } else {
-        // events for other pages
-        setPageEvents(json.slice(((pageNumber-1)*9),
-            pageNumber*9));
+        setBusinessState(false);
       }
+      console.log('user type:', json);
     })
         .catch((error) => {
           console.log(error);
         });
   };
 
+  /**
+   * logout()
+   * Removes JWT and sets authState to null upon logout
+   */
+  const logout = () => {
+    Auth.removeJWT();
+    setAuthState(false);
+  };
+
   React.useEffect(() => {
-    // if the url is just /events, get page 1 events
-    if (window.location.href === 'http://localhost:3000/events') {
-      getEvents(1);
+    if (Auth.getJWT() === null) {
+      setBusinessState(false);
+      setAuthState(false);
     } else {
-      // parse url to get the page number and pass it to getEvents
-      const parsedURL = (window.location.href).split('=');
-      setCurrentPage(parseInt(parsedURL[1]));
-      getEvents(parsedURL[1]);
+      setAuthState(true);
+      validateBusiness();
     }
   }, []);
-
-  /**
-   * getCard
-   * This function gets the individual event data
-   * for each card and displays it. When the card
-   * is clicked, it goes to URL /event/{eventid}.
-   * @param {*} row
-   * @return {object} JSX
-   */
-  function getCard(row) {
-    return (
-      <Grid item xs={12} sm={6} md={4} key={row.eventid}>
-        <Card>
-          <CardContent>
-            <Typography variant='h5' component='h2' align='center'>
-              {row.eventname}
-            </Typography>
-            <Typography className={classes.pos}
-              variant='body2' align='center' noWrap>
-              Description: {row.description ? row.description : 'N/A'}
-            </Typography>
-            <Typography className={classes.pos}
-              color='textSecondary' variant='body2' align='center'>
-              Start: {new Date(row.starttime).toLocaleString('en-US',
-                  {weekday: 'short', month: 'short', day: 'numeric',
-                    year: 'numeric'})} at {new Date(row.starttime)
-                  .toLocaleString(
-                      'en-US', {hour: 'numeric', minute: 'numeric'})}
-            </Typography>
-            <Typography className={classes.pos}
-              color='textSecondary' variant='body2' align='center'>
-              End: {new Date(row.endtime).toLocaleString('en-US',
-                  {weekday: 'short', month: 'short', day: 'numeric',
-                    year: 'numeric'})} at {new Date(row.endtime)
-                  .toLocaleString(
-                      'en-US', {hour: 'numeric', minute: 'numeric'})}
-            </Typography>
-            <Typography className={classes.pos}
-              variant='subtitle1' align='center'
-              color={row.attendees === row.capacity ?
-                  'primary' : 'textPrimary'}>
-              {row.capacity - row.attendees} of {row.capacity} spots open
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Button size='small'
-              variant='contained'
-              color='secondary'
-              href={context.businessState === false ?
-                '/event/' + row.eventid : '/profile/'}
-              style={{margin: 'auto'}}>
-              {context.businessState === false ?
-                'View Event' : 'View Event in Profile'}
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
-    );
-  };
-
-  /**
-   * handleChange
-   * This function gets the events for a new page
-   * @param {event} event
-   * @param {int} value
-   */
-  const handleChange = (event, value) => {
-    setCurrentPage(value);
-    if (value === 1) {
-      // if on first page, change url to /events
-      history.push('/events');
-    } else {
-      // if on other page, change url depending on number
-      history.push('/events?page='+value);
-    }
-
-    // get events for the current page
-    const currentPosts = eventList.slice(((value-1)*9),
-        value*9);
-    setPageEvents(currentPosts);
-  };
-
-  return (
-    <React.Fragment>
-      <h1 style={{marginLeft: 12}}>Events</h1>
-      <Box mt={5} mb={5} className={classes.box}>
-        <Grid
-          container
-          spacing={2}
-          className={classes.gridContainer}
-          justify='center'
+  if (businessState == undefined) {
+    return <div></div>;
+  }
+  // RightSide navigation changes depending on if the user is
+  // logged in or not
+  let rightSide;
+  if (authState) {
+    rightSide = (
+      <ButtonGroup>
+        <Button
+          startIcon={<AccountBoxOutlinedIcon />}
+          href="/profile"
+          color="secondary"
+          size="large"
+          variant="contained"
         >
-          {pageEvents.map((row) =>
-            getCard(row),
-          )}
-        </Grid>
-        <Box mt={5} display="flex" justifyContent="center" alignItems="center"
-          className={classes.pageBox}>
-          <Pagination
-            page={currentPage}
-            count={Math.ceil(eventList.length / postsPerPage)}
-            variant="outlined"
+          Profile
+        </Button>
+        <Button
+          startIcon={<ExitToAppIcon/>}
+          color="secondary"
+          size="large"
+          variant="contained"
+          onClick={logout}
+        >
+          Logout
+        </Button>
+      </ButtonGroup>
+    );
+  } else {
+    rightSide = (
+      <ButtonGroup
+        anchororigin={{
+          vertical: 'top',
+          horizonal: 'right',
+        }}
+      >
+        <Button
+          startIcon={<AccountCircleOutlinedIcon />}
+          href="/register"
+          color="secondary"
+          size="large"
+          variant="contained"
+        >
+          Register Account
+        </Button>
+
+        <Button
+          startIcon={<LockOutlinedIcon />}
+          href="/Login"
+          color="secondary"
+          size="large"
+          variant="contained"
+        >
+          Login
+        </Button>
+      </ButtonGroup>
+    );
+  }
+
+  let leftSide;
+  if (businessState == true) {
+    leftSide = (
+      <Box className={classes.leftMenu}>
+        <ButtonGroup>
+          <Button
+            startIcon={<HomeIcon/>}
+            href="/home"
             color="secondary"
-            onChange={handleChange} />
-        </Box>
+            size="large"
+            variant="contained"
+          >
+            Home
+          </Button>
+          <Button
+            startIcon={<AddIcon/>}
+            href="/events/create"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Create Event
+          </Button>
+          <Button
+            startIcon={<EventIcon/>}
+            href="/events"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Events
+          </Button>
+          <Button
+            href="/authtest"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            AuthTest
+          </Button>
+        </ButtonGroup>
       </Box>
-    </React.Fragment>
+    );
+  } else {
+    leftSide = (
+      <Box className={classes.leftMenu}>
+        <ButtonGroup>
+          <Button
+            startIcon={<HomeIcon/>}
+            href="/home"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Home
+          </Button>
+          <Button
+            startIcon={<EventIcon/>}
+            href="/events"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Events
+          </Button>
+          <Button
+            href="/authtest"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            AuthTest
+          </Button>
+        </ButtonGroup>
+      </Box>
+    );
+  }
+  return (
+    <Router>
+      <ThemeProvider theme={theme}>
+        {/* I moved Css basline here so that it applies to the whole project */}
+        <CssBaseline />
+        <AppBar
+          position="static"
+        >
+          <Toolbar>
+            {/* classes.leftMenu has flexGrow: 1 so it will try to take up
+            as much space as possible
+            this will push the content outside of the box to the right */}
+            {leftSide}
+            {rightSide}
+          </Toolbar>
+        </AppBar>
+        {/* Used a container so that there would be
+        top margin between nav and content */}
+        <Container className={classes.content}>
+          <Context.Provider value={{
+            authState, setAuthState,
+            businessState, setBusinessState,
+          }}>
+            <Switch>
+              <Route path="/login">
+                <Login/>
+              </Route>
+              <Route path="/register">
+                <Register/>
+              </Route>
+              <Route path="/authtest">
+                <AuthTest />
+              </Route>
+              <PrivateRoute
+                path="/events/create"
+                authed={authState}
+                component={CreateEvent}
+              />
+              <PrivateRoute
+                path="/events"
+                authed={authState}
+                component={ViewEvents}
+              />
+              <Route path="/profile">
+                {(authState) ? ((businessState === false) ?
+                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+              </Route>
+              <Route exact path="/events">
+                <ViewEvents/>
+              </Route>
+              <Route
+                exact path="/event/:eventid"
+                render={(props) =>
+                  <IndividualEvent eventID={props.match.params.eventid}
+                    {...props} />}
+              />
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </Context.Provider>
+        </Container>
+      </ThemeProvider>
+    </Router>
   );
 }
+
+// Prop types for PrivateRoute
+PrivateRoute.propTypes = {
+  component: PropTypes.func,
+  authed: PropTypes.bool,
+};
+
+/**
+ * PrivateRoute
+ * @param {*} component Component to protect behind PrivateRoute
+ * @param {*} authed current authState
+ * @return {object} PrivateRoute that redirects to login if authed is null
+ */
+function PrivateRoute({component: Component, authed, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={(props) => authed ?
+        <Component {...props} /> : <Redirect to={{pathname: '/login'}} />}
+    />
+  );
+}
+
+
+export default App;

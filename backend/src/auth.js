@@ -27,7 +27,7 @@ exports.authenticateJWT = (req, res, next) => {
   });
 };
 
-exports.authenticateUserJWT = (req, res, next) => {
+exports.userAuth = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -52,7 +52,7 @@ exports.authenticateUserJWT = (req, res, next) => {
   });
 };
 
-exports.authenticateBusinessJWT = (req, res, next) => {
+exports.businessAuth = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 

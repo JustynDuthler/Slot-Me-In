@@ -143,14 +143,15 @@ export default function ViewEvents() {
             </Typography>
             <Typography className={classes.pos}
               variant='subtitle1' align='center'
-              color={row.attendees === row.capacity ? 'error' : 'textPrimary'}>
+              color={row.attendees === row.capacity ?
+                  'primary' : 'textPrimary'}>
               {row.capacity - row.attendees} of {row.capacity} spots open
             </Typography>
           </CardContent>
           <CardActions>
             <Button size='small'
               variant='contained'
-              className='button'
+              color='secondary'
               href={context.businessState === false ?
                 '/event/' + row.eventid : '/profile/'}
               style={{margin: 'auto'}}>
@@ -205,7 +206,7 @@ export default function ViewEvents() {
             page={currentPage}
             count={Math.ceil(eventList.length / postsPerPage)}
             variant="outlined"
-            color="primary"
+            color="secondary"
             onChange={handleChange} />
         </Box>
       </Box>
