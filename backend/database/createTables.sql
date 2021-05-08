@@ -6,7 +6,7 @@
 DROP TABLE IF EXISTS Users;
 -- Users Tables
 CREATE TABLE Users (
-	userid uuid  UNIQUE DEFAULT uuid_generate_v4(), 
+	userid uuid  UNIQUE DEFAULT uuid_generate_v4(),
 	username TEXT NOT NULL,
 	password TEXT NOT NULL,
   useremail TEXT UNIQUE NOT NULL,
@@ -22,6 +22,7 @@ CREATE TABLE Businesses (
 	phonenumber TEXT NOT NULL,
 	businessemail TEXT UNIQUE NOT NULL,
   businessimagename TEXT DEFAULT '/stockPhoto.png',
+	description VARCHAR(500) DEFAULT '',
 	PRIMARY KEY (businessid)
 );
 

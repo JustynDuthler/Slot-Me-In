@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {useHistory, useLocation} from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+// import {useHistory, useLocation} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {Grid} from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,79 +12,78 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import InstagramIcon from '@material-ui/icons/Instagram';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Context from './Context';
+const Auth = require('./libs/Auth');
+const Util = require('./libs/Util');
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  grid: {
+    marginTop: 20,
+  },
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
   },
-  title: {
-    marginTop: 10,
-    display: 'inline-block',
-    position: 'relative',
-    top: 5,
+  avatar: {
+    margin: '0 auto',
+    width: theme.spacing(16),
+    height: theme.spacing(16),
+    [theme.breakpoints.up('md')]: {
+      width: theme.spacing(25),
+      height: theme.spacing(25),
+    },
+  },
+  businessName: {
+    marginTop: theme.spacing(3),
+  },
+  iconText: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  date: {
+    color: theme.palette.secondary.dark,
+  },
+  description: {
+    marginTop: theme.spacing(3),
+  },
+  capacity: {
+    marginTop: theme.spacing(3),
   },
   signupButton: {
-    margin: 15,
+    marginTop: 15,
   },
-  backButton: {
-    width: 35,
-    height: 35,
+  share: {
+    marginTop: theme.spacing(3),
+  },
+  shareIcon: {
+    color: theme.palette.secondary.main,
+    width: 50,
+    height: 50,
+  },
+  card: {
+    [theme.breakpoints.up('lg')]: {
+      width: 300,
+    },
+    [theme.breakpoints.down('md')]: {
+      width: 175,
+    },
+    margin: '0 auto',
+    marginTop: theme.spacing(3),
   },
 }));
-
-const Auth = require('./libs/Auth');
-
-/**
- * TabPanel
- * @param {object} props Props
- * @return {object} JSX
- */
-function TabPanel(props) {
-  const {children, value, index, ...other} = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-/**
- * a11yProps
- * @param {*} index
- * @return {object}
- */
-function a11yProps(index) {
-  return {
-    'id': 'simple-tab-${index}',
-    'aria-controls': 'simple-tabpanel-${index}',
-  };
-}
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//     backgroundColor: theme.palette.background.paper,
-//   },
-// }));
 
 /**
  * IndividualEvent component
@@ -93,9 +91,10 @@ function a11yProps(index) {
  * @return {object} JSX
  */
 const IndividualEvent = (props) => {
-  const history = useHistory();
   const classes = useStyles();
-  const location = useLocation();
+  const context = React.useContext(Context);
+  // const history = useHistory();
+  // const location = useLocation();
   const eventid = props.eventID;
 
   const [eventData, setEventData] = useState({});
@@ -104,16 +103,84 @@ const IndividualEvent = (props) => {
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
+  const [eventList, setEventList] = React.useState([]);
 
-  const [value, setValue] = React.useState(0);
+  useEffect(() => {
+    getEvents();
+    getEventData();
+    getTotalAttendees();
+    getRegistration();
+  }, []);
 
   /**
-   * handleChange
-   * @param {*} event
-   * @param {*} newValue
+   * getEvents
+   * API call to get events
    */
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  function getEvents() {
+    const apicall = 'http://localhost:3010/api/events';
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setEventList(json.slice(0, 3));
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
+  /**
+   * getCard
+   * This function gets the individual event data
+   * for each card and displays it. When the card
+   * is clicked, it goes to URL /event/{eventid}.
+   * @param {*} row
+   * @return {object} JSX
+   */
+  function getCard(row) {
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography variant='h5' component='h2' align='center'>
+            {row.eventname}
+          </Typography>
+          {/* <Typography className={classes.pos}
+            variant='body2' align='center' noWrap>
+            Description: {row.description ? row.description : 'N/A'}
+          </Typography> */}
+          <Typography className={classes.pos}
+            color='textSecondary' variant='body2' align='center'>
+            {Util.formatDate(row.starttime, row.endtime)}
+          </Typography>
+          <Typography className={classes.pos}
+            variant='subtitle1' align='center'
+            color={row.attendees === row.capacity ?
+                'primary' : 'textPrimary'}>
+            {row.capacity - row.attendees} of {row.capacity} spots open
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size='small'
+            variant='contained'
+            color='secondary'
+            href={context.businessState === false ?
+              '/event/' + row.eventid : '/profile/'}
+            style={{margin: 'auto'}}>
+            {context.businessState === false ?
+              'View Event' : 'View Event in Profile'}
+          </Button>
+        </CardActions>
+      </Card>
+    );
   };
 
   /**
@@ -281,105 +348,94 @@ const IndividualEvent = (props) => {
     });
   };
 
-  useEffect(() => {
-    getEventData();
-    getTotalAttendees();
-    getRegistration();
-  }, []);
-
-  const body = {
-    textAlign: 'center',
-  };
-
   return (
     <div>
-      <Box mt={3}>
-        {/* don't show back button if viewing event from profile */}
-        {location.pathname !== '/profile' ?
-          <IconButton
-            onClick={() => history.goBack()}>
-            <ArrowBackIcon
-              className={classes.backButton}
-            />
-          </IconButton> : ''
-        }
-        <h1 className={classes.title}>{eventData.eventname}</h1>
-      </Box>
-      <AppBar position="static" style={body}>
-        <Tabs value={value}
-          centered
-          onChange={handleChange}
-          aria-label="simple tabs example">
-          <Tab label="Event Info" {...a11yProps(0)} />
-          <Tab label="Business Info" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0} style={body}>
+      <Grid container spacing={6} className={classes.grid}>
+        <Grid item xs={3} className={classes.businessInfo}>
+          <Avatar
+            alt={businessData.businessname}
+            className={classes.avatar}
+          />
+          <Typography className={classes.businessName}
+            variant='h2' align='center'>
+            {businessData.businessname}
+          </Typography>
+          <Typography variant='body1' align='center'>
+            {businessData.email}
+          </Typography>
+          <Typography variant='body1' align='center'>
+            {businessData.phonenumber}
+          </Typography>
+        </Grid>
 
-        <Box mb={-2}>
-          <h3>Description</h3>
-        </Box>
-        <Box mt={-2}>
-          <p>{eventData.description ? eventData.description : 'N/A'}</p>
-        </Box>
+        <Grid item xs={6} className={classes.eventInfo}>
+          <Typography className={classes.title} variant='h1'>
+            {eventData.eventname}
+          </Typography>
+          <Box className={classes.iconText}>
+            <AccessTimeIcon className={classes.date}/>
+            <Typography className={classes.date} variant='h6'>
+              {Util.formatDate(eventData.starttime, eventData.endtime)}
+            </Typography>
+          </Box>
+          <Box className={classes.iconText}>
+            <LocationOnOutlinedIcon/>
+            <Typography className={classes.location} variant='h6'>
+              Science &amp; Engineering Library
+            </Typography>
+          </Box>
 
-        <Box mb={-2}>
-          <h3>Start Time</h3>
-        </Box>
-        <Box mt={-2}>
-          <p>
-            {new Date(eventData.starttime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at {new Date(eventData.starttime)
-                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
-          </p>
-        </Box>
+          <Typography className={classes.description} variant='body1'>
+            {eventData.description ?
+                  eventData.description :
+                  'No description available for this event.'}
+          </Typography>
 
-        <Box mb={-2}>
-          <h3>End Time</h3>
-        </Box>
-        <Box mt={-2}>
-          <p>
-            {new Date(eventData.endtime).toLocaleString('en-US',
-                {weekday: 'long', month: 'short', day: 'numeric',
-                  year: 'numeric'})} at {new Date(eventData.endtime)
-                .toLocaleString('en-US', {hour: 'numeric', minute: 'numeric'})}
-          </p>
-        </Box>
+          <Typography
+            className={classes.capacity}
+            variant='h6'
+            color={numAttendees === eventData.capacity ?
+              'error' : 'textPrimary'}>
+            {eventData.capacity-numAttendees}
+            &nbsp;of {eventData.capacity} spots open
+          </Typography>
 
-        <Typography
-          variant='h6' align='center'
-          color={numAttendees === eventData.capacity ? 'error' : 'textPrimary'}>
-          {eventData.capacity - numAttendees} of {eventData.capacity} spots open
-        </Typography>
-        {signupType !== undefined &&
-          (<Button className={classes.signupButton}
-            variant="contained" color="secondary"
-            disabled={signupType && numAttendees == eventData.capacity}
-            onClick={() => {
-              signupType === true ? signUp() : setConfirmDialog(true);
-            }}>
-            {signupType === true ? 'Sign Up' : 'Withdraw'}
-          </Button>)
-        }
+          {signupType !== undefined &&
+            (<Button className={classes.signupButton}
+              variant="contained" color="secondary"
+              disabled={signupType && numAttendees == eventData.capacity}
+              onClick={() => {
+                signupType === true ? signUp() : setConfirmDialog(true);
+              }}>
+              {signupType === true ? 'Sign Up' : 'Withdraw'}
+            </Button>)
+          }
 
-      </TabPanel>
-      <TabPanel value={value} index={1} style={body}>
-        <h1>{businessData.businessname}</h1>
-        <Box mb={-2}>
-          <h3>Contact Information</h3>
-        </Box>
-        <Box mt={-2} mb={-2}>
-          <p>
-            Email: {businessData.email}
-          </p>
-        </Box>
-        <Box mt={-2}>
-          <p>
-            Phone Number: {businessData.phonenumber}
-          </p>
-        </Box>
-      </TabPanel>
+          <Box className={classes.share}>
+            <IconButton>
+              <FacebookIcon className={classes.shareIcon}/>
+            </IconButton>
+            <IconButton>
+              <TwitterIcon className={classes.shareIcon}/>
+            </IconButton>
+            <IconButton>
+              <InstagramIcon className={classes.shareIcon}/>
+            </IconButton>
+          </Box>
+        </Grid>
+
+        <Grid item xs={3}>
+          <Typography variant='h5' align='center'>
+            Suggested Events
+          </Typography>
+          <Box className={classes.eventCards}>
+            {eventList.map((event) =>
+              getCard(event),
+            )}
+          </Box>
+        </Grid>
+      </Grid>
+
 
       {/* Confirmation dialog for withdrawing from events */}
       <Dialog open={confirmDialog} onClose={() => {
