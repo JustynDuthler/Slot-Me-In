@@ -123,8 +123,9 @@ exports.saveProfileImage = async (req, res) => {
     const insertRet = await businessDb.insertProfileImageName(businessID, newFileName);
     if (!insertRet) { /* throw 500 if cannot insert */
       res.status(500).send(); 
-      return; 
-    } 
+    } else {
+      res.status(200).send();
+    }
   
   }
 }
