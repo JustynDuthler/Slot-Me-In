@@ -10,6 +10,8 @@ const pool = require('../db/dbConnection');
 
 exports.getInfo = async (req, res) => {
   const business = await businessDb.selectBusiness(req.payload.id);
+  // 404 if business ID does not exist
+  if (!business) res.status(404).send();
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -22,6 +24,8 @@ exports.getInfo = async (req, res) => {
 
 exports.getBusinessByID = async (req, res) => {
   const business = await businessDb.selectBusiness(req.params.businessid);
+  // 404 if business ID does not exist
+  if (!business) res.status(404).send();
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -94,6 +98,15 @@ exports.getEvents = async (req, res) => {
         res.status(500).send(error);
       });
 };
+
+exports.getEventsByID = async (req, res) => {
+  // check if business ID exists, 404 if it does not
+  const business = await businessDb.selectBusiness(req.params.businessid);
+  if (!business) res.status(404).send();
+  // get events from a business id
+  const events = await eventsDb.getBusinessEvents(req.params.businessid);
+  res.status(200).send(events);
+}
 
 exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business

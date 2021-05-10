@@ -2,9 +2,12 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+import Avatar from '@material-ui/core/Avatar';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import {cropImage} from './libs/Util.js';
 
 /**
  * UserInfo component
@@ -45,15 +48,73 @@ export default function UserInfo({picture: path, name: name, email: email,
       width: '100%',
       backgroundColor: theme.palette.primary.light,
     },
+    avatar: {
+      margin: '0 auto',
+      width: '100%',
+      height: '300px',
+    },
   }));
   const classes = useStyles();
+  const [image, setImage] = React.useState({preview: '', raw: ''});
+  /**
+   * changeImage function
+   * @param {e} e
+   * sets the current image to the one uploaded
+   */
+  const changeImage = (e) => {
+    if (e.target.files.length) {
+      const url = URL.createObjectURL(e.target.files[0]);
+      console.log(e.target.files[0]);
+      cropImage(url, 1).then((canvas) => {
+        setImage({
+          preview: canvas.toDataURL('image/png'),
+          raw: e.target.files[0],
+        });
+      });
+    }
+  };
+  /**
+   * uploadProfileImage function
+   * uploads the profile image
+   */
+  function uploadProfileImage() {
+    // Does nothing yet
+  }
   return (
     <Grid item container direction="column"
       justify="flex-start"
       alignItems="center"
       className={classes.grid}
       {...rest}>
-      <Paper className={classes.paper}>{path}</Paper>
+      <Box width='100%' height='300px'>
+        <label htmlFor="upload-button" width='100%'>
+          {image.preview ? (
+            <img src={image.preview} alt="dummy" width='100%' height='auto' />
+          ) : (
+            <>
+              <Avatar
+                alt={'pfp'}
+                className={classes.avatar}
+              />
+            </>
+          )}
+        </label>
+        <input
+          type="file"
+          id="upload-button"
+          style={{display: 'none'}}
+          onChange={changeImage}
+        />
+      </Box>
+      <Box>
+        <Button
+          style={{fontSize: '12px'}}
+          variant='outlined'
+          onClick={()=>{
+            uploadProfileImage();
+          }}>Upload
+        </Button>
+      </Box>
       <Typography className={classes.text}>{name}
       </Typography>
       <Divider className={classes.divider}/>

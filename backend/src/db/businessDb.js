@@ -25,7 +25,7 @@ exports.selectBusiness = async (businessid) => {
   };
 
   const {rows} = await pool.query(query);
-  return rows[0];
+  return (rows.length > 0 ? rows[0] : undefined);
 };
 
 // check if a business email is already in use

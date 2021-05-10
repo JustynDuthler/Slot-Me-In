@@ -387,20 +387,20 @@ paths:
             format: uuid
       responses:
         200:
-          description: Successfully retrieved event
+          description: Successfully retrieved business info
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Business"
         404:
-          description: Event with specified ID not found
+          description: Business with specified ID not found
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
+
   /businesses/uploadProfileImage:
     post:
       description: Upload a business profile pictures
@@ -437,13 +437,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         500:
-          description: cannot save image     
+          description: cannot save image
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3fc43892597c5582d3080c2052d1577c084cc5ac
 
   /businesses/getProfileImage:
     get:
@@ -792,6 +796,10 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
 
   # 1) Define the security scheme type (HTTP bearer)
   securitySchemes:
@@ -961,6 +969,8 @@ components:
           format: uuid
         businessname:
           type: string
+        membersonly:
+          type: boolean
       required:
         - eventname
         - starttime
