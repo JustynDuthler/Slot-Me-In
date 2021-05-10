@@ -444,6 +444,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /businesses/getProfileImage:
+    get:
+      description: get a busines profile picture
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: successfully uploaded profile image
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  Image:
+                    type: string
+                    format: binary 
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot read image from server   
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
             
 
   /events:

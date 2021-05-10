@@ -115,7 +115,7 @@ exports.saveProfileImage = async (req, res) => {
     const path = __dirname + '/../../../images/businessProfileImages/' + newFileName;
     /* retrieve previous image and delete it */
     const prevFileName = await businessDb.getBusinessPhotoName(businessID);
-    if(prevFileName.businessimagename !== '/stockPhoto.png') {
+    if(prevFileName.businessimagename !== 'stockPhoto.png') {
       const prevPath = __dirname + '/../../../images/businessProfileImages/' 
                       + prevFileName.businessimagename;
       fs.unlink(prevPath, (err) => {
@@ -140,6 +140,22 @@ exports.saveProfileImage = async (req, res) => {
     } else {
       res.status(200).send();
     }
-  
   }
+};
+
+exports.getProfileImage = async (req, res) => {
+  const businessID = req.payload.id;
+  const imageName = await businessDb.getBusinessPhotoName(businessID);
+  /* construct path to file */
+  const path = __dirname + '/../../../images/businessProfileImages/'
+              + imageName;
+  /* read the file data into a buffer */
+  fs.readFile(Path, 'binary' , (err, buffer) => {
+    if (err) {
+      console.error(err)
+      res.status(500).send();
+    }
+    console.log(buffer);
+    res.status(200).send(buffer);
+  })
 };
