@@ -97,6 +97,7 @@ exports.getEvents = async (req, res) => {
 
 exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
+  console.log(req.payload.id);
   res.status(200).send();
 };
 
@@ -115,7 +116,7 @@ exports.saveProfileImage = async (req, res) => {
     /* construct path for image folder */
     const path = __dirname + '/../../../images/businessProfileImages/' + newFileName;
     /* retrieve previous image and delete it */
-    const prevFileName = await businessDb.getBusinessPhotoName(businessID);
+    const prevFileName = await businessDb.getBusinessImageName(businessID);
     if(prevFileName.businessimagename !== 'stockPhoto.png') {
       const prevPath = __dirname + '/../../../images/businessProfileImages/' 
                       + prevFileName.businessimagename;
@@ -144,9 +145,10 @@ exports.saveProfileImage = async (req, res) => {
   }
 };
 
-exports.getProfileImage = async (req, res) => {
+exports.sendProfileImage = async (req, res) => {
   const businessID = req.payload.id;
-  const imageName = await businessDb.getBusinessPhotoName(businessID);
+  console.log(businessID)
+  const imageName = await businessDb.getBusinessImageName(businessID);
   /* construct path to file */
   const path = __dirname + '/../../../images/businessProfileImages/'
               + imageName;
@@ -160,3 +162,4 @@ exports.getProfileImage = async (req, res) => {
     res.status(200).send(buffer);
   })
 };
+

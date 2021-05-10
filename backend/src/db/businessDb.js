@@ -66,7 +66,7 @@ exports.insertProfileImageName = async (businessid, imagename) => {
 }
 
 // gets photo name for a businessid
-exports.getBusinessPhotoName = async (businessid) => {
+exports.getBusinessImageName = async (businessid) => {
   const select = 'SELECT businessimagename FROM Businesses WHERE businessid = $1';
   const query = {
     text: select,
