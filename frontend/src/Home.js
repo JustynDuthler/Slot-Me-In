@@ -2,14 +2,9 @@ import React from 'react';
 import Context from './Context';
 import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import { Button, Typography } from '@material-ui/core';
+import {Button, Typography} from '@material-ui/core';
 import {
-  BrowserRouter as Router,
-  Switch,
   Route,
-  Redirect,
 } from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
 
@@ -22,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'row',
-    [theme.breakpoints.down('md')]:{
+    [theme.breakpoints.down('md')]: {
       flexDirection: 'column',
     },
     flexGrow: 1,
@@ -33,11 +28,11 @@ const useStyles = makeStyles((theme) => ({
   },
   events: {
     backgroundColor: 'white',
-    flex: "3 2",
+    flex: '3 2',
   },
   right: {
     minWidth: '25rem',
-    flex: "2 0",
+    flex: '2 0',
     [theme.breakpoints.down('md')]: {
       minWidth: '0rem',
       minHeight: '25rem',
@@ -62,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   registerBtn: {
     marginBottom: theme.spacing(3),
     padding: theme.spacing(0, 4, 0, 4),
-    maxWidth: '380px',  
+    maxWidth: '380px',
     minHeight: '2rem',
     borderWidth: '2px',
   },
@@ -78,43 +73,44 @@ const useStyles = makeStyles((theme) => ({
   underText: {
     color: theme.palette.primary.light,
     marginBottom: theme.spacing(4),
-  }
+  },
 }));
 
 
 /**
  * Used for applying css to the login page
- * @param {*} props 
- * @returns {objext} JSX
+ * @param {*} props
+ * @return {objext} JSX
  */
 const LoginWrapper = (props) => {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <Box className={classes.login}>
       <Login/>
     </Box>
   );
-}
+};
 
 /**
  * Used for applying css to the register page
- * @param {*} props 
- * @returns {objext} JSX
+ * @param {*} props
+ * @return {objext} JSX
  */
- const RegisterWrapper = (props) => {
-  const classes = useStyles()
+const RegisterWrapper = (props) => {
+  const classes = useStyles();
 
   return (
     <Box className={classes.register}>
       <Register/>
     </Box>
   );
-}
+};
 
 /**
  * This is the default for unauthhome to show
  * Buttons for navigating to login and account creation
+ * @param {*} props
  * @return {object} JSX
  */
 const NavButtons = (props) => {
@@ -123,16 +119,16 @@ const NavButtons = (props) => {
   return (
     <Box id="switch div" className={classes.switchDiv}>
       <Hidden mdDown>
-        <Typography 
+        <Typography
           variant="h1"
           className={classes.title}
-          >
+        >
           SlotMeIn
         </Typography>
-        <Typography 
+        <Typography
           variant="h5"
           className={classes.underText}
-        > 
+        >
           Join today!
         </Typography>
         <Button
@@ -144,7 +140,7 @@ const NavButtons = (props) => {
         >
           Log In
         </Button>
-        <Button 
+        <Button
           className={classes.registerBtn}
           variant="outlined"
           href="/register"
@@ -155,16 +151,16 @@ const NavButtons = (props) => {
         </Button>
       </Hidden>
       <Hidden lgUp>
-        <Typography 
+        <Typography
           variant="h2"
           className={classes.title}
-          >
+        >
           SlotMeIn
         </Typography>
-        <Typography 
+        <Typography
           variant="h5"
           className={classes.underText}
-        > 
+        >
           Join today!
         </Typography>
         <Button
@@ -176,7 +172,7 @@ const NavButtons = (props) => {
         >
           Log In
         </Button>
-        <Button 
+        <Button
           className={classes.registerBtn}
           variant="outlined"
           href="/register"
@@ -192,11 +188,12 @@ const NavButtons = (props) => {
 
 /**
  * A double column view with login register and nav on the right
+ * @param {*} props
  * @return {object} JSX
  */
 const UnAuthHome = (props) => {
   const classes = useStyles();
-  
+
   return (
     <Box className={classes.root}>
       <Hidden mdDown>
@@ -215,32 +212,38 @@ const UnAuthHome = (props) => {
         </Box>
       </Hidden>
     </Box>
-  )
+  );
 };
 
+/**
+ * @param {*} props
+ * @return {object} JSX
+ */
 const AuthHome = (props) => {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   return (
     <Box>
       temp
     </Box>
-  )
+  );
 };
 
 
 /**
- * Home shows either UnAuthHome or AuthHome depending on the auth context variable
+ * Home shows either UnAuthHome or AuthHome depending on the auth
+ * context variable
+ * @param {*} props
  * @return {object} JSX
  */
 const Home = (props) => {
   const context = React.useContext(Context);
-  
+
   if (context.authState === false) {
     return <UnAuthHome/>;
   } else {
     return <AuthHome/>;
   }
-}
+};
 
 export default Home;

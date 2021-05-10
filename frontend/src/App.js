@@ -7,8 +7,6 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Context from './Context';
-import Login from './Login';
-import Register from './Register';
 import Home from './Home';
 import AuthTest from './AuthTest';
 import CreateEvent from './CreateEvent';
@@ -24,7 +22,6 @@ import {
   ButtonGroup, Button, Toolbar, AppBar, makeStyles,
 } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
 import AccountCircleOutlinedIcon
   from '@material-ui/icons/AccountCircleOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -282,7 +279,7 @@ function App() {
     );
   }
 
-  const menu = authState ? 
+  const menu = authState ?
   (
     <AppBar position="static">
       <Toolbar>
@@ -301,38 +298,38 @@ function App() {
         }}>
           <CssBaseline />
           {menu}
-            <Switch>
-              <Route path="/authtest">
-                <AuthTest />
-              </Route>
-              <PrivateRoute
-                path="/events/create"
-                authed={authState}
-                component={CreateEvent}
-              />
-              <PrivateRoute
-                path="/events"
-                authed={authState}
-                component={ViewEvents}
-              />
-              <Route path="/profile">
-                {(authState) ? ((businessState === false) ?
-                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-              </Route>
-              <Route exact path="/events">
-                <ViewEvents/>
-              </Route>
-              <Route
-                exact path="/event/:eventid"
-                render={(props) =>
-                  <IndividualEvent eventID={props.match.params.eventid}
-                    {...props} />}
-              />
-              <Route path="/allevents">
-                <AllEvents/>
-              </Route>
-              <Route path="/" component={Home}/>
-            </Switch>
+          <Switch>
+            <Route path="/authtest">
+              <AuthTest />
+            </Route>
+            <PrivateRoute
+              path="/events/create"
+              authed={authState}
+              component={CreateEvent}
+            />
+            <PrivateRoute
+              path="/events"
+              authed={authState}
+              component={ViewEvents}
+            />
+            <Route path="/profile">
+              {(authState) ? ((businessState === false) ?
+              <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+            </Route>
+            <Route exact path="/events">
+              <ViewEvents/>
+            </Route>
+            <Route
+              exact path="/event/:eventid"
+              render={(props) =>
+                <IndividualEvent eventID={props.match.params.eventid}
+                  {...props} />}
+            />
+            <Route path="/allevents">
+              <AllEvents/>
+            </Route>
+            <Route path="/" component={Home}/>
+          </Switch>
         </Context.Provider>
       </ThemeProvider>
     </Router>
