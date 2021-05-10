@@ -45,12 +45,11 @@ app.delete('/api/users/removeUserAttending',
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
-// incomplete, pass businessid via token instead
-// app.get('/api/businesses/:businessid/events', businesses.getEvents);
 app.get('/api/businesses/getBusiness', 
-  auth.businessAuth, businesses.getInfo);
+auth.businessAuth, businesses.getInfo);
 app.get('/api/businesses/getBusinessEvents', 
-  auth.businessAuth, businesses.getEvents);
+auth.businessAuth, businesses.getEvents);
+app.get('/api/businesses/:businessid/events', businesses.getEventsByID);
 app.get('/api/businesses/checkBusinessID', 
   auth.businessAuth, businesses.validID);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
@@ -64,6 +63,7 @@ events or just events by the business depending on if the account is a business
 or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
+app.get('/api/events/publicEvents', events.getPublicEvents);
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
 app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);

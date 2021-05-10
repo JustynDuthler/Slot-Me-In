@@ -1,48 +1,249 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import {ButtonGroup} from '@material-ui/core';
 import Context from './Context';
-import {Redirect} from 'react-router';
+import {makeStyles} from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import {Button, Typography} from '@material-ui/core';
+import {
+  Route,
+} from 'react-router-dom';
+import Hidden from '@material-ui/core/Hidden';
+
+import Login from './Login';
+import Register from './Register';
+
+// This page is is the react-route for /
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 'auto',
+    width: '100vw',
+    height: '100vh',
+  },
+  events: {
+    backgroundColor: 'white',
+    flex: '3 2',
+  },
+  right: {
+    minWidth: '25rem',
+    flex: '2 0',
+    [theme.breakpoints.down('md')]: {
+      minWidth: '0rem',
+      minHeight: '25rem',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: theme.spacing(2),
+  },
+  login: {
+    padding: theme.spacing(2),
+  },
+  register: {
+    padding: theme.spacing(2),
+  },
+  loginBtn: {
+    marginBottom: theme.spacing(3),
+    padding: theme.spacing(0, 4, 0, 4),
+    maxWidth: '380px',
+    minHeight: '2rem',
+  },
+  registerBtn: {
+    marginBottom: theme.spacing(3),
+    padding: theme.spacing(0, 4, 0, 4),
+    maxWidth: '380px',
+    minHeight: '2rem',
+    borderWidth: '2px',
+  },
+  switchDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  title: {
+    color: theme.palette.primary.main,
+    marginBottom: theme.spacing(3),
+    fontWeight: 350,
+  },
+  underText: {
+    color: theme.palette.primary.light,
+    marginBottom: theme.spacing(4),
+  },
+}));
+
 
 /**
- *
+ * Used for applying css to the login page
+ * @param {*} props
+ * @return {objext} JSX
+ */
+const LoginWrapper = (props) => {
+  const classes = useStyles();
+
+  return (
+    <Box className={classes.login}>
+      <Login/>
+    </Box>
+  );
+};
+
+/**
+ * Used for applying css to the register page
+ * @param {*} props
+ * @return {objext} JSX
+ */
+const RegisterWrapper = (props) => {
+  const classes = useStyles();
+
+  return (
+    <Box className={classes.register}>
+      <Register/>
+    </Box>
+  );
+};
+
+/**
+ * This is the default for unauthhome to show
+ * Buttons for navigating to login and account creation
+ * @param {*} props
  * @return {object} JSX
  */
-export default function Home() {
+const NavButtons = (props) => {
+  const classes = useStyles();
+
+  return (
+    <Box id="switch div" className={classes.switchDiv}>
+      <Hidden mdDown>
+        <Typography
+          variant="h1"
+          className={classes.title}
+        >
+          SlotMeIn
+        </Typography>
+        <Typography
+          variant="h5"
+          className={classes.underText}
+        >
+          Join today!
+        </Typography>
+        <Button
+          className={classes.loginBtn}
+          variant="contained"
+          href="/login"
+          color="secondary"
+          size="large"
+        >
+          Log In
+        </Button>
+        <Button
+          className={classes.registerBtn}
+          variant="outlined"
+          href="/register"
+          color="primary"
+          size="large"
+        >
+          Create Account
+        </Button>
+      </Hidden>
+      <Hidden lgUp>
+        <Typography
+          variant="h2"
+          className={classes.title}
+        >
+          SlotMeIn
+        </Typography>
+        <Typography
+          variant="h5"
+          className={classes.underText}
+        >
+          Join today!
+        </Typography>
+        <Button
+          className={classes.loginBtn}
+          variant="contained"
+          href="/login"
+          color="secondary"
+          size="small"
+        >
+          Log In
+        </Button>
+        <Button
+          className={classes.registerBtn}
+          variant="outlined"
+          href="/register"
+          color="primary"
+          size="small"
+        >
+          Create Account
+        </Button>
+      </Hidden>
+    </Box>
+  );
+};
+
+/**
+ * A double column view with login register and nav on the right
+ * @param {*} props
+ * @return {object} JSX
+ */
+const UnAuthHome = (props) => {
+  const classes = useStyles();
+
+  return (
+    <Box className={classes.root}>
+      <Hidden mdDown>
+        <Box className={classes.events}>
+          Event Info
+        </Box>
+      </Hidden>
+      <Box id="rightSide" className={classes.right}>
+        <Route exact path="/login" component={LoginWrapper}/>
+        <Route exact path="/register" component={RegisterWrapper}/>
+        <Route exact path="/" component={NavButtons}/>
+      </Box>
+      <Hidden only={['lg', 'xl', 'xs']}>
+        <Box className={classes.events}>
+          Event Info
+        </Box>
+      </Hidden>
+    </Box>
+  );
+};
+
+/**
+ * @param {*} props
+ * @return {object} JSX
+ */
+const AuthHome = (props) => {
+  // const classes = useStyles();
+
+  return (
+    <Box>
+      temp
+    </Box>
+  );
+};
+
+
+/**
+ * Home shows either UnAuthHome or AuthHome depending on the auth
+ * context variable
+ * @param {*} props
+ * @return {object} JSX
+ */
+const Home = (props) => {
   const context = React.useContext(Context);
-  const body = {
-    textAlign: 'center',
-  };
 
   if (context.authState === false) {
-    return (
-      <div style={body}>
-        <h1>SlotMeIn</h1>
-        <ButtonGroup>
-          <Button
-            startIcon={<AccountIcon />}
-            href="/register"
-            color="primary"
-            size="large"
-            variant="contained">
-            Sign Up
-          </Button>
-          <Button
-            startIcon={<LockOutlinedIcon />}
-            href="/Login"
-            color="primary"
-            size="large"
-            variant="contained">
-            Login
-          </Button>
-        </ButtonGroup>
-      </div>
-    );
+    return <UnAuthHome/>;
   } else {
-    return (
-      <Redirect to = "/profile" />
-    );
+    return <AuthHome/>;
   }
-}
+};
+
+export default Home;

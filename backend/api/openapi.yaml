@@ -387,13 +387,13 @@ paths:
             format: uuid
       responses:
         200:
-          description: Successfully retrieved event
+          description: Successfully retrieved business info
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Business"
         404:
-          description: Event with specified ID not found
+          description: Business with specified ID not found
         default:
           description: Unexpected Error
           content:
