@@ -2,13 +2,14 @@ const { businessAuth } = require('../auth');
 const pool = require('./dbConnection');
 
 exports.insertBusinessAccount =
-    async (businessname, password, phonenumber, businessemail) => {
+    async (businessname, password, phonenumber, businessemail, description) => {
       const insert = 'INSERT INTO Businesses ' +
-      '(businessname, Password, phonenumber, businessemail) ' +
-      'VALUES ($1, $2, $3, $4) RETURNING businessid';
+      '(businessname, Password, phonenumber, businessemail, description) ' +
+      'VALUES ($1, $2, $3, $4, $5) RETURNING businessid';
       const query = {
         text: insert,
-        values: [businessname, password, phonenumber, businessemail],
+        values: [businessname, password, phonenumber, businessemail,
+                description],
       };
 
       const {rows} = await pool.query(query);
