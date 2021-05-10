@@ -1,5 +1,6 @@
 const memberDb = require('../db/memberDb');
 const userDb = require('../db/userDb');
+const eventsDb = require('../db/eventsDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -67,4 +68,24 @@ exports.getMembers = async (req, res) => {
     memberList.push(member);
   }
   res.status(200).json(memberList);
+}
+
+// Returns events for all businesses a user is a part of
+exports.getRestrictedEvents = async (req, res) => {
+  console.log('hi');
+  console.log('email: '+req.params.useremail);
+  const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
+  console.log(businesses);
+  let restrictedEventList = []
+  for (i = 0; i < businesses.length; i++) {
+    // get events for the business
+    const restrictedEvents = await eventsDb.getBusinessEvents(businesses[i].businessid);
+    for (j = 0; j < restrictedEvents.length; j++) {
+      // push each event
+      console.log(restrictedEvents[j]);
+      restrictedEventList.push(restrictedEvents[j]);
+    }
+  }
+  console.log(restrictedEventList);
+  res.status(200).json(restrictedEventList);
 }

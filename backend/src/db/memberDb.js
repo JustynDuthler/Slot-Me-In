@@ -72,3 +72,15 @@ exports.removeMember = async (businessid, email) => {
     return (rows.length);
   };
 
+// gets a members businesses
+exports.getMemberBusinesses = async (email) => {
+  console.log(email);
+  const select = 'SELECT * FROM Members m WHERE m.memberemail = $1';
+  const query = {
+    text: select,
+    values: [email],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+}

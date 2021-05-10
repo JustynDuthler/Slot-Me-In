@@ -751,6 +751,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/Members"
 
+  /members/getRestrictedEvents/{useremail}:
+    get:
+      description: Retrieves all events for businesses a member is a part of
+      tags:
+        - members
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: User email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 
 
 

@@ -49,7 +49,57 @@ const useStyles = makeStyles({
 export default function ViewEvents() {
   const classes = useStyles();
   const [eventList, setEventList] = React.useState([]);
+  const [memberEvents, setMemberEvents] = React.useState([]);
+  // const [userInfo, setUserInfo] = React.useState([]);
   const context = React.useContext(Context);
+
+  /**
+   * getUserInfo
+   * API call to get the info for the user
+   */
+  function getUserInfo() {
+    const apicall = 'http://localhost:3010/api/users/getUser';
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => response.json())
+        .then((json) => {
+          // setUserInfo(json);
+          getMemberEvents(json.useremail);
+        },
+        (error) => {
+          console.log(error);
+        },
+        );
+  };
+
+  /**
+   * getMemberEvents
+   * API call to get all events for businesses the user
+   * is a part of
+   * @param {string} email
+   */
+  function getMemberEvents(email) {
+    console.log(email);
+    const apicall = 'http://localhost:3010/api/members/getRestrictedEvents/'+email;
+    fetch(apicall, {
+      method: 'GET',
+      // headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        return response.json();
+      }
+    }).then((json) => {
+      setMemberEvents(json);
+      console.log(json);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+    console.log(memberEvents);
+  };
 
   /**
    * getEvents
@@ -79,6 +129,7 @@ export default function ViewEvents() {
 
   React.useEffect(() => {
     getEvents();
+    getUserInfo();
   }, []);
 
   /**
@@ -91,7 +142,7 @@ export default function ViewEvents() {
    */
   function getCard(row) {
     return (
-      <Card>
+      <Card key={row.eventid}>
         <CardContent>
           <Typography variant='h5' component='h2' align='center'>
             {row.eventname}
@@ -140,9 +191,10 @@ export default function ViewEvents() {
 
   const breakPoints = [
     {width: 1, itemsToShow: 1},
-    {width: 550, itemsToShow: 2},
+    {width: 550, itemsToShow: 3},
     {width: 768, itemsToShow: 4},
-    {width: 1200, itemsToShow: 4},
+    {width: 1200, itemsToShow: 5},
+    {width: 1500, itemsToShow: 6},
   ];
 
   return (
