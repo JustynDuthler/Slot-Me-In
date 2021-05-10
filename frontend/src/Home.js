@@ -11,13 +11,12 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-
 import Hidden from '@material-ui/core/Hidden';
 
 import Login from './Login';
 import Register from './Register';
 
-
+// This page is is the react-route for /
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
   login: {
     padding: theme.spacing(2),
   },
+  register: {
+    padding: theme.spacing(2),
+  },
   loginBtn: {
     marginBottom: theme.spacing(3),
     padding: theme.spacing(0, 4, 0, 4),
@@ -67,9 +69,6 @@ const useStyles = makeStyles((theme) => ({
   switchDiv: {
     display: 'flex',
     flexDirection: 'column',
-    [theme.breakpoints.down('md"')]: {
-      width: '100vw',
-    },
   },
   title: {
     color: theme.palette.primary.main,
@@ -82,6 +81,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
+/**
+ * Used for applying css to the login page
+ * @param {*} props 
+ * @returns {objext} JSX
+ */
 const LoginWrapper = (props) => {
   const classes = useStyles()
 
@@ -92,6 +97,26 @@ const LoginWrapper = (props) => {
   );
 }
 
+/**
+ * Used for applying css to the register page
+ * @param {*} props 
+ * @returns {objext} JSX
+ */
+ const RegisterWrapper = (props) => {
+  const classes = useStyles()
+
+  return (
+    <Box className={classes.register}>
+      <Register/>
+    </Box>
+  );
+}
+
+/**
+ * This is the default for unauthhome to show
+ * Buttons for navigating to login and account creation
+ * @return {object} JSX
+ */
 const NavButtons = (props) => {
   const classes = useStyles();
 
@@ -165,10 +190,13 @@ const NavButtons = (props) => {
   );
 };
 
+/**
+ * A double column view with login register and nav on the right
+ * @return {object} JSX
+ */
 const UnAuthHome = (props) => {
   const classes = useStyles();
   
-
   return (
     <Box className={classes.root}>
       <Hidden mdDown>
@@ -178,10 +206,10 @@ const UnAuthHome = (props) => {
       </Hidden>
       <Box id="rightSide" className={classes.right}>
         <Route exact path="/login" component={LoginWrapper}/>
-        <Route exact path="/register" component={Register}/>
+        <Route exact path="/register" component={RegisterWrapper}/>
         <Route exact path="/" component={NavButtons}/>
       </Box>
-      <Hidden only={['lg', 'xl', 'md', 'xs']}>
+      <Hidden only={['lg', 'xl', 'xs']}>
         <Box className={classes.events}>
           Event Info
         </Box>
@@ -200,8 +228,9 @@ const AuthHome = (props) => {
   )
 };
 
+
 /**
- *
+ * Home shows either UnAuthHome or AuthHome depending on the auth context variable
  * @return {object} JSX
  */
 const Home = (props) => {
