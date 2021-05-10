@@ -15,21 +15,10 @@ import ViewEvents from './ViewEvents';
 import UserProfile from './UserProfile';
 import BusinessProfile from './BusinessProfile';
 import AllEvents from './AllEvents';
+import NavBar from './NavBar';
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import {
-  ButtonGroup, Button, Toolbar, AppBar, makeStyles,
-} from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import AccountCircleOutlinedIcon
-  from '@material-ui/icons/AccountCircleOutlined';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import HomeIcon from '@material-ui/icons/Home';
-import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
-import EventIcon from '@material-ui/icons/Event';
-import AddIcon from '@material-ui/icons/Add';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 const theme = createMuiTheme({
@@ -73,21 +62,12 @@ const theme = createMuiTheme({
   },
 });
 
-const useStyles = makeStyles((theme) => ({
-  content: {
-    marginTop: theme.spacing(2),
-  },
-  leftMenu: {
-    flexGrow: 1,
-  },
-}));
 
 /**
  *
  * @return {object} JSX
  */
 function App() {
-  const classes = useStyles();
   const [authState, setAuthState] = React.useState(false);
   const [businessState, setBusinessState] = React.useState(undefined);
   /**
@@ -123,15 +103,6 @@ function App() {
         });
   };
 
-  /**
-   * logout()
-   * Removes JWT and sets authState to null upon logout
-   */
-  const logout = () => {
-    Auth.removeJWT();
-    setAuthState(false);
-  };
-
   React.useEffect(() => {
     if (Auth.getJWT() === null) {
       setBusinessState(false);
@@ -144,150 +115,9 @@ function App() {
   if (businessState == undefined) {
     return <div></div>;
   }
-  // RightSide navigation changes depending on if the user is
-  // logged in or not
-  let rightSide;
-  if (authState) {
-    rightSide = (
-      <ButtonGroup>
-        <Button
-          startIcon={<AccountBoxOutlinedIcon />}
-          href="/profile"
-          color="secondary"
-          size="large"
-          variant="contained"
-        >
-          Profile
-        </Button>
-        <Button
-          startIcon={<ExitToAppIcon/>}
-          color="secondary"
-          size="large"
-          variant="contained"
-          onClick={logout}
-        >
-          Logout
-        </Button>
-      </ButtonGroup>
-    );
-  } else {
-    rightSide = (
-      <ButtonGroup
-        anchororigin={{
-          vertical: 'top',
-          horizonal: 'right',
-        }}
-      >
-        <Button
-          startIcon={<AccountCircleOutlinedIcon />}
-          href="/register"
-          color="secondary"
-          size="large"
-          variant="contained"
-        >
-          Register Account
-        </Button>
 
-        <Button
-          startIcon={<LockOutlinedIcon />}
-          href="/Login"
-          color="secondary"
-          size="large"
-          variant="contained"
-        >
-          Login
-        </Button>
-      </ButtonGroup>
-    );
-  }
-
-  let leftSide;
-  if (businessState == true) {
-    leftSide = (
-      <Box className={classes.leftMenu}>
-        <ButtonGroup>
-          <Button
-            startIcon={<HomeIcon/>}
-            href="/"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            Home
-          </Button>
-          <Button
-            startIcon={<AddIcon/>}
-            href="/events/create"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            Create Event
-          </Button>
-          <Button
-            startIcon={<EventIcon/>}
-            href="/events"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            Events
-          </Button>
-          <Button
-            href="/authtest"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            AuthTest
-          </Button>
-        </ButtonGroup>
-      </Box>
-    );
-  } else {
-    leftSide = (
-      <Box className={classes.leftMenu}>
-        <ButtonGroup>
-          <Button
-            startIcon={<HomeIcon/>}
-            href="/"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            Home
-          </Button>
-          <Button
-            startIcon={<EventIcon/>}
-            href="/events"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            Events
-          </Button>
-          <Button
-            href="/authtest"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            AuthTest
-          </Button>
-        </ButtonGroup>
-      </Box>
-    );
-  }
-
-  const menu = authState ?
-  (
-    <AppBar position="static">
-      <Toolbar>
-        {leftSide}
-        {rightSide}
-      </Toolbar>
-    </AppBar>
-  ) : null;
+  const userType = businessState ? 'business' : 'user';
+  const menu = authState ? <NavBar userType={userType}/> : null;
 
   return (
     <Router>
