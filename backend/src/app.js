@@ -63,6 +63,7 @@ events or just events by the business depending on if the account is a business
 or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
+app.get('/api/events/publicEvents', events.getPublicEvents);
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
 app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);
