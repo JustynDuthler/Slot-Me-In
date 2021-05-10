@@ -54,6 +54,7 @@ app.get('/api/businesses/getBusinessEvents',
 app.get('/api/businesses/checkBusinessID', 
   auth.businessAuth, businesses.validID);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
+app.post('/api/businesses/uploadProfileImage', auth.businessAuth, businesses.saveProfileImage);
 
 // Event routes
 app.post('/api/events', auth.businessAuth, events.create);

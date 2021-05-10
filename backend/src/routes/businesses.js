@@ -2,9 +2,11 @@ const businessDb = require('../db/businessDb');
 const eventsDb = require('../db/eventsDb');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const fs = require('fs');
 dotenv.config();
 
 const auth = require('../auth');
+const pool = require('../db/dbConnection');
 
 exports.getInfo = async (req, res) => {
   const business = await businessDb.selectBusiness(req.payload.id);
@@ -44,7 +46,8 @@ exports.signup = async (req, res) => {
       } else {
         // dummy phone number
         const businessid = await businessDb.insertBusinessAccount(
-            req.body.name, hash, '123-456-7890', req.body.email.toLowerCase());
+            req.body.name, hash, '123-456-7890', req.body.email.toLowerCase(),
+            req.body.description);
         const token = await auth.generateJWT(
             req.body.email.toLowerCase(), businessid, 'business');
         console.log('Business added!');
@@ -95,4 +98,49 @@ exports.getEvents = async (req, res) => {
 exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
   res.status(200).send();
+};
+
+exports.saveProfileImage = async (req, res) => {
+  const businessID = req.payload.id;
+  const validExtensions = /.*\.(jpe?g|png)$/i;
+  if (!validExtensions.exec(req.files[0].originalname)) {
+    /* not a png, jpg, or jpeg */
+    res.status(400).send();
+  } else {
+    /* obtain file extension */
+    var dotIndex = req.files[0].originalname.lastIndexOf('.');
+    const fileExtension = req.files[0].originalname.substring(dotIndex);
+    /* saved file name is just businessid.extension */
+    const newFileName = req.payload.id + fileExtension;
+    /* construct path for image folder */
+    const path = __dirname + '/../../../images/businessProfileImages/' + newFileName;
+    /* retrieve previous image and delete it */
+    const prevFileName = await businessDb.getBusinessPhotoName(businessID);
+    if(prevFileName.businessimagename !== '/stockPhoto.png') {
+      const prevPath = __dirname + '/../../../images/businessProfileImages/' 
+                      + prevFileName.businessimagename;
+      fs.unlink(prevPath, (err) => {
+        if (err) {
+          console.error(err)
+          res.status(500).send();
+          return;
+        }
+      });
+    }
+    /* write data to file */
+    fs.writeFile(path, req.files[0].buffer, 'binary', (err) => {
+      if (err) { 
+        res.status(500).send(); 
+        return; 
+      }
+    });
+    /* insert file name into database */
+    const insertRet = await businessDb.insertProfileImageName(businessID, newFileName);
+    if (!insertRet) { /* throw 500 if cannot insert */
+      res.status(500).send(); 
+    } else {
+      res.status(200).send();
+    }
+  
+  }
 };

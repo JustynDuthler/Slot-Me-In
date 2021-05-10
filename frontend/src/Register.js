@@ -32,9 +32,11 @@ export default function Register() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [description, setDescription] = React.useState('');
   const [showBusiness, setForm] = React.useState(false);
   const [showPassword, setVisibility] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
+  const [descriptionError, setDescriptionError] = React.useState(false);
   const [emailMsg, setEmailMsg] = React.useState('');
   const context = React.useContext(Context);
   const history = useHistory();
@@ -50,6 +52,7 @@ export default function Register() {
       'password': password, 'name': username};
     if (showBusiness) {
       info['phonenumber'] = phoneNumber;
+      info['description'] = description;
     }
     console.log(info);
     fetch(apicall, {
@@ -75,6 +78,7 @@ export default function Register() {
         .then((json) => {
           Auth.saveJWT(json.auth_token);
           context.setAuthState(true);
+          context.setBusinessState(true);
           console.log(json);
           history.push('/');
         })
@@ -98,14 +102,19 @@ export default function Register() {
     const phoneRegex =
         /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
     if (!emailRegex.test(email)) {
-      // don't submit and display error if email is invalid
+      // display error if email is invalid
       setEmailError(true);
       setEmailMsg('Invalid email.');
-      return;
-    } else if (showBusiness && !phoneRegex.test(phoneNumber)) {
-      // don't submit a business form if phone is invalid
-      return;
-    } else {
+    }
+    if (showBusiness) {
+      // display error on business form if phone is invalid or description >500
+      if (!phoneRegex.test(phoneNumber) || description.length > 500) {
+        setDescriptionError(description.length > 500);
+      }
+    }
+    if (emailRegex.test(email) && phoneRegex.test(phoneNumber) &&
+        description.length <= 500) {
+      // don't submit if input is invalid
       handleSubmit(event);
     }
   };
@@ -248,6 +257,23 @@ export default function Register() {
               onKeyDown={(event) => {
                 handleKeypress(event);
               }}
+            />}
+            {showBusiness && <TextField
+              error={descriptionError}
+              helperText={descriptionError ?
+                'Description must be less than 500 characters.' : ''}
+              variant='outlined'
+              margin='normal'
+              fullWidth
+              id='description'
+              label='Description (max 500 chars)'
+              name='description'
+              multiline
+              placeholder='Brief Description of Business'
+              onChange={(event) => {
+                setDescription(event.target.value);
+              }}
+              onKeyPress={handleKeypress}
             />}
             <Button
               type='submit'

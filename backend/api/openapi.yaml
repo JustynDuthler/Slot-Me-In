@@ -400,6 +400,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+                
+  /businesses/uploadProfileImage:
+    post:
+      description: Upload a business profile pictures
+      tags:
+        - businesses
+      requestBody:
+        description: binary image database
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Image:
+                  type: string
+                  format: binary
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: successfully uploaded profile image
+        400:
+          description: wrong file type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot save image     
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+            
 
   /events:
     post:
@@ -740,7 +785,6 @@ components:
 
     NewAccount:
       type: object
-      maxProperties: 4
       additionalProperties: false
       properties:
         name:
@@ -755,6 +799,8 @@ components:
           type: string
           pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
           example: "123-456-7890"
+        description:
+          type: string
       required:
         - name
         - email

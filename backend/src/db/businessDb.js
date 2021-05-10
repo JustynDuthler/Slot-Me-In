@@ -1,13 +1,15 @@
+const { businessAuth } = require('../auth');
 const pool = require('./dbConnection');
 
 exports.insertBusinessAccount =
-    async (businessname, password, phonenumber, businessemail) => {
+    async (businessname, password, phonenumber, businessemail, description) => {
       const insert = 'INSERT INTO Businesses ' +
-      '(businessname, Password, phonenumber, businessemail) ' +
-      'VALUES ($1, $2, $3, $4) RETURNING businessid';
+      '(businessname, Password, phonenumber, businessemail, description) ' +
+      'VALUES ($1, $2, $3, $4, $5) RETURNING businessid';
       const query = {
         text: insert,
-        values: [businessname, password, phonenumber, businessemail],
+        values: [businessname, password, phonenumber, businessemail,
+                description],
       };
 
       const {rows} = await pool.query(query);
@@ -50,3 +52,27 @@ exports.getBusinessPass = async (email) => {
   const {rows} = await pool.query(query);
   return rows[0].password;
 };
+
+// inserts image name into database
+exports.insertProfileImageName = async (businessid, imagename) => {
+  const insert = 'UPDATE Businesses SET businessimagename = $2 '
+                + 'WHERE businessid = $1 RETURNING businessid';
+  const query = {
+    text: insert,
+    values: [businessid, imagename],
+  };
+  const {rows} = await pool.query(query);
+  return (rows.length > 0 ? 1 : 0); // if insert was successful return 1
+}
+
+// gets photo name for a businessid
+exports.getBusinessPhotoName = async (businessid) => {
+  const select = 'SELECT businessimagename FROM Businesses WHERE businessid = $1';
+  const query = {
+    text: select,
+    values: [businessid],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows[0];
+}

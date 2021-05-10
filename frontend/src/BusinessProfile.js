@@ -28,6 +28,7 @@ import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UserInfo from './Components';
+import {EventInfo, ShareBar} from './Components';
 
 /**
  * BusinessProfile component
@@ -37,7 +38,7 @@ export default function BusinessProfile() {
   const [error, setError] = React.useState(null);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [businessData, setBusinessData] = React.useState([]);
-  const [memberList, setMemberList] = React.useState([]);
+  const [memberList, setMemberList] = React.useState({});
   const [eventList, setEventList] = React.useState({});
   const [emailInput, setEmailInput] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
@@ -154,7 +155,13 @@ export default function BusinessProfile() {
       headers: Auth.headerJsonJWT(),
     }).then((res) => res.json())
         .then((data) => {
-          setMemberList(data);
+          const memberDict = {};
+          for (const i in data) {
+            if (data.hasOwnProperty(i)) {
+              memberDict[data[i].email] = data[i];
+            }
+          }
+          setMemberList(memberDict);
         },
         (error) => {
           setError(error);
@@ -192,6 +199,12 @@ export default function BusinessProfile() {
         })
         .then((json) => {
           console.log(json);
+          const membersCopy = JSON.parse(JSON.stringify(memberList));
+          for (let i = 0; i < json.length; i++) {
+            membersCopy[json[i].email] = json[i];
+          }
+          setMemberList(membersCopy);
+          setEmailInput('');
         })
         .catch((error) => {
           console.log(error);
@@ -355,6 +368,17 @@ export default function BusinessProfile() {
         'backgroundColor': theme.palette.primary.light,
       },
     },
+    grid: {
+      backgroundColor: theme.palette.back.main,
+      border: `1px solid ${theme.palette.primary.light}`,
+    },
+    grid2: {
+      backgroundColor: theme.palette.back.main,
+    },
+    divider: {
+      width: '100%',
+      backgroundColor: theme.palette.primary.light,
+    },
   }));
 
   /**
@@ -460,12 +484,13 @@ export default function BusinessProfile() {
     // members will hold a list of member data
     // eventListJSX will hold a list of event data
     const members = [];
+    const existingmembers = [];
     const eventListJSX = [];
     for (const m in memberList) {
       if (memberList.hasOwnProperty(m)) {
         const member = memberList[m];
-        members.push(<ListItem button={true}
-          key={member.userid}
+        const comp = <ListItem button={true}
+          key={member.email}
           onClick={() => {
             /* Link to public user profile page ? */
           }}>
@@ -478,13 +503,22 @@ export default function BusinessProfile() {
               variant='contained'
               color='secondary'
               onClick={() => {
-                removeMember(member.email);
+                if (removeMember(member.email)) {
+                  const membersCopy = JSON.parse(JSON.stringify(memberList));
+                  delete membersCopy[member.email];
+                  setMemberList(membersCopy);
+                }
               }}
             >
               Remove
             </Button>
           </ListItemSecondaryAction>
-        </ListItem>);
+        </ListItem>;
+        if (member.userid !== null) {
+          existingmembers.push(comp);
+        } else {
+          members.push(comp);
+        }
       }
     }
     for (const key in eventList) {
@@ -652,7 +686,6 @@ export default function BusinessProfile() {
           <div className={classes.buttonGroup}>
             <ButtonGroup color="primary" aria-label="primary button group">
               <Button
-                className={classes.menuButton}
                 variant={tab === 0 ? 'contained': ''}
                 color={tab === 0 ? 'primary' : 'primary'}
                 onClick={()=>{
@@ -675,7 +708,7 @@ export default function BusinessProfile() {
               </Button>
             </ButtonGroup>
           </div>
-          {tab === 0 && <div>
+          {tab === 3 && <div>
             <Paper margin='2px'>
               <Container component='main' maxWidth='md'>
                 <Grid container justify='center' direction='row' spacing={8}>
@@ -738,17 +771,25 @@ export default function BusinessProfile() {
               </Container>
             </Paper>
           </div>}
-          {tab === 1 && <div>
-            <Grid container spacing={8}>
-              <Grid item>
-                <Typography variant='h6'>
-                  Members
-                </Typography>
-                <Divider/>
-                <List>
+          {tab === 3 && <div>
+            <Grid container spacing={8} justify="center">
+              <Grid item container md={6} direction="column"
+                alignItems="center">
+                {existingmembers.length > 0 && <Typography variant='h6'>
+                  Existing Members
+                </Typography>}
+                {existingmembers.length > 0 && <Divider/>}
+                {existingmembers.length > 0 && <List style={{width: '100%'}}>
+                  {existingmembers}
+                </List>}
+                {members.length > 0 && <Typography variant='h6'>
+                  Inactive Members
+                </Typography>}
+                {members.length > 0 && <Divider/>}
+                {members.length > 0 && <List style={{width: '100%'}}>
                   {members}
-                </List>
-                {members.length === 0 && <Typography>
+                </List>}
+                {members.length+existingmembers.length === 0 && <Typography>
                   Currently added 0 members
                 </Typography>}
                 <TextField
@@ -763,7 +804,6 @@ export default function BusinessProfile() {
                   autoComplete='email'
                   multiline
                   onChange={(event) => {
-                    console.log(event.target.value);
                     setEmailInput(event.target.value);
                   }}
                   onKeyPress={handleKeypress}
@@ -782,7 +822,7 @@ export default function BusinessProfile() {
             </Grid>
           </div>}
         </div>
-        {tab === 2 && <div className={classes.testgrid}>
+        <div className={classes.testgrid}>
           <Grid container spacing={0}>
             <Grid item container md={12}
               direction="row">
@@ -823,25 +863,111 @@ export default function BusinessProfile() {
               <Grid item md={1} className={classes.buttonGroupBox}>
               </Grid>
             </Grid>
-            <Divider orientation="vertical" flexItem
-              style={{marginRight: '-1px'}} />
             <Grid container item md={3} direction="column">
               <UserInfo picture="picture"
                 name={businessData.businessname}
                 email={businessData.email}
                 description={businessData.description}
                 className={classes.paper2}
-                style={{height: '500px'}}
+                style={{height: '650px'}}
               />
             </Grid>
+            {tab === 2 &&
             <Divider orientation="vertical" flexItem
-              style={{marginRight: '-1px'}} />
-            <Grid item md={9} style={{height: '200px'}}>
-              <Paper className={classes.paper}
-                style={{height: '200px'}}>md=6</Paper>
-            </Grid>
+              style={{marginRight: '-1px'}} />}
+            {tab === 2 &&
+            <Grid item md={9} container style={{height: 650}}
+              className={classes.grid}>
+              <Typography style={{margin: 8, fontSize: '24px'}}>
+                Upcoming Events:</Typography>
+              <Grid item md={12} container style={{height: '400px'}}
+                className={classes.grid2}>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+                <EventInfo/>
+              </Grid>
+              <Divider className={classes.divider}/>
+              <ShareBar style={{height: 45}}/>
+            </Grid>}
+            {tab === 1 && <Grid item container md={9} direction="column"
+              alignItems="center" style={{height: 650, overflow: 'auto',
+                maxHeight: 650}}
+              className={classes.grid}>
+              {existingmembers.length > 0 && <Typography variant='h6'>
+                Existing Members
+              </Typography>}
+              {existingmembers.length > 0 && <Divider/>}
+              {existingmembers.length > 0 && <List
+                style={{width: '100%', height: 220,
+                  maxHeight: 220, overflow: 'auto'}}>
+                {existingmembers}
+              </List>}
+              {members.length > 0 && <Typography variant='h6'>
+                Inactive Members
+              </Typography>}
+              {members.length > 0 && <Divider/>}
+              {members.length > 0 && <List
+                style={{width: '100%', height: 220,
+                  maxHeight: 220, overflow: 'auto'}}>
+                {members}
+              </List>}
+              {members.length+existingmembers.length === 0 && <Typography>
+                Currently added 0 members
+              </Typography>}
+              <TextField
+                error={emailError}
+                helperText={emailError ? emailMsg : ''}
+                variant='filled'
+                margin='normal'
+                fullWidth
+                id='email'
+                label='Email Addresses'
+                name='email'
+                autoComplete='email'
+                multiline
+                onChange={(event) => {
+                  setEmailInput(event.target.value);
+                }}
+                onKeyPress={handleKeypress}
+              />
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                color='secondary'
+                className={classes.submit}
+                onClick={validateInput}
+              >
+                Add Members
+              </Button>
+            </Grid>}
+            {tab === 0 && <Grid item container md={9} direction="column"
+              style={{height: 650, overflow: 'auto',
+                maxHeight: 650}}
+              className={classes.grid}>
+              {eventState === null &&showAll === false&&
+              <Grid style={{margin: 8}} item md={4} container justify='center'>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DatePicker
+                    variant='static'
+                    label='Event select'
+                    value={selectedDate}
+                    onChange={(date) => {
+                      setSelectedDate(date);
+                    }}
+                    renderDay={renderWrappedDays}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>}
+              <List>
+                {eventListJSX}
+              </List>
+            </Grid>}
           </Grid>
-        </div>}
+        </div>
       </Container>
     );
   }
