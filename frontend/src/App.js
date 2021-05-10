@@ -211,7 +211,7 @@ function App() {
         <ButtonGroup>
           <Button
             startIcon={<HomeIcon/>}
-            href="/home"
+            href="/"
             color="secondary"
             size="large"
             variant="contained"
@@ -253,7 +253,7 @@ function App() {
         <ButtonGroup>
           <Button
             startIcon={<HomeIcon/>}
-            href="/home"
+            href="/"
             color="secondary"
             size="large"
             variant="contained"
@@ -302,12 +302,6 @@ function App() {
           <CssBaseline />
           {menu}
             <Switch>
-              <Route path="/login">
-                <Login/>
-              </Route>
-              <Route path="/register">
-                <Register/>
-              </Route>
               <Route path="/authtest">
                 <AuthTest />
               </Route>
@@ -337,9 +331,7 @@ function App() {
               <Route path="/allevents">
                 <AllEvents/>
               </Route>
-              <Route path="/">
-                <Home />
-              </Route>
+              <Route path="/" component={Home}/>
             </Switch>
         </Context.Provider>
       </ThemeProvider>

@@ -21,6 +21,7 @@ import PhoneInput from 'react-phone-input-2';
 import Context from './Context';
 import 'react-phone-input-2/lib/material.css';
 const Auth = require('./libs/Auth');
+import Link from '@material-ui/core/Link';
 
 /**
  * Register function
@@ -152,7 +153,7 @@ export default function Register() {
             <AccountBoxIcon />
           </Avatar>
           <Typography component='h1' variant='h5'>
-            Register
+            Create Account
           </Typography>
           <div className={classes.form}>
             <TextField
@@ -255,8 +256,11 @@ export default function Register() {
               className={classes.submit}
               onClick={validateInput}
             >
-              Register
+              Create Account
             </Button>
+            <Link href="/login" variant="body2">
+                Already have an account? Log In
+            </Link>
           </div>
         </div>
       </Container>
