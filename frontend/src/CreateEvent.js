@@ -34,6 +34,7 @@ export default function CreateEvent() {
   const [capacity, changeCapacity] = React.useState('');
   const [description, changeDescription] = React.useState('');
   const [repeat, changeRepeat] = React.useState(false);
+  const [membersOnly, changeMembersOnly] = React.useState(false);
   const [repeatDays, changeRepeatDays] =
     React.useState({'monday': false, 'tuesday': false, 'wednesday': false,
       'thursday': false, 'friday': false, 'saturday': false, 'sunday': false});
@@ -70,6 +71,7 @@ export default function CreateEvent() {
     eventObj.capacity = parseInt(capacity);
     eventObj.description = description;
     eventObj.repeat = repeat;
+    eventObj.membersOnly = membersOnly;
     // properties for repeating events only
     if (repeat) {
       eventObj.repeattype = 'w';
@@ -242,6 +244,13 @@ export default function CreateEvent() {
                   changeRepeat(event.target.checked);
                 }}/>}
               label='Repeat'
+            />
+            <FormControlLabel
+              control={<Checkbox value='membersonly' color='primary'
+                onChange={(event) => {
+                  changeMembersOnly(event.target.checked);
+                }}/>}
+              label='Members Only'
             />
             {repeat && <FormControl required
               error={errors.repeat || errors.repeatDays}
