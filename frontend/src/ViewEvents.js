@@ -91,7 +91,7 @@ export default function ViewEvents() {
    */
   function getCard(row) {
     return (
-      <Card>
+      <Card key={row.eventid}>
         <CardContent>
           <Typography variant='h5' component='h2' align='center'>
             {row.eventname}
