@@ -84,7 +84,6 @@ export default function ViewEvents() {
     const apicall = 'http://localhost:3010/api/members/getRestrictedEvents/'+email;
     fetch(apicall, {
       method: 'GET',
-      // headers: Auth.headerJsonJWT(),
     }).then((response) => {
       if (!response.ok) {
         throw response;
@@ -126,7 +125,7 @@ export default function ViewEvents() {
           console.log(error);
         });
   };
-
+  console.log(memberEvents);
   React.useEffect(() => {
     getEvents();
     getUserInfo();
@@ -195,13 +194,29 @@ export default function ViewEvents() {
     {width: 768, itemsToShow: 4},
     {width: 1200, itemsToShow: 5},
     {width: 1500, itemsToShow: 6},
+    {width: 2000, itemsToShow: 7},
   ];
 
   return (
     <React.Fragment>
       <input type="text" placeholder="Ignore this search bar..." />
       <Box mt={10}>
-        <h1 style={{float: 'left'}}>Events</h1>
+        <h1 style={{float: 'left'}}>Member Events</h1>
+        <Box pt={5}>
+          <Link to="/allevents" style={{float: 'right'}}>
+            See All Events
+          </Link>
+        </Box>
+        <Box mt={5} mb={5} className={classes.box}>
+          <Carousel breakPoints={breakPoints}>
+            {memberEvents.map((event) =>
+              getCard(event),
+            )}
+          </Carousel>
+        </Box>
+      </Box>
+      <Box mt={10}>
+        <h1 style={{float: 'left'}}>All Events</h1>
         <Box pt={5}>
           <Link to="/allevents" style={{float: 'right'}}>
             See All Events
