@@ -869,14 +869,14 @@ export default function BusinessProfile() {
                 email={businessData.email}
                 description={businessData.description}
                 className={classes.paper2}
-                style={{height: '650px'}}
+                style={{height: '700px'}}
               />
             </Grid>
             {tab === 2 &&
             <Divider orientation="vertical" flexItem
               style={{marginRight: '-1px'}} />}
             {tab === 2 &&
-            <Grid item md={9} container style={{height: 650}}
+            <Grid item md={9} container style={{height: 700}}
               className={classes.grid}>
               <Typography style={{margin: 8, fontSize: '24px'}}>
                 Upcoming Events:</Typography>
@@ -893,8 +893,8 @@ export default function BusinessProfile() {
               <ShareBar style={{height: 45}}/>
             </Grid>}
             {tab === 1 && <Grid item container md={9} direction="column"
-              alignItems="center" style={{height: 650, overflow: 'auto',
-                maxHeight: 650}}
+              alignItems="center" style={{height: 700, overflow: 'auto',
+                maxHeight: 700}}
               className={classes.grid}>
               {existingmembers.length > 0 && <Typography variant='h6'>
                 Existing Members
@@ -945,8 +945,8 @@ export default function BusinessProfile() {
               </Button>
             </Grid>}
             {tab === 0 && <Grid item container md={9} direction="column"
-              style={{height: 650, overflow: 'auto',
-                maxHeight: 650}}
+              style={{height: 700, overflow: 'auto',
+                maxHeight: 700}}
               className={classes.grid}>
               {eventState === null &&showAll === false&&
               <Grid style={{margin: 8}} item md={4} container justify='center'>

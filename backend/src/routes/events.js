@@ -143,3 +143,7 @@ exports.signup = async (req, res) => {
     }
   }
 };
+
+exports.getPublicEvents = async (req, res) => {
+  
+};

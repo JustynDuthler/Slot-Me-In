@@ -212,6 +212,7 @@ exports.getUsersEvents = async (userid) => {
   }
   return rows2;
 };
+
 // returns list of events created by businessid
 exports.getBusinessEvents = async (businessid) => {
   const queryText =

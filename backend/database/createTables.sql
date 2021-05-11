@@ -21,7 +21,7 @@ CREATE TABLE Businesses (
 	password TEXT NOT NULL,
 	phonenumber TEXT NOT NULL,
 	businessemail TEXT UNIQUE NOT NULL,
-  businessimagename TEXT DEFAULT '/stockPhoto.png',
+  businessimagename TEXT DEFAULT 'stockPhoto.png',
 	description VARCHAR(500) DEFAULT '',
 	PRIMARY KEY (businessid)
 );
