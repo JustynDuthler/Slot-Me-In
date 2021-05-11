@@ -128,11 +128,14 @@ export default function ViewEvents() {
 
   React.useEffect(() => {
     getEvents();
-    if (context.business === false) {
+    if (context.businessState === false) {
+      console.log('user account');
       getUserInfo();
     }
   }, []);
 
+  console.log(eventList);
+  console.log(memberEvents);
   /**
    * getCard
    * This function gets the individual event data

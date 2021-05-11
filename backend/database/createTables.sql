@@ -79,6 +79,6 @@ DROP TABLE IF EXISTS Members;
 CREATE TABLE Members (
   memberemail TEXT NOT NULL,
   businessid uuid,
-  PRIMARY KEY (memberemail),
+  PRIMARY KEY (memberemail, businessid),
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
