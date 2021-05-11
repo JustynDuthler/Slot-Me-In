@@ -146,10 +146,6 @@ export default function ViewEvents() {
           <Typography variant='h5' component='h2' align='center'>
             {row.eventname}
           </Typography>
-          {/* <Typography className={classes.pos}
-            variant='body2' align='center' noWrap>
-            Description: {row.description ? row.description : 'N/A'}
-          </Typography> */}
           <Typography className={classes.pos}
             color='textSecondary' variant='body2' align='center'>
             Start: {new Date(row.starttime).toLocaleString('en-US',
@@ -221,34 +217,6 @@ export default function ViewEvents() {
       <div></div>
     );
   }
-  // function showMemberEvents() {
-  //   return (
-  //     <Box mt={10}>
-  //       <h1 style={{float: 'left'}}>Member Events</h1>
-  //       <Box pt={5}>
-  //         <Link to="/allevents" style={{float: 'right'}}>
-  //           See All Events
-  //         </Link>
-  //       </Box>
-  //       <Box mt={5} mb={5} className={classes.box}>
-  //         <Carousel breakPoints={breakPoints}>
-  //           {memberEvents.map((event) =>
-  //             getCard(event),
-  //           )}
-  //         </Carousel>
-  //       </Box>
-  //     </Box>
-  //   );
-  // };
-
-  // const breakPoints = [
-  //   {width: 1, itemsToShow: 1},
-  //   {width: 550, itemsToShow: 3},
-  //   {width: 768, itemsToShow: 4},
-  //   {width: 1200, itemsToShow: 5},
-  //   {width: 1700, itemsToShow: 6},
-  //   {width: 2000, itemsToShow: 7},
-  // ];
 
   return (
     <React.Fragment>
