@@ -125,10 +125,12 @@ export default function ViewEvents() {
           console.log(error);
         });
   };
-  console.log(memberEvents);
+
   React.useEffect(() => {
     getEvents();
-    getUserInfo();
+    if (context.business === false) {
+      getUserInfo();
+    }
   }, []);
 
   /**
@@ -193,6 +195,7 @@ export default function ViewEvents() {
     {width: 2000, itemsToShow: 7},
   ];
 
+  // only show this if it is a user account
   let showMemberEvents;
   if (context.businessState === false) {
     showMemberEvents = (
