@@ -72,16 +72,21 @@ exports.checkRemainingEventCapacity = async (eventid) => {
   const {rows} = await pool.query(query);
   return rows;
 };
-exports.getEvents = async () => {
+
+// default values for start/end time queries so that all events
+//    are retrieved when no queries are provided
+exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
+                          end='3000-01-01T00:00:00.000Z') => {
   const select =
       'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime'+
       ' AS repeatstart, e.endtime, e.capacity, e.description,' +
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
       'r.repeattype,r.repeatend,e.repeatid '+
-      'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)';
+      'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)' +
+      'WHERE e.starttime >= $1 AND e.endtime <= $2';
   const query = {
     text: select,
-    values: [],
+    values: [start, end],
   };
   const days =
       {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
@@ -124,42 +129,6 @@ exports.getEventByID = async (eventid) => {
 
   const {rows} = await pool.query(query);
   return rows[0];
-};
-
-exports.getEventsByStart = async (starttime) => {
-  const queryText = 'SELECT * FROM Events e WHERE e.starttime >= $1';
-  const query = {
-    text: queryText,
-    values: [starttime],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows;
-};
-
-exports.getEventsByEnd = async (endtime) => {
-  const queryText = 'SELECT * FROM Events e WHERE e.endtime <= $1';
-  const query = {
-    text: queryText,
-    values: [endtime],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows;
-};
-
-
-exports.getEventsByRange = async (starttime, endtime) => {
-  // start time must be a unix timestamp
-  const queryText = 'SELECT * FROM Events e WHERE ' +
-      'e.starttime >= $1 AND e.endtime <= $2';
-  const query = {
-    text: queryText,
-    values: [starttime, endtime],
-  };
-
-  const {rows} = await pool.query(query);
-  return rows;
 };
 
 // returns list of events for which userid is attending,
