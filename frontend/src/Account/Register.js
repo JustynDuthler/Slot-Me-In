@@ -22,6 +22,9 @@ import Context from '../Context';
 import 'react-phone-input-2/lib/material.css';
 const Auth = require('../libs/Auth');
 import Link from '@material-ui/core/Link';
+import DateFnsUtils from '@date-io/date-fns';
+import {DatePicker, MuiPickersUtilsProvider}
+  from '@material-ui/pickers';
 
 /**
  * Register function
@@ -35,9 +38,17 @@ export default function Register() {
   const [description, setDescription] = React.useState('');
   const [showBusiness, setForm] = React.useState(false);
   const [showPassword, setVisibility] = React.useState(false);
-  const [emailError, setEmailError] = React.useState(false);
-  const [descriptionError, setDescriptionError] = React.useState(false);
-  const [emailMsg, setEmailMsg] = React.useState('');
+  const [dob, setDob] = React.useState(null);
+  const [errors, setErrors] = React.useState({
+    'name': false,
+    'email': false,
+    'emailMsg': '',
+    'password': false,
+    'description': false,
+    'dob': false,
+    'dobMsg': '',
+    'phone': false,
+  });
   const context = React.useContext(Context);
   const history = useHistory();
   /**
@@ -66,12 +77,12 @@ export default function Register() {
           if (!response.ok) {
             // on 409, show error message in email field
             if (response.status === 409) {
-              setEmailError(true);
+              setErrors({...errors, 'email': true,
+                'emailMsg': 'Email already in use.'});
               setEmailMsg('Email already in use.');
             }
             throw response;
           } else {
-            setEmailError(false);
             return response.json();
           }
         })
@@ -101,19 +112,35 @@ export default function Register() {
       '[a-zA-Z]{2,}))$'].join(''));
     const phoneRegex =
         /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    const errors = {
+      'name': false,
+      'email': false,
+      'emailMsg': '',
+      'password': false,
+      'description': false,
+      'dob': false,
+      'dobMsg': '',
+      'phone': false,
+    };
+    errors.password = password === '';
+    errors.name = username === '';
     if (!emailRegex.test(email)) {
       // display error if email is invalid
-      setEmailError(true);
-      setEmailMsg('Invalid email.');
+      errors.email = true;
+      errors.emailMsg = 'Invalid email.';
+    } else {
+      errors.email = false;
     }
-    if (showBusiness) {
-      // display error on business form if phone is invalid or description >500
-      if (!phoneRegex.test(phoneNumber) || description.length > 500) {
-        setDescriptionError(description.length > 500);
-      }
-    }
-    if (emailRegex.test(email) && (!showBusiness ||
-      phoneRegex.test(phoneNumber)) && description.length <= 500) {
+    errors.description = description.length > 500;
+    errors.phone = !phoneRegex.test(phoneNumber);
+
+    errors.dob = !dob || dob > new Date();
+    errors.dobMsg = !dob ? 'Date of birth is required.' :
+      'Date of birth must be past date.';
+    setErrors(errors);
+    if (!(errors.email || errors.description && showBusiness ||
+      errors.phone && showBusiness || errors.dob && !showBusiness ||
+      errors.name || errors.password)) {
       // don't submit if input is invalid
       handleSubmit(event);
     }
@@ -137,16 +164,24 @@ export default function Register() {
       flexDirection: 'column',
       alignItems: 'center',
     },
+    textentry: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(0),
+    },
     avatar: {
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
     },
     form: {
-      width: '100%', // Fix IE 11 issue.
+      width: '420px',
+      marginTop: theme.spacing(1),
+    },
+    dateselect: {
+      width: '100%',
       marginTop: theme.spacing(1),
     },
     submit: {
-      margin: theme.spacing(3, 0, 2),
+      margin: theme.spacing(2, 0, 2),
       backgroundColor: theme.palette.secondary.main,
     },
   }));
@@ -165,8 +200,11 @@ export default function Register() {
           </Typography>
           <div className={classes.form}>
             <TextField
+              className={classes.textentry}
               variant='outlined'
               margin='normal'
+              error={errors.name}
+              helperText={errors.name ? 'Name is required.' : ''}
               required
               fullWidth
               id='username'
@@ -178,9 +216,29 @@ export default function Register() {
               onKeyPress={handleKeypress}
               autoFocus
             />
+            {!showBusiness && <MuiPickersUtilsProvider
+              width='100%'
+              utils={DateFnsUtils}
+              className={classes.form}>
+              <DatePicker
+                width='100%'
+                error={errors.dob}
+                helperText={errors.dob ? errors.dobMsg : ''}
+                clearable
+                required
+                className={classes.dateselect}
+                format='MM/dd/yyyy'
+                label='Date of Birth'
+                inputVariant='outlined'
+                value={dob}
+                onChange={setDob}
+                onKeyPress={handleKeypress}
+              />
+            </MuiPickersUtilsProvider>}
             <TextField
-              error={emailError}
-              helperText={emailError?emailMsg:''}
+              className={classes.textentry}
+              error={errors.email}
+              helperText={errors.email ? errors.emailMsg : ''}
               variant='outlined'
               margin='normal'
               required
@@ -204,6 +262,7 @@ export default function Register() {
                 variant='outlined'
                 required
                 fullWidth
+                error={errors.password}
                 name='password'
                 label='Password'
                 type={showPassword ? 'text' : 'password'}
@@ -237,16 +296,7 @@ export default function Register() {
               label='Business Account'
             />
             {showBusiness && <PhoneInput
-              isValid={(value) => {
-                // show error if phone number is invalid
-                if (!value.match(
-                    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
-                )) {
-                  return 'Invalid phone number.';
-                } else {
-                  return true;
-                }
-              }}
+              isValid={!errors.phone}
               inputStyle={{width: '100%'}}
               country={'us'}
               value={phoneNumber}
@@ -258,8 +308,8 @@ export default function Register() {
               }}
             />}
             {showBusiness && <TextField
-              error={descriptionError}
-              helperText={descriptionError ?
+              error={errors.description}
+              helperText={errors.description ?
                 'Description must be less than 500 characters.' : ''}
               variant='outlined'
               margin='normal'
