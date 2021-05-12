@@ -532,6 +532,9 @@ export default function BusinessProfile() {
     if (members.length === 0) {
       members.push(memberListInfo(null));
     }
+    if (existingmembers.length === 0) {
+      existingmembers.push(memberListInfo(null));
+    }
     let eventtemp = {};
     for (const key in eventList) {
       if (eventList.hasOwnProperty(key)) {
