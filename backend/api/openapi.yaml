@@ -444,10 +444,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-<<<<<<< HEAD
-=======
 
->>>>>>> 3fc43892597c5582d3080c2052d1577c084cc5ac
 
   /businesses/getProfileImage:
     get:
