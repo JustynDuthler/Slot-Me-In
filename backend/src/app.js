@@ -66,7 +66,7 @@ events or just events by the business depending on if the account is a business
 or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
-app.get('/api/events/publicEvents', events.getPublicEvents);
+app.get('/api/events/publicEvents', events.publicEvents);
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
 app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);
@@ -81,6 +81,8 @@ app.get('/api/members/getMembers', auth.businessAuth,
     members.getMembers);
 app.delete('/api/members/deleteMember', auth.businessAuth,
     members.deleteMember);
+app.get('/api/members/getRestrictedEvents/:useremail', members.getRestrictedEvents);
+app.get('/api/members/getMemberBusinesses/:useremail', members.getMemberBusinesses);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {

@@ -7,7 +7,10 @@ import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import {cropImage} from './libs/Util.js';
+import {cropImage, formatDate} from './libs/Util.js';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 
 /**
  * UserInfo component
@@ -133,35 +136,7 @@ UserInfo.propTypes = {
   description: PropTypes.string,
   className: PropTypes.string,
 };
-/**
- * EventInfo component
- * @return {object} EventInfo JSX
- */
-export function EventInfo() {
-  const useStyles = makeStyles((theme) => ({
-    grid: {
-      backgroundColor: theme.palette.back.dark,
-    },
-    gridbordered: {
-      backgroundColor: theme.palette.back.dark,
-      border: `1px solid ${theme.palette.primary.light}`,
-      height: 100,
-      margin: theme.spacing(2),
-    },
-  }));
-  const classes = useStyles();
-  return (
-    <Grid item container md={2} className={classes.gridbordered}
-      justify="center"
-      alignItems="center"
-      direction="column">
-      <Typography>Event Name</Typography>
-      <Typography>Date/Time</Typography>
-      <Typography>Location</Typography>
-      <Typography>Capacity</Typography>
-    </Grid>
-  );
-}
+
 /**
  * ShareBar component
  * @return {object} ShareBar JSX
@@ -202,3 +177,58 @@ export function ShareBar({...rest}) {
     </Grid>
   );
 }
+EventCard.propTypes = {
+  row: PropTypes.object,
+  context: PropTypes.object,
+  isBusiness: PropTypes.bool,
+};
+/**
+ * EventCard
+ * This function gets the individual event data
+ * for each card and displays it. When the card
+ * is clicked, it goes to URL /event/{eventid}.
+ * @param {object} row - event info - required
+ * @param {object} context - react context - required for accessing authstate
+ * @param {object} isBusiness - is this card being viewed as a business, doesn't
+ *  do anything yet
+ * @return {object} JSX
+ */
+export function EventCard({row: row, context: context, isBusiness: isBusiness,
+  ...rest}) {
+  const useStyles = makeStyles((theme) => ({
+    pos: {
+      marginTop: 8,
+    },
+  }));
+  const classes = useStyles();
+  return (
+    <Card key={row.eventid} {...rest}>
+      <CardContent>
+        <Typography variant='h5' component='h2' align='center'>
+          {row.eventname}
+        </Typography>
+        <Typography className={classes.pos}
+          color='textSecondary' variant='body2' align='center'>
+          {formatDate(row.starttime, row.endtime)}
+        </Typography>
+        <Typography className={classes.pos}
+          variant='subtitle1' align='center'
+          color={row.attendees === row.capacity ?
+              'primary' : 'textPrimary'}>
+          {row.capacity - row.attendees} of {row.capacity} spots open
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button size='small'
+          variant='contained'
+          color='secondary'
+          href={context.businessState === false ?
+            '/event/' + row.eventid : '/profile/'}
+          style={{margin: 'auto'}}>
+          {context.businessState === false ?
+            'View Event' : 'View Event in Profile'}
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};

@@ -6,14 +6,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-import Context from './Context';
-import Auth from './libs/Auth';
+import Context from '../Context';
+import Auth from '../libs/Auth';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IndividualEvent from './IndividualEvent';
+import IndividualEvent from '../IndividualEvent';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import clsx from 'clsx';
@@ -27,8 +27,8 @@ import PropTypes from 'prop-types';
 import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import UserInfo from './Components';
-import {EventInfo, ShareBar} from './Components';
+import UserInfo from '../Components';
+import {EventCard, ShareBar} from '../Components';
 
 /**
  * BusinessProfile component
@@ -473,6 +473,39 @@ export default function BusinessProfile() {
       </div>
     );
   };
+  /**
+   * memberListInfo
+   * list entry for member given member info object
+   * @param {*} member
+   * @return {object} JSX
+   */
+  function memberListInfo(member=null) {
+    return (<ListItem button={true}
+      key={member ? member.email : 'noMembers'}
+      onClick={() => {
+        /* Link to public user profile page ? */
+      }}>
+      <ListItemText
+        primary={member ? member.username : 'None'}
+        secondary={member ? member.email.toLowerCase() : ''}/>
+      {member && <ListItemSecondaryAction>
+        <Button
+          type='submit'
+          variant='contained'
+          color='secondary'
+          onClick={() => {
+            if (removeMember(member.email)) {
+              const membersCopy = JSON.parse(JSON.stringify(memberList));
+              delete membersCopy[member.email];
+              setMemberList(membersCopy);
+            }
+          }}
+        >
+          Remove
+        </Button>
+      </ListItemSecondaryAction>}
+    </ListItem>);
+  }
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
@@ -489,40 +522,23 @@ export default function BusinessProfile() {
     for (const m in memberList) {
       if (memberList.hasOwnProperty(m)) {
         const member = memberList[m];
-        const comp = <ListItem button={true}
-          key={member.email}
-          onClick={() => {
-            /* Link to public user profile page ? */
-          }}>
-          <ListItemText key={member.userid}
-            primary={member.username}
-            secondary={member.email.toLowerCase()}/>
-          <ListItemSecondaryAction>
-            <Button
-              type='submit'
-              variant='contained'
-              color='secondary'
-              onClick={() => {
-                if (removeMember(member.email)) {
-                  const membersCopy = JSON.parse(JSON.stringify(memberList));
-                  delete membersCopy[member.email];
-                  setMemberList(membersCopy);
-                }
-              }}
-            >
-              Remove
-            </Button>
-          </ListItemSecondaryAction>
-        </ListItem>;
         if (member.userid !== null) {
-          existingmembers.push(comp);
+          existingmembers.push(memberListInfo(member));
         } else {
-          members.push(comp);
+          members.push(memberListInfo(member));
         }
       }
     }
+    if (members.length === 0) {
+      members.push(memberListInfo(null));
+    }
+    if (existingmembers.length === 0) {
+      existingmembers.push(memberListInfo(null));
+    }
+    let eventtemp = {};
     for (const key in eventList) {
       if (eventList.hasOwnProperty(key)) {
+        eventtemp = eventList[key];
         const eventid = eventList[key].eventid;
         const eventName = eventList[key].eventname;
         const startDate = new Date(eventList[key].starttime);
@@ -683,31 +699,6 @@ export default function BusinessProfile() {
     return (
       <Container component='main'>
         <div className={classes.paper}>
-          <div className={classes.buttonGroup}>
-            <ButtonGroup color="primary" aria-label="primary button group">
-              <Button
-                variant={tab === 0 ? 'contained': ''}
-                color={tab === 0 ? 'primary' : 'primary'}
-                onClick={()=>{
-                  setTab(0);
-                }}>Events
-              </Button>
-              <Button
-                variant={tab === 1 ? 'contained': ''}
-                color={tab === 1 ? 'primary' : 'primary'}
-                onClick={()=>{
-                  setTab(1);
-                }}>Members
-              </Button>
-              <Button
-                variant={tab === 2 ? 'contained': ''}
-                color={tab === 2 ? 'primary' : 'primary'}
-                onClick={()=>{
-                  setTab(2);
-                }}>Overview
-              </Button>
-            </ButtonGroup>
-          </div>
           {tab === 3 && <div>
             <Paper margin='2px'>
               <Container component='main' maxWidth='md'>
@@ -880,91 +871,105 @@ export default function BusinessProfile() {
               className={classes.grid}>
               <Typography style={{margin: 8, fontSize: '24px'}}>
                 Upcoming Events:</Typography>
-              <Grid item md={12} container style={{height: '400px'}}
-                className={classes.grid2}>
-                <EventInfo/>
-                <EventInfo/>
-                <EventInfo/>
-                <EventInfo/>
-                <EventInfo/>
-                <EventInfo/>
-              </Grid>
+              <Box width='100%' height='400px'>
+                <Grid item md={12} container justify='center'
+                  className={classes.grid2}>
+                  <EventCard row={eventtemp} context={context}/>
+                  <EventCard row={eventtemp} context={context}/>
+                  <EventCard row={eventtemp} context={context}/>
+                  <EventCard row={eventtemp} context={context}/>
+                  <EventCard row={eventtemp} context={context}/>
+                  <EventCard row={eventtemp} context={context}/>
+                </Grid>
+              </Box>
               <Divider className={classes.divider}/>
               <ShareBar style={{height: 45}}/>
             </Grid>}
-            {tab === 1 && <Grid item container md={9} direction="column"
-              alignItems="center" style={{height: 700, overflow: 'auto',
+            {tab === 1 && <Grid item container md={9} direction="row"
+              justify="center" style={{height: 700, overflow: 'auto',
                 maxHeight: 700}}
               className={classes.grid}>
-              {existingmembers.length > 0 && <Typography variant='h6'>
-                Existing Members
-              </Typography>}
-              {existingmembers.length > 0 && <Divider/>}
-              {existingmembers.length > 0 && <List
-                style={{width: '100%', height: 220,
-                  maxHeight: 220, overflow: 'auto'}}>
-                {existingmembers}
-              </List>}
-              {members.length > 0 && <Typography variant='h6'>
-                Inactive Members
-              </Typography>}
-              {members.length > 0 && <Divider/>}
-              {members.length > 0 && <List
-                style={{width: '100%', height: 220,
-                  maxHeight: 220, overflow: 'auto'}}>
-                {members}
-              </List>}
+              {existingmembers.length > 0 && <Box width='40%'
+                style={{margin: '5%'}}>
+                <Typography variant='h6'>
+                  Existing Members
+                </Typography>
+                <Divider/>
+                <List
+                  style={{width: '100%', height: 220,
+                    maxHeight: 220, overflow: 'auto'}}>
+                  {existingmembers}
+                </List>
+              </Box>}
+              {members.length > 0 && <Box width='40%' style={{margin: '5%'}}>
+                <Typography variant='h6'>
+                  Inactive Members
+                </Typography>
+                <Divider/>
+                <List
+                  style={{width: '100%', height: 220,
+                    maxHeight: 220, overflow: 'auto'}}>
+                  {members}
+                </List>
+              </Box>}
               {members.length+existingmembers.length === 0 && <Typography>
                 Currently added 0 members
               </Typography>}
-              <TextField
-                error={emailError}
-                helperText={emailError ? emailMsg : ''}
-                variant='filled'
-                margin='normal'
-                fullWidth
-                id='email'
-                label='Email Addresses'
-                name='email'
-                autoComplete='email'
-                multiline
-                onChange={(event) => {
-                  setEmailInput(event.target.value);
-                }}
-                onKeyPress={handleKeypress}
-              />
-              <Button
-                type='submit'
-                fullWidth
-                variant='contained'
-                color='secondary'
-                className={classes.submit}
-                onClick={validateInput}
-              >
-                Add Members
-              </Button>
+              <Box width='50%'>
+                <TextField
+                  error={emailError}
+                  helperText={emailError ? emailMsg : ''}
+                  variant='filled'
+                  margin='normal'
+                  fullWidth
+                  id='email'
+                  label='Email Addresses'
+                  name='email'
+                  autoComplete='email'
+                  multiline
+                  onChange={(event) => {
+                    setEmailInput(event.target.value);
+                  }}
+                  onKeyPress={handleKeypress}
+                />
+                <Button
+                  type='submit'
+                  fullWidth
+                  variant='contained'
+                  color='secondary'
+                  className={classes.submit}
+                  onClick={validateInput}
+                >
+                  Add Members
+                </Button>
+              </Box>
             </Grid>}
-            {tab === 0 && <Grid item container md={9} direction="column"
+            {tab === 0 && <Grid item container md={9} direction="row"
               style={{height: 700, overflow: 'auto',
                 maxHeight: 700}}
               className={classes.grid}>
               {eventState === null &&showAll === false&&
-              <Grid style={{margin: 8}} item md={4} container justify='center'>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <DatePicker
-                    variant='static'
-                    label='Event select'
-                    value={selectedDate}
-                    onChange={(date) => {
-                      setSelectedDate(date);
-                    }}
-                    renderDay={renderWrappedDays}
-                  />
-                </MuiPickersUtilsProvider>
-              </Grid>}
-              <List>
-                {eventListJSX}
-              </List>
+              <Box width='50%'>
+                <Grid container justify='center'>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <DatePicker
+                      variant='static'
+                      label='Event select'
+                      value={selectedDate}
+                      onChange={(date) => {
+                        setSelectedDate(date);
+                      }}
+                      renderDay={renderWrappedDays}
+                      align="center"
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+              </Box>}
+              <Box width='50%'>
+                <List>
+                  {eventListJSX}
+                </List>
+              </Box>
             </Grid>}
           </Grid>
         </div>

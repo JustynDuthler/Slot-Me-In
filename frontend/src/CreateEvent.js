@@ -35,6 +35,7 @@ export default function CreateEvent() {
   const [description, changeDescription] = React.useState('');
   const [repeat, changeRepeat] = React.useState(false);
   const [membersOnly, changeMembersOnly] = React.useState(false);
+  const [age, setAge] = React.useState(-1);
   const [repeatDays, changeRepeatDays] =
     React.useState({'monday': false, 'tuesday': false, 'wednesday': false,
       'thursday': false, 'friday': false, 'saturday': false, 'sunday': false});
@@ -251,6 +252,26 @@ export default function CreateEvent() {
                   changeMembersOnly(event.target.checked);
                 }}/>}
               label='Members Only'
+            />
+            <FormControlLabel
+              control={<Checkbox value='18plus' color='primary'
+                icon={<RadioButtonUncheckedIcon />}
+                checkedIcon={<RadioButtonCheckedIcon />}
+                checked={age===18}
+                onChange={(event) => {
+                  setAge(event.target.checked ? 18 : -1);
+                }}/>}
+              label='18+'
+            />
+            <FormControlLabel
+              control={<Checkbox value='21plus' color='primary'
+                icon={<RadioButtonUncheckedIcon />}
+                checkedIcon={<RadioButtonCheckedIcon />}
+                checked={age===21}
+                onChange={(event) => {
+                  setAge(event.target.checked ? 21 : -1);
+                }}/>}
+              label='21+'
             />
             {repeat && <FormControl required
               error={errors.repeat || errors.repeatDays}

@@ -1,5 +1,5 @@
 import React from 'react';
-import Context from './Context';
+import Context from '../Context';
 import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import {Button, Typography} from '@material-ui/core';
@@ -8,8 +8,9 @@ import {
 } from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
 
-import Login from './Login';
-import Register from './Register';
+import Login from '../Account/Login';
+import Register from '../Account/Register';
+import EventGrid from '../Events/EventGrid';
 
 // This page is is the react-route for /
 
@@ -198,7 +199,7 @@ const UnAuthHome = (props) => {
     <Box className={classes.root}>
       <Hidden mdDown>
         <Box className={classes.events}>
-          Event Info
+          <EventGrid publicEvents={true}/>
         </Box>
       </Hidden>
       <Box id="rightSide" className={classes.right}>

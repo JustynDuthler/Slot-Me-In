@@ -144,6 +144,17 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.getPublicEvents = async (req, res) => {
-  
+// Sends an array of events that are marked as public in the db
+// this is for display on the home page
+// This route doesn't use JWT authorization
+exports.publicEvents = async (req, res, next) => {
+  eventsDb.getPublicEvents()
+  .then((events) => {
+    res.status(200).send(events);
+  })
+  .catch((error) => {
+    console.log("Error in publicEvents: " + error);
+    error.status = 500;
+    next(error);
+  });
 };
