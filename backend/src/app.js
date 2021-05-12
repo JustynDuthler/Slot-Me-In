@@ -52,11 +52,11 @@ auth.businessAuth, businesses.getEvents);
 app.get('/api/businesses/:businessid/events', businesses.getEventsByID);
 app.get('/api/businesses/checkBusinessID', 
   auth.businessAuth, businesses.validID);
-app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 app.post('/api/businesses/uploadProfileImage', auth.businessAuth, 
   businesses.saveProfileImage);
 app.get('/api/businesses/getProfileImage', auth.businessAuth, 
   businesses.sendProfileImage);
+app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 
 // Event routes
 app.post('/api/events', auth.businessAuth, events.create);
