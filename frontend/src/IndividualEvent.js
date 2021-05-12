@@ -18,6 +18,8 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import {EventCard} from './Components';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import Context from './Context';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
@@ -28,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
   },
   grid: {
-    marginTop: 50,
+    marginTop: 20,
+    justifyContent: 'center',
   },
   dialogText: {
     marginLeft: 15,
@@ -47,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
   },
   businessName: {
     marginTop: theme.spacing(3),
+  },
+  businessDescription: {
+    marginTop: theme.spacing(3),
+    marginLeft: 20,
+    marginRight: 20,
   },
   iconText: {
     display: 'flex',
@@ -135,6 +143,9 @@ const IndividualEvent = (props) => {
       return response.json();
     }).then((json) => {
       setEventList(json.slice(0, 3));
+      setEventList(eventList.filter((event) =>
+        event.eventid !== eventid,
+      ));
     })
         .catch((error) => {
           console.log(error);
@@ -309,7 +320,7 @@ const IndividualEvent = (props) => {
 
   return (
     <div>
-      <Grid container spacing={0} className={classes.grid}>
+      <Grid container spacing={3} className={classes.grid}>
         <Grid item xs={3} className={classes.businessInfo}>
           <Avatar
             alt={businessData.businessname}
@@ -326,9 +337,13 @@ const IndividualEvent = (props) => {
           <Typography variant='body1' align='center'>
             {businessData.phonenumber}
           </Typography>
+          <Typography className={classes.businessDescription}
+            variant='body1' align='center'>
+            {businessData.description}
+          </Typography>
         </Grid>
 
-        <Grid item xs={6} className={classes.eventInfo}>
+        <Grid item xs={4} className={classes.eventInfo}>
           <Typography className={classes.title} variant='h2'>
             {eventData.eventname}
           </Typography>
@@ -389,11 +404,20 @@ const IndividualEvent = (props) => {
             More {businessData.businessname} Events
           </Typography>
           <Box className={classes.eventCards}>
-            {eventList.map((event) =>
-              <EventCard
-                className={classes.card}
-                row={event} context={context} key={event.eventid} />,
-            )}
+            {eventList.length > 0 ?
+              eventList.map((event) =>
+                <EventCard
+                  className={classes.card}
+                  row={event} context={context} key={event.eventid} />,
+              ) :
+              <Card className={classes.card}>
+                <CardContent>
+                  <Typography variant='h6' component='h2' align='center'>
+                    No Other Events Available
+                  </Typography>
+                </CardContent>
+              </Card>
+            }
           </Box>
         </Grid>
       </Grid>
