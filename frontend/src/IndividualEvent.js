@@ -17,9 +17,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import {EventCard} from './Components';
 import Context from './Context';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
@@ -141,47 +139,6 @@ const IndividualEvent = (props) => {
         .catch((error) => {
           console.log(error);
         });
-  };
-
-  /**
-   * getCard
-   * This function gets the individual event data
-   * for each card and displays it. When the card
-   * is clicked, it goes to URL /event/{eventid}.
-   * @param {*} row
-   * @return {object} JSX
-   */
-  function getCard(row) {
-    return (
-      <Card className={classes.card} key={row.eventid}>
-        <CardContent>
-          <Typography variant='h5' component='h2' align='center'>
-            {row.eventname}
-          </Typography>
-          <Typography className={classes.pos}
-            color='textSecondary' variant='body2' align='center'>
-            {Util.formatDate(row.starttime, row.endtime)}
-          </Typography>
-          <Typography className={classes.pos}
-            variant='subtitle1' align='center'
-            color={row.attendees === row.capacity ?
-                'primary' : 'textPrimary'}>
-            {row.capacity - row.attendees} of {row.capacity} spots open
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Button size='small'
-            variant='contained'
-            color='secondary'
-            href={context.businessState === false ?
-              '/event/' + row.eventid : '/profile/'}
-            style={{margin: 'auto'}}>
-            {context.businessState === false ?
-              'View Event' : 'View Event in Profile'}
-          </Button>
-        </CardActions>
-      </Card>
-    );
   };
 
   /**
@@ -433,7 +390,9 @@ const IndividualEvent = (props) => {
           </Typography>
           <Box className={classes.eventCards}>
             {eventList.map((event) =>
-              getCard(event),
+              <EventCard
+                className={classes.card}
+                row={event} context={context} key={event.eventid} />,
             )}
           </Box>
         </Grid>

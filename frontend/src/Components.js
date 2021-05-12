@@ -7,7 +7,7 @@ import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import {cropImage} from './libs/Util.js';
+import {cropImage, formatDate} from './libs/Util.js';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -209,19 +209,7 @@ export function EventCard({row: row, context: context, isBusiness: isBusiness,
         </Typography>
         <Typography className={classes.pos}
           color='textSecondary' variant='body2' align='center'>
-          Start: {new Date(row.starttime).toLocaleString('en-US',
-              {weekday: 'short', month: 'short', day: 'numeric',
-                year: 'numeric'})} at {new Date(row.starttime)
-              .toLocaleString(
-                  'en-US', {hour: 'numeric', minute: 'numeric'})}
-        </Typography>
-        <Typography className={classes.pos}
-          color='textSecondary' variant='body2' align='center'>
-          End: {new Date(row.endtime).toLocaleString('en-US',
-              {weekday: 'short', month: 'short', day: 'numeric',
-                year: 'numeric'})} at {new Date(row.endtime)
-              .toLocaleString(
-                  'en-US', {hour: 'numeric', minute: 'numeric'})}
+          {formatDate(row.starttime, row.endtime)}
         </Typography>
         <Typography className={classes.pos}
           variant='subtitle1' align='center'
