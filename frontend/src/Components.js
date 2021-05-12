@@ -272,7 +272,7 @@ export function BusinessInfo({picture: path, name: name, email: email,
   }));
   const classes = useStyles();
   return (
-    <Grid item className={classes.businessInfo}>
+    <Grid item className={classes.businessInfo} {...rest}>
       <Avatar className={classes.avatar}
         alt={name}
         src={'./picture'}
