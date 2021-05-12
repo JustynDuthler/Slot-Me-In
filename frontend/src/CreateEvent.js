@@ -72,7 +72,7 @@ export default function CreateEvent() {
     eventObj.capacity = parseInt(capacity);
     eventObj.description = description;
     eventObj.repeat = repeat;
-    eventObj.membersOnly = membersOnly;
+    eventObj.membersonly = membersOnly;
     // properties for repeating events only
     if (repeat) {
       eventObj.repeattype = 'w';

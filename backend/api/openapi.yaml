@@ -445,6 +445,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+
   /businesses/getProfileImage:
     get:
       description: get a business profile picture
@@ -538,6 +539,11 @@ paths:
             type: string
             format: date-time
           description: Get only events ending before a given timestamp (optional)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search events by text (optional)
       security:
         - bearerAuth: []
       responses:

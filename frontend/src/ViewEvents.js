@@ -89,7 +89,6 @@ export default function ViewEvents() {
       }
     }).then((json) => {
       setMemberBusinesses(json);
-      console.log(json);
     })
         .catch((error) => {
           console.log(error);
@@ -115,7 +114,6 @@ export default function ViewEvents() {
       }
     }).then((json) => {
       setMemberEvents(json);
-      console.log(json);
     })
         .catch((error) => {
           console.log(error);
@@ -155,7 +153,6 @@ export default function ViewEvents() {
       getUserInfo();
     }
   }, []);
-  console.log(memberBusinesses);
 
   const breakPoints = [
     {width: 1, itemsToShow: 1},

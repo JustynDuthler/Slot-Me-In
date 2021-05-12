@@ -136,3 +136,6 @@ INSERT INTO Attendees(eventid, userid)
 VALUES ('00000000-0009-0000-0000-000000000000', '00000000-0000-0000-0000-000000000018');
 INSERT INTO Attendees(eventid, userid)
 VALUES ('00000000-0010-0000-0000-000000000000', '00000000-0000-0000-0000-000000000019');
+
+--INSERT INTO Tags(tag)
+--VALUES ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('meeting');
