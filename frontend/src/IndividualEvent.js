@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 // import {useHistory, useLocation} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,7 +17,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
-import {EventCard} from './Components';
+import {EventCard, BusinessInfo} from './Components';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Context from './Context';
@@ -322,26 +322,14 @@ const IndividualEvent = (props) => {
   return (
     <div>
       <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={3} className={classes.businessInfo}>
-          <Avatar
-            alt={businessData.businessname}
-            src={'./picture'}
-            className={classes.avatar}
+        <Grid item xs={3}>
+          <BusinessInfo
+            picture='picture'
+            name={businessData.businessname}
+            email={businessData.email}
+            phonenumber={businessData.phonenumber}
+            description={businessData.description}
           />
-          <Typography className={classes.businessName}
-            variant='h3' align='center'>
-            {businessData.businessname}
-          </Typography>
-          <Typography variant='body1' align='center'>
-            {businessData.email}
-          </Typography>
-          <Typography variant='body1' align='center'>
-            {businessData.phonenumber}
-          </Typography>
-          <Typography className={classes.businessDescription}
-            variant='body1' align='center'>
-            {businessData.description}
-          </Typography>
         </Grid>
 
         <Grid item xs={4} xl={3} className={classes.eventInfo}>
