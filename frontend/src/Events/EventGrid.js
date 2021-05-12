@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {EventCard} from '../Components';
+import Grid from '@material-ui/core/Grid';
+import Context from '../Context';
 
 /**
  *
@@ -8,6 +11,7 @@ import PropTypes from 'prop-types';
  */
 const EventGrid = ({publicEvents}) => {
   const [events, setEvents] = React.useState([]);
+  const context = React.useContext(Context);
 
   React.useEffect(async () => {
     /**
@@ -32,7 +36,19 @@ const EventGrid = ({publicEvents}) => {
     }
   }, []);
 
-  return (<div>{events.length}</div>);
+  const gridItems = [];
+  events.forEach((item) => {
+    gridItems.push(
+        <Grid key={item.eventid} item>
+          <EventCard row={item} context={context} isBusiness={false}/>
+        </Grid>);
+  });
+
+  return (
+    <Grid container>
+      {gridItems}
+    </Grid>
+  );
 };
 
 EventGrid.propTypes = {

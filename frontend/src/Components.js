@@ -182,6 +182,7 @@ EventCard.propTypes = {
   context: PropTypes.object,
   isBusiness: PropTypes.bool,
 };
+
 /**
  * EventCard
  * This function gets the individual event data

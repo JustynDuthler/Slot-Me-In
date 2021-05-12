@@ -278,7 +278,7 @@ paths:
     get:
       description: Gets business information
       tags:
-        - business
+        - businesses
       security:
         - bearerAuth: []
       responses:
