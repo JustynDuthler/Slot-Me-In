@@ -18,9 +18,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import {useHistory} from 'react-router-dom';
 import PhoneInput from 'react-phone-input-2';
-import Context from './Context';
+import Context from '../Context';
 import 'react-phone-input-2/lib/material.css';
-const Auth = require('./libs/Auth');
+const Auth = require('../libs/Auth');
 import Link from '@material-ui/core/Link';
 
 /**
@@ -112,8 +112,8 @@ export default function Register() {
         setDescriptionError(description.length > 500);
       }
     }
-    if (emailRegex.test(email) && phoneRegex.test(phoneNumber) &&
-        description.length <= 500) {
+    if (emailRegex.test(email) && (!showBusiness ||
+      phoneRegex.test(phoneNumber)) && description.length <= 500) {
       // don't submit if input is invalid
       handleSubmit(event);
     }

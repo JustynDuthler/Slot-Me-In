@@ -7,13 +7,13 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Context from './Context';
-import Home from './Home';
+import Home from './Home/Home';
 import AuthTest from './AuthTest';
 import CreateEvent from './CreateEvent';
 import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
-import UserProfile from './UserProfile';
-import BusinessProfile from './BusinessProfile';
+import UserProfile from './Account/UserProfile';
+import BusinessProfile from './Account/BusinessProfile';
 import AllEvents from './AllEvents';
 import NavBar from './NavBar';
 const Auth = require('./libs/Auth');

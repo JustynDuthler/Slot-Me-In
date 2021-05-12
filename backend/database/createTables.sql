@@ -60,7 +60,7 @@ CREATE TABLE Events (
   endtime TIMESTAMPTZ NOT NULL,
   capacity INTEGER,
   repeatid uuid,
-  membersonly BOOLEAN DEFAULT FALSE,
+  membersonly BOOLEAN DEFAULT TRUE,
   PRIMARY KEY (eventid),
   FOREIGN KEY (businessid) REFERENCES Businesses,
   FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE

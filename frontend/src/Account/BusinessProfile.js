@@ -6,14 +6,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-import Context from './Context';
-import Auth from './libs/Auth';
+import Context from '../Context';
+import Auth from '../libs/Auth';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IndividualEvent from './IndividualEvent';
+import IndividualEvent from '../IndividualEvent';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import clsx from 'clsx';
@@ -27,8 +27,8 @@ import PropTypes from 'prop-types';
 import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import UserInfo from './Components';
-import {EventCard, ShareBar} from './Components';
+import UserInfo from '../Components';
+import {EventCard, ShareBar} from '../Components';
 
 /**
  * BusinessProfile component
