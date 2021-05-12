@@ -2,9 +2,15 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+import Avatar from '@material-ui/core/Avatar';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import {cropImage} from './libs/Util.js';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 
 /**
  * UserInfo component
@@ -45,15 +51,73 @@ export default function UserInfo({picture: path, name: name, email: email,
       width: '100%',
       backgroundColor: theme.palette.primary.light,
     },
+    avatar: {
+      margin: '0 auto',
+      width: '100%',
+      height: '300px',
+    },
   }));
   const classes = useStyles();
+  const [image, setImage] = React.useState({preview: '', raw: ''});
+  /**
+   * changeImage function
+   * @param {e} e
+   * sets the current image to the one uploaded
+   */
+  const changeImage = (e) => {
+    if (e.target.files.length) {
+      const url = URL.createObjectURL(e.target.files[0]);
+      console.log(e.target.files[0]);
+      cropImage(url, 1).then((canvas) => {
+        setImage({
+          preview: canvas.toDataURL('image/png'),
+          raw: e.target.files[0],
+        });
+      });
+    }
+  };
+  /**
+   * uploadProfileImage function
+   * uploads the profile image
+   */
+  function uploadProfileImage() {
+    // Does nothing yet
+  }
   return (
     <Grid item container direction="column"
       justify="flex-start"
       alignItems="center"
       className={classes.grid}
       {...rest}>
-      <Paper className={classes.paper}>{path}</Paper>
+      <Box width='100%' height='300px'>
+        <label htmlFor="upload-button" width='100%'>
+          {image.preview ? (
+            <img src={image.preview} alt="dummy" width='100%' height='auto' />
+          ) : (
+            <>
+              <Avatar
+                alt={'pfp'}
+                className={classes.avatar}
+              />
+            </>
+          )}
+        </label>
+        <input
+          type="file"
+          id="upload-button"
+          style={{display: 'none'}}
+          onChange={changeImage}
+        />
+      </Box>
+      <Box>
+        <Button
+          style={{fontSize: '12px'}}
+          variant='outlined'
+          onClick={()=>{
+            uploadProfileImage();
+          }}>Upload
+        </Button>
+      </Box>
       <Typography className={classes.text}>{name}
       </Typography>
       <Divider className={classes.divider}/>
@@ -72,35 +136,7 @@ UserInfo.propTypes = {
   description: PropTypes.string,
   className: PropTypes.string,
 };
-/**
- * EventInfo component
- * @return {object} EventInfo JSX
- */
-export function EventInfo() {
-  const useStyles = makeStyles((theme) => ({
-    grid: {
-      backgroundColor: theme.palette.back.dark,
-    },
-    gridbordered: {
-      backgroundColor: theme.palette.back.dark,
-      border: `1px solid ${theme.palette.primary.light}`,
-      height: 100,
-      margin: theme.spacing(2),
-    },
-  }));
-  const classes = useStyles();
-  return (
-    <Grid item container md={2} className={classes.gridbordered}
-      justify="center"
-      alignItems="center"
-      direction="column">
-      <Typography>Event Name</Typography>
-      <Typography>Date/Time</Typography>
-      <Typography>Location</Typography>
-      <Typography>Capacity</Typography>
-    </Grid>
-  );
-}
+
 /**
  * ShareBar component
  * @return {object} ShareBar JSX
@@ -141,3 +177,70 @@ export function ShareBar({...rest}) {
     </Grid>
   );
 }
+EventCard.propTypes = {
+  row: PropTypes.object,
+  context: PropTypes.object,
+  isBusiness: PropTypes.bool,
+};
+/**
+ * EventCard
+ * This function gets the individual event data
+ * for each card and displays it. When the card
+ * is clicked, it goes to URL /event/{eventid}.
+ * @param {object} row - event info - required
+ * @param {object} context - react context - required for accessing authstate
+ * @param {object} isBusiness - is this card being viewed as a business, doesn't
+ *  do anything yet
+ * @return {object} JSX
+ */
+export function EventCard({row: row, context: context, isBusiness: isBusiness,
+  ...rest}) {
+  const useStyles = makeStyles((theme) => ({
+    pos: {
+      marginTop: 8,
+    },
+  }));
+  const classes = useStyles();
+  return (
+    <Card key={row.eventid} {...rest}>
+      <CardContent>
+        <Typography variant='h5' component='h2' align='center'>
+          {row.eventname}
+        </Typography>
+        <Typography className={classes.pos}
+          color='textSecondary' variant='body2' align='center'>
+          Start: {new Date(row.starttime).toLocaleString('en-US',
+              {weekday: 'short', month: 'short', day: 'numeric',
+                year: 'numeric'})} at {new Date(row.starttime)
+              .toLocaleString(
+                  'en-US', {hour: 'numeric', minute: 'numeric'})}
+        </Typography>
+        <Typography className={classes.pos}
+          color='textSecondary' variant='body2' align='center'>
+          End: {new Date(row.endtime).toLocaleString('en-US',
+              {weekday: 'short', month: 'short', day: 'numeric',
+                year: 'numeric'})} at {new Date(row.endtime)
+              .toLocaleString(
+                  'en-US', {hour: 'numeric', minute: 'numeric'})}
+        </Typography>
+        <Typography className={classes.pos}
+          variant='subtitle1' align='center'
+          color={row.attendees === row.capacity ?
+              'primary' : 'textPrimary'}>
+          {row.capacity - row.attendees} of {row.capacity} spots open
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button size='small'
+          variant='contained'
+          color='secondary'
+          href={context.businessState === false ?
+            '/event/' + row.eventid : '/profile/'}
+          style={{margin: 'auto'}}>
+          {context.businessState === false ?
+            'View Event' : 'View Event in Profile'}
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};

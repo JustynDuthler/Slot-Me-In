@@ -10,6 +10,8 @@ const pool = require('../db/dbConnection');
 
 exports.getInfo = async (req, res) => {
   const business = await businessDb.selectBusiness(req.payload.id);
+  // 404 if business ID does not exist
+  if (!business) res.status(404).send();
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -22,6 +24,8 @@ exports.getInfo = async (req, res) => {
 
 exports.getBusinessByID = async (req, res) => {
   const business = await businessDb.selectBusiness(req.params.businessid);
+  // 404 if business ID does not exist
+  if (!business) res.status(404).send();
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -95,8 +99,18 @@ exports.getEvents = async (req, res) => {
       });
 };
 
+exports.getEventsByID = async (req, res) => {
+  // check if business ID exists, 404 if it does not
+  const business = await businessDb.selectBusiness(req.params.businessid);
+  if (!business) res.status(404).send();
+  // get events from a business id
+  const events = await eventsDb.getBusinessEvents(req.params.businessid);
+  res.status(200).send(events);
+}
+
 exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
+  console.log(req.payload.id);
   res.status(200).send();
 };
 
@@ -115,8 +129,8 @@ exports.saveProfileImage = async (req, res) => {
     /* construct path for image folder */
     const path = __dirname + '/../../../images/businessProfileImages/' + newFileName;
     /* retrieve previous image and delete it */
-    const prevFileName = await businessDb.getBusinessPhotoName(businessID);
-    if(prevFileName.businessimagename !== '/stockPhoto.png') {
+    const prevFileName = await businessDb.getBusinessImageName(businessID);
+    if(prevFileName.businessimagename !== 'stockPhoto.png') {
       const prevPath = __dirname + '/../../../images/businessProfileImages/' 
                       + prevFileName.businessimagename;
       fs.unlink(prevPath, (err) => {
@@ -141,6 +155,24 @@ exports.saveProfileImage = async (req, res) => {
     } else {
       res.status(200).send();
     }
-  
   }
 };
+
+exports.sendProfileImage = async (req, res) => {
+  const businessID = req.payload.id;
+  console.log(businessID)
+  const imageName = await businessDb.getBusinessImageName(businessID);
+  /* construct path to file */
+  const path = __dirname + '/../../../images/businessProfileImages/'
+              + imageName;
+  /* read the file data into a buffer */
+  fs.readFile(Path, 'binary' , (err, buffer) => {
+    if (err) {
+      console.error(err)
+      res.status(500).send();
+    }
+    console.log(buffer);
+    res.status(200).send(buffer);
+  })
+};
+

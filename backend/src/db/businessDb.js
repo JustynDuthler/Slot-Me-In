@@ -25,7 +25,7 @@ exports.selectBusiness = async (businessid) => {
   };
 
   const {rows} = await pool.query(query);
-  return rows[0];
+  return (rows.length > 0 ? rows[0] : undefined);
 };
 
 // check if a business email is already in use
@@ -66,7 +66,7 @@ exports.insertProfileImageName = async (businessid, imagename) => {
 }
 
 // gets photo name for a businessid
-exports.getBusinessPhotoName = async (businessid) => {
+exports.getBusinessImageName = async (businessid) => {
   const select = 'SELECT businessimagename FROM Businesses WHERE businessid = $1';
   const query = {
     text: select,

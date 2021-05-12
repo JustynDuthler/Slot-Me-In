@@ -21,7 +21,7 @@ CREATE TABLE Businesses (
 	password TEXT NOT NULL,
 	phonenumber TEXT NOT NULL,
 	businessemail TEXT UNIQUE NOT NULL,
-  businessimagename TEXT DEFAULT '/stockPhoto.png',
+  businessimagename TEXT DEFAULT 'stockPhoto.png',
 	description VARCHAR(500) DEFAULT '',
 	PRIMARY KEY (businessid)
 );
@@ -60,7 +60,7 @@ CREATE TABLE Events (
   endtime TIMESTAMPTZ NOT NULL,
   capacity INTEGER,
   repeatid uuid,
-  public BOOLEAN DEFAULT FALSE,
+  membersonly BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (eventid),
   FOREIGN KEY (businessid) REFERENCES Businesses,
   FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE
@@ -80,5 +80,6 @@ DROP TABLE IF EXISTS Members;
 CREATE TABLE Members (
   memberemail TEXT NOT NULL,
   businessid uuid,
+  PRIMARY KEY (memberemail, businessid),
   FOREIGN KEY (businessid) REFERENCES Businesses
 );

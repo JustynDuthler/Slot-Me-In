@@ -45,16 +45,18 @@ app.delete('/api/users/removeUserAttending',
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
-// incomplete, pass businessid via token instead
-// app.get('/api/businesses/:businessid/events', businesses.getEvents);
 app.get('/api/businesses/getBusiness', 
-  auth.businessAuth, businesses.getInfo);
+auth.businessAuth, businesses.getInfo);
 app.get('/api/businesses/getBusinessEvents', 
-  auth.businessAuth, businesses.getEvents);
+auth.businessAuth, businesses.getEvents);
+app.get('/api/businesses/:businessid/events', businesses.getEventsByID);
 app.get('/api/businesses/checkBusinessID', 
   auth.businessAuth, businesses.validID);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
-app.post('/api/businesses/uploadProfileImage', auth.businessAuth, businesses.saveProfileImage);
+app.post('/api/businesses/uploadProfileImage', auth.businessAuth, 
+  businesses.saveProfileImage);
+app.get('/api/businesses/getProfileImage', auth.businessAuth, 
+  businesses.sendProfileImage);
 
 // Event routes
 app.post('/api/events', auth.businessAuth, events.create);
@@ -79,6 +81,7 @@ app.get('/api/members/getMembers', auth.businessAuth,
     members.getMembers);
 app.delete('/api/members/deleteMember', auth.businessAuth,
     members.deleteMember);
+app.get('/api/members/getRestrictedEvents/:useremail', members.getRestrictedEvents);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {

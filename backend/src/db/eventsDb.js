@@ -212,6 +212,7 @@ exports.getUsersEvents = async (userid) => {
   }
   return rows2;
 };
+
 // returns list of events created by businessid
 exports.getBusinessEvents = async (businessid) => {
   const queryText =
@@ -257,7 +258,7 @@ exports.getBusinessEvents = async (businessid) => {
 };
 
 exports.getPublicEvents = async () => {
-  const SELECT = "SELECT * FROM Events WHERE public = TRUE";
+  const SELECT = "SELECT * FROM Events WHERE membersonly = FALSE";
   const query = {
     text: SELECT,
     values: [],

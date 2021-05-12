@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
   },
   grid: {
-    marginTop: 20,
+    marginTop: 50,
   },
   dialogText: {
     marginLeft: 15,
@@ -38,9 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: '0 auto',
+    fontSize: '6rem',
     width: theme.spacing(16),
     height: theme.spacing(16),
     [theme.breakpoints.up('md')]: {
+      fontSize: '10rem',
       width: theme.spacing(25),
       height: theme.spacing(25),
     },
@@ -56,14 +58,20 @@ const useStyles = makeStyles((theme) => ({
   date: {
     color: theme.palette.secondary.dark,
   },
+  location: {
+    color: theme.palette.primary.dark,
+  },
   description: {
     marginTop: theme.spacing(3),
+    marginLeft: 10,
   },
   capacity: {
     marginTop: theme.spacing(3),
+    marginLeft: 10,
   },
   signupButton: {
     marginTop: 15,
+    marginLeft: 10,
   },
   share: {
     marginTop: theme.spacing(3),
@@ -75,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     [theme.breakpoints.up('lg')]: {
-      width: 300,
+      width: 250,
     },
     [theme.breakpoints.down('md')]: {
       width: 175,
@@ -106,28 +114,25 @@ const IndividualEvent = (props) => {
   const [eventList, setEventList] = React.useState([]);
 
   useEffect(() => {
-    getEvents();
     getEventData();
     getTotalAttendees();
     getRegistration();
   }, []);
 
   /**
-   * getEvents
+   * getBusinessEvents
    * API call to get events
+   * @param {string} businessid ID of business that created this event
    */
-  function getEvents() {
-    const apicall = 'http://localhost:3010/api/events';
+  function getBusinessEvents(businessid) {
+    const apicall = 'http://localhost:3010/api/businesses/' +
+        businessid + '/events';
     fetch(apicall, {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
     }).then((response) => {
       if (!response.ok) {
-        if (response.status === 401) {
-          Auth.removeJWT();
-          context.setAuthState(false);
-          throw response;
-        }
+        throw response;
       }
       return response.json();
     }).then((json) => {
@@ -148,15 +153,11 @@ const IndividualEvent = (props) => {
    */
   function getCard(row) {
     return (
-      <Card className={classes.card}>
+      <Card className={classes.card} key={row.eventid}>
         <CardContent>
           <Typography variant='h5' component='h2' align='center'>
             {row.eventname}
           </Typography>
-          {/* <Typography className={classes.pos}
-            variant='body2' align='center' noWrap>
-            Description: {row.description ? row.description : 'N/A'}
-          </Typography> */}
           <Typography className={classes.pos}
             color='textSecondary' variant='body2' align='center'>
             {Util.formatDate(row.starttime, row.endtime)}
@@ -287,6 +288,7 @@ const IndividualEvent = (props) => {
         .then((json) => {
           setEventData(json);
           getBusinessData(json.businessid);
+          getBusinessEvents(json.businessid);
         })
         .catch((error) => {
           console.log(error);
@@ -350,14 +352,15 @@ const IndividualEvent = (props) => {
 
   return (
     <div>
-      <Grid container spacing={6} className={classes.grid}>
+      <Grid container spacing={0} className={classes.grid}>
         <Grid item xs={3} className={classes.businessInfo}>
           <Avatar
             alt={businessData.businessname}
+            src={'./picture'}
             className={classes.avatar}
           />
           <Typography className={classes.businessName}
-            variant='h2' align='center'>
+            variant='h3' align='center'>
             {businessData.businessname}
           </Typography>
           <Typography variant='body1' align='center'>
@@ -369,7 +372,7 @@ const IndividualEvent = (props) => {
         </Grid>
 
         <Grid item xs={6} className={classes.eventInfo}>
-          <Typography className={classes.title} variant='h1'>
+          <Typography className={classes.title} variant='h2'>
             {eventData.eventname}
           </Typography>
           <Box className={classes.iconText}>
@@ -379,7 +382,7 @@ const IndividualEvent = (props) => {
             </Typography>
           </Box>
           <Box className={classes.iconText}>
-            <LocationOnOutlinedIcon/>
+            <LocationOnOutlinedIcon className={classes.location}/>
             <Typography className={classes.location} variant='h6'>
               Science &amp; Engineering Library
             </Typography>
@@ -426,7 +429,7 @@ const IndividualEvent = (props) => {
 
         <Grid item xs={3}>
           <Typography variant='h5' align='center'>
-            Suggested Events
+            More {businessData.businessname} Events
           </Typography>
           <Box className={classes.eventCards}>
             {eventList.map((event) =>
