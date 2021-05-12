@@ -11,6 +11,10 @@ import {cropImage, formatDate} from './libs/Util.js';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import InstagramIcon from '@material-ui/icons/Instagram';
+import IconButton from '@material-ui/core/IconButton';
 
 /**
  * UserInfo component
@@ -144,36 +148,44 @@ UserInfo.propTypes = {
 export function ShareBar({...rest}) {
   const useStyles = makeStyles((theme) => ({
     grid: {
-      backgroundColor: theme.palette.back.main,
+      backgroundColor: theme.palette.primary.main,
     },
     gridbordered: {
       backgroundColor: theme.palette.back.main,
       border: `1px solid ${theme.palette.primary.light}`,
     },
+    shareIcon: {
+      color: theme.palette.secondary.main,
+      width: 50,
+      height: 50,
+    },
+    share: {
+      fontSize: '20px',
+      color: theme.palette.secondary.main,
+    },
   }));
   const classes = useStyles();
   return (
     <Grid item container className={classes.grid}
-      justify="center"
+      justify="flex-start"
       alignItems="center"
       direction="row"
       {...rest}>
       <Grid item container md={3} className={classes.grid}
         justify="center">
-        <Typography style={{fontSize: '20px'}}>Share</Typography>
+        <Typography className={classes.share}>Share</Typography>
       </Grid>
-      <Grid item container md={3} className={classes.gridbordered}
-        justify="center">
-        <Typography>Facebook</Typography>
-      </Grid>
-      <Grid item md={3} container className={classes.gridbordered}
-        justify="center">
-        <Typography>Instagram</Typography>
-      </Grid>
-      <Grid item md={3} container className={classes.gridbordered}
-        justify="center">
-        <Typography>Twitter</Typography>
-      </Grid>
+      <Box className={classes.share}>
+        <IconButton>
+          <FacebookIcon className={classes.shareIcon}/>
+        </IconButton>
+        <IconButton>
+          <TwitterIcon className={classes.shareIcon}/>
+        </IconButton>
+        <IconButton>
+          <InstagramIcon className={classes.shareIcon}/>
+        </IconButton>
+      </Box>
     </Grid>
   );
 }
