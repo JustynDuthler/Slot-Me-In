@@ -35,7 +35,7 @@ exports.addMembers = async (req, res) => {
   const businessid = req.payload.id;
   /* fill member list object with email, username, userid */
   let memberList = [];
-  for (i = 0; i < req.body.length; i++) {
+  for (var i = 0; i < req.body.length; i++) {
     const user = await memberDb.getMemberUserNameID(req.body[i]);
     let member = {
       username: (user === null ? null : user.username),
@@ -59,7 +59,7 @@ exports.getMembers = async (req, res) => {
   const businessid = req.payload.id;
   const emailList = await memberDb.getMemberList(businessid);
   let memberList = []
-  for(i = 0; i < emailList.length; i++) {
+  for(var i = 0; i < emailList.length; i++) {
     const user = await memberDb.getMemberUserNameID(emailList[i]);
     let member = {
       username: (user === null ? null : user.username),
@@ -77,7 +77,7 @@ exports.getMemberBusinesses = async (req, res) => {
 
   // get businesses based on businessid
   let businessList = []
-  for (i = 0; i < businesses.length; i++) {
+  for (var i = 0; i < businesses.length; i++) {
     const business = await businessDb.selectBusiness(businesses[i].businessid);
     const businessData = {
       businessid: business.businessid,
@@ -86,7 +86,6 @@ exports.getMemberBusinesses = async (req, res) => {
       phonenumber: business.phonenumber,
       description: business.description,
     };
-    console.log(businessData);
     businessList.push(businessData);
   }
   res.status(200).json(businessList);
@@ -95,11 +94,15 @@ exports.getMemberBusinesses = async (req, res) => {
 // Returns events for all businesses a user is a part of
 exports.getRestrictedEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
+
+  console.log(businesses.length);
   let restrictedEventList = []
-  for (i = 0; i < businesses.length; i++) {
+  for (var i = 0; i < businesses.length; i++) {
+    console.log('i: '+i);
     // get events for the business
     const restrictedEvents = await eventsDb.getBusinessEvents(businesses[i].businessid);
-    for (j = 0; j < restrictedEvents.length; j++) {
+    for (var j = 0; j < restrictedEvents.length; j++) {
+      console.log('j: '+j);
       // push each event
       restrictedEventList.push(restrictedEvents[j]);
     }
