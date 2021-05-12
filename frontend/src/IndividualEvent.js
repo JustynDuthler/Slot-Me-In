@@ -89,13 +89,13 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     [theme.breakpoints.up('lg')]: {
-      width: 250,
+      width: 275,
     },
     [theme.breakpoints.down('md')]: {
-      width: 175,
+      width: 225,
     },
     margin: '0 auto',
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -142,10 +142,8 @@ const IndividualEvent = (props) => {
       }
       return response.json();
     }).then((json) => {
+      console.log(json);
       setEventList(json.slice(0, 3));
-      setEventList(eventList.filter((event) =>
-        event.eventid !== eventid,
-      ));
     })
         .catch((error) => {
           console.log(error);
@@ -257,6 +255,9 @@ const IndividualEvent = (props) => {
           setEventData(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
+          setEventList(eventList.filter((event) =>
+            event.eventid !== eventid,
+          ));
         })
         .catch((error) => {
           console.log(error);
@@ -343,7 +344,7 @@ const IndividualEvent = (props) => {
           </Typography>
         </Grid>
 
-        <Grid item xs={4} className={classes.eventInfo}>
+        <Grid item xs={4} xl={3} className={classes.eventInfo}>
           <Typography className={classes.title} variant='h2'>
             {eventData.eventname}
           </Typography>
