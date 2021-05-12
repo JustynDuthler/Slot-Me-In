@@ -87,7 +87,8 @@ exports.getEvents = async (req, res) => {
     const events = await eventsDb.getBusinessEvents(req.payload.id);
     res.status(200).json(events);
   } else if (req.payload.userType == 'user') {
-    const events = await eventsDb.getEvents(req.query.start, req.query.end);
+    const events = await eventsDb.getEvents(
+        req.query.start, req.query.end, req.query.search);
     res.status(200).json(events);
   }
 };
