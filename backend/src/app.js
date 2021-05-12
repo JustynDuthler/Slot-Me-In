@@ -52,11 +52,11 @@ auth.businessAuth, businesses.getEvents);
 app.get('/api/businesses/:businessid/events', businesses.getEventsByID);
 app.get('/api/businesses/checkBusinessID', 
   auth.businessAuth, businesses.validID);
-app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 app.post('/api/businesses/uploadProfileImage', auth.businessAuth, 
   businesses.saveProfileImage);
 app.get('/api/businesses/getProfileImage', auth.businessAuth, 
   businesses.sendProfileImage);
+app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 
 // Event routes
 app.post('/api/events', auth.businessAuth, events.create);
@@ -82,6 +82,7 @@ app.get('/api/members/getMembers', auth.businessAuth,
 app.delete('/api/members/deleteMember', auth.businessAuth,
     members.deleteMember);
 app.get('/api/members/getRestrictedEvents/:useremail', members.getRestrictedEvents);
+app.get('/api/members/getMemberBusinesses/:useremail', members.getMemberBusinesses);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {

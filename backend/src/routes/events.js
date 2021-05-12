@@ -82,29 +82,13 @@ exports.delete = async (req, res) => {
 };
 
 exports.getEvents = async (req, res) => {
-  if (req.query.start && req.query.end) {
-    // if start and end query provided, query DB for events in between
-    const events = await eventsDb.getEventsByRange(
-        req.query.start, req.query.end);
+  // if business account, only show the events made by that business
+  if (req.payload.userType == 'business') {
+    const events = await eventsDb.getBusinessEvents(req.payload.id);
     res.status(200).json(events);
-  } else if (req.query.start) {
-    // if only start query provided, query for events starting after that time
-    const events = await eventsDb.getEventsByStart(req.query.start);
+  } else if (req.payload.userType == 'user') {
+    const events = await eventsDb.getEvents(req.query.start, req.query.end);
     res.status(200).json(events);
-  } else if (req.query.end) {
-    // if only end query provided, query DB for events ending before that time
-    const events = await eventsDb.getEventsByEnd(req.query.end);
-    res.status(200).json(events);
-  } else {
-    // if no queries provided, query DB for all events
-    // if business account, only show the events made by that business
-    if (req.payload.userType == 'business') {
-      const events = await eventsDb.getBusinessEvents(req.payload.id);
-      res.status(200).json(events);
-    } else if (req.payload.userType == 'user') {
-      const events = await eventsDb.getEvents();
-      res.status(200).json(events);
-    }
   }
 };
 

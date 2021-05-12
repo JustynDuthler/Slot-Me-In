@@ -160,18 +160,16 @@ exports.saveProfileImage = async (req, res) => {
 
 exports.sendProfileImage = async (req, res) => {
   const businessID = req.payload.id;
-  console.log(businessID)
   const imageName = await businessDb.getBusinessImageName(businessID);
   /* construct path to file */
   const path = __dirname + '/../../../images/businessProfileImages/'
-              + imageName;
+              + imageName.businessimagename;
   /* read the file data into a buffer */
-  fs.readFile(Path, 'binary' , (err, buffer) => {
+  fs.readFile(path, 'binary' , (err, buffer) => {
     if (err) {
       console.error(err)
       res.status(500).send();
     }
-    console.log(buffer);
     res.status(200).send(buffer);
   })
 };

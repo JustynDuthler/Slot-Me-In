@@ -83,3 +83,10 @@ CREATE TABLE Members (
   PRIMARY KEY (memberemail, businessid),
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
+
+--DROP TABLE IF EXISTS Tags;
+-- tags table
+--CREATE TABLE Tags (
+--  tag TEXT NOT NULL,
+--  PRIMARY KEY (tags)
+--);
