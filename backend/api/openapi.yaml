@@ -660,6 +660,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /events/publicEvents:
+    get: 
+      description: Returns an array of public events
+      tags:
+        - events
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+
   /attendees/{eventid}:
     get:
       description: Retrieves number of attendees for an event

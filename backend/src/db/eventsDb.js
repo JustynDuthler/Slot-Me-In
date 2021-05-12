@@ -256,3 +256,15 @@ exports.getBusinessEvents = async (businessid) => {
   }
   return rows2;
 };
+
+exports.getPublicEvents = async () => {
+  const SELECT = "SELECT * FROM Events WHERE membersonly = FALSE";
+  const query = {
+    text: SELECT,
+    values: [],
+  };
+  return pool.query(query)
+  .then((response) => {
+    return response.rows;
+  });
+};

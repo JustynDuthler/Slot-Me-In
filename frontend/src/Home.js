@@ -10,6 +10,7 @@ import Hidden from '@material-ui/core/Hidden';
 
 import Login from './Login';
 import Register from './Register';
+import EventGrid from './Home/EventGrid';
 
 // This page is is the react-route for /
 
@@ -198,7 +199,7 @@ const UnAuthHome = (props) => {
     <Box className={classes.root}>
       <Hidden mdDown>
         <Box className={classes.events}>
-          Event Info
+          <EventGrid publicEvents={true}/>
         </Box>
       </Hidden>
       <Box id="rightSide" className={classes.right}>

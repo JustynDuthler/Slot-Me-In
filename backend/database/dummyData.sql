@@ -85,6 +85,8 @@ INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity,
 VALUES ('00000000-0010-0000-0000-000000000000', 'Test Event 10', '90000000-0000-0000-0000-000000000000', '2021-09-07T13:30:00.000Z', '2021-09-07T15:00:00.000Z', 45, 'This is the description for Test Event 10.');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description)
 VALUES ('00000000-0011-0000-0000-000000000000', 'Test Event 11', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 50, 'This is the description for Test Event 1.');
+INSERT INTO Events(public, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('t', '00000000-0012-0000-0000-000000000000', 'Public Event 1', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 50, 'A public event with a capacity of 50.');
 
 
 

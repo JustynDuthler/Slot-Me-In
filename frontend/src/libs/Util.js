@@ -51,6 +51,7 @@ exports.formatDate = (startTimestamp, endTimestamp) => {
 
   return startDate + ' ' + startTime + ' - ' + endDate + ' ' + endTime;
 };
+
 /**
  * cropImage - taken from https://pqina.nl/blog/cropping-images-to-an-aspect-
  *  ratio-with-javascript/
