@@ -835,6 +835,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /members/getMemberBusinesses/{useremail}:
+    get:
+      description: Retrieves all businesses a member is a part of
+      tags:
+        - members
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve businesses for
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: Successfully retrieved businesses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessList"
+        404:
+          description: User email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 
 
 
@@ -953,6 +982,10 @@ components:
         - businessid
         - businessname
         - email
+    BusinessList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Business"
     UserToken:
       type: object
       maxProperties: 1

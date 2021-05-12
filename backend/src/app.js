@@ -82,6 +82,7 @@ app.get('/api/members/getMembers', auth.businessAuth,
 app.delete('/api/members/deleteMember', auth.businessAuth,
     members.deleteMember);
 app.get('/api/members/getRestrictedEvents/:useremail', members.getRestrictedEvents);
+app.get('/api/members/getMemberBusinesses/:useremail', members.getMemberBusinesses);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {

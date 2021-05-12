@@ -46,6 +46,7 @@ export default function ViewEvents() {
   const classes = useStyles();
   const [eventList, setEventList] = React.useState([]);
   const [memberEvents, setMemberEvents] = React.useState([]);
+  const [memberBusinesses, setMemberBusinesses] = React.useState([]);
   // const [userInfo, setUserInfo] = React.useState([]);
   const context = React.useContext(Context);
 
@@ -62,11 +63,38 @@ export default function ViewEvents() {
         .then((json) => {
           // setUserInfo(json);
           getMemberEvents(json.useremail);
+          getMemberBusinesses(json.useremail);
         },
         (error) => {
           console.log(error);
         },
         );
+  };
+
+  /**
+   * getMemberBusinesses
+   * API call to get all businesses the user
+   * is a part of
+   * @param {string} email
+   */
+  function getMemberBusinesses(email) {
+    const apicall = 'http://localhost:3010/api/members/getMemberBusinesses/'+email;
+    fetch(apicall, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        return response.json();
+      }
+    }).then((json) => {
+      setMemberBusinesses(json);
+      console.log(json);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+    console.log(memberBusinesses);
   };
 
   /**
@@ -76,7 +104,6 @@ export default function ViewEvents() {
    * @param {string} email
    */
   function getMemberEvents(email) {
-    console.log(email);
     const apicall = 'http://localhost:3010/api/members/getRestrictedEvents/'+email;
     fetch(apicall, {
       method: 'GET',
@@ -128,8 +155,8 @@ export default function ViewEvents() {
       getUserInfo();
     }
   }, []);
+  console.log(memberBusinesses);
 
-  console.log(' what');
   const breakPoints = [
     {width: 1, itemsToShow: 1},
     {width: 750, itemsToShow: 3},
