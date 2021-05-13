@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Context from '../Context';
-import Auth from '../libs/Auth';
+import * as Auth from '../libs/Auth';
 import IndividualEvent from '../IndividualEvent';
 import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from '@date-io/date-fns';

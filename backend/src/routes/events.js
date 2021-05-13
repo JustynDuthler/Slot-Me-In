@@ -11,10 +11,12 @@ exports.create = async (req, res) => {
     event.repeatid =
         await eventsDb.insertRepeatingEvent(event.eventname, event.description,
             req.payload.id, event.starttime, event.endtime, event.capacity,
+            event.membersonly, event.over18, event.over21,
             event.repeatdays['sunday'], event.repeatdays['monday'],
             event.repeatdays['tuesday'], event.repeatdays['wednesday'],
             event.repeatdays['thursday'], event.repeatdays['friday'],
-            event.repeatdays['saturday'], event.repeattype, event.repeatend);
+            event.repeatdays['saturday'],
+            event.repeattype, event.repeatend);
     // create days array for use with getDay()
     // (ex: if date.getDay() is 0, days[0] is Sunday)
     const days =
@@ -38,6 +40,7 @@ exports.create = async (req, res) => {
             await eventsDb.insertEvent(
                 event.eventname, start.toISOString(), end.toISOString(),
                 req.payload.id, event.capacity, event.description,
+                event.membersonly, event.over18, event.over21,
                 event.repeatid);
         // set eventid on first inserted event only
         if (!event.eventid) event.eventid = eventid;
@@ -55,7 +58,8 @@ exports.create = async (req, res) => {
     // for non-repeating event, insert to Events table
     const eventid =
         await eventsDb.insertEvent(event.eventname, event.starttime,
-            event.endtime, req.payload.id, event.capacity, event.description);
+            event.endtime, req.payload.id, event.capacity, event.description,
+            event.membersonly, event.over18, event.over21);
     event.eventid = eventid;
   }
   // return 201 with event

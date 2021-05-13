@@ -63,7 +63,7 @@ INSERT INTO Businesses(businessid, businessname, password, phonenumber, business
 VALUES ('90000000-0000-0000-0000-000000000000', 'Microsoft', '$2b$10$yGQjScs.rHEbbccY2NVipeYAIvtTENxUbzME65JReiU1i6fgXw0.a', '000-000-0009', 'contact@microsoft.com');
 
 INSERT INTO EventCategories(category)
-VALUES (''), ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('meeting'), ('sport'), ('concert'), ('conference'), ('party'), ('job fair'), ('open house'),
+VALUES ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('meeting'), ('sport'), ('concert'), ('conference'), ('party'), ('job fair'), ('open house'),
 ('workshop');
 
 -- 10 events
@@ -90,8 +90,13 @@ VALUES ('00000000-0010-0000-0000-000000000000', 'Test Event 10', '90000000-0000-
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description)
 VALUES ('00000000-0011-0000-0000-000000000000', 'Test Event 11', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 50, 'This is the description for Test Event 1.');
 INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
-VALUES ('f', '00000000-0012-0000-0000-000000000000', 'Public Event 1', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 50, 'A public event with a capacity of 50.');
-
+VALUES ('f', '00000000-0012-0000-0000-000000000000', 'Ocean Kayaking Club Meet', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 50, 'Join the santa cruz kayak club in an an ocean kayaking adventure. Bring a kayak and some food. Potluck afterwards');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('f', '00000000-0013-0000-0000-000000000000', 'Group Ride', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 25, 'Join the Santa Cruzes finest! on a group MTB ride.');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('f', '00000000-0014-0000-0000-000000000000', 'Yoga in the park', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 15, 'Temp Description');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('f', '00000000-0015-0000-0000-000000000000', 'Telescope viewing', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 15, 'Temp Description');
 
 
 INSERT INTO Attendees(eventid, userid)

@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Context from '../Context';
-import Auth from '../libs/Auth';
+import * as Auth from '../libs/Auth';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -28,7 +28,8 @@ import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UserInfo from '../Components';
-import {EventCard, ShareBar} from '../Components';
+import {ShareBar} from '../Components';
+import EventCard from '../Components/Events/EventCard';
 
 /**
  * BusinessProfile component

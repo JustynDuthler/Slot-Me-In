@@ -18,12 +18,12 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
-import Context from './Context';
+import Context from '../Context';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, DateTimePicker, MuiPickersUtilsProvider}
   from '@material-ui/pickers';
 import {useHistory} from 'react-router-dom';
-const Auth = require('./libs/Auth');
+const Auth = require('../libs/Auth');
 
 /**
  * CreateEvent Function
@@ -96,6 +96,8 @@ export default function CreateEvent() {
     eventObj.description = description;
     eventObj.repeat = repeat;
     eventObj.membersonly = membersOnly;
+    eventObj.over18 = (age === 18);
+    eventObj.over21 = (age === 21);
     // properties for repeating events only
     if (repeat) {
       eventObj.repeattype = 'w';

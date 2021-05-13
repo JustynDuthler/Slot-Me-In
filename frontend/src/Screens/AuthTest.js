@@ -1,5 +1,5 @@
 import React from 'react';
-const Auth = require('./libs/Auth');
+const Auth = require('../libs/Auth');
 
 
 /**

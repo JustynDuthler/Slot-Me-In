@@ -278,7 +278,7 @@ paths:
     get:
       description: Gets business information
       tags:
-        - business
+        - businesses
       security:
         - bearerAuth: []
       responses:
@@ -1057,8 +1057,13 @@ components:
           type: string
         membersonly:
           type: boolean
+        over18:
+          type: boolean
+        over21:
+          type: boolean
         category:
           type: string
+          nullable: true
       required:
         - eventname
         - starttime
