@@ -11,6 +11,10 @@ import {cropImage, formatDate} from './libs/Util.js';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import InstagramIcon from '@material-ui/icons/Instagram';
+import IconButton from '@material-ui/core/IconButton';
 
 /**
  * UserInfo component
@@ -144,39 +148,48 @@ UserInfo.propTypes = {
 export function ShareBar({...rest}) {
   const useStyles = makeStyles((theme) => ({
     grid: {
-      backgroundColor: theme.palette.back.main,
+      backgroundColor: theme.palette.primary.main,
     },
     gridbordered: {
       backgroundColor: theme.palette.back.main,
       border: `1px solid ${theme.palette.primary.light}`,
     },
+    shareIcon: {
+      color: theme.palette.secondary.main,
+      width: 50,
+      height: 50,
+    },
+    share: {
+      fontSize: '20px',
+      color: theme.palette.secondary.main,
+    },
   }));
   const classes = useStyles();
   return (
     <Grid item container className={classes.grid}
-      justify="center"
+      justify="flex-start"
       alignItems="center"
       direction="row"
       {...rest}>
       <Grid item container md={3} className={classes.grid}
         justify="center">
-        <Typography style={{fontSize: '20px'}}>Share</Typography>
+        <Typography className={classes.share}>Share</Typography>
       </Grid>
-      <Grid item container md={3} className={classes.gridbordered}
-        justify="center">
-        <Typography>Facebook</Typography>
-      </Grid>
-      <Grid item md={3} container className={classes.gridbordered}
-        justify="center">
-        <Typography>Instagram</Typography>
-      </Grid>
-      <Grid item md={3} container className={classes.gridbordered}
-        justify="center">
-        <Typography>Twitter</Typography>
-      </Grid>
+      <Box className={classes.share}>
+        <IconButton>
+          <FacebookIcon className={classes.shareIcon}/>
+        </IconButton>
+        <IconButton>
+          <TwitterIcon className={classes.shareIcon}/>
+        </IconButton>
+        <IconButton>
+          <InstagramIcon className={classes.shareIcon}/>
+        </IconButton>
+      </Box>
     </Grid>
   );
 }
+
 EventCard.propTypes = {
   row: PropTypes.object,
   context: PropTypes.object,
@@ -231,5 +244,66 @@ export function EventCard({row: row, context: context, isBusiness: isBusiness,
         </Button>
       </CardActions>
     </Card>
+  );
+};
+
+BusinessInfo.propTypes = {
+  picture: PropTypes.string,
+  name: PropTypes.string,
+  email: PropTypes.string,
+  description: PropTypes.string,
+  phonenumber: PropTypes.string,
+  className: PropTypes.string,
+};
+/**
+ * BusinessInfo component
+ * @return {object} BusinessInfo JSX
+ */
+export function BusinessInfo({picture: path, name: name, email: email,
+  phonenumber: phonenumber, description: description,
+  className: className, ...rest}) {
+  const useStyles = makeStyles((theme) => ({
+    avatar: {
+      margin: '0 auto',
+      fontSize: '6rem',
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+      [theme.breakpoints.up('md')]: {
+        fontSize: '10rem',
+        width: theme.spacing(25),
+        height: theme.spacing(25),
+      },
+    },
+    businessName: {
+      marginTop: theme.spacing(3),
+    },
+    businessDescription: {
+      marginTop: theme.spacing(3),
+      marginLeft: 20,
+      marginRight: 20,
+    },
+  }));
+  const classes = useStyles();
+  return (
+    <Grid item className={classes.businessInfo} {...rest}>
+      <Avatar className={classes.avatar}
+        alt={name}
+        src={'./picture'}
+      />
+      <Typography className={classes.businessName}
+        variant='h3' align='center'>
+        {name}
+      </Typography>
+      <Typography variant='body1' align='center'>
+        {email}
+      </Typography>
+      <Typography variant='body1' align='center'>
+        {phonenumber}
+      </Typography>
+      <Typography className={classes.businessDescription}
+        variant='body1' align='center'>
+        {description}
+      </Typography>
+    </Grid>
   );
 };
