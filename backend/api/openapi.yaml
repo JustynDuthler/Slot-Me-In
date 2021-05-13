@@ -1057,6 +1057,8 @@ components:
           type: string
         membersonly:
           type: boolean
+        category:
+          type: string
       required:
         - eventname
         - starttime

@@ -97,6 +97,13 @@ INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endti
 VALUES ('f', '00000000-0014-0000-0000-000000000000', 'Yoga in the park', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 15, 'Temp Description');
 INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
 VALUES ('f', '00000000-0015-0000-0000-000000000000', 'Telescope viewing', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 15, 'Temp Description');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('f', '00000000-0016-0000-0000-000000000000', 'Group Run', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 20, 'Temp Description');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('f', '00000000-0017-0000-0000-000000000000', 'Paint Westcliff', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 10, 'Temp Description');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description)
+VALUES ('f', '00000000-0018-0000-0000-000000000000', 'Photography Club Meet', '90000000-0000-0000-0000-000000000000', '2021-10-07T13:30:00.000Z', '2021-10-07T15:00:00.000Z', 30, 'Temp Description');
+
 
 
 INSERT INTO Attendees(eventid, userid)

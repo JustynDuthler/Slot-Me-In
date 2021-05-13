@@ -62,7 +62,12 @@ const EventGrid = ({publicEvents}) => {
     gridItems.push(
         <Grid key={item.eventid} item sm={6} md={4} xl={3}>
           <Box className={classes.eventCard}>
-            <EventCard row={item} context={context} isBusiness={false}/>
+            <EventCard
+              row={item}
+              context={context}
+              isBusiness={false}
+              buttonType={context.authState ? 'view' : 'login'}
+            />
           </Box>
         </Grid>);
   });
