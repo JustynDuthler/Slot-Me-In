@@ -120,49 +120,56 @@ function App() {
   const menu = authState ? <NavBar userType={userType}/> : null;
 
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <Context.Provider value={{
-          authState, setAuthState,
-          businessState, setBusinessState,
-        }}>
-          <CssBaseline />
-          {menu}
-          <Switch>
-            <Route path="/authtest">
-              <AuthTest />
-            </Route>
-            <PrivateRoute
-              path="/events/create"
-              authed={authState}
-              component={CreateEvent}
-            />
-            <PrivateRoute
-              path="/events"
-              authed={authState}
-              component={ViewEvents}
-            />
-            <Route path="/profile">
-              {(authState) ? ((businessState === false) ?
-              <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-            </Route>
-            <Route exact path="/events">
-              <ViewEvents/>
-            </Route>
-            <Route
-              exact path="/event/:eventid"
-              render={(props) =>
-                <IndividualEvent eventID={props.match.params.eventid}
-                  {...props} />}
-            />
-            <Route path="/allevents">
-              <AllEvents/>
-            </Route>
-            <Route path="/" component={Home}/>
-          </Switch>
-        </Context.Provider>
-      </ThemeProvider>
-    </Router>
+    <>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <Context.Provider value={{
+            authState, setAuthState,
+            businessState, setBusinessState,
+          }}>
+            <CssBaseline />
+            {menu}
+            <Switch>
+              <Route path="/authtest">
+                <AuthTest />
+              </Route>
+              <PrivateRoute
+                path="/events/create"
+                authed={authState}
+                component={CreateEvent}
+              />
+              <PrivateRoute
+                path="/events"
+                authed={authState}
+                component={ViewEvents}
+              />
+              <Route path="/profile">
+                {(authState) ? ((businessState === false) ?
+                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+              </Route>
+              <Route exact path="/events">
+                <ViewEvents/>
+              </Route>
+              <Route
+                exact path="/event/:eventid"
+                render={(props) =>
+                  <IndividualEvent eventID={props.match.params.eventid}
+                    {...props} />}
+              />
+              <Route path="/allevents">
+                <AllEvents/>
+              </Route>
+              <Route path="/" component={Home}/>
+            </Switch>
+          </Context.Provider>
+        </ThemeProvider>
+      </Router>
+      <div id="fb-root"></div>
+      <script async defer crossOrigin="anonymous"
+        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0"
+        nonce="W60AWbJd">
+      </script>
+    </>
   );
 }
 

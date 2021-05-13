@@ -453,7 +453,7 @@ paths:
         - businesses
       security:
         - bearerAuth: []
-      responses: 
+      responses:
         200:
           description: successfully uploaded profile image
           content:
@@ -463,9 +463,9 @@ paths:
                 properties:
                   Image:
                     type: string
-                    format: binary 
+                    format: binary
         401:
-          $ref: '#/components/responses/UnauthorizedError' 
+          $ref: '#/components/responses/UnauthorizedError'
         403:
           description: Authorization Error
           content:
@@ -473,14 +473,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         500:
-          description: cannot read image from server   
+          description: cannot read image from server
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-            
+
   /events:
     post:
       description: Create a new event
@@ -668,7 +668,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   /events/publicEvents:
-    get: 
+    get:
       description: Returns an array of public events
       tags:
         - events
@@ -685,7 +685,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    
+
 
   /attendees/{eventid}:
     get:

@@ -131,7 +131,7 @@ exports.saveProfileImage = async (req, res) => {
     /* retrieve previous image and delete it */
     const prevFileName = await businessDb.getBusinessImageName(businessID);
     if(prevFileName.businessimagename !== 'stockPhoto.png') {
-      const prevPath = __dirname + '/../../../images/businessProfileImages/' 
+      const prevPath = __dirname + '/../../../images/businessProfileImages/'
                       + prevFileName.businessimagename;
       fs.unlink(prevPath, (err) => {
         if (err) {
@@ -143,15 +143,15 @@ exports.saveProfileImage = async (req, res) => {
     }
     /* write data to file */
     fs.writeFile(path, req.files[0].buffer, 'binary', (err) => {
-      if (err) { 
-        res.status(500).send(); 
-        return; 
+      if (err) {
+        res.status(500).send();
+        return;
       }
     });
     /* insert file name into database */
     const insertRet = await businessDb.insertProfileImageName(businessID, newFileName);
     if (!insertRet) { /* throw 500 if cannot insert */
-      res.status(500).send(); 
+      res.status(500).send();
     } else {
       res.status(200).send();
     }
@@ -159,6 +159,7 @@ exports.saveProfileImage = async (req, res) => {
 };
 
 exports.sendProfileImage = async (req, res) => {
+  console.log(req);
   const businessID = req.payload.id;
   const imageName = await businessDb.getBusinessImageName(businessID);
   /* construct path to file */
@@ -173,4 +174,3 @@ exports.sendProfileImage = async (req, res) => {
     res.status(200).send(buffer);
   })
 };
-
