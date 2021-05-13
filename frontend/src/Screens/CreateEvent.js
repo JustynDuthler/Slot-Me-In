@@ -15,12 +15,12 @@ import Container from '@material-ui/core/Container';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import Context from './Context';
+import Context from '../Context';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, DateTimePicker, MuiPickersUtilsProvider}
   from '@material-ui/pickers';
 import {useHistory} from 'react-router-dom';
-const Auth = require('./libs/Auth');
+const Auth = require('../libs/Auth');
 
 /**
  * CreateEvent Function

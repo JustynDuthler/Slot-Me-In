@@ -15,8 +15,8 @@ import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
 import EventIcon from '@material-ui/icons/Event';
 import AddIcon from '@material-ui/icons/Add';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Context from './Context';
-const Auth = require('./libs/Auth');
+import Context from '../../Context';
+const Auth = require('../../libs/Auth');
 
 
 const useStyles = makeStyles((theme) => ({

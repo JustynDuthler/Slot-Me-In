@@ -8,9 +8,9 @@ import {
 } from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
 
-import Login from '../Account/Login';
-import Register from '../Account/Register';
-import EventGrid from '../Events/EventGrid';
+import Login from '../Components/Account/Login';
+import Register from '../Components/Account/Register';
+import EventGrid from '../Components/Events/EventGrid';
 
 // This page is is the react-route for /
 
@@ -19,13 +19,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     [theme.breakpoints.down('md')]: {
-      flexDirection: 'column',
+      flexDirection: 'column-reverse',
     },
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 'auto',
     width: '100vw',
-    height: '100vh',
+    maxWidth: '100%',
+    minHeight: '100vh',
   },
   events: {
     backgroundColor: 'white',
@@ -197,7 +198,7 @@ const UnAuthHome = (props) => {
 
   return (
     <Box className={classes.root}>
-      <Hidden mdDown>
+      <Hidden only={'xs'}>
         <Box className={classes.events}>
           <EventGrid publicEvents={true}/>
         </Box>
@@ -207,11 +208,6 @@ const UnAuthHome = (props) => {
         <Route exact path="/register" component={RegisterWrapper}/>
         <Route exact path="/" component={NavButtons}/>
       </Box>
-      <Hidden only={['lg', 'xl', 'xs']}>
-        <Box className={classes.events}>
-          Event Info
-        </Box>
-      </Hidden>
     </Box>
   );
 };

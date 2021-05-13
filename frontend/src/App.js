@@ -7,15 +7,15 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Context from './Context';
-import Home from './Home/Home';
-import AuthTest from './AuthTest';
-import CreateEvent from './CreateEvent';
+import Home from './Screens/Home';
+import AuthTest from './Screens/AuthTest';
+import CreateEvent from './Screens/CreateEvent';
 import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
-import UserProfile from './Account/UserProfile';
-import BusinessProfile from './Account/BusinessProfile';
+import UserProfile from './Screens/UserProfile';
+import BusinessProfile from './Screens/BusinessProfile';
 import AllEvents from './AllEvents';
-import NavBar from './NavBar';
+import NavBar from './Components/Nav/NavBar';
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';

@@ -1,8 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {EventCard} from '../Components';
+import {EventCard} from '../../Components';
 import Grid from '@material-ui/core/Grid';
-import Context from '../Context';
+import Context from '../../Context';
+import {makeStyles} from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(3),
+    display: 'flex',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  eventCard: {
+    padding: theme.spacing(2),
+  },
+  gridContainer: {
+    height: '75%',
+    widht: '75%',
+    flexGrow: 1,
+  },
+}));
 
 /**
  *
@@ -12,6 +32,7 @@ import Context from '../Context';
 const EventGrid = ({publicEvents}) => {
   const [events, setEvents] = React.useState([]);
   const context = React.useContext(Context);
+  const classes = useStyles();
 
   React.useEffect(async () => {
     /**
@@ -39,15 +60,19 @@ const EventGrid = ({publicEvents}) => {
   const gridItems = [];
   events.forEach((item) => {
     gridItems.push(
-        <Grid key={item.eventid} item>
-          <EventCard row={item} context={context} isBusiness={false}/>
+        <Grid key={item.eventid} item sm={6} md={4} xl={3}>
+          <Box className={classes.eventCard}>
+            <EventCard row={item} context={context} isBusiness={false}/>
+          </Box>
         </Grid>);
   });
 
   return (
-    <Grid container>
-      {gridItems}
-    </Grid>
+    <Box className={classes.root}>
+      <Grid className={classes.gridContainer} container spacing={3}>
+        {gridItems}
+      </Grid>
+    </Box>
   );
 };
 
