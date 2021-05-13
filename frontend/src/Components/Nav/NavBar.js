@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -38,10 +39,12 @@ const NavBar = ({userType}) => {
   /**
    * logout()
    * Removes JWT and sets authState to null upon logout
+   * @return {object} Redirect to home screen
    */
   const logout = () => {
     Auth.removeJWT();
     context.setAuthState(false);
+    return <Redirect to={{pathname: '/'}}/>;
   };
 
   const rightSide = (
