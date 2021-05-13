@@ -434,7 +434,7 @@ const IndividualEvent = (props) => {
           </Box>
         </Grid>
 
-        <Grid item xs={0} md={3}>
+        <Grid item xs={false} md={3}>
           <Typography variant='h6' align='center'>
             More {businessData.businessname} Events
           </Typography>
