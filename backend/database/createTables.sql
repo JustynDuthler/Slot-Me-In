@@ -68,7 +68,7 @@ CREATE TABLE Events (
   capacity INTEGER,
   repeatid uuid,
   membersonly BOOLEAN DEFAULT TRUE,
-  category TEXT,
+  category TEXT DEFAULT '',
   PRIMARY KEY (eventid),
   FOREIGN KEY (businessid) REFERENCES Businesses,
   FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE,

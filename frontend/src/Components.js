@@ -61,6 +61,27 @@ export default function UserInfo({picture: path, name: name, email: email,
       height: '300px',
     },
   }));
+  React.useEffect(async () => {
+    /* haven't got this working yet */
+    /* fetch('http://localhost:3010/api/businesses/getProfileImage', {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((data) => {
+      data.arrayBuffer().then(function(buffer) {
+        console.log(buffer);
+        fs.writeFile(path, buffer, 'binary', (err) => {
+          if (err) {
+            res.status(500).send();
+            return;
+          }
+        });
+      });
+    },
+    (error) => {
+      console.log(error);
+    },
+    ); */
+  }, []);
   const classes = useStyles();
   const [image, setImage] = React.useState({preview: '', raw: ''});
   /**
@@ -177,10 +198,20 @@ export function ShareBar({...rest}) {
       </Grid>
       <Box className={classes.share}>
         <IconButton>
-          <FacebookIcon className={classes.shareIcon}/>
+          <div className="fb-share-button" data-href="http://pyraliron.com"
+            data-layout="button" data-size="large">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpyraliron.com%2F&amp;src=sdkpreparse"
+              className="fb-xfbml-parse-ignore">
+              <FacebookIcon className={classes.shareIcon}/></a></div>
         </IconButton>
         <IconButton>
-          <TwitterIcon className={classes.shareIcon}/>
+          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+            data-show-count="false">
+            <TwitterIcon className={classes.shareIcon}/>
+          </a>
+          <script async src="https://platform.twitter.com/widgets.js"
+            charSet="utf-8">
+          </script>
         </IconButton>
         <IconButton>
           <InstagramIcon className={classes.shareIcon}/>

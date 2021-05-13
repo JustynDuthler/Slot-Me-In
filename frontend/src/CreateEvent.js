@@ -10,11 +10,14 @@ import FormGroup from '@material-ui/core/FormGroup';
 import Checkbox from '@material-ui/core/Checkbox';
 import EventIcon from '@material-ui/icons/Event';
 import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
+import TagFacesIcon from '@material-ui/icons/TagFaces';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Grid from '@material-ui/core/Grid';
 import Context from './Context';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, DateTimePicker, MuiPickersUtilsProvider}
@@ -36,6 +39,8 @@ export default function CreateEvent() {
   const [repeat, changeRepeat] = React.useState(false);
   const [membersOnly, changeMembersOnly] = React.useState(false);
   const [age, setAge] = React.useState(-1);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [chipData, setChipData] = React.useState([]);
   const [repeatDays, changeRepeatDays] =
     React.useState({'monday': false, 'tuesday': false, 'wednesday': false,
       'thursday': false, 'friday': false, 'saturday': false, 'sunday': false});
@@ -56,7 +61,25 @@ export default function CreateEvent() {
     ['sunday', 'monday', 'tuesday', 'wednesday',
       'thursday', 'friday', 'saturday', 'sunday'];
   const history = useHistory();
-
+  React.useEffect(async () => {
+    const categoryRes = await setChipData(
+        [{'category': 'gym'}, {'category': 'club'}, {'category': 'party'},
+          {'category': 'conference'}, {'category': 'workshop'},
+          {'category': 'tutoring'}]);
+    /* uncomment when getCategories route is finished */
+      /* fetch('http://localhost:3010/api/categories/getCategories', {
+        method: 'GET',
+      }).then((res) => res.json())
+      .then((data) => {
+        setChipData(data);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );*/
+    await Promise.all([categoryRes]);
+    setIsLoaded(true);
+  }, []);
   /**
    * handleSubmit
    * Handles form submission
@@ -128,6 +151,17 @@ export default function CreateEvent() {
       margin: theme.spacing(3, 0, 2),
       backgroundColor: theme.palette.secondary.main,
     },
+    chiparray: {
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: 0,
+    },
+    chip: {
+      'margin': theme.spacing(0.5),
+    },
   }));
   const classes = useStyles();
 
@@ -181,6 +215,9 @@ export default function CreateEvent() {
 
   if (context.businessState === false) {
     return <Redirect to={{pathname: '/'}}/>;
+  }
+  if (!isLoaded) {
+    return (<Typography style={{fontSize: '30px'}}>Loading...</Typography>);
   }
   return (
     <div>
@@ -379,6 +416,41 @@ export default function CreateEvent() {
                 onKeyPress={handleKeypress}
               />
             </MuiPickersUtilsProvider>}
+            <Grid width='100%' container direction='row'>
+              {chipData.map((data, idx) => {
+                let icon;
+
+                if (data.category === 'party') {
+                  icon = <TagFacesIcon />;
+                }
+                return (
+                  <div key={data.category}>
+                    <Chip
+                      icon={icon}
+                      label={data.category}
+                      color={data.selected===true ? 'primary' : 'default'}
+                      onClick={()=>{
+                        data.selected=!data.selected;
+                        const chipDataCopy = chipData.map((d, i)=>{
+                          return {'category': d.category, 'selected':
+                            i===idx && data.selected};
+                        });
+                        setChipData(chipDataCopy);
+                      }}
+                      onDelete={data.selected === true ? ()=>{
+                        data.selected=!data.selected;
+                        const chipDataCopy = chipData.map((d, i)=>{
+                          return {'category': d.category,
+                            'selected': i===idx};
+                        });
+                        setChipData(chipDataCopy);
+                      } : null}
+                      className={classes.chip}
+                    />
+                  </div>
+                );
+              })}
+            </Grid>
             <TextField
               error={errors.capacity}
               helperText={errors.capacity ?

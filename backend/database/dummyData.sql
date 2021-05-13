@@ -63,7 +63,7 @@ INSERT INTO Businesses(businessid, businessname, password, phonenumber, business
 VALUES ('90000000-0000-0000-0000-000000000000', 'Microsoft', '$2b$10$yGQjScs.rHEbbccY2NVipeYAIvtTENxUbzME65JReiU1i6fgXw0.a', '000-000-0009', 'contact@microsoft.com');
 
 INSERT INTO EventCategories(category)
-VALUES ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('meeting'), ('sport'), ('concert'), ('conference'), ('party'), ('job fair'), ('open house'),
+VALUES (''), ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('meeting'), ('sport'), ('concert'), ('conference'), ('party'), ('job fair'), ('open house'),
 ('workshop');
 
 -- 10 events

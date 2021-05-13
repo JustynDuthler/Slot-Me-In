@@ -170,7 +170,6 @@ export default function BusinessProfile() {
     await Promise.all([businessRes, eventRes, memberRes]);
     setIsLoaded(true);
   }, []);
-
   /**
    * handleSubmit
    * Handles adding members to a business
