@@ -84,9 +84,9 @@ CREATE TABLE Members (
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
 
---DROP TABLE IF EXISTS Tags;
--- tags table
---CREATE TABLE Tags (
---  tag TEXT NOT NULL,
---  PRIMARY KEY (tags)
---);
+DROP TABLE IF EXISTS EventCategories;
+-- EventCategories table
+CREATE TABLE EventCategories (
+  categories TEXT NOT NULL,
+  PRIMARY KEY (categories)
+);
