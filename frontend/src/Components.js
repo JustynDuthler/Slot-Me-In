@@ -276,8 +276,14 @@ export function BusinessInfo({picture: path, name: name, email: email,
     },
     businessName: {
       marginTop: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '2rem',
+      },
     },
     businessDescription: {
+      [theme.breakpoints.down('sm')]: {
+        maxWidth: 125,
+      },
       marginTop: theme.spacing(3),
       marginLeft: 20,
       marginRight: 20,

@@ -3,7 +3,6 @@ import {makeStyles} from '@material-ui/core/styles';
 // import {useHistory, useLocation} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
-// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
@@ -21,51 +20,66 @@ import {EventCard, BusinessInfo} from './Components';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Context from './Context';
+import Hidden from '@material-ui/core/Hidden';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 15,
   },
   grid: {
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
     justifyContent: 'center',
   },
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
   },
-  avatar: {
-    margin: '0 auto',
-    fontSize: '6rem',
-    width: theme.spacing(16),
-    height: theme.spacing(16),
-    [theme.breakpoints.up('md')]: {
-      fontSize: '10rem',
-      width: theme.spacing(25),
-      height: theme.spacing(25),
+  smallAvatar: {
+    width: '4px',
+    [theme.breakpoints.down('sm')]: {
+      width: '20px',
     },
   },
   businessName: {
-    marginTop: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
-  businessDescription: {
-    marginTop: theme.spacing(3),
-    marginLeft: 20,
-    marginRight: 20,
+  title: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2.5rem',
+    },
   },
-  iconText: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+  dateIcon: {
+    color: theme.palette.secondary.dark,
+    width: '40px',
+    height: '40px',
+  },
+  locationIcon: {
+    color: theme.palette.primary.dark,
+    width: '40px',
+    height: '40px',
   },
   date: {
     color: theme.palette.secondary.dark,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   location: {
     color: theme.palette.primary.dark,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   description: {
     marginTop: theme.spacing(3),
@@ -88,14 +102,19 @@ const useStyles = makeStyles((theme) => ({
     height: 50,
   },
   card: {
+    marginTop: theme.spacing(2),
+    margin: '0 auto',
     [theme.breakpoints.up('lg')]: {
       width: 275,
     },
     [theme.breakpoints.down('md')]: {
       width: 225,
     },
-    margin: '0 auto',
-    marginTop: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      width: 250,
+      marginLeft: 5,
+      marginRight: 5,
+    },
   },
 }));
 
@@ -320,34 +339,60 @@ const IndividualEvent = (props) => {
   };
 
   return (
-    <div>
-      <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={3}>
-          <BusinessInfo
-            picture='picture'
-            name={businessData.businessname}
-            email={businessData.email}
-            phonenumber={businessData.phonenumber}
-            description={businessData.description}
-          />
-        </Grid>
+    <div style={{overflow: 'hidden'}}>
+      <Grid container spacing={6} className={classes.grid}>
+        <Hidden xsDown>
+          <Grid item md={3}>
+            <BusinessInfo
+              picture='picture'
+              name={businessData.businessname}
+              email={businessData.email}
+              phonenumber={businessData.phonenumber}
+              description={businessData.description}
+            />
+          </Grid>
+        </Hidden>
 
-        <Grid item xs={4} xl={3} className={classes.eventInfo}>
+        <Grid item xs={10} sm={6} md={4} xl={3} className={classes.eventInfo}>
           <Typography className={classes.title} variant='h2'>
             {eventData.eventname}
           </Typography>
-          <Box className={classes.iconText}>
-            <AccessTimeIcon className={classes.date}/>
-            <Typography className={classes.date} variant='h6'>
-              {Util.formatDate(eventData.starttime, eventData.endtime)}
-            </Typography>
-          </Box>
-          <Box className={classes.iconText}>
-            <LocationOnOutlinedIcon className={classes.location}/>
-            <Typography className={classes.location} variant='h6'>
-              Science &amp; Engineering Library
-            </Typography>
-          </Box>
+          <Hidden smUp>
+            <ListItem dense disableGutters>
+              <ListItemAvatar className={classes.smallAvatar}>
+                <Avatar
+                  alt={businessData.businessname}
+                  src={'./picture'}
+                />
+              </ListItemAvatar>
+              <ListItemText>
+                <Typography className={classes.businessName}
+                  variant='h6' align='left'>
+                  {businessData.businessname}
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          </Hidden>
+          <ListItem dense disableGutters>
+            <ListItemIcon className={classes.icon}>
+              <AccessTimeIcon className={classes.dateIcon}/>
+            </ListItemIcon>
+            <ListItemText>
+              <Typography className={classes.date} variant='h6'>
+                {Util.formatDate(eventData.starttime, eventData.endtime)}
+              </Typography>
+            </ListItemText>
+          </ListItem>
+          <ListItem dense disableGutters>
+            <ListItemIcon className={classes.icon}>
+              <LocationOnOutlinedIcon className={classes.locationIcon}/>
+            </ListItemIcon>
+            <ListItemText>
+              <Typography className={classes.location} variant='h6'>
+                {eventData.location ? eventData.location : 'N/A'}
+              </Typography>
+            </ListItemText>
+          </ListItem>
 
           <Typography className={classes.description} variant='body1'>
             {eventData.description ?
@@ -388,11 +433,11 @@ const IndividualEvent = (props) => {
           </Box>
         </Grid>
 
-        <Grid item xs={3}>
-          <Typography variant='h5' align='center'>
+        <Grid item xs={0} md={3}>
+          <Typography variant='h6' align='center'>
             More {businessData.businessname} Events
           </Typography>
-          <Box className={classes.eventCards}>
+          <Grid container className={classes.grid}>
             {eventList.length > 0 ?
               eventList.map((event) =>
                 <EventCard
@@ -407,7 +452,7 @@ const IndividualEvent = (props) => {
                 </CardContent>
               </Card>
             }
-          </Box>
+          </Grid>
         </Grid>
       </Grid>
 

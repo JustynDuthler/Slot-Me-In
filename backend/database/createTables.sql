@@ -49,6 +49,13 @@ CREATE TABLE RepeatingEvents (
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
 
+DROP TABLE IF EXISTS EventCategories;
+-- EventCategories table
+CREATE TABLE EventCategories (
+  category TEXT NOT NULL,
+  PRIMARY KEY (category)
+);
+
 DROP TABLE IF EXISTS Events;
 -- Events Table
 CREATE TABLE Events (
@@ -61,9 +68,11 @@ CREATE TABLE Events (
   capacity INTEGER,
   repeatid uuid,
   membersonly BOOLEAN DEFAULT TRUE,
+  category TEXT,
   PRIMARY KEY (eventid),
   FOREIGN KEY (businessid) REFERENCES Businesses,
-  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE
+  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE,
+  FOREIGN KEY (category) REFERENCES EventCategories(category)
 );
 
 DROP TABLE IF EXISTS Attendees;
@@ -83,10 +92,3 @@ CREATE TABLE Members (
   PRIMARY KEY (memberemail, businessid),
   FOREIGN KEY (businessid) REFERENCES Businesses
 );
-
---DROP TABLE IF EXISTS Tags;
--- tags table
---CREATE TABLE Tags (
---  tag TEXT NOT NULL,
---  PRIMARY KEY (tags)
---);
