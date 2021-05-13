@@ -919,6 +919,9 @@ components:
         password:
           type: string
           format: password
+        birthdate:
+          type: string
+          format: date-time
         phonenumber:
           type: string
           pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
@@ -946,7 +949,6 @@ components:
         - password
     User:
       type: object
-      maxProperties: 3
       additionalProperties: false
       properties:
         userid:
@@ -957,10 +959,14 @@ components:
         useremail:
           type: string
           format: email
+        birthdate:
+          type: string
+          format: date-time
       required:
         - userid
         - username
         - useremail
+        - birthdate
     UserList:
       type: array
       items:
@@ -1128,6 +1134,9 @@ components:
           type: string
           nullable: true
           format: uuid
+        birthdate:
+          type: string
+          format: date-time
     MemberList:
       type: array
       items:

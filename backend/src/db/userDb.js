@@ -1,12 +1,13 @@
 const pool = require('./dbConnection');
 
 // For creating a new user account
-exports.insertUserAccount = async (username, password, email) => {
-  const insert = 'INSERT INTO Users (username, password, useremail) ' +
-        'VALUES ($1, $2, $3) RETURNING userid';
+exports.insertUserAccount = async (username, password, email, birthdate) => {
+  const insert = 'INSERT INTO Users ' +
+        '(username, password, useremail, birthdate) ' +
+        'VALUES ($1, $2, $3, $4) RETURNING userid';
   const query = {
     text: insert,
-    values: [username, password, email],
+    values: [username, password, email, birthdate],
   };
 
   const {rows} = await pool.query(query);

@@ -64,6 +64,8 @@ export default function Register() {
     if (showBusiness) {
       info['phonenumber'] = phoneNumber;
       info['description'] = description;
+    } else {
+      info['birthdate'] = dob.toISOString();
     }
     console.log(info);
     fetch(apicall, {
