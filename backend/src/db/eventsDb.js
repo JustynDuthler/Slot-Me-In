@@ -4,15 +4,17 @@ const pool = require('./dbConnection');
 // Returns the newly created event eventid
 exports.insertEvent =
     async (eventname, starttime, endtime, businessid,
-        capacity=100, description, repeatid=null) => {
+        capacity, description, membersonly,
+        over18, over21, repeatid=null) => {
       const insert = 'INSERT INTO Events ' +
           '(eventname, starttime, endtime, businessid, capacity, ' +
-          'description, repeatid) ' +
-          'VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING eventid';
+          'description, membersonly, over18, over21, repeatid) ' +
+          'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING eventid';
       const query = {
         text: insert,
         values: [eventname, starttime, endtime, businessid,
-          capacity, description, repeatid],
+          capacity, description, membersonly, over18, over21,
+          repeatid],
       };
 
       const {rows} = await pool.query(query);
@@ -21,18 +23,21 @@ exports.insertEvent =
 
 exports.insertRepeatingEvent =
   async (eventname, description, businessid, starttime, endtime, capacity,
+      membersonly, over18, over21,
       sunday, monday, tuesday, wednesday, thursday, friday, saturday,
       repeattype='w', repeatend) => {
     const insert = 'INSERT INTO RepeatingEvents ' +
         '(eventname, description, businessid, starttime, endtime, ' +
-        'capacity, sunday, monday, tuesday, wednesday, thursday, ' +
+        'capacity, membersonly, over18, over21, ' +
+        'sunday, monday, tuesday, wednesday, thursday, ' +
         'friday, saturday, repeattype, repeatend) ' +
         'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, ' +
-        '$11, $12, $13, $14, $15) RETURNING repeatid';
+        '$11, $12, $13, $14, $15, $16, $17, $18) RETURNING repeatid';
     const query = {
       text: insert,
       values: [eventname, description, businessid, starttime, endtime,
-        capacity, sunday, monday, tuesday, wednesday, thursday, friday,
+        capacity, membersonly, over18, over21,
+        sunday, monday, tuesday, wednesday, thursday, friday,
         saturday, repeattype, repeatend],
     };
 
@@ -234,8 +239,13 @@ exports.getPublicEvents = async () => {
     text: SELECT,
     values: [],
   };
-  return pool.query(query)
-  .then((response) => {
-    return response.rows;
-  });
+  let {rows} = await pool.query(query);
+  for (let i in rows) {
+    if (rows.hasOwnProperty(i)) {
+      // get number of attendees for each event
+      const attendees = await exports.checkRemainingEventCapacity(i.eventid);
+      rows[i]['attendees'] = attendees.length;
+    }
+  }
+  return rows;
 };

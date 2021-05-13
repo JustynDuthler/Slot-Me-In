@@ -73,6 +73,8 @@ export default function CreateEvent() {
     eventObj.description = description;
     eventObj.repeat = repeat;
     eventObj.membersonly = membersOnly;
+    eventObj.over18 = (age === 18);
+    eventObj.over21 = (age === 21);
     // properties for repeating events only
     if (repeat) {
       eventObj.repeattype = 'w';
