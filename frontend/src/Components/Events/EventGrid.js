@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {EventCard} from '../../Components';
+import EventCard from './EventCard';
 import Grid from '@material-ui/core/Grid';
 import Context from '../../Context';
 import {makeStyles} from '@material-ui/core/styles';

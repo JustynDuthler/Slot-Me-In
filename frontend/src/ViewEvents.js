@@ -3,7 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import Carousel from 'react-elastic-carousel';
 import Box from '@material-ui/core/Box';
 import {Link} from 'react-router-dom';
-import {EventCard} from './Components';
+import EventCard from './Components/Events/EventCard';
+
 
 import Context from './Context';
 const Auth = require('./libs/Auth');

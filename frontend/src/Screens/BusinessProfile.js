@@ -28,7 +28,8 @@ import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UserInfo from '../Components';
-import {EventCard, ShareBar} from '../Components';
+import {ShareBar} from '../Components';
+import EventCard from '../Components/Events/EventCard';
 
 /**
  * BusinessProfile component
