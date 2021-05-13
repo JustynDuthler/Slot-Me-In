@@ -3,9 +3,7 @@ import Context from '../Context';
 import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import {Button, Typography} from '@material-ui/core';
-import {
-  Route,
-} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
 
 import Login from '../Components/Account/Login';
