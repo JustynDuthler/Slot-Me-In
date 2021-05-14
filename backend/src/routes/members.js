@@ -91,18 +91,16 @@ exports.getMemberBusinesses = async (req, res) => {
   res.status(200).json(businessList);
 }
 
-// Returns events for all businesses a user is a part of
+// Returns restricted events for all businesses a user is a part of
 exports.getRestrictedEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
 
   console.log(businesses.length);
   let restrictedEventList = []
   for (var i = 0; i < businesses.length; i++) {
-    console.log('i: '+i);
     // get events for the business
     const restrictedEvents = await eventsDb.getBusinessEvents(businesses[i].businessid);
     for (var j = 0; j < restrictedEvents.length; j++) {
-      console.log('j: '+j);
       // push each event
       restrictedEventList.push(restrictedEvents[j]);
     }

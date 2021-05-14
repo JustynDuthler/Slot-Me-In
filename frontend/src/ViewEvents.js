@@ -3,7 +3,12 @@ import {makeStyles} from '@material-ui/core/styles';
 import Carousel from 'react-elastic-carousel';
 import Box from '@material-ui/core/Box';
 import {Link} from 'react-router-dom';
+import {Grid} from '@material-ui/core';
 import {EventCard} from './Components';
+import Typography from '@material-ui/core/Typography';
+// import GridList from '@material-ui/core/GridList';
+// import GridListTile from '@material-ui/core/GridListTile';
+// import tileData from './tileData';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -113,7 +118,7 @@ export default function ViewEvents() {
         return response.json();
       }
     }).then((json) => {
-      setMemberEvents(json);
+      setMemberEvents(json.slice(0, 8));
     })
         .catch((error) => {
           console.log(error);
@@ -166,47 +171,131 @@ export default function ViewEvents() {
   // only show this if it is a user account
   let showMemberEvents;
   if (context.businessState === false) {
-    showMemberEvents = (
-      <Box mt={10}>
-        <h1 style={{float: 'left'}}>Member Events</h1>
-        <Box pt={5}>
-          <Link to="/allevents" style={{float: 'right'}}>
-            See All Events
-          </Link>
-        </Box>
-        <Box mt={5} mb={5} className={classes.box}>
-          <Carousel breakPoints={breakPoints}>
-            {memberEvents.map((event) =>
-              <EventCard key={event.eventid} context={context} row={event}/>,
-            )}
-          </Carousel>
-        </Box>
-      </Box>
-    );
+    if (memberEvents.length === 0) {
+      showMemberEvents = (
+        <Grid item xs={8}>
+          <Box mt={10}>
+            <Grid container xs={8}>
+              <Box>
+                <Typography variant="h4" style={{float: 'left'}}>
+                  Member Events
+                </Typography>
+              </Box>
+              <Box>
+                <Typography>You are not a member of any businesses.</Typography>
+              </Box>
+            </Grid>
+          </Box>
+        </Grid>
+      );
+    } else {
+      showMemberEvents = (
+        <Grid item xs={8}>
+          <Box mt={10}>
+            <Typography variant="h4" style={{float: 'left'}}>
+              Member Events
+            </Typography>
+            <Box pt={5}>
+              <Link to="/allevents" style={{float: 'right'}}>
+                See All Events
+              </Link>
+            </Box>
+            <Box mt={5} mb={5} className={classes.box}>
+              <Carousel breakPoints={breakPoints}>
+                {memberEvents.map((event) =>
+                  <EventCard key={event.eventid} context={context}
+                    row={event}/>,
+                )}
+              </Carousel>
+            </Box>
+          </Box>
+        </Grid>
+      );
+    }
   } else {
     showMemberEvents = (
+      <Grid item xs={8}>
+      </Grid>
+    );
+  }
+
+  let showBusinesses;
+  if (context.businessState === false) {
+    if (memberBusinesses.length === 0) {
+      showBusinesses = (
+        <Grid item xs={4}>
+          <Box display="flex" alignItems="center" justifyContent="center"
+            mt={10}>
+            <Typography variant="h4">
+              My Businesses
+            </Typography>
+          </Box>
+          <Box display="flex" border={3} alignItems="center"
+            justifyContent="center" mr={15} ml={15} mt={3}>
+            You are not a member of any businesses.
+          </Box>
+        </Grid>
+      );
+    } else {
+      showBusinesses = (
+        <Grid item xs={4}>
+          <Box display="flex" alignItems="center" justifyContent="center"
+            mt={10}>
+            <Typography variant="h4">
+              My Businesses
+            </Typography>
+          </Box>
+          <Box display="flex" border={3} alignItems="center"
+            justifyContent="center" mr={15} ml={15} mt={3}>
+            <Grid item xs={4}>
+              {memberBusinesses.map((business) =>
+                <Box key={business.businessid}>
+                  <Typography
+                    variant="h5"
+                    align="center">
+                    {business.businessname}
+                  </Typography>
+                </Box>,
+              )}
+            </Grid>
+          </Box>
+        </Grid>
+      );
+    }
+  } else {
+    showBusinesses = (
       <div></div>
     );
   }
 
   return (
     <React.Fragment>
-      <input type="text" placeholder="Ignore this search bar..." />
-      {showMemberEvents}
-      <Box mt={10}>
-        <h1 style={{float: 'left'}}>All Events</h1>
-        <Box pt={5}>
-          <Link to="/allevents" style={{float: 'right'}}>
-            See All Events
-          </Link>
-        </Box>
-        <Box mt={5} mb={5} className={classes.box}>
-          <Carousel breakPoints={breakPoints}>
-            {eventList.map((event) =>
-              <EventCard key={event.eventid} context={context} row={event}/>,
-            )}
-          </Carousel>
-        </Box>
+      <Box p={5} ml={20}>
+        <input type="text" placeholder="Ignore this search bar..." />
+        <Grid container spacing={0}>
+          {showMemberEvents}
+          {showBusinesses}
+          <Grid item xs={8}>
+            <Box mt={10}>
+              <Typography variant="h4" style={{float: 'left'}}>
+                All Events
+              </Typography>
+              <Box pt={5}>
+                <Link to="/allevents" style={{float: 'right'}}>
+                  See All Events
+                </Link>
+              </Box>
+              <Box mt={5} mb={5} className={classes.box}>
+                <Carousel breakPoints={breakPoints}>
+                  {eventList.map((event) =>
+                    <EventCard key={event.eventid} context={context}
+                      row={event}/>,
+                  )}
+                </Carousel>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     </React.Fragment>
   );
