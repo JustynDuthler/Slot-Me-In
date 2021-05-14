@@ -7,15 +7,15 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Context from './Context';
-import Home from './Home/Home';
-import AuthTest from './AuthTest';
-import CreateEvent from './CreateEvent';
+import Home from './Screens/Home';
+import AuthTest from './Screens/AuthTest';
+import CreateEvent from './Screens/CreateEvent';
 import IndividualEvent from './IndividualEvent';
 import ViewEvents from './ViewEvents';
-import UserProfile from './Account/UserProfile';
-import BusinessProfile from './Account/BusinessProfile';
+import UserProfile from './Screens/UserProfile';
+import BusinessProfile from './Screens/BusinessProfile';
 import AllEvents from './AllEvents';
-import NavBar from './NavBar';
+import NavBar from './Components/Nav/NavBar';
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -120,49 +120,56 @@ function App() {
   const menu = authState ? <NavBar userType={userType}/> : null;
 
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <Context.Provider value={{
-          authState, setAuthState,
-          businessState, setBusinessState,
-        }}>
-          <CssBaseline />
-          {menu}
-          <Switch>
-            <Route path="/authtest">
-              <AuthTest />
-            </Route>
-            <PrivateRoute
-              path="/events/create"
-              authed={authState}
-              component={CreateEvent}
-            />
-            <PrivateRoute
-              path="/events"
-              authed={authState}
-              component={ViewEvents}
-            />
-            <Route path="/profile">
-              {(authState) ? ((businessState === false) ?
-              <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-            </Route>
-            <Route exact path="/events">
-              <ViewEvents/>
-            </Route>
-            <Route
-              exact path="/event/:eventid"
-              render={(props) =>
-                <IndividualEvent eventID={props.match.params.eventid}
-                  {...props} />}
-            />
-            <Route path="/allevents">
-              <AllEvents/>
-            </Route>
-            <Route path="/" component={Home}/>
-          </Switch>
-        </Context.Provider>
-      </ThemeProvider>
-    </Router>
+    <>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <Context.Provider value={{
+            authState, setAuthState,
+            businessState, setBusinessState,
+          }}>
+            <CssBaseline />
+            {menu}
+            <Switch>
+              <Route path="/authtest">
+                <AuthTest />
+              </Route>
+              <PrivateRoute
+                path="/events/create"
+                authed={authState}
+                component={CreateEvent}
+              />
+              <PrivateRoute
+                path="/events"
+                authed={authState}
+                component={ViewEvents}
+              />
+              <Route path="/profile">
+                {(authState) ? ((businessState === false) ?
+                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+              </Route>
+              <Route exact path="/events">
+                <ViewEvents/>
+              </Route>
+              <Route
+                exact path="/event/:eventid"
+                render={(props) =>
+                  <IndividualEvent eventID={props.match.params.eventid}
+                    {...props} />}
+              />
+              <Route path="/allevents">
+                <AllEvents/>
+              </Route>
+              <Route path="/" component={Home}/>
+            </Switch>
+          </Context.Provider>
+        </ThemeProvider>
+      </Router>
+      <div id="fb-root"></div>
+      <script async defer crossOrigin="anonymous"
+        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0"
+        nonce="W60AWbJd">
+      </script>
+    </>
   );
 }
 

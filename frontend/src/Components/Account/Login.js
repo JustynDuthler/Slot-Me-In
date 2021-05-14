@@ -15,9 +15,9 @@ import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Context from '../Context';
+import Context from '../../Context';
 import {useHistory} from 'react-router-dom';
-const Auth = require('../libs/Auth');
+const Auth = require('../../libs/Auth');
 
 /**
  * Login class

@@ -47,6 +47,7 @@
     "lint": "eslint . --ext .js",
     "lintfix": "eslint . --ext .js --fix",
     "start": "react-scripts start",
+    "build": "react-scripts build",
     "test-start": "react-scripts start",
     "test": "jest --runInBand --testTimeout=2000"
   },

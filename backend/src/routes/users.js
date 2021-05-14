@@ -13,6 +13,7 @@ exports.getInfo = async (req, res) => {
     userid: user.userid,
     username: user.username,
     useremail: user.useremail,
+    birthdate: user.birthdate,
   };
   res.status(200).json(userData);
 };
@@ -31,7 +32,8 @@ exports.signup = async (req, res) => {
       } else {
         const userid =
             await userDb.insertUserAccount(
-                req.body.name, hash, req.body.email.toLowerCase());
+                req.body.name, hash, req.body.email.toLowerCase(),
+                req.body.birthdate);
         const token =
             await auth.generateJWT(
                 req.body.email.toLowerCase(), userid, 'user');

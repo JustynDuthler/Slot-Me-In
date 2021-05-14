@@ -3,7 +3,6 @@ import {makeStyles} from '@material-ui/core/styles';
 // import {useHistory, useLocation} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,47 +16,72 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
-import {EventCard} from './Components';
+import {BusinessInfo} from './Components';
+import EventCard from './Components/Events/EventCard';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import Context from './Context';
+import Hidden from '@material-ui/core/Hidden';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 15,
   },
   grid: {
-    marginTop: 50,
+    marginTop: 10,
+    marginBottom: 10,
+    justifyContent: 'center',
   },
   dialogText: {
     marginLeft: 15,
     marginRight: 15,
   },
-  avatar: {
-    margin: '0 auto',
-    fontSize: '6rem',
-    width: theme.spacing(16),
-    height: theme.spacing(16),
-    [theme.breakpoints.up('md')]: {
-      fontSize: '10rem',
-      width: theme.spacing(25),
-      height: theme.spacing(25),
+  smallAvatar: {
+    width: '4px',
+    [theme.breakpoints.down('sm')]: {
+      width: '20px',
     },
   },
   businessName: {
-    marginTop: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
-  iconText: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+  title: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2.5rem',
+    },
+  },
+  dateIcon: {
+    color: theme.palette.secondary.dark,
+    width: '40px',
+    height: '40px',
+  },
+  locationIcon: {
+    color: theme.palette.primary.dark,
+    width: '40px',
+    height: '40px',
   },
   date: {
     color: theme.palette.secondary.dark,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   location: {
     color: theme.palette.primary.dark,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   description: {
     marginTop: theme.spacing(3),
@@ -80,14 +104,19 @@ const useStyles = makeStyles((theme) => ({
     height: 50,
   },
   card: {
+    marginTop: theme.spacing(2),
+    margin: '0 auto',
     [theme.breakpoints.up('lg')]: {
-      width: 250,
+      width: 275,
     },
     [theme.breakpoints.down('md')]: {
-      width: 175,
+      width: 225,
     },
-    margin: '0 auto',
-    marginTop: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      width: 250,
+      marginLeft: 5,
+      marginRight: 5,
+    },
   },
 }));
 
@@ -110,6 +139,11 @@ const IndividualEvent = (props) => {
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
   const [eventList, setEventList] = React.useState([]);
+  const [chipData, setChipData] = React.useState([]);
+  // property names from DB
+  const properties = ['membersonly', 'over18', 'over21'];
+  // formatted strings to display on Chips
+  const names = ['Members Only', '18+', '21+'];
 
   useEffect(() => {
     getEventData();
@@ -134,6 +168,7 @@ const IndividualEvent = (props) => {
       }
       return response.json();
     }).then((json) => {
+      console.log(json);
       setEventList(json.slice(0, 3));
     })
         .catch((error) => {
@@ -246,6 +281,21 @@ const IndividualEvent = (props) => {
           setEventData(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
+          setEventList(eventList.filter((event) =>
+            event.eventid !== eventid,
+          ));
+          const chipList = [];
+          // check if each property is true
+          for (const index in properties) {
+            if (properties.hasOwnProperty(index)) {
+              if (json[properties[index]]) {
+                // if true, push object with key and formatted name
+                // ex: if property membersonly true, push label of Members Only
+                chipList.push({key: properties.length, label: names[index]});
+              }
+            }
+          }
+          setChipData(chipList);
         })
         .catch((error) => {
           console.log(error);
@@ -308,41 +358,71 @@ const IndividualEvent = (props) => {
   };
 
   return (
-    <div>
-      <Grid container spacing={0} className={classes.grid}>
-        <Grid item xs={3} className={classes.businessInfo}>
-          <Avatar
-            alt={businessData.businessname}
-            src={'./picture'}
-            className={classes.avatar}
-          />
-          <Typography className={classes.businessName}
-            variant='h3' align='center'>
-            {businessData.businessname}
-          </Typography>
-          <Typography variant='body1' align='center'>
-            {businessData.email}
-          </Typography>
-          <Typography variant='body1' align='center'>
-            {businessData.phonenumber}
-          </Typography>
-        </Grid>
+    <div style={{overflow: 'hidden'}}>
+      <Grid container spacing={6} className={classes.grid}>
+        <Hidden xsDown>
+          <Grid item md={3}>
+            <BusinessInfo
+              picture='picture'
+              name={businessData.businessname}
+              email={businessData.email}
+              phonenumber={businessData.phonenumber}
+              description={businessData.description}
+            />
+          </Grid>
+        </Hidden>
 
-        <Grid item xs={6} className={classes.eventInfo}>
+        <Grid item xs={10} sm={6} md={4} xl={3} className={classes.eventInfo}>
           <Typography className={classes.title} variant='h2'>
             {eventData.eventname}
           </Typography>
-          <Box className={classes.iconText}>
-            <AccessTimeIcon className={classes.date}/>
-            <Typography className={classes.date} variant='h6'>
-              {Util.formatDate(eventData.starttime, eventData.endtime)}
-            </Typography>
-          </Box>
-          <Box className={classes.iconText}>
-            <LocationOnOutlinedIcon className={classes.location}/>
-            <Typography className={classes.location} variant='h6'>
-              Science &amp; Engineering Library
-            </Typography>
+          <Hidden smUp>
+            <ListItem dense disableGutters>
+              <ListItemAvatar className={classes.smallAvatar}>
+                <Avatar
+                  alt={businessData.businessname}
+                  src={'./picture'}
+                />
+              </ListItemAvatar>
+              <ListItemText>
+                <Typography className={classes.businessName}
+                  variant='h6' align='left'>
+                  {businessData.businessname}
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          </Hidden>
+          <ListItem dense disableGutters>
+            <ListItemIcon className={classes.icon}>
+              <AccessTimeIcon className={classes.dateIcon}/>
+            </ListItemIcon>
+            <ListItemText>
+              <Typography className={classes.date} variant='h6'>
+                {Util.formatDate(eventData.starttime, eventData.endtime)}
+              </Typography>
+            </ListItemText>
+          </ListItem>
+          <ListItem dense disableGutters>
+            <ListItemIcon className={classes.icon}>
+              <LocationOnOutlinedIcon className={classes.locationIcon}/>
+            </ListItemIcon>
+            <ListItemText>
+              <Typography className={classes.location} variant='h6'>
+                {eventData.location ? eventData.location : 'N/A'}
+              </Typography>
+            </ListItemText>
+          </ListItem>
+
+          <Box>
+            {chipData.map((data) => {
+              return (
+                <Chip
+                  key={data.key}
+                  label={data.label}
+                  className={classes.chip}
+                />
+              );
+            })}
           </Box>
 
           <Typography className={classes.description} variant='body1'>
@@ -370,13 +450,18 @@ const IndividualEvent = (props) => {
               {signupType === true ? 'Sign Up' : 'Withdraw'}
             </Button>)
           }
-
           <Box className={classes.share}>
             <IconButton>
               <FacebookIcon className={classes.shareIcon}/>
             </IconButton>
             <IconButton>
-              <TwitterIcon className={classes.shareIcon}/>
+              <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+                data-text="I am signing up for this event!"
+                data-url={'http://localhost:3000/event/'+eventid}
+                data-show-count="false">
+                <TwitterIcon className={classes.shareIcon}/></a>
+              <script async src="https://platform.twitter.com/widgets.js"
+                charSet="utf-8"></script>
             </IconButton>
             <IconButton>
               <InstagramIcon className={classes.shareIcon}/>
@@ -384,17 +469,26 @@ const IndividualEvent = (props) => {
           </Box>
         </Grid>
 
-        <Grid item xs={3}>
-          <Typography variant='h5' align='center'>
+        <Grid item xs={false} md={3}>
+          <Typography variant='h6' align='center'>
             More {businessData.businessname} Events
           </Typography>
-          <Box className={classes.eventCards}>
-            {eventList.map((event) =>
-              <EventCard
-                className={classes.card}
-                row={event} context={context} key={event.eventid} />,
-            )}
-          </Box>
+          <Grid container className={classes.grid}>
+            {eventList.length > 0 ?
+              eventList.map((event) =>
+                <EventCard
+                  className={classes.card}
+                  row={event} context={context} key={event.eventid} />,
+              ) :
+              <Card className={classes.card}>
+                <CardContent>
+                  <Typography variant='h6' component='h2' align='center'>
+                    No Other Events Available
+                  </Typography>
+                </CardContent>
+              </Card>
+            }
+          </Grid>
         </Grid>
       </Grid>
 

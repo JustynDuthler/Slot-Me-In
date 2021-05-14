@@ -1,4 +1,5 @@
 const pool = require('./dbConnection');
+const eventsDb = require('../db/eventsDb');
 
 // Inserts a list of emails into the members table
 // If there is a conflict (email already added) it does nothing
@@ -84,3 +85,22 @@ exports.getMemberBusinesses = async (email) => {
   const {rows} = await pool.query(query);
   return rows;
 }
+
+// gets a businesses restricted events
+exports.getBusinessRestrictedEvents = async (businessid) => {
+  const select = 'SELECT * FROM Events WHERE businessid = $1 ' +
+      'AND membersonly = TRUE';
+  const query = {
+    text: select,
+    values: [businessid],
+  }
+  let {rows} = await pool.query(query);
+  for (let i in rows) {
+    if (rows.hasOwnProperty(i)) {
+      // get number of attendees for each event
+      const attendees = await eventsDb.checkRemainingEventCapacity(rows[i].eventid);
+      rows[i]['attendees'] = attendees.length;
+    }
+  }
+  return rows;
+};

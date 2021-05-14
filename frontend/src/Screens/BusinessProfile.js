@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Context from '../Context';
-import Auth from '../libs/Auth';
+import * as Auth from '../libs/Auth';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -28,7 +28,8 @@ import {useHistory} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UserInfo from '../Components';
-import {EventCard, ShareBar} from '../Components';
+import {ShareBar} from '../Components';
+import EventCard from '../Components/Events/EventCard';
 
 /**
  * BusinessProfile component
@@ -170,7 +171,6 @@ export default function BusinessProfile() {
     await Promise.all([businessRes, eventRes, memberRes]);
     setIsLoaded(true);
   }, []);
-
   /**
    * handleSubmit
    * Handles adding members to a business
@@ -832,7 +832,7 @@ export default function BusinessProfile() {
                       classes.menuButton2}
                     onClick={()=>{
                       setTab(0);
-                    }}>Events
+                    }}>Overview
                   </Button>
                   <Button
                     className={tab === 1 ? classes.menuButton :
@@ -846,7 +846,7 @@ export default function BusinessProfile() {
                       classes.menuButton2}
                     onClick={()=>{
                       setTab(2);
-                    }}>Overview
+                    }}>Events
                   </Button>
                 </ButtonGroup>
 
@@ -863,16 +863,16 @@ export default function BusinessProfile() {
                 style={{height: '700px'}}
               />
             </Grid>
-            {tab === 2 &&
+            {tab === 0 &&
             <Divider orientation="vertical" flexItem
               style={{marginRight: '-1px'}} />}
-            {tab === 2 &&
+            {tab === 0 &&
             <Grid item md={9} container style={{height: 700}}
               className={classes.grid}>
               <Typography style={{margin: 8, fontSize: '24px'}}>
                 Upcoming Events:</Typography>
-              <Box width='100%' height='400px'>
-                <Grid item md={12} container justify='center'
+              <Box width='100%' height='550px'>
+                <Grid item md={12} container justify='space-evenly'
                   className={classes.grid2}>
                   <EventCard row={eventtemp} context={context}/>
                   <EventCard row={eventtemp} context={context}/>
@@ -882,8 +882,7 @@ export default function BusinessProfile() {
                   <EventCard row={eventtemp} context={context}/>
                 </Grid>
               </Box>
-              <Divider className={classes.divider}/>
-              <ShareBar style={{height: 45}}/>
+              <ShareBar style={{flexGrow: 1}}/>
             </Grid>}
             {tab === 1 && <Grid item container md={9} direction="row"
               justify="center" style={{height: 700, overflow: 'auto',
@@ -944,10 +943,26 @@ export default function BusinessProfile() {
                 </Button>
               </Box>
             </Grid>}
-            {tab === 0 && <Grid item container md={9} direction="row"
+            {tab === 2 && <Grid item container md={9}
+              direction={eventState !== null || showAll ? 'column' : 'row'}
+              alignItems='center'
               style={{height: 700, overflow: 'auto',
                 maxHeight: 700}}
               className={classes.grid}>
+              {eventState!==null && <div key='event'
+                className={classes.eventStyle}>
+                <IndividualEvent eventID={eventState}/>
+              </div>}
+              {eventState!==null && <Button
+                type='submit'
+                variant='contained'
+                color='secondary'
+                onClick={() => {
+                  setEventState(null);
+                }}
+              >
+                Back
+              </Button>}
               {eventState === null &&showAll === false&&
               <Box width='50%'>
                 <Grid container justify='center'>
@@ -965,11 +980,21 @@ export default function BusinessProfile() {
                   </MuiPickersUtilsProvider>
                 </Grid>
               </Box>}
-              <Box width='50%'>
+              {eventState===null && <Box width='50%'>
                 <List>
                   {eventListJSX}
                 </List>
-              </Box>
+              </Box>}
+              {showAll && <Button
+                type='submit'
+                variant='contained'
+                color='secondary'
+                onClick={() => {
+                  setShowAll(false);
+                }}
+              >
+                Back
+              </Button>}
             </Grid>}
           </Grid>
         </div>

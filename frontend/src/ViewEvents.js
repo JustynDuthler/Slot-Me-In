@@ -3,12 +3,9 @@ import {makeStyles} from '@material-ui/core/styles';
 import Carousel from 'react-elastic-carousel';
 import Box from '@material-ui/core/Box';
 import {Link} from 'react-router-dom';
+import EventCard from './Components/Events/EventCard';
 import {Grid} from '@material-ui/core';
-import {EventCard} from './Components';
 import Typography from '@material-ui/core/Typography';
-// import GridList from '@material-ui/core/GridList';
-// import GridListTile from '@material-ui/core/GridListTile';
-// import tileData from './tileData';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -98,7 +95,6 @@ export default function ViewEvents() {
         .catch((error) => {
           console.log(error);
         });
-    console.log(memberBusinesses);
   };
 
   /**
@@ -123,7 +119,6 @@ export default function ViewEvents() {
         .catch((error) => {
           console.log(error);
         });
-    console.log(memberEvents);
   };
 
   /**
@@ -168,23 +163,20 @@ export default function ViewEvents() {
     {width: 2000, itemsToShow: 7},
   ];
 
-  // only show this if it is a user account
+  // only show if it is a user account
   let showMemberEvents;
   if (context.businessState === false) {
     if (memberEvents.length === 0) {
       showMemberEvents = (
         <Grid item xs={8}>
-          <Box mt={10}>
-            <Grid container xs={8}>
-              <Box>
-                <Typography variant="h4" style={{float: 'left'}}>
-                  Member Events
-                </Typography>
-              </Box>
-              <Box>
-                <Typography>You are not a member of any businesses.</Typography>
-              </Box>
-            </Grid>
+          <Box display="flex"
+            mt={10}>
+            <Typography variant="h4" style={{float: 'left'}}>
+              Member Events
+            </Typography>
+          </Box>
+          <Box display="flex">
+            You are not a member of any businesses.
           </Box>
         </Grid>
       );
@@ -214,11 +206,11 @@ export default function ViewEvents() {
     }
   } else {
     showMemberEvents = (
-      <Grid item xs={8}>
-      </Grid>
+      <div></div>
     );
   }
 
+  // only show if it is a user account
   let showBusinesses;
   if (context.businessState === false) {
     if (memberBusinesses.length === 0) {
@@ -271,7 +263,9 @@ export default function ViewEvents() {
   return (
     <React.Fragment>
       <Box p={5} ml={20}>
-        <input type="text" placeholder="Ignore this search bar..." />
+        <Box>
+          <input type="text" placeholder="Ignore this search bar..." />
+        </Box>
         <Grid container spacing={0}>
           {showMemberEvents}
           {showBusinesses}

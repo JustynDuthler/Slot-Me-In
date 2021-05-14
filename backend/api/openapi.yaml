@@ -278,7 +278,7 @@ paths:
     get:
       description: Gets business information
       tags:
-        - business
+        - businesses
       security:
         - bearerAuth: []
       responses:
@@ -445,6 +445,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+
   /businesses/getProfileImage:
     get:
       description: get a business profile picture
@@ -452,7 +453,7 @@ paths:
         - businesses
       security:
         - bearerAuth: []
-      responses: 
+      responses:
         200:
           description: successfully uploaded profile image
           content:
@@ -462,9 +463,9 @@ paths:
                 properties:
                   Image:
                     type: string
-                    format: binary 
+                    format: binary
         401:
-          $ref: '#/components/responses/UnauthorizedError' 
+          $ref: '#/components/responses/UnauthorizedError'
         403:
           description: Authorization Error
           content:
@@ -472,14 +473,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         500:
-          description: cannot read image from server   
+          description: cannot read image from server
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-            
+
   /events:
     post:
       description: Create a new event
@@ -538,6 +539,11 @@ paths:
             type: string
             format: date-time
           description: Get only events ending before a given timestamp (optional)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search events by text (optional)
       security:
         - bearerAuth: []
       responses:
@@ -662,7 +668,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   /events/publicEvents:
-    get: 
+    get:
       description: Returns an array of public events
       tags:
         - events
@@ -679,7 +685,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    
+
 
   /attendees/{eventid}:
     get:
@@ -913,6 +919,9 @@ components:
         password:
           type: string
           format: password
+        birthdate:
+          type: string
+          format: date-time
         phonenumber:
           type: string
           pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
@@ -940,7 +949,6 @@ components:
         - password
     User:
       type: object
-      maxProperties: 3
       additionalProperties: false
       properties:
         userid:
@@ -951,10 +959,14 @@ components:
         useremail:
           type: string
           format: email
+        birthdate:
+          type: string
+          format: date-time
       required:
         - userid
         - username
         - useremail
+        - birthdate
     UserList:
       type: array
       items:
@@ -1051,6 +1063,13 @@ components:
           type: string
         membersonly:
           type: boolean
+        over18:
+          type: boolean
+        over21:
+          type: boolean
+        category:
+          type: string
+          nullable: true
       required:
         - eventname
         - starttime
@@ -1115,6 +1134,9 @@ components:
           type: string
           nullable: true
           format: uuid
+        birthdate:
+          type: string
+          format: date-time
     MemberList:
       type: array
       items:

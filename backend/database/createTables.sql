@@ -10,6 +10,7 @@ CREATE TABLE Users (
 	username TEXT NOT NULL,
 	password TEXT NOT NULL,
   useremail TEXT UNIQUE NOT NULL,
+  birthdate TIMESTAMPTZ NOT NULL,
 	PRIMARY KEY (userid)
 );
 
@@ -36,6 +37,9 @@ CREATE TABLE RepeatingEvents (
   starttime TIMESTAMPTZ NOT NULL,
   endtime TIMESTAMPTZ NOT NULL,
   capacity INTEGER,
+  membersonly BOOLEAN DEFAULT TRUE,
+  over18 BOOLEAN DEFAULT FALSE,
+  over21 BOOLEAN DEFAULT FALSE,
   sunday BOOLEAN,
   monday BOOLEAN,
   tuesday BOOLEAN,
@@ -47,6 +51,13 @@ CREATE TABLE RepeatingEvents (
   repeatend TIMESTAMPTZ,
   PRIMARY KEY (repeatid),
   FOREIGN KEY (businessid) REFERENCES Businesses
+);
+
+DROP TABLE IF EXISTS EventCategories;
+-- EventCategories table
+CREATE TABLE EventCategories (
+  category TEXT NOT NULL,
+  PRIMARY KEY (category)
 );
 
 DROP TABLE IF EXISTS Events;
@@ -61,9 +72,13 @@ CREATE TABLE Events (
   capacity INTEGER,
   repeatid uuid,
   membersonly BOOLEAN DEFAULT TRUE,
+  over18 BOOLEAN DEFAULT FALSE,
+  over21 BOOLEAN DEFAULT FALSE,
+  category TEXT,
   PRIMARY KEY (eventid),
   FOREIGN KEY (businessid) REFERENCES Businesses,
-  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE
+  FOREIGN KEY (repeatid) REFERENCES RepeatingEvents ON DELETE CASCADE,
+  FOREIGN KEY (category) REFERENCES EventCategories(category)
 );
 
 DROP TABLE IF EXISTS Attendees;

@@ -98,8 +98,8 @@ exports.getRestrictedEvents = async (req, res) => {
   console.log(businesses.length);
   let restrictedEventList = []
   for (var i = 0; i < businesses.length; i++) {
-    // get events for the business
-    const restrictedEvents = await eventsDb.getBusinessEvents(businesses[i].businessid);
+    // get restricted events for the business
+    const restrictedEvents = await memberDb.getBusinessRestrictedEvents(businesses[i].businessid);
     for (var j = 0; j < restrictedEvents.length; j++) {
       // push each event
       restrictedEventList.push(restrictedEvents[j]);
