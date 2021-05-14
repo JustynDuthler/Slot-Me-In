@@ -126,7 +126,7 @@ export default function ViewEvents() {
    * API call to get data for an event
    */
   function getEvents() {
-    const apicall = 'http://localhost:3010/api/events';
+    const apicall = 'http://localhost:3010/api/events/publicEvents';
     fetch(apicall, {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
