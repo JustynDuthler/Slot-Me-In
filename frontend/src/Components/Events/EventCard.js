@@ -82,7 +82,7 @@ export default function EventCard({row, context, isBusiness, buttonType='view',
         <Typography className={classes.pos}
           variant='subtitle1' align='center'
           color={row.attendees === row.capacity ?
-              'primary' : 'textPrimary'}>
+              'error' : 'textPrimary'}>
           {row.capacity - row.attendees} of {row.capacity} spots open
         </Typography>
       </CardContent>

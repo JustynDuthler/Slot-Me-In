@@ -28,8 +28,21 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
+
+/**
+ * Alert component for error snackbar
+ * See "Customized Snackbar" example
+ * https://material-ui.com/components/snackbars/
+ * @param {*} props
+ * @return {object} Alert
+ */
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -134,16 +147,16 @@ const IndividualEvent = (props) => {
 
   const [eventData, setEventData] = useState({});
   const [businessData, setBusinessData] = useState({});
-  // const [signupError, setSignupError] = useState(false);
+  const [signupError, setSignupError] = useState(false);
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
   const [eventList, setEventList] = React.useState([]);
   const [chipData, setChipData] = React.useState([]);
   // property names from DB
-  const properties = ['membersonly', 'over18', 'over21'];
+  const chipProperties = ['membersonly', 'over18', 'over21'];
   // formatted strings to display on Chips
-  const names = ['Members Only', '18+', '21+'];
+  const chipNames = ['Members Only', '18+', '21+'];
 
   useEffect(() => {
     getEventData();
@@ -193,10 +206,12 @@ const IndividualEvent = (props) => {
               Auth.removeJWT();
               context.setAuthState(false);
             } else if (response.status === 409) {
-              // setSignupError(true);
               setSignupType(true);
+            } else if (response.status === 403) {
+              setSignupError(true);
+              console.log(response);
             } else {
-              // setSignupError(false);
+              return;
             }
           } else {
             setSignupType(false);
@@ -284,12 +299,13 @@ const IndividualEvent = (props) => {
           getBusinessEvents(json.businessid);
           const chipList = [];
           // check if each property is true
-          for (const index in properties) {
-            if (properties.hasOwnProperty(index)) {
-              if (json[properties[index]]) {
+          for (const index in chipProperties) {
+            if (chipProperties.hasOwnProperty(index)) {
+              if (json[chipProperties[index]]) {
                 // if true, push object with key and formatted name
                 // ex: if property membersonly true, push label of Members Only
-                chipList.push({key: properties.length, label: names[index]});
+                chipList.push(
+                    {key: chipProperties.length, label: chipNames[index]});
               }
             }
           }
@@ -493,6 +509,16 @@ const IndividualEvent = (props) => {
         </Grid>
       </Grid>
 
+      {/* Error snackbar when signing up for age restricted events */}
+      <Snackbar open={signupError} autoHideDuration={5000} onClose={() => {
+        setSignupError(false);
+      }}>
+        <Alert onClose={() => {
+          setSignupError(false);
+        }} severity="error">
+          You do not meet the age requirements for this event.
+        </Alert>
+      </Snackbar>
 
       {/* Confirmation dialog for withdrawing from events */}
       <Dialog open={confirmDialog} onClose={() => {
