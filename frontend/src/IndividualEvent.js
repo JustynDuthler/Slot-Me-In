@@ -325,6 +325,20 @@ const IndividualEvent = (props) => {
           console.log(error);
         });
   };
+  /**
+   * tweetURL
+   * @return {string} The URL for making a tweet with pre-filled text and the
+   * URL of the event
+   */
+  function tweetURL() {
+    // const orig = encodeURIComponent('localhost:3000');
+    const msg = encodeURIComponent('I am going to '+eventData.eventname+
+      ' at '+Util.formatDate(eventData.starttime, eventData.endtime))+
+      '. Sign up!';
+    const url = encodeURIComponent('localhost:3000/events/'+eventid);
+    return 'https://twitter.com/intent/tweet?text='+
+      msg+'&url='+url;
+  }
 
   /**
    * getRegistration
@@ -356,7 +370,6 @@ const IndividualEvent = (props) => {
       console.log(error);
     });
   };
-  console.log(businessData.businessid);
   return (
     <div style={{overflow: 'hidden'}}>
       <Grid container spacing={6} className={classes.grid}>
@@ -459,13 +472,9 @@ const IndividualEvent = (props) => {
               <FacebookIcon className={classes.shareIcon}/>
             </IconButton>
             <IconButton>
-              <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-                data-text="I am signing up for this event!"
-                data-url={'http://localhost:3000/event/'+eventid}
-                data-show-count="false">
+              <a className="twitter-share-button"
+                href={tweetURL()}>
                 <TwitterIcon className={classes.shareIcon}/></a>
-              <script async src="https://platform.twitter.com/widgets.js"
-                charSet="utf-8"></script>
             </IconButton>
             <IconButton>
               <InstagramIcon className={classes.shareIcon}/>

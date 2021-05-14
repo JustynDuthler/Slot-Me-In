@@ -177,6 +177,9 @@ function App() {
         src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0"
         nonce="W60AWbJd">
       </script>
+      <script async src="https://platform.twitter.com/widgets.js"
+        charSet="utf-8">
+      </script>
     </>
   );
 }

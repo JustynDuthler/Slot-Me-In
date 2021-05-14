@@ -7,8 +7,9 @@ import {formatDate} from '../../libs/Util';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-
-
+import Chip from '@material-ui/core/Chip';
+import {Grid} from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 const useStyles = makeStyles((theme) => ({
   pos: {
     marginTop: 8,
@@ -69,8 +70,12 @@ CardButton.propTypes= {
 export default function EventCard({row, context, isBusiness, buttonType='view',
   ...rest}) {
   const classes = useStyles();
+  // property names from DB
+  const properties = [['membersonly', 'Members Only'], ['over18', '18+'],
+    ['over21', '21+'], ['category', row.category]];
   return (
-    <Card key={row.eventid} {...rest}>
+    <Card style={{margin: '20px', backgroundColor: 'ff0000'}}
+      key={row.eventid} {...rest}>
       <CardContent>
         <Typography variant='h5' component='h2' align='center'>
           {row.eventname}
@@ -79,6 +84,21 @@ export default function EventCard({row, context, isBusiness, buttonType='view',
           color='textSecondary' variant='body2' align='center'>
           {formatDate(row.starttime, row.endtime)}
         </Typography>
+        <Box width='100%'>
+          <Grid item container md={12} justify='center' alignItems='center'
+            direction='row'>
+            {properties.filter((data) => row[data[0]]).map((data) => {
+              return (
+                <Chip
+                  size="small"
+                  key={data[1]}
+                  label={data[1]}
+                  className={classes.chip}
+                />
+              );
+            })}
+          </Grid>
+        </Box>
         <Typography className={classes.pos}
           variant='subtitle1' align='center'
           color={row.attendees === row.capacity ?

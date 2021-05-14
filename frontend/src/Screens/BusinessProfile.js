@@ -874,12 +874,24 @@ export default function BusinessProfile() {
               <Box width='100%' height='550px'>
                 <Grid item md={12} container justify='space-evenly'
                   className={classes.grid2}>
-                  <EventCard row={eventtemp} context={context}/>
-                  <EventCard row={eventtemp} context={context}/>
-                  <EventCard row={eventtemp} context={context}/>
-                  <EventCard row={eventtemp} context={context}/>
-                  <EventCard row={eventtemp} context={context}/>
-                  <EventCard row={eventtemp} context={context}/>
+                  <Box width='275px'>
+                    <EventCard row={eventtemp} context={context}/>
+                  </Box>
+                  <Box width='275px'>
+                    <EventCard row={eventtemp} context={context}/>
+                  </Box>
+                  <Box width='275px'>
+                    <EventCard row={eventtemp} context={context}/>
+                  </Box>
+                  <Box width='275px'>
+                    <EventCard row={eventtemp} context={context}/>
+                  </Box>
+                  <Box width='275px'>
+                    <EventCard row={eventtemp} context={context}/>
+                  </Box>
+                  <Box width='275px'>
+                    <EventCard row={eventtemp} context={context}/>
+                  </Box>
                 </Grid>
               </Box>
               <ShareBar style={{flexGrow: 1}}/>
