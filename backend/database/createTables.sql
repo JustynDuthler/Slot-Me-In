@@ -10,6 +10,7 @@ CREATE TABLE Users (
 	username TEXT NOT NULL,
 	password TEXT NOT NULL,
   useremail TEXT UNIQUE NOT NULL,
+  birthdate TIMESTAMPTZ NOT NULL,
 	PRIMARY KEY (userid)
 );
 

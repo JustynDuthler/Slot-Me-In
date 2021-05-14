@@ -420,13 +420,18 @@ const IndividualEvent = (props) => {
               {signupType === true ? 'Sign Up' : 'Withdraw'}
             </Button>)
           }
-
           <Box className={classes.share}>
             <IconButton>
               <FacebookIcon className={classes.shareIcon}/>
             </IconButton>
             <IconButton>
-              <TwitterIcon className={classes.shareIcon}/>
+              <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+                data-text="I am signing up for this event!"
+                data-url={'http://localhost:3000/event/'+eventid}
+                data-show-count="false">
+                <TwitterIcon className={classes.shareIcon}/></a>
+              <script async src="https://platform.twitter.com/widgets.js"
+                charSet="utf-8"></script>
             </IconButton>
             <IconButton>
               <InstagramIcon className={classes.shareIcon}/>
