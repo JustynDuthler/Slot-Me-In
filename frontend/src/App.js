@@ -11,6 +11,7 @@ import Home from './Screens/Home';
 import AuthTest from './Screens/AuthTest';
 import CreateEvent from './Screens/CreateEvent';
 import IndividualEvent from './IndividualEvent';
+import PublicBusinessProfile from './Screens/PublicBusinessProfile';
 import ViewEvents from './ViewEvents';
 import UserProfile from './Screens/UserProfile';
 import BusinessProfile from './Screens/BusinessProfile';
@@ -150,6 +151,13 @@ function App() {
               <Route exact path="/events">
                 <ViewEvents/>
               </Route>
+              <Route
+                exact path="/business/profile/:businessid"
+                render={(props) =>
+                  <PublicBusinessProfile
+                    businessid={props.match.params.businessid}
+                    {...props} />}
+              />
               <Route
                 exact path="/event/:eventid"
                 render={(props) =>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-// import {useHistory, useLocation} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
 const IndividualEvent = (props) => {
   const classes = useStyles();
   const context = React.useContext(Context);
-  // const history = useHistory();
+  const history = useHistory();
   // const location = useLocation();
   const eventid = props.eventID;
 
@@ -356,7 +356,7 @@ const IndividualEvent = (props) => {
       console.log(error);
     });
   };
-
+  console.log(businessData.businessid);
   return (
     <div style={{overflow: 'hidden'}}>
       <Grid container spacing={6} className={classes.grid}>
@@ -368,6 +368,10 @@ const IndividualEvent = (props) => {
               email={businessData.email}
               phonenumber={businessData.phonenumber}
               description={businessData.description}
+              businessid={businessData.businessid}
+              onClick={()=>{
+                history.push('/business/profile/'+businessData.businessid);
+              }}
             />
           </Grid>
         </Hidden>
