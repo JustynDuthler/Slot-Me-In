@@ -168,8 +168,9 @@ const IndividualEvent = (props) => {
       }
       return response.json();
     }).then((json) => {
-      console.log(json);
-      setEventList(json.slice(0, 3));
+      setEventList(json.filter((event) =>
+        event.eventid !== eventid,
+      ).slice(0, 3));
     })
         .catch((error) => {
           console.log(error);
@@ -281,9 +282,6 @@ const IndividualEvent = (props) => {
           setEventData(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
-          setEventList(eventList.filter((event) =>
-            event.eventid !== eventid,
-          ));
           const chipList = [];
           // check if each property is true
           for (const index in properties) {
@@ -356,7 +354,6 @@ const IndividualEvent = (props) => {
       console.log(error);
     });
   };
-  console.log(businessData.businessid);
   return (
     <div style={{overflow: 'hidden'}}>
       <Grid container spacing={6} className={classes.grid}>
