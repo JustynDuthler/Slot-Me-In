@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import EventCard from './Components/Events/EventCard';
 import {Grid} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -241,12 +242,21 @@ export default function ViewEvents() {
             justifyContent="center" mr={15} ml={15} mt={3}>
             <Grid item xs={4}>
               {memberBusinesses.map((business) =>
-                <Box key={business.businessid}>
+                <Box key={business.businessid} alignItems="center"
+                  justifyContent="center" textAlign='center' mb={3}>
                   <Typography
                     variant="h5"
                     align="center">
                     {business.businessname}
                   </Typography>
+                  <Button size='small'
+                    variant='contained'
+                    color='secondary'
+                    href={'/business/profile/' + business.businessid}
+                    justifyContent='center'
+                    style={{margin: 'auto'}}>
+                    View Profile
+                  </Button>
                 </Box>,
               )}
             </Grid>
