@@ -27,6 +27,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
@@ -138,6 +139,11 @@ const IndividualEvent = (props) => {
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
   const [eventList, setEventList] = React.useState([]);
+  const [chipData, setChipData] = React.useState([]);
+  // property names from DB
+  const properties = ['membersonly', 'over18', 'over21'];
+  // formatted strings to display on Chips
+  const names = ['Members Only', '18+', '21+'];
 
   useEffect(() => {
     getEventData();
@@ -278,6 +284,18 @@ const IndividualEvent = (props) => {
           setEventList(eventList.filter((event) =>
             event.eventid !== eventid,
           ));
+          const chipList = [];
+          // check if each property is true
+          for (const index in properties) {
+            if (properties.hasOwnProperty(index)) {
+              if (json[properties[index]]) {
+                // if true, push object with key and formatted name
+                // ex: if property membersonly true, push label of Members Only
+                chipList.push({key: properties.length, label: names[index]});
+              }
+            }
+          }
+          setChipData(chipList);
         })
         .catch((error) => {
           console.log(error);
@@ -398,6 +416,18 @@ const IndividualEvent = (props) => {
               </Typography>
             </ListItemText>
           </ListItem>
+
+          <Box>
+            {chipData.map((data) => {
+              return (
+                <Chip
+                  key={data.key}
+                  label={data.label}
+                  className={classes.chip}
+                />
+              );
+            })}
+          </Box>
 
           <Typography className={classes.description} variant='body1'>
             {eventData.description ?

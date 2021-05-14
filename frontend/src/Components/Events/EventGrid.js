@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Context from '../../Context';
 import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import * as Auth from '../../libs/Auth';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {*} props
  * @return {object} JSX
  */
-const EventGrid = ({publicEvents}) => {
+const EventGrid = ({publicEvents=false}) => {
   const [events, setEvents] = React.useState([]);
   const context = React.useContext(Context);
   const classes = useStyles();
@@ -51,8 +52,29 @@ const EventGrid = ({publicEvents}) => {
       });
     };
 
+    /**
+     * Gets events including member events
+     * and sets events to it
+     * @return {array} Event data
+     */
+    async function fetchEvents() {
+      return fetch('http://localhost:3010/api/events', {
+        method: 'GET',
+        headers: Auth.headerJsonJWT(),
+      }).then((response) => {
+        if (!response.ok) {
+          console.log('Error fetching Event data');
+          throw response;
+        }
+        return response.json();
+      });
+    };
+
     if (publicEvents) {
       const eventResponse = await fetchPublicevents();
+      setEvents(eventResponse);
+    } else {
+      const eventResponse = await fetchEvents();
       setEvents(eventResponse);
     }
   }, []);

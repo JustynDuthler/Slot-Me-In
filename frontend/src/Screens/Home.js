@@ -219,7 +219,7 @@ const AuthHome = (props) => {
 
   return (
     <Box>
-      temp
+      <EventGrid/>
     </Box>
   );
 };
