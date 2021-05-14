@@ -39,6 +39,11 @@ const theme = createMuiTheme({
       light: '#fffcac',
       dark: '#dddddd',
     },
+    error: {
+      main: '#ed7f7d',
+      light: '#ffb0ac',
+      dark: '#b75051',
+    },
   },
   typography: {
     useNextVariants: true,

@@ -177,7 +177,7 @@ export default function ViewEvents() {
             </Typography>
           </Box>
           <Box display="flex">
-            You are not a member of any businesses.
+            No restricted events available.
           </Box>
         </Grid>
       );
@@ -278,11 +278,11 @@ export default function ViewEvents() {
         </Box>
         <Grid container spacing={0}>
           {showMemberEvents}
-          {showBusinesses}
           <Grid item xs={8}>
             <Box mt={10}>
               <Typography variant="h4" style={{float: 'left'}}>
-                All Events
+                {context.businessState === false ?
+                'All Events' : 'My Events'}
               </Typography>
               <Box pt={5}>
                 <Link to="/allevents" style={{float: 'right'}}>
@@ -299,6 +299,7 @@ export default function ViewEvents() {
               </Box>
             </Box>
           </Grid>
+          {showBusinesses}
         </Grid>
       </Box>
     </React.Fragment>
