@@ -72,7 +72,10 @@ export default function EventCard({row, context, isBusiness, buttonType='view',
   const classes = useStyles();
   // property names from DB
   const properties = [['membersonly', 'Members Only'], ['over18', '18+'],
-    ['over21', '21+'], ['category', row.category]];
+    ['over21', '21+'], ['category',
+      row.category ? row.category[0].toUpperCase() +
+      row.category.substring(1) : null]];
+  console.log(row);
   return (
     <Card style={{margin: '20px', backgroundColor: 'ff0000'}}
       key={row.eventid} {...rest}>

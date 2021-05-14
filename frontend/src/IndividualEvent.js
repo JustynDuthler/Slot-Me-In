@@ -295,6 +295,7 @@ const IndividualEvent = (props) => {
         })
         .then((json) => {
           setEventData(json);
+          console.log(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
           const chipList = [];
@@ -305,9 +306,14 @@ const IndividualEvent = (props) => {
                 // if true, push object with key and formatted name
                 // ex: if property membersonly true, push label of Members Only
                 chipList.push(
-                    {key: chipProperties.length, label: chipNames[index]});
+                    {key: chipProperties[index], label: chipNames[index]});
               }
             }
+          }
+          if (json.category) {
+            chipList.push({key: 'category', label:
+              json.category[0].toUpperCase() +
+              json.category.substring(1)});
           }
           setChipData(chipList);
         })
