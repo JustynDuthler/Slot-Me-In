@@ -148,6 +148,7 @@ const IndividualEvent = (props) => {
   const [eventData, setEventData] = useState({});
   const [businessData, setBusinessData] = useState({});
   const [signupError, setSignupError] = useState(false);
+  const [signupErrorMsg, setSignupErrorMsg] = useState('');
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
@@ -209,7 +210,7 @@ const IndividualEvent = (props) => {
               setSignupType(true);
             } else if (response.status === 403) {
               setSignupError(true);
-              console.log(response);
+              return response.json();
             } else {
               return;
             }
@@ -218,6 +219,9 @@ const IndividualEvent = (props) => {
             setNumAttendees(numAttendees+1);
             return response;
           }
+        })
+        .then((json) => {
+          if (json) setSignupErrorMsg(json.message);
         })
         .catch((error) => {
           console.log(error);
@@ -295,7 +299,6 @@ const IndividualEvent = (props) => {
         })
         .then((json) => {
           setEventData(json);
-          console.log(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
           const chipList = [];
@@ -518,7 +521,7 @@ const IndividualEvent = (props) => {
         <Alert onClose={() => {
           setSignupError(false);
         }} severity="error">
-          You do not meet the age requirements for this event.
+          {signupErrorMsg}
         </Alert>
       </Snackbar>
 

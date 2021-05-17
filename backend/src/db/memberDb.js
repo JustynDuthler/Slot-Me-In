@@ -105,3 +105,15 @@ exports.getBusinessRestrictedEvents = async (businessid) => {
   }
   return rows;
 };
+
+// check if user is a member of business
+exports.checkUserIsMember = async (businessid, useremail) => {
+  const select = 'SELECT * FROM Members WHERE ' +
+      'businessid = $1 AND memberemail = $2';
+  const query = {
+    text: select,
+    values: [businessid, useremail],
+  };
+  const {rows} = await pool.query(query);
+  return (rows.length > 0);
+};
