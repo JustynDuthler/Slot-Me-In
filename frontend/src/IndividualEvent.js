@@ -12,7 +12,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
@@ -30,6 +29,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import {TwitterShareButton} from './Components';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
@@ -345,20 +345,6 @@ const IndividualEvent = (props) => {
           console.log(error);
         });
   };
-  /**
-   * tweetURL
-   * @return {string} The URL for making a tweet with pre-filled text and the
-   * URL of the event
-   */
-  function tweetURL() {
-    // const orig = encodeURIComponent('localhost:3000');
-    const msg = encodeURIComponent('I am going to '+eventData.eventname+
-      ' at '+Util.formatDate(eventData.starttime, eventData.endtime))+
-      '. Sign up!';
-    const url = encodeURIComponent('localhost:3000/events/'+eventid);
-    return 'https://twitter.com/intent/tweet?text='+
-      msg+'&url='+url;
-  }
 
   /**
    * getRegistration
@@ -491,11 +477,11 @@ const IndividualEvent = (props) => {
             <IconButton>
               <FacebookIcon className={classes.shareIcon}/>
             </IconButton>
-            <IconButton>
-              <a className="twitter-share-button"
-                href={tweetURL()}>
-                <TwitterIcon className={classes.shareIcon}/></a>
-            </IconButton>
+            <TwitterShareButton
+              msg={'I am going to '+eventData.eventname+
+                ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
+                '. Sign up!'}
+              url={'localhost:3000/events/'+eventid}/>
             <IconButton>
               <InstagramIcon className={classes.shareIcon}/>
             </IconButton>

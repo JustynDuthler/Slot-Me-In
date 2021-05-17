@@ -12,6 +12,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import IconButton from '@material-ui/core/IconButton';
+const Auth = require('./libs/Auth');
 
 /**
  * UserInfo component
@@ -19,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
  */
 export default function UserInfo({picture: path, name: name, email: email,
   description: description, className: className, ...rest}) {
+  const profileImage = React.createRef();
   const useStyles = makeStyles((theme) => ({
     paper: {
       padding: theme.spacing(2),
@@ -103,6 +105,49 @@ export default function UserInfo({picture: path, name: name, email: email,
    * uploads the profile image
    */
   function uploadProfileImage() {
+    const img = profileImage.current;
+    fetch(img.src)
+        .then((res) => {
+          console.log(res); return res.blob();
+        })
+        .then(async (blob) => {
+          // const buffer = await blob.arrayBuffer();
+          // const formData = new FormData();
+          // formData.append('Image', blob, 'image.png');
+          // console.log(formData);
+          // console.log(blob);
+          // formData.append('Image', 'test');
+          // return fetch('http://localhost:3010/api/businesses/'+
+          //   'uploadProfileImage', {
+          //   method: 'POST',
+          //   body: formData,
+          //   headers: Auth.headerFormDataJWT(),
+          // }).then((result) => {
+          //   console.log(result);
+          // }).then((error) => {
+          //   console.log(error);
+          // });
+          const reader = new FileReader();
+          reader.onload = function() {
+            const formData = new FormData();
+            const file = new File([blob], 'pfp.png', blob);
+            console.log(file);
+            formData.append('Image', file);
+            console.log(formData);
+            return fetch('http://localhost:3010/api/businesses/'+
+              'uploadProfileImage', {
+              method: 'POST',
+              body: formData,
+              headers: Auth.headerFormDataJWT(),
+            }).then((result) => {
+              console.log(result);
+            }).then((error) => {
+              console.log(error);
+            });
+          };
+
+          reader.readAsBinaryString(blob);
+        });
     // Does nothing yet
   }
   return (
@@ -114,7 +159,8 @@ export default function UserInfo({picture: path, name: name, email: email,
       <Box width='100%' height='300px'>
         <label htmlFor="upload-button" width='100%'>
           {image.preview ? (
-            <img src={image.preview} alt="dummy" width='100%' height='auto' />
+            <img src={image.preview} alt="dummy" width='100%' height='auto'
+              ref={profileImage}/>
           ) : (
             <>
               <Avatar
@@ -201,20 +247,80 @@ export function ShareBar({...rest}) {
               className="fb-xfbml-parse-ignore">
               <FacebookIcon className={classes.shareIcon}/></a></div>
         </IconButton>
-        <IconButton>
-          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-            data-show-count="false">
-            <TwitterIcon className={classes.shareIcon}/>
-          </a>
-          <script async src="https://platform.twitter.com/widgets.js"
-            charSet="utf-8">
-          </script>
-        </IconButton>
+        <FacebookShareButton url={'http://localhost:3000/home'}
+          className={classes.shareIcon}/>
+        <TwitterShareButton url="localhost:3000/home"
+          msg="Join us on SlotMeIn to sign up for our events:"/>
         <IconButton>
           <InstagramIcon className={classes.shareIcon}/>
         </IconButton>
       </Box>
     </Grid>
+  );
+}
+TwitterShareButton.propTypes = {
+  msg: PropTypes.string,
+  url: PropTypes.string,
+};
+/**
+ * TwitterShareButton component
+ * @param {string} msg displayed along with URL in tweet
+ * @param {string} url actual URL to be tweeted
+ * @return {object} TwitterShareButton JSX
+ */
+export function TwitterShareButton({msg: msg, url: url, ...rest}) {
+  const useStyles = makeStyles((theme) => ({
+    shareIcon: {
+      color: theme.palette.secondary.main,
+      width: 50,
+      height: 50,
+    },
+  }));
+  const classes = useStyles();
+  const encodedmsg = 'https://twitter.com/intent/tweet?text='+
+    encodeURIComponent(msg)+'&url='+encodeURIComponent(url);
+  return (
+    <IconButton {...rest}>
+      <a href={encodedmsg}
+        data-show-count="false">
+        <TwitterIcon className={classes.shareIcon}/>
+      </a>
+      <script async src="https://platform.twitter.com/widgets.js"
+        charSet="utf-8">
+      </script>
+    </IconButton>
+  );
+}
+FacebookShareButton.propTypes = {
+  msg: PropTypes.string,
+  url: PropTypes.string,
+};
+/**
+ * FacebookShareButton component
+ * @param {string} msg displayed along with URL in tweet
+ * @param {string} url actual URL to be tweeted
+ * @return {object} FacebookShareButton JSX
+ */
+export function FacebookShareButton({msg: msg, url: url, ...rest}) {
+  const useStyles = makeStyles((theme) => ({
+    shareIcon: {
+      color: theme.palette.secondary.main,
+      width: 50,
+      height: 50,
+    },
+  }));
+  const classes = useStyles();
+  const eurl = encodeURIComponent(url);
+  const encodedmsg = 'https://www.facebook.com/sharer/sharer.php?u='+
+    encodeURIComponent(url)+'%2F&amp;src=sdkpreparse';
+  return (
+    <IconButton>
+      <div className="fb-share-button" data-href={eurl}
+        data-layout="button" data-size="large">
+        <a href={encodedmsg}
+          className="fb-xfbml-parse-ignore">
+          <FacebookIcon className={classes.shareIcon}/></a></div>
+    </IconButton>
   );
 }
 

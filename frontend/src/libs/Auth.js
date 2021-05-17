@@ -55,6 +55,21 @@ export const headerJsonJWT = () => {
     return {'Authorization': ''};
   }
 };
+
+// Creates JWT header with json Multipart-FormData or returns null
+/**
+ *
+ * @return {json} header with content type
+ */
+export const headerFormDataJWT = () => {
+  const jwt = localStorage.getItem('auth_token');
+  if (jwt) {
+    return {'Authorization': 'Bearer ' + jwt,
+      'Content-Type': 'multipart/form-data'};
+  } else {
+    return {'Authorization': ''};
+  }
+};
 /**
  *
  * @return {string} jwt
@@ -65,4 +80,3 @@ export const updateToken = async () => {
   const token = res.auth_token;
   return token;
 };
-
