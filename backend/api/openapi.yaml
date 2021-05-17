@@ -455,7 +455,7 @@ paths:
         - bearerAuth: []
       responses:
         200:
-          description: successfully uploaded profile image
+          description: successfully retrieved profile image
           content:
             multipart/form-data:
               schema:
@@ -1129,7 +1129,7 @@ components:
           type: boolean
         saturday:
           type: boolean
-    
+
     Attendees:
       type: object
       additionalProperties: false
@@ -1173,4 +1173,3 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Members"
-    

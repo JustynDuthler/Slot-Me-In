@@ -10,10 +10,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import {BusinessInfo} from './Components';
@@ -30,6 +26,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import {TwitterShareButton, FacebookShareButton} from './Components';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
@@ -148,6 +145,7 @@ const IndividualEvent = (props) => {
   const [eventData, setEventData] = useState({});
   const [businessData, setBusinessData] = useState({});
   const [signupError, setSignupError] = useState(false);
+  const [signupErrorMsg, setSignupErrorMsg] = useState('');
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
@@ -209,7 +207,7 @@ const IndividualEvent = (props) => {
               setSignupType(true);
             } else if (response.status === 403) {
               setSignupError(true);
-              console.log(response);
+              return response.json();
             } else {
               return;
             }
@@ -218,6 +216,9 @@ const IndividualEvent = (props) => {
             setNumAttendees(numAttendees+1);
             return response;
           }
+        })
+        .then((json) => {
+          if (json) setSignupErrorMsg(json.message);
         })
         .catch((error) => {
           console.log(error);
@@ -295,7 +296,6 @@ const IndividualEvent = (props) => {
         })
         .then((json) => {
           setEventData(json);
-          console.log(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
           const chipList = [];
@@ -345,20 +345,6 @@ const IndividualEvent = (props) => {
           console.log(error);
         });
   };
-  /**
-   * tweetURL
-   * @return {string} The URL for making a tweet with pre-filled text and the
-   * URL of the event
-   */
-  function tweetURL() {
-    // const orig = encodeURIComponent('localhost:3000');
-    const msg = encodeURIComponent('I am going to '+eventData.eventname+
-      ' at '+Util.formatDate(eventData.starttime, eventData.endtime))+
-      '. Sign up!';
-    const url = encodeURIComponent('localhost:3000/events/'+eventid);
-    return 'https://twitter.com/intent/tweet?text='+
-      msg+'&url='+url;
-  }
 
   /**
    * getRegistration
@@ -488,17 +474,16 @@ const IndividualEvent = (props) => {
             </Button>)
           }
           <Box className={classes.share}>
-            <IconButton>
-              <FacebookIcon className={classes.shareIcon}/>
-            </IconButton>
-            <IconButton>
-              <a className="twitter-share-button"
-                href={tweetURL()}>
-                <TwitterIcon className={classes.shareIcon}/></a>
-            </IconButton>
-            <IconButton>
-              <InstagramIcon className={classes.shareIcon}/>
-            </IconButton>
+            <FacebookShareButton
+              msg={'I am going to '+eventData.eventname+
+                ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
+                '. Sign up!'}
+              url={'localhost:3000/events/'+eventid}/>
+            <TwitterShareButton
+              msg={'I am going to '+eventData.eventname+
+                ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
+                '. Sign up!'}
+              url={'localhost:3000/events/'+eventid}/>
           </Box>
         </Grid>
 
@@ -532,7 +517,7 @@ const IndividualEvent = (props) => {
         <Alert onClose={() => {
           setSignupError(false);
         }} severity="error">
-          You do not meet the age requirements for this event.
+          {signupErrorMsg}
         </Alert>
       </Snackbar>
 
