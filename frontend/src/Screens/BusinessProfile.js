@@ -508,15 +508,20 @@ export default function BusinessProfile() {
   }
   /**
    * upcomingEvents
-   * @param {range} int number of events to display
+   * @param {int} range number of events to display
    * @return {array} list of upcoming events with the closest one at the front
    */
   function upcomingEvents(range) {
     const recentEvents = [];
     for (const i in eventList) {
-      recentEvents.push(eventList[i]);
+      if (eventList.hasOwnProperty(i)) {
+        recentEvents.push(eventList[i]);
+      }
     }
-
+    recentEvents.sort((firstEl, secondEl) => {
+      return (new Date(firstEl.starttime)) < (new Date(secondEl.endtime));
+    });
+    return recentEvents;
   }
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -530,6 +535,9 @@ export default function BusinessProfile() {
     // eventListJSX will hold a list of event data
     const members = [];
     const existingmembers = [];
+
+    const recentEvents = upcomingEvents(6);
+
     const eventListJSX = [];
     for (const m in memberList) {
       if (memberList.hasOwnProperty(m)) {
@@ -547,10 +555,8 @@ export default function BusinessProfile() {
     if (existingmembers.length === 0) {
       existingmembers.push(memberListInfo(null));
     }
-    let eventtemp = {};
     for (const key in eventList) {
       if (eventList.hasOwnProperty(key)) {
-        eventtemp = eventList[key];
         const eventid = eventList[key].eventid;
         const eventName = eventList[key].eventname;
         const startDate = new Date(eventList[key].starttime);
@@ -775,24 +781,13 @@ export default function BusinessProfile() {
               <Box width='100%' height='550px'>
                 <Grid item md={12} container justify='space-evenly'
                   className={classes.grid2}>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
+                  {recentEvents.map((event) => {
+                    return (
+                      <Box width='275px' key={event.eventid}>
+                        <EventCard row={event} context={context}/>
+                      </Box>
+                    );
+                  })}
                 </Grid>
               </Box>
               <ShareBar style={{flexGrow: 1}}/>

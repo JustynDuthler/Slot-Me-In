@@ -10,7 +10,6 @@ import Button from '@material-ui/core/Button';
 import {cropImage} from './libs/Util.js';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
-import InstagramIcon from '@material-ui/icons/Instagram';
 import IconButton from '@material-ui/core/IconButton';
 const Auth = require('./libs/Auth');
 
@@ -217,9 +216,6 @@ export function ShareBar({...rest}) {
           className={classes.shareIcon}/>
         <TwitterShareButton url="localhost:3000/home"
           msg="Join us on SlotMeIn to sign up for our events:"/>
-        <IconButton>
-          <InstagramIcon className={classes.shareIcon}/>
-        </IconButton>
       </Box>
     </Grid>
   );
