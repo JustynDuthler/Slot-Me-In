@@ -86,6 +86,7 @@ exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
   const select =
       'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime'+
       ' AS repeatstart, e.endtime, e.capacity,e.description,e.over18,e.over21,'+
+      'e.membersonly, e.category,'+
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
       'r.repeattype,r.repeatend,e.repeatid '+
       'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)' +
@@ -145,7 +146,7 @@ exports.getUsersEvents = async (userid) => {
     'SELECT e.eventid, e.description, e.eventname, e.businessid, ' +
     'e.starttime, r.starttime AS repeatstart, e.endtime, e.capacity, ' +
     'Businesses.businessname, ' + // Gets relevant information
-    'e.over18, e.over21, e.membersonly,' +
+    'e.over18, e.over21, e.membersonly, e.category,' +
     'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
     'r.repeattype,r.repeatend,e.repeatid '+
     // Join the events and business table where businessid is the same
@@ -195,7 +196,7 @@ exports.getBusinessEvents = async (businessid) => {
   const queryText =
   'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime ' +
       'AS repeatstart, e.endtime, e.capacity, e.description,' +
-      'e.over18, e.over21, e.membersonly,' +
+      'e.over18, e.over21, e.membersonly, e.category,' +
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
       'r.repeattype,r.repeatend,e.repeatid FROM ' +
       '(Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) ' +
