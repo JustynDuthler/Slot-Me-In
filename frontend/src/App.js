@@ -123,7 +123,14 @@ function App() {
   }
 
   const userType = businessState ? 'business' : 'user';
-  const menu = authState ? <NavBar userType={userType}/> : null;
+  const path = window.location.pathname;
+  let menu;
+  if (path !== '/' && path !== '/login' && path !== '/register') {
+    menu = authState ?
+        <NavBar userType={userType}/> : <NavBar userType='guest'/>;
+  } else {
+    menu = authState ? <NavBar userType={userType}/> : null;
+  }
 
   return (
     <>
