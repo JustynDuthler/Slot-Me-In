@@ -1,6 +1,7 @@
 const eventsDb = require('../db/eventsDb');
 const attendeesDb = require('../db/attendeesDb');
 const userDb = require('../db/userDb');
+const memberDb = require('../db/memberDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -162,6 +163,30 @@ exports.publicEvents = async (req, res, next) => {
         next(error);
       });
 };
+
+// sends array of member + public events for a user
+exports.publicAndMemberEvents = async (req, res) => {
+  const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
+  let eventList = []
+  // push member events
+  for (var i = 0; i < businesses.length; i++) {
+    // get restricted events for the business
+    const restrictedEvents = await memberDb.getBusinessRestrictedEvents(
+      businesses[i].businessid);
+    for (var j = 0; j < restrictedEvents.length; j++) {
+      // push each event
+      eventList.push(restrictedEvents[j]);
+    }
+  }
+
+  // push public events
+  const publicEvents = await eventsDb.getPublicEvents();
+  for (var i = 0; i < publicEvents.length; i++) {
+    eventList.push(publicEvents[i]);
+  }
+
+  res.status(200).json(eventList);
+}
 
 /** calculates time difference
  * @constructor

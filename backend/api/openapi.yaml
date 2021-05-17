@@ -692,6 +692,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /events/publicAndMemberEvents/{useremail}:
+    get:
+      description: Returns an array of public and member events
+      tags:
+        - events
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
   /attendees/{eventid}:
     get:
       description: Retrieves number of attendees for an event

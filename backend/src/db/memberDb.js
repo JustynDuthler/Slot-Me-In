@@ -76,7 +76,6 @@ exports.removeMember = async (businessid, email) => {
 
 // gets a members businesses
 exports.getMemberBusinesses = async (email) => {
-  console.log(email);
   const select = 'SELECT * FROM Members m WHERE m.memberemail = $1';
   const query = {
     text: select,
