@@ -5,7 +5,6 @@ import Box from '@material-ui/core/Box';
 import {Button, Typography} from '@material-ui/core';
 import {Route} from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
-
 import Login from '../Components/Account/Login';
 import Register from '../Components/Account/Register';
 import EventGrid from '../Components/Events/EventGrid';
@@ -212,16 +211,10 @@ const UnAuthHome = (props) => {
 
 /**
  * @param {*} props
- * @return {object} JSX
  */
 const AuthHome = (props) => {
   // const classes = useStyles();
 
-  return (
-    <Box>
-      <EventGrid/>
-    </Box>
-  );
 };
 
 
