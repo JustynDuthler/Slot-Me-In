@@ -8,8 +8,7 @@ export const getUsersEvents = () => {
   return fetch('http://localhost:3010/api/users/getUserEvents', {
     method: 'GET',
     headers: Auth.headerJsonJWT(),
-  })
-  .then((response) => {
+  }).then((response) => {
     if (!response.ok) {
       console.log('Error fetching Event data');
       throw response;
