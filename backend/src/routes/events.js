@@ -121,13 +121,24 @@ exports.signup = async (req, res) => {
     const user = await userDb.selectUser(userid);
     const diffInYears = timeDiffCalc(new Date(Date.now()),
         new Date(user.birthdate));
-    // return 403 if user does not meet age restrictions
+    // return 403 if user does not meet event restrictions
     if (event.over18 && diffInYears < 18) {
-      res.status(403).send();
+      res.status(403).json({code: 403, message:
+          'You must be at least 18 years old to sign up for this event.'});
       return;
     }
     if (event.over21 && diffInYears < 21) {
-      res.status(403).send();
+      res.status(403).json({code: 403, message:
+          'You must be at least 21 years old to sign up for this event.'});
+      return;
+    }
+    if (event.membersonly) {
+      const userIsMember =
+          await memberDb.checkUserIsMember(event.businessid, user.useremail);
+      if (!userIsMember)
+        res.status(403).json({code: 403,
+            message: 'You must be a member of this business' +
+            ' to sign up for this event.'});
       return;
     }
 

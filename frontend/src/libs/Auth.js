@@ -64,8 +64,7 @@ export const headerJsonJWT = () => {
 export const headerFormDataJWT = () => {
   const jwt = localStorage.getItem('auth_token');
   if (jwt) {
-    return {'Authorization': 'Bearer ' + jwt,
-      'Content-Type': 'multipart/form-data'};
+    return {'Authorization': 'Bearer ' + jwt};
   } else {
     return {'Authorization': ''};
   }
