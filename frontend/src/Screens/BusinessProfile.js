@@ -506,6 +506,23 @@ export default function BusinessProfile() {
       </ListItemSecondaryAction>}
     </ListItem>);
   }
+  /**
+   * upcomingEvents
+   * @param {int} range number of events to display
+   * @return {array} list of upcoming events with the closest one at the front
+   */
+  function upcomingEvents(range) {
+    const recentEvents = [];
+    for (const i in eventList) {
+      if (eventList.hasOwnProperty(i)) {
+        recentEvents.push(eventList[i]);
+      }
+    }
+    recentEvents.sort((firstEl, secondEl) => {
+      return (new Date(firstEl.starttime)) < (new Date(secondEl.endtime));
+    });
+    return recentEvents;
+  }
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
@@ -518,6 +535,9 @@ export default function BusinessProfile() {
     // eventListJSX will hold a list of event data
     const members = [];
     const existingmembers = [];
+
+    const recentEvents = upcomingEvents(6);
+
     const eventListJSX = [];
     for (const m in memberList) {
       if (memberList.hasOwnProperty(m)) {
@@ -535,10 +555,8 @@ export default function BusinessProfile() {
     if (existingmembers.length === 0) {
       existingmembers.push(memberListInfo(null));
     }
-    let eventtemp = {};
     for (const key in eventList) {
       if (eventList.hasOwnProperty(key)) {
-        eventtemp = eventList[key];
         const eventid = eventList[key].eventid;
         const eventName = eventList[key].eventname;
         const startDate = new Date(eventList[key].starttime);
@@ -699,119 +717,8 @@ export default function BusinessProfile() {
     return (
       <Container component='main'>
         <div className={classes.paper}>
-          {tab === 3 && <div>
-            <Paper margin='2px'>
-              <Container component='main' maxWidth='md'>
-                <Grid container justify='center' direction='row' spacing={8}>
-                  {eventState === null &&showAll === false&&
-                  <Grid item xs={6} container justify='center'>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <DatePicker
-                        variant='static'
-                        label='Event select'
-                        value={selectedDate}
-                        onChange={(date) => {
-                          setSelectedDate(date);
-                        }}
-                        renderDay={renderWrappedDays}
-                      />
-                    </MuiPickersUtilsProvider>
-                  </Grid>}
-                  <Grid item container xs={6} md={showAll ? 12 : 6}>
-                    {items2}
-                  </Grid>
-                </Grid>
-
-                {/* Confirmation dialog for cancelling events */}
-                <Dialog open={confirmDialog} onClose={() => {
-                  setConfirmDialog(false);
-                }}
-                aria-labelledby="confirm-dialog-title">
-                  <DialogTitle id="confirm-dialog-title">
-                    {deleteAll ? 'Cancel Repeating Event' : 'Cancel Event'}
-                  </DialogTitle>
-                  <DialogContentText className={classes.dialogText}>
-                    {/* Change message for deleting all vs. cancelling one
-                      event */}
-                    {deleteAll ?
-                        'Are you sure you want to delete all instances of' +
-                        ' this repeating event?' :
-                        'Are you sure you want to cancel this event?'}
-                  </DialogContentText>
-                  <DialogActions>
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        /* Call deleteEventAndReload,close dialog if user
-                        clicks Yes */
-                        deleteEventAndReload(cancelEventID, deleteAll);
-                        setConfirmDialog(false);
-                      }}>
-                      Yes
-                    </Button>
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        // Close dialog and don't delete event if user clicks No
-                        setConfirmDialog(false);
-                      }}>
-                      No
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </Container>
-            </Paper>
-          </div>}
-          {tab === 3 && <div>
-            <Grid container spacing={8} justify="center">
-              <Grid item container md={6} direction="column"
-                alignItems="center">
-                {existingmembers.length > 0 && <Typography variant='h6'>
-                  Existing Members
-                </Typography>}
-                {existingmembers.length > 0 && <Divider/>}
-                {existingmembers.length > 0 && <List style={{width: '100%'}}>
-                  {existingmembers}
-                </List>}
-                {members.length > 0 && <Typography variant='h6'>
-                  Inactive Members
-                </Typography>}
-                {members.length > 0 && <Divider/>}
-                {members.length > 0 && <List style={{width: '100%'}}>
-                  {members}
-                </List>}
-                {members.length+existingmembers.length === 0 && <Typography>
-                  Currently added 0 members
-                </Typography>}
-                <TextField
-                  error={emailError}
-                  helperText={emailError ? emailMsg : ''}
-                  variant='filled'
-                  margin='normal'
-                  fullWidth
-                  id='email'
-                  label='Email Addresses'
-                  name='email'
-                  autoComplete='email'
-                  multiline
-                  onChange={(event) => {
-                    setEmailInput(event.target.value);
-                  }}
-                  onKeyPress={handleKeypress}
-                />
-                <Button
-                  type='submit'
-                  fullWidth
-                  variant='contained'
-                  color='secondary'
-                  className={classes.submit}
-                  onClick={validateInput}
-                >
-                  Add Members
-                </Button>
-              </Grid>
-            </Grid>
-          </div>}
+          <Paper>
+          </Paper>
         </div>
         <div className={classes.testgrid}>
           <Grid container spacing={0}>
@@ -874,24 +781,13 @@ export default function BusinessProfile() {
               <Box width='100%' height='550px'>
                 <Grid item md={12} container justify='space-evenly'
                   className={classes.grid2}>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
-                  <Box width='275px'>
-                    <EventCard row={eventtemp} context={context}/>
-                  </Box>
+                  {recentEvents.map((event) => {
+                    return (
+                      <Box width='275px' key={event.eventid}>
+                        <EventCard row={event} context={context}/>
+                      </Box>
+                    );
+                  })}
                 </Grid>
               </Box>
               <ShareBar style={{flexGrow: 1}}/>
@@ -1007,6 +903,43 @@ export default function BusinessProfile() {
               >
                 Back
               </Button>}
+              {/* Confirmation dialog for cancelling events */}
+              <Dialog open={confirmDialog} onClose={() => {
+                setConfirmDialog(false);
+              }}
+              aria-labelledby="confirm-dialog-title">
+                <DialogTitle id="confirm-dialog-title">
+                  {deleteAll ? 'Cancel Repeating Event' : 'Cancel Event'}
+                </DialogTitle>
+                <DialogContentText className={classes.dialogText}>
+                  {/* Change message for deleting all vs. cancelling one
+                    event */}
+                  {deleteAll ?
+                      'Are you sure you want to delete all instances of' +
+                      ' this repeating event?' :
+                      'Are you sure you want to cancel this event?'}
+                </DialogContentText>
+                <DialogActions>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      /* Call deleteEventAndReload,close dialog if user
+                      clicks Yes */
+                      deleteEventAndReload(cancelEventID, deleteAll);
+                      setConfirmDialog(false);
+                    }}>
+                    Yes
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      // Close dialog and don't delete event if user clicks No
+                      setConfirmDialog(false);
+                    }}>
+                    No
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </Grid>}
           </Grid>
         </div>
