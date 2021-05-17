@@ -173,3 +173,8 @@ function timeDiffCalc(dateFuture, dateNow) {
 
   return years;
 }
+
+exports.getEventCategory = async (req, res) => {
+  const eventCategory = await eventsDb.getEventCategory(req.params.eventid);
+  
+}

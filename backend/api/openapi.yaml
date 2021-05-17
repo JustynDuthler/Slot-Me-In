@@ -692,7 +692,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-
   /attendees/{eventid}:
     get:
       description: Retrieves number of attendees for an event
@@ -1023,7 +1022,6 @@ components:
           format: uuid
       required:
         - eventid
-
     Event:
       type: object
       additionalProperties: false
@@ -1103,7 +1101,7 @@ components:
           type: boolean
         saturday:
           type: boolean
-
+    
     Attendees:
       type: object
       additionalProperties: false
@@ -1147,3 +1145,4 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Members"
+    

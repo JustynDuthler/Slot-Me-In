@@ -87,7 +87,7 @@ exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
       'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime'+
       ' AS repeatstart, e.endtime, e.capacity,e.description,e.over18,e.over21,'+
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
-      'r.repeattype,r.repeatend,e.repeatid '+
+      'r.repeattype,r.repeatend,e.repeatid, e.category' +
       'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)' +
       'WHERE e.starttime >= $1 AND e.endtime <= $2 AND ' +
       '(e.eventname ~* $3 OR e.description ~* $3)';
