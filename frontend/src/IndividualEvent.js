@@ -10,8 +10,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import FacebookIcon from '@material-ui/icons/Facebook';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import {BusinessInfo} from './Components';
@@ -28,7 +26,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import {TwitterShareButton} from './Components';
+import {TwitterShareButton, FacebookShareButton} from './Components';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
@@ -476,9 +474,11 @@ const IndividualEvent = (props) => {
             </Button>)
           }
           <Box className={classes.share}>
-            <IconButton>
-              <FacebookIcon className={classes.shareIcon}/>
-            </IconButton>
+            <FacebookShareButton
+              msg={'I am going to '+eventData.eventname+
+                ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
+                '. Sign up!'}
+              url={'localhost:3000/events/'+eventid}/>
             <TwitterShareButton
               msg={'I am going to '+eventData.eventname+
                 ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+

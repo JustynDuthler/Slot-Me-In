@@ -10,7 +10,6 @@ import Button from '@material-ui/core/Button';
 import {cropImage} from './libs/Util.js';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
-import InstagramIcon from '@material-ui/icons/Instagram';
 import IconButton from '@material-ui/core/IconButton';
 const Auth = require('./libs/Auth');
 
@@ -210,20 +209,12 @@ export function ShareBar({...rest}) {
         <Typography className={classes.share}>Share</Typography>
       </Grid>
       <Box className={classes.share}>
-        <IconButton>
-          <div className="fb-share-button" data-href="http://pyraliron.com"
-            data-layout="button" data-size="large">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpyraliron.com%2F&amp;src=sdkpreparse"
-              className="fb-xfbml-parse-ignore">
-              <FacebookIcon className={classes.shareIcon}/></a></div>
-        </IconButton>
-        <FacebookShareButton url={'http://localhost:3000/home'}
+        {/* This won't work unless we put the webapp on an actual website and
+        not localhost */}
+        <FacebookShareButton url={'http://google.com'}
           className={classes.shareIcon}/>
         <TwitterShareButton url="localhost:3000/home"
           msg="Join us on SlotMeIn to sign up for our events:"/>
-        <IconButton>
-          <InstagramIcon className={classes.shareIcon}/>
-        </IconButton>
       </Box>
     </Grid>
   );
@@ -251,7 +242,7 @@ export function TwitterShareButton({msg: msg, url: url, ...rest}) {
     encodeURIComponent(msg)+'&url='+encodeURIComponent(url);
   return (
     <IconButton {...rest}>
-      <a href={encodedmsg}
+      <a href={encodedmsg} target="_blank" rel="noreferrer"
         data-show-count="false">
         <TwitterIcon className={classes.shareIcon}/>
       </a>
@@ -280,14 +271,17 @@ export function FacebookShareButton({msg: msg, url: url, ...rest}) {
     },
   }));
   const classes = useStyles();
-  const eurl = encodeURIComponent(url);
   const encodedmsg = 'https://www.facebook.com/sharer/sharer.php?u='+
     encodeURIComponent(url)+'%2F&amp;src=sdkpreparse';
+  // const encodedmsg = 'https://www.facebook.com/sharer/sharer.php?s=500&'+
+  // 'p[title]=SlotMeIn&p[summary]=JoinusonSlotMeInto&p[url]='+
+  //   eurl;
   return (
     <IconButton>
-      <div className="fb-share-button" data-href={eurl}
+      <div className="fb-share-button"
         data-layout="button" data-size="large">
-        <a href={encodedmsg}
+        <a href={encodedmsg} target="_blank" rel="noreferrer"
+          title="send to Facebook"
           className="fb-xfbml-parse-ignore">
           <FacebookIcon className={classes.shareIcon}/></a></div>
     </IconButton>

@@ -1,43 +1,80 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
-import Calendar from '@toast-ui/react-calendar';
-import 'tui-calendar/dist/tui-calendar.css';
+import PropTypes from 'prop-types';
+import {Calendar, momentLocalizer} from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+import {getUsersEvents} from '../../API/EventAPI';
+import {getMemberBusinesses} from '../../API/BusinessAPI';
+import {getUserInfo} from '../../API/UserAPI';
 
-import 'tui-date-picker/dist/tui-date-picker.css';
-import 'tui-time-picker/dist/tui-time-picker.css';
+const localizer = momentLocalizer(moment);
+
 /**
  *
  * @param {*} props
  * @return {object} JSX
  */
-const EventCalendar = () => {
-  const today = new Date();
+export const EventCalendar = ({BusinessList, EventList}) => {
+  const calendars = [];
+  BusinessList.forEach((element) => {
+    calendars.push({id: element.businessid, name: element.businessname});
+  });
+
+  const events = [];
+  EventList.forEach((element) => {
+    const event = {
+      // id: element.eventid,
+      // calendarId: element.businessid,
+      title: element.eventname,
+      start: moment(element.starttime).toDate(),
+      end: moment(element.endtime).toDate(),
+    };
+    events.push(event);
+  });
+
+
   return (
     <Calendar
-      height={'100%'}
-      usageStatistics={false}
-      taskView={false}
-      disableClick={true}
-      isReadOnly={true}
-      calendars={[{
-        id: '0',
-        name: 'Google',
-        bgColor: '#9e5fff',
-        borderColor: '#9e5fff',
-      }]}
-      schedules={[
-        {
-          id: '1',
-          calendarId: '0',
-          title: 'TOAST UI Calendar Study',
-          category: 'time',
-          dueDateClass: '',
-          start: today.toISOString(),
-          end: today.toISOString(),
-        }]}
+      localizer={localizer}
+      defaultDate={new Date()}
+      defaultView='week'
+      events={events}
+      style={{height: 500}}
     />
   );
 };
 
-export default EventCalendar;
+EventCalendar.propTypes = {
+  BusinessList: PropTypes.arrayOf(PropTypes.object),
+  EventList: PropTypes.arrayOf(PropTypes.object),
+};
+
+/**
+ * A calender which event data on a users attending events
+ * @return {Object} JSX
+ */
+export const UserAttendingCalendar = () => {
+  const [eventList, setEventList] = React.useState([]);
+  const [businessList, setBusinessList] = React.useState([]);
+
+  React.useEffect(async () => {
+    getUserInfo().then((json) => {
+      getMemberBusinesses(json.useremail).then((json) => {
+        setBusinessList(json);
+      });
+    });
+
+    const userEvents = await getUsersEvents();
+    setEventList(userEvents);
+  }, []);
+
+
+  return (
+    <EventCalendar
+      EventList={eventList}
+      BusinessList={businessList}
+    />
+  );
+};
+
