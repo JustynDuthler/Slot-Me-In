@@ -68,7 +68,6 @@ exports.insertProfileImageName = async (businessid, imagename) => {
 exports.getBusinessImageName = async (businessid) => {
   const select = 'SELECT businessimagename FROM Businesses ' +
   'WHERE businessid = $1';
-  console.log(select);
   const query = {
     text: select,
     values: [businessid],

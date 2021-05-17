@@ -119,7 +119,6 @@ export default function UserInfo({picture: path, name: name, email: email,
     }).then((error) => {
       console.log(error);
     });
-    // Does nothing yet
   }
   return (
     <Grid item container direction="column"
