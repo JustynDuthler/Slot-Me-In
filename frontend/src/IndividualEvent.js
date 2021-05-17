@@ -161,8 +161,8 @@ const IndividualEvent = (props) => {
   useEffect(() => {
     getEventData();
     getTotalAttendees();
-    getRegistration();
-  }, []);
+    if (context.authState) getRegistration();
+  }, [context.authState]);
 
   /**
    * getBusinessEvents
@@ -181,9 +181,15 @@ const IndividualEvent = (props) => {
       }
       return response.json();
     }).then((json) => {
-      setEventList(json.filter((event) =>
-        event.eventid !== eventid,
-      ).slice(0, 3));
+      if (context.authState) {
+        setEventList(json.filter((event) =>
+          event.eventid !== eventid,
+        ).slice(0, 3));
+      } else {
+        setEventList(json.filter((event) =>
+          event.eventid !== eventid && !event.membersonly,
+        ).slice(0, 3));
+      }
     })
         .catch((error) => {
           console.log(error);
@@ -465,7 +471,7 @@ const IndividualEvent = (props) => {
             &nbsp;of {eventData.capacity} spots open
           </Typography>
 
-          {signupType !== undefined &&
+          {signupType !== undefined ?
             (<Button className={classes.signupButton}
               variant="contained" color="secondary"
               disabled={signupType && numAttendees == eventData.capacity}
@@ -473,6 +479,11 @@ const IndividualEvent = (props) => {
                 signupType === true ? signUp() : setConfirmDialog(true);
               }}>
               {signupType === true ? 'Sign Up' : 'Withdraw'}
+            </Button>) :
+            (<Button className={classes.signupButton}
+              variant="contained" color="secondary"
+              href='/login'>
+              Login To Sign Up For Event
             </Button>)
           }
           <Box className={classes.share}>

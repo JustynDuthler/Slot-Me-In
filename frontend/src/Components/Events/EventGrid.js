@@ -88,7 +88,7 @@ const EventGrid = ({publicEvents=false}) => {
               row={item}
               context={context}
               isBusiness={false}
-              buttonType={context.authState ? 'view' : 'login'}
+              buttonType='view'
             />
           </Box>
         </Grid>);
