@@ -39,6 +39,11 @@ const theme = createMuiTheme({
       light: '#fffcac',
       dark: '#dddddd',
     },
+    error: {
+      main: '#ed7f7d',
+      light: '#ffb0ac',
+      dark: '#b75051',
+    },
   },
   typography: {
     useNextVariants: true,
@@ -176,6 +181,9 @@ function App() {
       <script async defer crossOrigin="anonymous"
         src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0"
         nonce="W60AWbJd">
+      </script>
+      <script async src="https://platform.twitter.com/widgets.js"
+        charSet="utf-8">
       </script>
     </>
   );

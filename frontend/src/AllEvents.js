@@ -11,6 +11,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
 
 import Context from './Context';
+// import { getBusinessEvents } from '../../backend/src/db/eventsDb';
 const Auth = require('./libs/Auth');
 
 const useStyles = makeStyles({
@@ -50,6 +51,7 @@ const useStyles = makeStyles({
 export default function AllEvents() {
   const history = useHistory();
   const classes = useStyles();
+  // const [userInfo, setUserInfo] = React.useState();
   const [eventList, setEventList] = React.useState([]);
   const [pageEvents, setPageEvents] = React.useState([]);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -57,11 +59,77 @@ export default function AllEvents() {
   const context = React.useContext(Context);
 
   /**
+   * getUserInfo
+   * API call to get the info for the user
+   */
+  function getUserInfo() {
+    const apicall = 'http://localhost:3010/api/users/getUser';
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => response.json())
+        .then((json) => {
+          // if the url is just /events, get page 1 events
+          if (window.location.href === 'http://localhost:3000/allevents') {
+            getEvents(1, json.useremail);
+          } else {
+            // parse url to get the page number and pass it to getEvents
+            const parsedURL = (window.location.href).split('=');
+            setCurrentPage(parseInt(parsedURL[1]));
+            getEvents(parsedURL[1], json.useremail);
+          }
+        },
+        (error) => {
+          console.log(error);
+        },
+        );
+  };
+
+  /**
    * getEvents
    * API call to get data for an event
    * @param {int} pageNumber
+   * @param {string} email
    */
-  function getEvents(pageNumber) {
+  function getEvents(pageNumber, email) {
+    const apicall = 'http://localhost:3010/api/events/publicAndMemberEvents/'+email;
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      // gets all public events + member events
+      setEventList(json);
+
+      // events if it's on first page
+      if (pageNumber === 1) {
+        setPageEvents(json.slice(0, postsPerPage));
+      } else {
+        // events for other pages
+        setPageEvents(json.slice(((pageNumber-1)*9),
+            pageNumber*9));
+      }
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
+  /**
+   * getEvents
+   * API call to get data for an event
+   * @param {int} pageNumber
+   * @param {string} email
+   */
+  function getBusinessEvents(pageNumber) {
     const apicall = 'http://localhost:3010/api/events';
     fetch(apicall, {
       method: 'GET',
@@ -76,6 +144,7 @@ export default function AllEvents() {
       }
       return response.json();
     }).then((json) => {
+      // gets all public events + member events
       setEventList(json);
 
       // events if it's on first page
@@ -93,15 +162,27 @@ export default function AllEvents() {
   };
 
   React.useEffect(() => {
-    // if the url is just /events, get page 1 events
-    if (window.location.href === 'http://localhost:3000/allevents') {
-      getEvents(1);
+    if (context.businessState === false) {
+      getUserInfo();
     } else {
-      // parse url to get the page number and pass it to getEvents
-      const parsedURL = (window.location.href).split('=');
-      setCurrentPage(parseInt(parsedURL[1]));
-      getEvents(parsedURL[1]);
+      if (window.location.href === 'http://localhost:3000/allevents') {
+        getBusinessEvents(1);
+      } else {
+        // parse url to get the page number and pass it to getEvents
+        const parsedURL = (window.location.href).split('=');
+        setCurrentPage(parseInt(parsedURL[1]));
+        getBusinessEvents(parsedURL[1]);
+      }
     }
+    // // if the url is just /events, get page 1 events
+    // if (window.location.href === 'http://localhost:3000/allevents') {
+    //   getEvents(1);
+    // } else {
+    //   // parse url to get the page number and pass it to getEvents
+    //   const parsedURL = (window.location.href).split('=');
+    //   setCurrentPage(parseInt(parsedURL[1]));
+    //   getEvents(parsedURL[1]);
+    // }
   }, []);
 
   /**

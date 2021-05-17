@@ -656,6 +656,12 @@ paths:
       responses:
         200:
           description: Successfully signed up for event
+        403:
+          description: User does not meet event restrictions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         404:
           description: Event ID does not exist
         409:
@@ -672,6 +678,33 @@ paths:
       description: Returns an array of public events
       tags:
         - events
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /events/publicAndMemberEvents/{useremail}:
+    get:
+      description: Returns an array of public and member events
+      tags:
+        - events
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
       responses:
         200:
           description: Successfully returned events
@@ -1017,7 +1050,6 @@ components:
           format: uuid
       required:
         - eventid
-
     Event:
       type: object
       additionalProperties: false
@@ -1097,7 +1129,7 @@ components:
           type: boolean
         saturday:
           type: boolean
-
+    
     Attendees:
       type: object
       additionalProperties: false
@@ -1141,3 +1173,4 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Members"
+    

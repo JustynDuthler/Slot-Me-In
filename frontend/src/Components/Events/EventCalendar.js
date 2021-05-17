@@ -11,7 +11,7 @@ import 'tui-time-picker/dist/tui-time-picker.css';
  * @param {*} props
  * @return {object} JSX
  */
-const EventCalendar = ({businesses, eventList}) => {
+const EventCalendar = () => {
   const today = new Date();
   return (
     <Calendar
