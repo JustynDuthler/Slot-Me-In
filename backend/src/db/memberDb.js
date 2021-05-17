@@ -4,23 +4,24 @@ const eventsDb = require('./eventsDb');
 // Inserts a list of emails into the members table
 // If there is a conflict (email already added) it does nothing
 exports.insertMembers = async (emailList, businessId) => {
-  let valueString = ''; 
+  let valueString = '';
   for (i = 0; i < emailList.length; i++) {
-    valueString += ((valueString === '' ? '' : ', ') + 
+    valueString += ((valueString === '' ? '' : ', ') +
       `('${emailList[i]}', '${businessId}')`);
   }
   const insert = 'INSERT INTO Members (memberemail, businessid) ' +
-                  'VALUES ' + valueString + ' ON CONFLICT DO NOTHING RETURNING memberemail'  
+                  'VALUES ' + valueString +
+                  ' ON CONFLICT DO NOTHING RETURNING memberemail';
   const query = {
     text: insert,
   };
   return pool.query(query)
-  .then((response) => {
-    console.log(response.rowCount + " Emails added in insertMembers");
-  })
-  .catch(error => {
-    console.log("Error in insertMember response: " + error.stack);
-  });
+      .then((response) => {
+        console.log(response.rowCount + ' Emails added in insertMembers');
+      })
+      .catch((error) => {
+        console.log('Error in insertMember response: ' + error.stack);
+      });
 };
 
 /* gets userids for member emails */
@@ -29,11 +30,12 @@ exports.getMemberUserNameID = async (memberemail) => {
   const query = {
     text: select,
     values: [memberemail],
-  }
+  };
 
   const {rows} = await pool.query(query);
-  return (rows.length > 0 ? rows[0] : null); // return userid or null if not member
-}
+  return (rows.length > 0 ? rows[0] : null);
+  // return userid or null if not member
+};
 
 // Gets all member emails and userid's from the members table
 // Returns an object with withId and with withoutId
@@ -43,35 +45,34 @@ exports.getMemberList = async (businessid) => {
     text: select,
     values: [businessid],
   };
-  
-  return pool.query(query)
-  .then((response) => {
-    const rows = response.rows;  
-    const emailList = [];
-    for (i = 0; i < rows.length; i++) {
-      emailList.push(rows[i].memberemail);
-    }
-    return emailList;
-  })
-  .catch((error) => {
-    console.error("Error in getMemberList: " + error.stack);
-    next(error);
-  });
 
+  return pool.query(query)
+      .then((response) => {
+        const rows = response.rows;
+        const emailList = [];
+        for (i = 0; i < rows.length; i++) {
+          emailList.push(rows[i].memberemail);
+        }
+        return emailList;
+      })
+      .catch((error) => {
+        console.error('Error in getMemberList: ' + error.stack);
+        next(error);
+      });
 };
 
 // removes user from members table
 exports.removeMember = async (businessid, email) => {
-    const deleteM = 'DELETE FROM Members WHERE businessid = $1 ' +
+  const deleteM = 'DELETE FROM Members WHERE businessid = $1 ' +
         'AND memberemail = $2 RETURNING memberemail';
-    const query = {
-      text: deleteM,
-      values: [businessid, email],
-    };
-  
-    const {rows} = await pool.query(query);
-    return (rows.length);
+  const query = {
+    text: deleteM,
+    values: [businessid, email],
   };
+
+  const {rows} = await pool.query(query);
+  return (rows.length);
+};
 
 // gets a members businesses
 exports.getMemberBusinesses = async (email) => {
@@ -84,7 +85,7 @@ exports.getMemberBusinesses = async (email) => {
 
   const {rows} = await pool.query(query);
   return rows;
-}
+};
 
 // gets a businesses restricted events
 exports.getBusinessRestrictedEvents = async (businessid) => {
@@ -93,12 +94,13 @@ exports.getBusinessRestrictedEvents = async (businessid) => {
   const query = {
     text: select,
     values: [businessid],
-  }
-  let {rows} = await pool.query(query);
-  for (let i in rows) {
+  };
+  const {rows} = await pool.query(query);
+  for (const i in rows) {
     if (rows.hasOwnProperty(i)) {
       // get number of attendees for each event
-      const attendees = await eventsDb.checkRemainingEventCapacity(rows[i].eventid);
+      const attendees = await eventsDb.checkRemainingEventCapacity(
+          rows[i].eventid);
       rows[i]['attendees'] = attendees.length;
     }
   }

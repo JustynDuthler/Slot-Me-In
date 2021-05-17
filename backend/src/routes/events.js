@@ -118,7 +118,8 @@ exports.signup = async (req, res) => {
   } else {
     // get difference in years between now and user's birthdate
     const user = await userDb.selectUser(userid);
-    const diffInYears = timeDiffCalc(new Date(Date.now()), new Date(user.birthdate));
+    const diffInYears = timeDiffCalc(new Date(Date.now()),
+        new Date(user.birthdate));
     // return 403 if user does not meet age restrictions
     if (event.over18 && diffInYears < 18) {
       res.status(403).send();
@@ -152,29 +153,30 @@ exports.signup = async (req, res) => {
 // This route doesn't use JWT authorization
 exports.publicEvents = async (req, res, next) => {
   eventsDb.getPublicEvents()
-  .then((events) => {
-    res.status(200).send(events);
-  })
-  .catch((error) => {
-    console.log("Error in publicEvents: " + error);
-    error.status = 500;
-    next(error);
-  });
+      .then((events) => {
+        res.status(200).send(events);
+      })
+      .catch((error) => {
+        console.log('Error in publicEvents: ' + error);
+        error.status = 500;
+        next(error);
+      });
 };
 
+/** calculates time difference
+ * @constructor
+ * @param {date} dateFuture future date
+ * @param {date} dateNow curr date
+ *
+ */
 function timeDiffCalc(dateFuture, dateNow) {
   // subtract dates and divide by 1000 to convert ms to seconds
   const diffInSeconds = Math.abs(dateFuture - dateNow) / 1000;
   // 60 seconds/min * 60 min/hr * 24hr/day * 365day/yr
-  const secondsInAYear = 60 * 60 * 24 * 365
+  const secondsInAYear = 60 * 60 * 24 * 365;
 
   // calculate difference in years
   const years = diffInSeconds / secondsInAYear;
 
   return years;
-}
-
-exports.getEventCategory = async (req, res) => {
-  const eventCategory = await eventsDb.getEventCategory(req.params.eventid);
-  
 }
