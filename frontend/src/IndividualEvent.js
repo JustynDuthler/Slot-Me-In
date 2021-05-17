@@ -12,7 +12,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import FacebookIcon from '@material-ui/icons/Facebook';
-import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import {BusinessInfo} from './Components';
@@ -485,9 +484,6 @@ const IndividualEvent = (props) => {
                 ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
                 '. Sign up!'}
               url={'localhost:3000/events/'+eventid}/>
-            <IconButton>
-              <InstagramIcon className={classes.shareIcon}/>
-            </IconButton>
           </Box>
         </Grid>
 
