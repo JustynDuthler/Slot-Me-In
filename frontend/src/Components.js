@@ -103,51 +103,22 @@ export default function UserInfo({picture: path, name: name, email: email,
   /**
    * uploadProfileImage function
    * uploads the profile image
+   * @param {image} image
+   * @return {nothing} nothing
    */
-  function uploadProfileImage() {
-    const img = profileImage.current;
-    fetch(img.src)
-        .then((res) => {
-          console.log(res); return res.blob();
-        })
-        .then(async (blob) => {
-          // const buffer = await blob.arrayBuffer();
-          // const formData = new FormData();
-          // formData.append('Image', blob, 'image.png');
-          // console.log(formData);
-          // console.log(blob);
-          // formData.append('Image', 'test');
-          // return fetch('http://localhost:3010/api/businesses/'+
-          //   'uploadProfileImage', {
-          //   method: 'POST',
-          //   body: formData,
-          //   headers: Auth.headerFormDataJWT(),
-          // }).then((result) => {
-          //   console.log(result);
-          // }).then((error) => {
-          //   console.log(error);
-          // });
-          const reader = new FileReader();
-          reader.onload = function() {
-            const formData = new FormData();
-            const file = new File([blob], 'pfp.png', blob);
-            console.log(file);
-            formData.append('Image', file);
-            console.log(formData);
-            return fetch('http://localhost:3010/api/businesses/'+
-              'uploadProfileImage', {
-              method: 'POST',
-              body: formData,
-              headers: Auth.headerFormDataJWT(),
-            }).then((result) => {
-              console.log(result);
-            }).then((error) => {
-              console.log(error);
-            });
-          };
-
-          reader.readAsBinaryString(blob);
-        });
+  function uploadProfileImage(image) {
+    const formData = new FormData();
+    formData.append('file', image);
+    return fetch('http://localhost:3010/api/businesses/'+
+      'uploadProfileImage', {
+      method: 'POST',
+      headers: Auth.headerFormDataJWT(),
+      body: formData,
+    }).then((result) => {
+      console.log(result);
+    }).then((error) => {
+      console.log(error);
+    });
     // Does nothing yet
   }
   return (
@@ -182,7 +153,7 @@ export default function UserInfo({picture: path, name: name, email: email,
           style={{fontSize: '12px'}}
           variant='outlined'
           onClick={()=>{
-            uploadProfileImage();
+            uploadProfileImage(image.raw);
           }}>Upload
         </Button>
       </Box>
