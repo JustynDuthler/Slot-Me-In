@@ -2,7 +2,7 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Carousel from 'react-elastic-carousel';
 import Box from '@material-ui/core/Box';
-import {Link} from 'react-router-dom';
+// import {Link} from 'react-router-dom';
 import EventCard from './Components/Events/EventCard';
 import {Grid} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -126,7 +126,7 @@ export default function ViewEvents() {
    * getEvents
    * API call to get data for an event
    */
-  function getEvents() {
+  function getPublicEvents() {
     const apicall = 'http://localhost:3010/api/events/publicEvents';
     fetch(apicall, {
       method: 'GET',
@@ -148,10 +148,38 @@ export default function ViewEvents() {
         });
   };
 
+  /**
+   * getEvents
+   * API call to get data for an event
+   */
+  function getBusinessEvents() {
+    const apicall = 'http://localhost:3010/api/events';
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setEventList(json.slice(0, 8));
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
   React.useEffect(() => {
-    getEvents();
     if (context.businessState === false) {
+      getPublicEvents();
       getUserInfo();
+    } else {
+      getBusinessEvents();
     }
   }, []);
 
@@ -189,9 +217,13 @@ export default function ViewEvents() {
               Member Events
             </Typography>
             <Box pt={5}>
-              <Link to="/allevents" style={{float: 'right'}}>
+              <Button size='small'
+                variant='contained'
+                color='secondary'
+                href={'/allevents'}
+                style={{float: 'right'}}>
                 See All Events
-              </Link>
+              </Button>
             </Box>
             <Box mt={5} mb={5} className={classes.box}>
               <Carousel breakPoints={breakPoints}>
@@ -255,7 +287,7 @@ export default function ViewEvents() {
                     href={'/business/profile/' + business.businessid}
                     justifyContent='center'
                     style={{margin: 'auto'}}>
-                    View Profile
+                    See Profile
                   </Button>
                 </Box>,
               )}
@@ -278,6 +310,7 @@ export default function ViewEvents() {
         </Box>
         <Grid container spacing={0}>
           {showMemberEvents}
+          {showBusinesses}
           <Grid item xs={8}>
             <Box mt={10}>
               <Typography variant="h4" style={{float: 'left'}}>
@@ -285,9 +318,13 @@ export default function ViewEvents() {
                 'All Events' : 'My Events'}
               </Typography>
               <Box pt={5}>
-                <Link to="/allevents" style={{float: 'right'}}>
+                <Button size='small'
+                  variant='contained'
+                  color='secondary'
+                  href={'/allevents'}
+                  style={{float: 'right'}}>
                   See All Events
-                </Link>
+                </Button>
               </Box>
               <Box mt={5} mb={5} className={classes.box}>
                 <Carousel breakPoints={breakPoints}>
@@ -299,7 +336,6 @@ export default function ViewEvents() {
               </Box>
             </Box>
           </Grid>
-          {showBusinesses}
         </Grid>
       </Box>
     </React.Fragment>

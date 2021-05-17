@@ -81,14 +81,14 @@ exports.checkRemainingEventCapacity = async (eventid) => {
 // default values for start/end time queries so that all events
 //    are retrieved when no queries are provided
 exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
-                          end='3000-01-01T00:00:00.000Z',
-                          search='') => {
+    end='3000-01-01T00:00:00.000Z',
+    search='') => {
   const select =
       'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime'+
       ' AS repeatstart, e.endtime, e.capacity,e.description,e.over18,e.over21,'+
       'e.membersonly, e.category,'+
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
-      'r.repeattype,r.repeatend,e.repeatid '+
+      'r.repeattype,r.repeatend,e.repeatid, e.category' +
       'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid)' +
       'WHERE e.starttime >= $1 AND e.endtime <= $2 AND ' +
       '(e.eventname ~* $3 OR e.description ~* $3)';
@@ -237,13 +237,13 @@ exports.getBusinessEvents = async (businessid) => {
 };
 
 exports.getPublicEvents = async () => {
-  const SELECT = "SELECT * FROM Events WHERE membersonly = FALSE";
+  const SELECT = 'SELECT * FROM Events WHERE membersonly = FALSE';
   const query = {
     text: SELECT,
     values: [],
   };
-  let {rows} = await pool.query(query);
-  for (let i in rows) {
+  const {rows} = await pool.query(query);
+  for (const i in rows) {
     if (rows.hasOwnProperty(i)) {
       // get number of attendees for each event
       const attendees = await exports.checkRemainingEventCapacity(i.eventid);
