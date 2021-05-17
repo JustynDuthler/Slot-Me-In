@@ -95,7 +95,6 @@ exports.getMemberBusinesses = async (req, res) => {
 exports.getRestrictedEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
 
-  console.log(businesses.length);
   let restrictedEventList = []
   for (var i = 0; i < businesses.length; i++) {
     // get restricted events for the business

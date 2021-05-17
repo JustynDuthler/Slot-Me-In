@@ -1,5 +1,7 @@
 const eventsDb = require('../db/eventsDb');
 const attendeesDb = require('../db/attendeesDb');
+const userDb = require('../db/userDb');
+const memberDb = require('../db/memberDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -115,6 +117,19 @@ exports.signup = async (req, res) => {
   if (!event) {
     res.status(404).send();
   } else {
+    // get difference in years between now and user's birthdate
+    const user = await userDb.selectUser(userid);
+    const diffInYears = timeDiffCalc(new Date(Date.now()), new Date(user.birthdate));
+    // return 403 if user does not meet age restrictions
+    if (event.over18 && diffInYears < 18) {
+      res.status(403).send();
+      return;
+    }
+    if (event.over21 && diffInYears < 21) {
+      res.status(403).send();
+      return;
+    }
+
     const userAttending = await attendeesDb.checkUserAttending(eventid, userid);
     if (userAttending) {
       // if user already attending event, send 409
@@ -147,3 +162,38 @@ exports.publicEvents = async (req, res, next) => {
     next(error);
   });
 };
+
+// sends array of member + public events for a user
+exports.publicAndMemberEvents = async (req, res) => {
+  const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
+  let eventList = []
+  // push member events
+  for (var i = 0; i < businesses.length; i++) {
+    // get restricted events for the business
+    const restrictedEvents = await memberDb.getBusinessRestrictedEvents(businesses[i].businessid);
+    for (var j = 0; j < restrictedEvents.length; j++) {
+      // push each event
+      eventList.push(restrictedEvents[j]);
+    }
+  }
+
+  // push public events
+  const publicEvents = await eventsDb.getPublicEvents();
+  for (var i = 0; i < publicEvents.length; i++) {
+    eventList.push(publicEvents[i]);
+  }
+
+  res.status(200).json(eventList);
+}
+
+function timeDiffCalc(dateFuture, dateNow) {
+  // subtract dates and divide by 1000 to convert ms to seconds
+  const diffInSeconds = Math.abs(dateFuture - dateNow) / 1000;
+  // 60 seconds/min * 60 min/hr * 24hr/day * 365day/yr
+  const secondsInAYear = 60 * 60 * 24 * 365
+
+  // calculate difference in years
+  const years = diffInSeconds / secondsInAYear;
+
+  return years;
+}

@@ -67,6 +67,7 @@ or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
 app.get('/api/events/publicEvents', events.publicEvents);
+app.get('/api/events/publicAndMemberEvents/:useremail', events.publicAndMemberEvents);
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
 app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);
