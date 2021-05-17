@@ -221,7 +221,7 @@ const AuthHome = (props) => {
   return (
     <Box>
       <EventCalendar/>
-      {/** <EventGrid/>*/}
+      <EventGrid/>
     </Box>
   );
 };
