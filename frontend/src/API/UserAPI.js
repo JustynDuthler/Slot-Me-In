@@ -1,7 +1,7 @@
 import * as Auth from '../libs/Auth';
 
 /**
- * 
+ *
  * @return {Promise} UserInfo
  */
 export const getUserInfo = () => {
@@ -10,10 +10,10 @@ export const getUserInfo = () => {
     method: 'GET',
     headers: Auth.headerJsonJWT(),
   })
-  .then((response) => {
-    if (!response.ok){
-      throw response;
-    }
-    return response.json();
-  })
+      .then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json();
+      });
 };

@@ -9,11 +9,11 @@ export const getUsersEvents = () => {
     method: 'GET',
     headers: Auth.headerJsonJWT(),
   })
-  .then((response) => {
-    if (!response.ok) {
-      console.log('Error fetching Event data');
-      throw response;
-    }
-    return response.json();
-  });
+      .then((response) => {
+        if (!response.ok) {
+          console.log('Error fetching Event data');
+          throw response;
+        }
+        return response.json();
+      });
 };
