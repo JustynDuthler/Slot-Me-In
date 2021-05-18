@@ -61,24 +61,25 @@ export default function UserInfo({picture: path, name: name, email: email,
   }));
   React.useEffect(async () => {
     /* haven't got this working yet */
-    /* fetch('http://localhost:3010/api/businesses/getProfileImage', {
+    fetch('http://localhost:3010/api/businesses/getProfileImage', {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
     }).then((data) => {
       data.arrayBuffer().then(function(buffer) {
         console.log(buffer);
-        fs.writeFile(path, buffer, 'binary', (err) => {
-          if (err) {
-            res.status(500).send();
-            return;
-          }
+        const url = URL.createObjectURL(new Blob([buffer],
+            {type: 'image/png'}));
+        console.log(url);
+        setImage({
+          preview: url,
+          raw: buffer,
         });
       });
     },
     (error) => {
       console.log(error);
     },
-    ); */
+    );
   }, []);
   const classes = useStyles();
   const [image, setImage] = React.useState({preview: '', raw: ''});

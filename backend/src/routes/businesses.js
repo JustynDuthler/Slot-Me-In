@@ -161,7 +161,6 @@ exports.saveProfileImage = async (req, res) => {
 };
 
 exports.sendProfileImage = async (req, res) => {
-  console.log(req);
   const businessID = req.payload.id;
   const imageName = await businessDb.getBusinessImageName(businessID);
   /* construct path to file */
