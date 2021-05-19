@@ -93,6 +93,9 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1rem',
     },
   },
+  chip: {
+    marginRight: 5,
+  },
   description: {
     marginTop: theme.spacing(3),
     marginLeft: 10,
@@ -156,11 +159,10 @@ const IndividualEvent = (props) => {
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
   const [eventList, setEventList] = React.useState([]);
-  const [chipData, setChipData] = React.useState([]);
-  // property names from DB
-  const chipProperties = ['membersonly', 'over18', 'over21'];
-  // formatted strings to display on Chips
-  const chipNames = ['Members Only', '18+', '21+'];
+  const properties = [['membersonly', 'Members Only'], ['over18', '18+'],
+    ['over21', '21+'], ['category',
+      eventData.category ? eventData.category[0].toUpperCase() +
+      eventData.category.substring(1) : null]];
 
   useEffect(() => {
     getEventData();
@@ -310,24 +312,6 @@ const IndividualEvent = (props) => {
           setEventData(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
-          const chipList = [];
-          // check if each property is true
-          for (const index in chipProperties) {
-            if (chipProperties.hasOwnProperty(index)) {
-              if (json[chipProperties[index]]) {
-                // if true, push object with key and formatted name
-                // ex: if property membersonly true, push label of Members Only
-                chipList.push(
-                    {key: chipProperties[index], label: chipNames[index]});
-              }
-            }
-          }
-          if (json.category) {
-            chipList.push({key: 'category', label:
-              json.category[0].toUpperCase() +
-              json.category.substring(1)});
-          }
-          setChipData(chipList);
         })
         .catch((error) => {
           console.log(error);
@@ -449,11 +433,11 @@ const IndividualEvent = (props) => {
           </ListItem>
 
           <Box>
-            {chipData.map((data) => {
+            {properties.filter((data) => eventData[data[0]]).map((data) => {
               return (
                 <Chip
-                  key={data.key}
-                  label={data.label}
+                  key={data[1]}
+                  label={data[1]}
                   className={classes.chip}
                 />
               );
