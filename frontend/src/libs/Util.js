@@ -1,4 +1,22 @@
 /**
+ * getDateSuffix
+ * https://stackoverflow.com/questions/15397372/
+ * Takes a date and returns the appropriate suffix
+ * ex: 1 -> "st" = 1st, 2 -> "nd" = 2nd, 3 -> "rd" = 3rd
+ * @param {number} date - Date to get ordinal suffix of
+ * @return {string} Suffix for given date
+ */
+const getDateSuffix = (date) => {
+  if (date > 3 && date < 21) return 'th';
+  switch (date % 10) {
+    case 1: return 'st';
+    case 2: return 'nd';
+    case 3: return 'rd';
+    default: return 'th';
+  }
+};
+
+/**
    * formatDate
    * Takes a start and end date ISO timestamp string
    * and creates a formatted event date string
@@ -49,7 +67,13 @@ exports.formatDate = (startTimestamp, endTimestamp) => {
     }
   }
 
-  return startDate + ' ' + startTime + ' - ' + endDate + ' ' + endTime;
+  // add suffix to date (ex: September 1 -> September 1st)
+  const startSuffix = getDateSuffix(start.getDate());
+  let endSuffix = '';
+  if (endDate.length > 0) endSuffix = getDateSuffix(end.getDate());
+
+  return startDate + startSuffix + ' ' + startTime +
+      ' - ' + endDate + endSuffix + ' ' + endTime;
 };
 
 /**

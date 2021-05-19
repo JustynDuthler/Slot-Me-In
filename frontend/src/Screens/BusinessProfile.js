@@ -341,6 +341,12 @@ export default function BusinessProfile() {
       marginLeft: 15,
       marginRight: 15,
     },
+    no: {
+      color: theme.palette.error.main,
+    },
+    yes: {
+      color: theme.palette.secondary.dark,
+    },
     buttonGroup: {
       color: '#dd0000',
     },
@@ -921,7 +927,15 @@ export default function BusinessProfile() {
                 </DialogContentText>
                 <DialogActions>
                   <Button
-                    color="primary"
+                    className={classes.no}
+                    onClick={() => {
+                      // Close dialog and don't delete event if user clicks No
+                      setConfirmDialog(false);
+                    }}>
+                    No
+                  </Button>
+                  <Button
+                    className={classes.yes}
                     onClick={() => {
                       /* Call deleteEventAndReload,close dialog if user
                       clicks Yes */
@@ -929,14 +943,6 @@ export default function BusinessProfile() {
                       setConfirmDialog(false);
                     }}>
                     Yes
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      // Close dialog and don't delete event if user clicks No
-                      setConfirmDialog(false);
-                    }}>
-                    No
                   </Button>
                 </DialogActions>
               </Dialog>

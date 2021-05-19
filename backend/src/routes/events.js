@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     event.repeatid =
         await eventsDb.insertRepeatingEvent(event.eventname, event.description,
             req.payload.id, event.starttime, event.endtime, event.capacity,
-            event.membersonly, event.over18, event.over21,
+            event.membersonly, event.over18, event.over21, event.category,
             event.repeatdays['sunday'], event.repeatdays['monday'],
             event.repeatdays['tuesday'], event.repeatdays['wednesday'],
             event.repeatdays['thursday'], event.repeatdays['friday'],
@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
                 event.eventname, start.toISOString(), end.toISOString(),
                 req.payload.id, event.capacity, event.description,
                 event.membersonly, event.over18, event.over21,
-                event.repeatid);
+                event.category, event.repeatid);
         // set eventid on first inserted event only
         if (!event.eventid) event.eventid = eventid;
       }
@@ -61,7 +61,7 @@ exports.create = async (req, res) => {
     const eventid =
         await eventsDb.insertEvent(event.eventname, event.starttime,
             event.endtime, req.payload.id, event.capacity, event.description,
-            event.membersonly, event.over18, event.over21);
+            event.membersonly, event.over18, event.over21, event.category);
     event.eventid = eventid;
   }
   // return 201 with event

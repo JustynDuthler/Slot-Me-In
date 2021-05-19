@@ -1,5 +1,5 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -20,7 +20,6 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import Context from '../../Context';
 const Auth = require('../../libs/Auth');
 
-
 const useStyles = makeStyles((theme) => ({
   leftMenu: {
     flexGrow: 1,
@@ -34,18 +33,17 @@ const useStyles = makeStyles((theme) => ({
  */
 const NavBar = ({userType}) => {
   const classes = useStyles();
-
+  const history = useHistory();
   const context = React.useContext(Context);
 
   /**
    * logout()
    * Removes JWT and sets authState to null upon logout
-   * @return {object} Redirect to home screen
    */
   const logout = () => {
     Auth.removeJWT();
     context.setAuthState(false);
-    return <Redirect to={{pathname: '/'}}/>;
+    history.push('/');
   };
 
   let rightSide;
@@ -87,34 +85,6 @@ const NavBar = ({userType}) => {
       </ButtonGroup>
     );
   }
-  // rightSide = (
-  //   <ButtonGroup
-  //     anchororigin={{
-  //       vertical: 'top',
-  //       horizonal: 'right',
-  //     }}
-  //   >
-  //     <Button
-  //       startIcon={<AccountCircleOutlinedIcon />}
-  //       href="/register"
-  //       color="secondary"
-  //       size="large"
-  //       variant="contained"
-  //     >
-  //       Register Account
-  //     </Button>
-  //     <Button
-  //       startIcon={<LockOutlinedIcon />}
-  //       href="/Login"
-  //       color="secondary"
-  //       size="large"
-  //       variant="contained"
-  //     >
-  //       Login
-  //     </Button>
-  //   </ButtonGroup>
-  // );
-
 
   let leftSide;
   if (userType == 'business') {

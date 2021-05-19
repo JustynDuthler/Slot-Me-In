@@ -1,4 +1,5 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,7 +12,6 @@ import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Context from '../Context';
 import * as Auth from '../libs/Auth';
-import IndividualEvent from '../IndividualEvent';
 import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from '@date-io/date-fns';
 import {DatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
@@ -37,8 +37,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 // up grouped by business name. The eventList state holds the
 // currently signed up for events and must be updated
 // (by replacing the reference since it is an object) when a
-// user withdraws from an event. eventState is either null or an eventid.
-// If it's an eventid, then display the individualevent page for the event
+// user withdraws from an event.
 /**
  * UserProfile component
  * @return {object} UserProfile JSX
@@ -48,7 +47,6 @@ export default function UserProfile() {
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [userData, setUserData] = React.useState([]);
   const [eventList, setEventList] = React.useState({});
-  const [eventState, setEventState] = React.useState(null);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [showAll, setShowAll] = React.useState(true);
   const [withdrawEventID, setWithdrawEventID] = React.useState('');
@@ -56,6 +54,7 @@ export default function UserProfile() {
   const [withdrawEventValue, setWithdrawEventValue] = React.useState('');
   const [confirmDialog, setConfirmDialog] = React.useState(false);
   const context = React.useContext(Context);
+  const history = useHistory();
 
   /**
    * removeUserAttending
@@ -155,16 +154,20 @@ export default function UserProfile() {
         );
     await Promise.all([userRes, eventRes]);
     setIsLoaded(true);
-  }, [eventState]);
+  }, []);
 
 
   const useStyles = makeStyles((theme) => ({
     paper: {
+      background: theme.palette.back.main,
+    },
+    paperDiv: {
       marginTop: theme.spacing(8),
       flexGrow: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      background: theme.palette.back.main,
     },
     eventStyle: {
       marginTop: theme.spacing(2),
@@ -215,6 +218,12 @@ export default function UserProfile() {
     dialogText: {
       marginLeft: 15,
       marginRight: 15,
+    },
+    no: {
+      color: theme.palette.error.main,
+    },
+    yes: {
+      color: theme.palette.secondary.dark,
     },
   }));
   const classes = useStyles();
@@ -274,25 +283,6 @@ export default function UserProfile() {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
     return <div>Loading...</div>;
-  } else if (eventState !== null) {
-    // if the eventState is set to an eventID
-    // then show an individualEvent page with a back button
-    items.push(
-        <div key='event' className={classes.eventStyle}>
-          <Button
-            type='submit'
-            variant='contained'
-            color='primary'
-            onClick={() => {
-              setIsLoaded(null);
-              setEventState(null);
-            }}
-          >
-          Back
-          </Button>
-          <IndividualEvent eventID={eventState}/>
-        </div>,
-    );
   } else if (Object.keys(eventList) == 0) {
     // If there are no events in the event list
     // then put a link to the event signup page
@@ -339,7 +329,7 @@ export default function UserProfile() {
                     key={eventid}
                     onClick={
                       () => {
-                        setEventState(eventid);
+                        history.push('/event/' + eventid);
                       }
                     }
                   >
@@ -351,7 +341,7 @@ export default function UserProfile() {
                       <Button key={eventid}
                         type='submit'
                         variant='contained'
-                        color='primary'
+                        color='secondary'
                         onClick={() => {
                           setWithdrawEventID(eventid);
                           setWithdrawEventKey(eventKey);
@@ -417,7 +407,7 @@ export default function UserProfile() {
               <Button key='showAll'
                 type='submit'
                 variant='contained'
-                color='primary'
+                color='secondary'
                 onClick={() => {
                   setShowAll(!showAll);
                 }}
@@ -434,9 +424,9 @@ export default function UserProfile() {
   }
 
   return (
-    <Paper>
+    <Paper className={classes.paper} elevation={0}>
       <Container component='main' maxWidth='md'>
-        <div className={classes.paper}>
+        <div className={classes.paperDiv}>
           <Typography className={classes.typography} variant='h1'>
             {userData.username}
           </Typography>
@@ -444,7 +434,7 @@ export default function UserProfile() {
             {userData.useremail.toLowerCase()}
           </Typography>
           <Grid container justify='center' direction='row' spacing={8}>
-            {eventState === null &&showAll === false&&
+            {showAll === false&&
             <Grid item xs={6} container justify='flex-start'>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DatePicker
@@ -476,7 +466,15 @@ export default function UserProfile() {
             </DialogContentText>
             <DialogActions>
               <Button
-                color="primary"
+                className={classes.no}
+                onClick={() => {
+                  // Close dialog and don't withdraw if user clicks No
+                  setConfirmDialog(false);
+                }}>
+                No
+              </Button>
+              <Button
+                className={classes.yes}
                 onClick={() => {
                   // Call removeUserAndReload, close dialog if user clicks Yes
                   removeUserAndReload(
@@ -485,14 +483,6 @@ export default function UserProfile() {
                   setConfirmDialog(false);
                 }}>
                 Yes
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => {
-                  // Close dialog and don't withdraw if user clicks No
-                  setConfirmDialog(false);
-                }}>
-                No
               </Button>
             </DialogActions>
           </Dialog>
