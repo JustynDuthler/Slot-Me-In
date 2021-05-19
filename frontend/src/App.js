@@ -125,7 +125,8 @@ function App() {
   const userType = businessState ? 'business' : 'user';
   const path = window.location.pathname;
   let menu;
-  if (path !== '/' && path !== '/login' && path !== '/register') {
+  // only show NavBar on event page if not logged in
+  if (path.startsWith('/event/')) {
     menu = authState ?
         <NavBar userType={userType}/> : <NavBar userType='guest'/>;
   } else {
