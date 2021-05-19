@@ -424,7 +424,7 @@ export default function UserProfile() {
   }
 
   return (
-    <Paper className={classes.paper} elevation='0'>
+    <Paper className={classes.paper} elevation={0}>
       <Container component='main' maxWidth='md'>
         <div className={classes.paperDiv}>
           <Typography className={classes.typography} variant='h1'>

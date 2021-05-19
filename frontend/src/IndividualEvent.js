@@ -475,7 +475,7 @@ const IndividualEvent = (props) => {
             &nbsp;of {eventData.capacity} spots open
           </Typography>
 
-          {signupType !== undefined ?
+          {context.authState && !context.businessState &&
             (<Button className={classes.signupButton}
               variant="contained" color="secondary"
               disabled={signupType && numAttendees == eventData.capacity}
@@ -483,13 +483,15 @@ const IndividualEvent = (props) => {
                 signupType === true ? signUp() : setConfirmDialog(true);
               }}>
               {signupType === true ? 'Sign Up' : 'Withdraw'}
-            </Button>) :
+            </Button>)}
+          {!context.authState &&
             (<Button className={classes.signupButton}
               variant="contained" color="secondary"
               href='/login'>
               Login To Sign Up For Event
             </Button>)
           }
+
           <Box className={classes.share}>
             <FacebookShareButton
               msg={'I am going to '+eventData.eventname+
