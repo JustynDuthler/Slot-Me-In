@@ -9,11 +9,10 @@ export const getUserInfo = () => {
   return fetch(apicall, {
     method: 'GET',
     headers: Auth.headerJsonJWT(),
-  })
-      .then((response) => {
-        if (!response.ok) {
-          throw response;
-        }
-        return response.json();
-      });
+  }).then((response) => {
+    if (!response.ok) {
+      throw response;
+    }
+    return response.json();
+  });
 };
