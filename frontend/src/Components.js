@@ -59,8 +59,9 @@ export default function UserInfo({picture: path, name: name, email: email,
       height: '300px',
     },
   }));
+  const classes = useStyles();
+  const [image, setImage] = React.useState({preview: '', raw: ''});
   React.useEffect(async () => {
-    /* haven't got this working yet */
     fetch('http://localhost:3010/api/businesses/getProfileImage', {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
@@ -70,9 +71,11 @@ export default function UserInfo({picture: path, name: name, email: email,
         const url = URL.createObjectURL(new Blob([buffer],
             {type: 'image/png'}));
         console.log(url);
-        setImage({
-          preview: url,
-          raw: buffer,
+        cropImage(url, 1).then((canvas) => {
+          setImage({
+            preview: canvas.toDataURL('image/png'),
+            raw: buffer,
+          });
         });
       });
     },
@@ -81,8 +84,6 @@ export default function UserInfo({picture: path, name: name, email: email,
     },
     );
   }, []);
-  const classes = useStyles();
-  const [image, setImage] = React.useState({preview: '', raw: ''});
   /**
    * changeImage function
    * @param {e} e
@@ -91,6 +92,7 @@ export default function UserInfo({picture: path, name: name, email: email,
   const changeImage = (e) => {
     if (e.target.files.length) {
       const url = URL.createObjectURL(e.target.files[0]);
+      console.log(url);
       console.log(e.target.files[0]);
       cropImage(url, 1).then((canvas) => {
         setImage({
