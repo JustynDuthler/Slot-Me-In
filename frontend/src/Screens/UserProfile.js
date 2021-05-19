@@ -160,11 +160,15 @@ export default function UserProfile() {
 
   const useStyles = makeStyles((theme) => ({
     paper: {
+      background: theme.palette.back.main,
+    },
+    paperDiv: {
       marginTop: theme.spacing(8),
       flexGrow: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      background: theme.palette.back.main,
     },
     eventStyle: {
       marginTop: theme.spacing(2),
@@ -215,6 +219,12 @@ export default function UserProfile() {
     dialogText: {
       marginLeft: 15,
       marginRight: 15,
+    },
+    no: {
+      color: theme.palette.error.main,
+    },
+    yes: {
+      color: theme.palette.secondary.dark,
     },
   }));
   const classes = useStyles();
@@ -351,7 +361,7 @@ export default function UserProfile() {
                       <Button key={eventid}
                         type='submit'
                         variant='contained'
-                        color='primary'
+                        color='secondary'
                         onClick={() => {
                           setWithdrawEventID(eventid);
                           setWithdrawEventKey(eventKey);
@@ -417,7 +427,7 @@ export default function UserProfile() {
               <Button key='showAll'
                 type='submit'
                 variant='contained'
-                color='primary'
+                color='secondary'
                 onClick={() => {
                   setShowAll(!showAll);
                 }}
@@ -434,9 +444,9 @@ export default function UserProfile() {
   }
 
   return (
-    <Paper>
+    <Paper className={classes.paper} elevation='0'>
       <Container component='main' maxWidth='md'>
-        <div className={classes.paper}>
+        <div className={classes.paperDiv}>
           <Typography className={classes.typography} variant='h1'>
             {userData.username}
           </Typography>
@@ -476,7 +486,15 @@ export default function UserProfile() {
             </DialogContentText>
             <DialogActions>
               <Button
-                color="primary"
+                className={classes.no}
+                onClick={() => {
+                  // Close dialog and don't withdraw if user clicks No
+                  setConfirmDialog(false);
+                }}>
+                No
+              </Button>
+              <Button
+                className={classes.yes}
                 onClick={() => {
                   // Call removeUserAndReload, close dialog if user clicks Yes
                   removeUserAndReload(
@@ -485,14 +503,6 @@ export default function UserProfile() {
                   setConfirmDialog(false);
                 }}>
                 Yes
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => {
-                  // Close dialog and don't withdraw if user clicks No
-                  setConfirmDialog(false);
-                }}>
-                No
               </Button>
             </DialogActions>
           </Dialog>

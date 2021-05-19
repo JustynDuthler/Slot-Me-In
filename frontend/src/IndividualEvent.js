@@ -128,6 +128,12 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 5,
     },
   },
+  no: {
+    color: theme.palette.error.main,
+  },
+  yes: {
+    color: theme.palette.secondary.dark,
+  },
 }));
 
 /**
@@ -533,10 +539,12 @@ const IndividualEvent = (props) => {
       </Snackbar>
 
       {/* Confirmation dialog for withdrawing from events */}
-      <Dialog open={confirmDialog} onClose={() => {
-        setConfirmDialog(false);
-      }}
-      aria-labelledby="confirm-dialog-title">
+      <Dialog
+        open={confirmDialog}
+        onClose={() => {
+          setConfirmDialog(false);
+        }}
+        aria-labelledby="confirm-dialog-title">
         <DialogTitle id="confirm-dialog-title">
           Withdraw From Event
         </DialogTitle>
@@ -545,21 +553,21 @@ const IndividualEvent = (props) => {
         </DialogContentText>
         <DialogActions>
           <Button
-            color="primary"
+            className={classes.no}
+            onClick={() => {
+              // Close dialog and don't withdraw if user clicks No
+              setConfirmDialog(false);
+            }}>
+            No
+          </Button>
+          <Button
+            className={classes.yes}
             onClick={() => {
               // Call withdraw, close dialog if user clicks Yes
               withdraw();
               setConfirmDialog(false);
             }}>
             Yes
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => {
-              // Close dialog and don't withdraw if user clicks No
-              setConfirmDialog(false);
-            }}>
-            No
           </Button>
         </DialogActions>
       </Dialog>
