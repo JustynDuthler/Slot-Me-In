@@ -5,6 +5,9 @@
   "main": "app.js",
   "author": "",
   "license": "ISC",
+  "jest" : {
+    "setupFilesAfterEnv": [ "<rootDir>/test/jestGlobalSetup.js" ]
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
@@ -21,7 +24,7 @@
     "prestart": "docker-compose up --build -d",
     "start": "nodemon src/server.js",
     "pretest": "docker-compose up -d",
-    "test": "jest --runInBand --testTimeout=2000 --coverage --forceExit",
+    "test": "jest --runInBand --testTimeout=20000 --coverage --forceExit",
     "posttest": "docker-compose down",
     "lint": "eslint . --ext .js",
     "lintfix": "eslint . --ext .js --fix"

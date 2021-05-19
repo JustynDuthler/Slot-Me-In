@@ -24,6 +24,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserToken"
+  /test/get_business_token:
+    get:
+      description: Gets a business test token
+      responses:
+        200:
+          description: a jwt is being sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
   /test/test_token:
     post:
       description: Test API to check token sending

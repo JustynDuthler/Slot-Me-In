@@ -93,6 +93,13 @@ app.get('/api/test/get_token', async (req, res) => {
   res.status(200).json({auth_token: tempToken});
 });
 
+/* Generates a business token for testing */
+app.get('/api/test/get_business_token', async (req, res) => {
+    tempBusinessToken = await auth.generateJWT(
+        'contact@google.com', '10000000-0000-0000-0000-000000000000', 'business');
+    res.status(200).json({auth_token: tempBusinessToken});
+});
+
 // A test api which uses authentication middleware
 // Will send the json only if the middleware authenticates the JWT
 app.post('/api/test/test_token', auth.authenticateJWT, (req, res) => {

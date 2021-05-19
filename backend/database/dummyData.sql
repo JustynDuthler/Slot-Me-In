@@ -106,8 +106,7 @@ VALUES ('f', '00000000-0018-0000-0000-000000000000', 'Photography Club Meet', '9
 INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description, over21)
 VALUES ('f', '00000000-0019-0000-0000-000000000000', 'Wine Tasting', '00000000-0000-0000-0000-000000000000', '2021-09-15T23:30:00.000Z', '2021-09-16T02:30:00.000Z', 20, 'Temp Description', 't');
 
-
-
+-- insert attendees for testing
 INSERT INTO Attendees(eventid, userid)
 VALUES ('00000000-0001-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000');
 INSERT INTO Attendees(eventid, userid)
@@ -154,3 +153,25 @@ INSERT INTO Attendees(eventid, userid)
 VALUES ('00000000-0009-0000-0000-000000000000', '00000000-0000-0000-0000-000000000018');
 INSERT INTO Attendees(eventid, userid)
 VALUES ('00000000-0010-0000-0000-000000000000', '00000000-0000-0000-0000-000000000019');
+
+-- insert members for testing
+INSERT INTO Members(memberemail, businessid)
+VALUES ('jeff@ucsc.edu', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('elle@ucsc.edu', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('aaron@ucsc.edu', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('julia@ucsc.edu', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('spencer@ucsc.edu', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('justyn@gmail.com', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('lucas@gmail.com', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('shirley@gmail.com', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('ethan@gmail.com', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('william@gmail.com', '10000000-0000-0000-0000-000000000000');
