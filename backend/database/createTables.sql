@@ -27,6 +27,13 @@ CREATE TABLE Businesses (
 	PRIMARY KEY (businessid)
 );
 
+DROP TABLE IF EXISTS EventCategories;
+-- EventCategories table
+CREATE TABLE EventCategories (
+  category TEXT NOT NULL,
+  PRIMARY KEY (category)
+);
+
 DROP TABLE IF EXISTS RepeatingEvents;
 -- Repeating Events Table
 CREATE TABLE RepeatingEvents (
@@ -40,6 +47,7 @@ CREATE TABLE RepeatingEvents (
   membersonly BOOLEAN DEFAULT TRUE,
   over18 BOOLEAN DEFAULT FALSE,
   over21 BOOLEAN DEFAULT FALSE,
+  category TEXT,
   sunday BOOLEAN,
   monday BOOLEAN,
   tuesday BOOLEAN,
@@ -50,14 +58,8 @@ CREATE TABLE RepeatingEvents (
   repeattype CHAR(1) DEFAULT 'w',     -- currently only 'w' for weekly, can implement more types later
   repeatend TIMESTAMPTZ,
   PRIMARY KEY (repeatid),
-  FOREIGN KEY (businessid) REFERENCES Businesses
-);
-
-DROP TABLE IF EXISTS EventCategories;
--- EventCategories table
-CREATE TABLE EventCategories (
-  category TEXT NOT NULL,
-  PRIMARY KEY (category)
+  FOREIGN KEY (businessid) REFERENCES Businesses,
+  FOREIGN KEY (category) REFERENCES EventCategories(category)
 );
 
 DROP TABLE IF EXISTS Events;

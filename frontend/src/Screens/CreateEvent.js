@@ -98,6 +98,13 @@ export default function CreateEvent() {
     eventObj.membersonly = membersOnly;
     eventObj.over18 = (age === 18);
     eventObj.over21 = (age === 21);
+    // set event category
+    eventObj.category = '';
+    for (const index in chipData) {
+      if (chipData.hasOwnProperty(index) && chipData[index]['selected']) {
+        eventObj.category = chipData[index]['category'];
+      }
+    }
     // properties for repeating events only
     if (repeat) {
       eventObj.repeattype = 'w';
@@ -439,14 +446,6 @@ export default function CreateEvent() {
                         });
                         setChipData(chipDataCopy);
                       }}
-                      onDelete={data.selected === true ? ()=>{
-                        data.selected=!data.selected;
-                        const chipDataCopy = chipData.map((d, i)=>{
-                          return {'category': d.category,
-                            'selected': i===idx};
-                        });
-                        setChipData(chipDataCopy);
-                      } : null}
                       className={classes.chip}
                     />
                   </div>
