@@ -150,13 +150,13 @@ export default function UserInfo({picture: path, name: name, email: email,
         />
       </Box>
       <Box>
-        <Button
-          style={{fontSize: '12px'}}
+        {image.preview && <Button
+          style={{fontSize: '12px', margin: '6px'}}
           variant='outlined'
           onClick={()=>{
             uploadProfileImage(image.raw);
           }}>Upload
-        </Button>
+        </Button>}
       </Box>
       <Typography className={classes.text}>{name}
       </Typography>
