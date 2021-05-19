@@ -48,6 +48,7 @@ export default function UserInfo({picture: path, name: name, email: email,
       backgroundColor: theme.palette.back.main,
       borderRadius: '2px',
       textAlign: 'center',
+      fontSize: '15px',
     },
     divider: {
       width: '100%',
@@ -56,7 +57,7 @@ export default function UserInfo({picture: path, name: name, email: email,
     avatar: {
       margin: '0 auto',
       width: '100%',
-      height: '300px',
+      height: '270px',
     },
   }));
   const classes = useStyles();
@@ -92,8 +93,8 @@ export default function UserInfo({picture: path, name: name, email: email,
   const changeImage = (e) => {
     if (e.target.files.length) {
       const url = URL.createObjectURL(e.target.files[0]);
-      console.log(url);
-      console.log(e.target.files[0]);
+      // console.log(url);
+      // console.log(e.target.files[0]);
       cropImage(url, 1).then((canvas) => {
         setImage({
           preview: canvas.toDataURL('image/png'),
@@ -128,15 +129,16 @@ export default function UserInfo({picture: path, name: name, email: email,
       alignItems="center"
       className={classes.grid}
       {...rest}>
-      <Box width='100%' height='300px'>
-        <label htmlFor="upload-button" width='100%'>
+      <Box width='90%' height='270px'>
+        <label htmlFor="upload-button">
           {image.preview ? (
             <img src={image.preview} alt="dummy" width='100%' height='auto'
+              style={{marginTop: '10px'}}
               ref={profileImage}/>
           ) : (
             <>
               <Avatar
-                alt={'pfp'}
+                alt={'pfp'} width='auto'
                 className={classes.avatar}
               />
             </>
@@ -150,13 +152,13 @@ export default function UserInfo({picture: path, name: name, email: email,
         />
       </Box>
       <Box>
-        <Button
-          style={{fontSize: '12px'}}
+        {image.preview && <Button
+          style={{fontSize: '12px', marginTop: '20px'}}
           variant='outlined'
           onClick={()=>{
             uploadProfileImage(image.raw);
           }}>Upload
-        </Button>
+        </Button>}
       </Box>
       <Typography className={classes.text}>{name}
       </Typography>
@@ -164,8 +166,10 @@ export default function UserInfo({picture: path, name: name, email: email,
       <Typography className={classes.email}>{email}
       </Typography>
       <Divider className={classes.divider}/>
-      <Typography className={classes.description}>{description}
-      </Typography>
+      <Box width='95%'>
+        <Typography className={classes.description}>{description}
+        </Typography>
+      </Box>
     </Grid>
   );
 }
