@@ -11,7 +11,6 @@ import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
 
 import Context from './Context';
-// import { getBusinessEvents } from '../../backend/src/db/eventsDb';
 const Auth = require('./libs/Auth');
 
 const useStyles = makeStyles({

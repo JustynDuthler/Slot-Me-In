@@ -2,16 +2,20 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Carousel from 'react-elastic-carousel';
 import Box from '@material-ui/core/Box';
-// import {Link} from 'react-router-dom';
 import EventCard from './Components/Events/EventCard';
 import {Grid} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+import IconButton from '@material-ui/core/IconButton';
+// import InputAdornment from '@material-ui/core/InputAdornment';
+import Paper from '@material-ui/core/Paper';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 275,
   },
@@ -39,7 +43,39 @@ const useStyles = makeStyles({
     bottom: 15,
     transform: 'translate(-50%, -50%)',
   },
-});
+  searchBox: {
+    backgroundColor: theme.palette.primary.main,
+    paddingBottom: 50,
+    paddingTop: 50,
+  },
+  searchBar: {
+    backgroundColor: theme.palette.common.white,
+  },
+  searchRoot: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 400,
+    margin: 'auto',
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    backgroundColor: theme.palette.common.white,
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+    backgroundColor: theme.palette.common.white,
+  },
+  wrapper: {
+    display: 'horizontal',
+    overflowX: 'auto',
+    maxHeight: 120,
+  },
+  wrapperitem: {
+    alignItems: 'center',
+  },
+}));
 
 /**
  * ViewEvents component
@@ -50,6 +86,8 @@ export default function ViewEvents() {
   const [eventList, setEventList] = React.useState([]);
   const [memberEvents, setMemberEvents] = React.useState([]);
   const [memberBusinesses, setMemberBusinesses] = React.useState([]);
+  const [searchValue, setSearch] = React.useState('');
+  const [searchEventsList, setSearchEventsList] = React.useState([]);
   // const [userInfo, setUserInfo] = React.useState([]);
   const context = React.useContext(Context);
 
@@ -123,8 +161,8 @@ export default function ViewEvents() {
   };
 
   /**
-   * getEvents
-   * API call to get data for an event
+   * getPublicEvents
+   * gets all public events
    */
   function getPublicEvents() {
     const apicall = 'http://localhost:3010/api/events/publicEvents';
@@ -149,8 +187,8 @@ export default function ViewEvents() {
   };
 
   /**
-   * getEvents
-   * API call to get data for an event
+   * getBusinessEvents
+   * gets events for a business when in a business account
    */
   function getBusinessEvents() {
     const apicall = 'http://localhost:3010/api/events';
@@ -192,14 +230,46 @@ export default function ViewEvents() {
     {width: 2000, itemsToShow: 7},
   ];
 
+  /**
+   * searchEvents
+   * takes input and searches events
+   * @param {object} event
+   */
+  const searchEvents = (event) => {
+    let apicall = 'http://localhost:3010/api/events';
+    if (searchValue !== '') {
+      apicall += '?search='+searchValue;
+    }
+    console.log(apicall);
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setSearchEventsList(json);
+      setSearch('');
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+  console.log(searchEventsList);
+
   // only show if it is a user account
   let showMemberEvents;
   if (context.businessState === false) {
     if (memberEvents.length === 0) {
       showMemberEvents = (
         <Grid item xs={8}>
-          <Box display="flex"
-            mt={10}>
+          <Box display="flex">
             <Typography variant="h4" style={{float: 'left'}}>
               Member Events
             </Typography>
@@ -212,7 +282,7 @@ export default function ViewEvents() {
     } else {
       showMemberEvents = (
         <Grid item xs={8}>
-          <Box mt={10}>
+          <Box>
             <Typography variant="h4" style={{float: 'left'}}>
               Member Events
             </Typography>
@@ -249,8 +319,7 @@ export default function ViewEvents() {
     if (memberBusinesses.length === 0) {
       showBusinesses = (
         <Grid item xs={4}>
-          <Box display="flex" alignItems="center" justifyContent="center"
-            mt={10}>
+          <Box display="flex" alignItems="center" justifyContent="center">
             <Typography variant="h4">
               My Businesses
             </Typography>
@@ -264,8 +333,7 @@ export default function ViewEvents() {
     } else {
       showBusinesses = (
         <Grid item xs={4}>
-          <Box display="flex" alignItems="center" justifyContent="center"
-            mt={10}>
+          <Box display="flex" alignItems="center" justifyContent="center">
             <Typography variant="h4">
               My Businesses
             </Typography>
@@ -285,7 +353,6 @@ export default function ViewEvents() {
                     variant='contained'
                     color='secondary'
                     href={'/business/profile/' + business.businessid}
-                    justifyContent='center'
                     style={{margin: 'auto'}}>
                     See Profile
                   </Button>
@@ -302,17 +369,38 @@ export default function ViewEvents() {
     );
   }
 
+  // console.log(searchValue);
+
   return (
     <React.Fragment>
-      <Box p={5} ml={20}>
-        <Box>
-          <input type="text" placeholder="Ignore this search bar..." />
-        </Box>
-        <Grid container spacing={0}>
+      <Box className={classes.searchBox}
+        justifyContent="center"
+        textAlign='center'>
+        <Paper component="form" className={classes.searchRoot}>
+          <InputBase
+            className={classes.input}
+            placeholder="Search Events..."
+            onChange={(event) => {
+              // console.log(event.target.value);
+              setSearch(event.target.value);
+              console.log(searchValue);
+            }}
+          />
+          <IconButton
+            className={classes.iconButton}
+            aria-label="search"
+            onClick={searchEvents}>
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+      </Box>
+      <Box p={5} ml={context.businessState === false ? 20 : 0}>
+        <Grid container
+          spacing={0}>
           {showMemberEvents}
           {showBusinesses}
-          <Grid item xs={8}>
-            <Box mt={10}>
+          <Grid item xs={context.businessState === false ? 8 : 12}>
+            <Box mt={5}>
               <Typography variant="h4" style={{float: 'left'}}>
                 {context.businessState === false ?
                 'All Events' : 'My Events'}
@@ -326,7 +414,7 @@ export default function ViewEvents() {
                   See All Events
                 </Button>
               </Box>
-              <Box mt={5} mb={5} className={classes.box}>
+              <Box mt={5} mb={5}>
                 <Carousel breakPoints={breakPoints}>
                   {eventList.map((event) =>
                     <EventCard key={event.eventid} context={context}

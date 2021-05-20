@@ -149,6 +149,11 @@ function App() {
                 authed={authState}
                 component={ViewEvents}
               />
+              <PrivateRoute
+                path="/allevents"
+                authed={authState}
+                component={AllEvents}
+              />
               <Route path="/profile">
                 {(authState) ? ((businessState === false) ?
                 <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
