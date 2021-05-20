@@ -1,4 +1,5 @@
 import React from 'react';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   BrowserRouter as Router,
@@ -6,6 +7,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import Box from '@material-ui/core/Box';
 import Context from './Context';
 import Home from './Screens/Home';
 import AuthTest from './Screens/AuthTest';
@@ -17,6 +19,7 @@ import UserProfile from './Screens/UserProfile';
 import BusinessProfile from './Screens/BusinessProfile';
 import AllEvents from './AllEvents';
 import NavBar from './Components/Nav/NavBar';
+import Footer from './Components/Nav/Footer';
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -68,6 +71,11 @@ const theme = createMuiTheme({
   },
 });
 
+const useStyles = makeStyles((theme) => ({
+  allButFooter: {
+    minHeight: 'calc(100vh - 50px)',
+  },
+}));
 
 /**
  *
@@ -76,6 +84,7 @@ const theme = createMuiTheme({
 function App() {
   const [authState, setAuthState] = React.useState(false);
   const [businessState, setBusinessState] = React.useState(undefined);
+  const classes = useStyles();
   /**
    * validateBusiness()
    * Determines whether logged in user is a business or user
@@ -142,46 +151,49 @@ function App() {
             businessState, setBusinessState,
           }}>
             <CssBaseline />
-            {menu}
-            <Switch>
-              <Route path="/authtest">
-                <AuthTest />
-              </Route>
-              <PrivateRoute
-                path="/events/create"
-                authed={authState}
-                component={CreateEvent}
-              />
-              <PrivateRoute
-                path="/events"
-                authed={authState}
-                component={ViewEvents}
-              />
-              <Route path="/profile">
-                {(authState) ? ((businessState === false) ?
-                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-              </Route>
-              <Route exact path="/events">
-                <ViewEvents/>
-              </Route>
-              <Route
-                exact path="/business/profile/:businessid"
-                render={(props) =>
-                  <PublicBusinessProfile
-                    businessid={props.match.params.businessid}
-                    {...props} />}
-              />
-              <Route
-                exact path="/event/:eventid"
-                render={(props) =>
-                  <IndividualEvent eventID={props.match.params.eventid}
-                    {...props} />}
-              />
-              <Route path="/allevents">
-                <AllEvents/>
-              </Route>
-              <Route path="/" component={Home}/>
-            </Switch>
+            <Box className={classes.allButFooter}>
+              {menu}
+              <Switch>
+                <Route path="/authtest">
+                  <AuthTest />
+                </Route>
+                <PrivateRoute
+                  path="/events/create"
+                  authed={authState}
+                  component={CreateEvent}
+                />
+                <PrivateRoute
+                  path="/events"
+                  authed={authState}
+                  component={ViewEvents}
+                />
+                <Route path="/profile">
+                  {(authState) ? ((businessState === false) ?
+                  <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+                </Route>
+                <Route exact path="/events">
+                  <ViewEvents/>
+                </Route>
+                <Route
+                  exact path="/business/profile/:businessid"
+                  render={(props) =>
+                    <PublicBusinessProfile
+                      businessid={props.match.params.businessid}
+                      {...props} />}
+                />
+                <Route
+                  exact path="/event/:eventid"
+                  render={(props) =>
+                    <IndividualEvent eventID={props.match.params.eventid}
+                      {...props} />}
+                />
+                <Route path="/allevents">
+                  <AllEvents/>
+                </Route>
+                <Route path="/" component={Home}/>
+              </Switch>
+            </Box>
+            <Footer className={classes.footer}/>
           </Context.Provider>
         </ThemeProvider>
       </Router>
