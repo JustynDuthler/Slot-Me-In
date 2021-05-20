@@ -18,6 +18,8 @@ import ViewEvents from './ViewEvents';
 import UserProfile from './Screens/UserProfile';
 import BusinessProfile from './Screens/BusinessProfile';
 import AllEvents from './AllEvents';
+import About from './Screens/About';
+import Contact from './Screens/Contact';
 import NavBar from './Components/Nav/NavBar';
 import Footer from './Components/Nav/Footer';
 const Auth = require('./libs/Auth');
@@ -134,8 +136,9 @@ function App() {
   const userType = businessState ? 'business' : 'user';
   const path = window.location.pathname;
   let menu;
-  // only show NavBar on event page if not logged in
-  if (path.startsWith('/event/')) {
+  // do not show NavBar on home, login, or register when not logged in
+  if (!(path == '/') && !(path.startsWith('/login')) &&
+    !(path.startsWith('/register')) ) {
     menu = authState ?
         <NavBar userType={userType}/> : <NavBar userType='guest'/>;
   } else {
@@ -189,6 +192,12 @@ function App() {
                 />
                 <Route path="/allevents">
                   <AllEvents/>
+                </Route>
+                <Route path="/about">
+                  <About/>
+                </Route>
+                <Route path="/contact">
+                  <Contact/>
                 </Route>
                 <Route path="/" component={Home}/>
               </Switch>

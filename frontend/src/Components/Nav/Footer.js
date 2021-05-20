@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -14,10 +14,21 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     display: 'flex',
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
-  item: {
-    paddingLeft: 20,
-    paddingRight: 20,
+  link: {
+    color: theme.palette.primary.main,
+    fontSize: '1rem',
+    fontWeight: '500',
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  copyright: {
+    color: theme.palette.primary.light,
+    fontSize: '1rem',
+    fontWeight: '500',
+    marginLeft: 20,
+    marginRight: 20,
   },
 }));
 
@@ -33,15 +44,17 @@ export default function Footer() {
     <Box className={classes.box}>
       <Divider />
       <Paper className={classes.paper} elevation={0}>
-        <Typography className={classes.item}>
+        <Link className={classes.link}
+          color='primary' href='/about'>
           About
-        </Typography>
-        <Typography className={classes.item}>
+        </Link>
+        <Link className={classes.link}
+          color='primary' href='/contact'>
           Contact Us
-        </Typography>
-        <Typography className={classes.item}>
+        </Link>
+        <Link className={classes.copyright} underline='none'>
           &copy; 2021 SlotMeIn
-        </Typography>
+        </Link>
       </Paper>
     </Box>
   );
