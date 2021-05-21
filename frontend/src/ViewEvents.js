@@ -521,6 +521,8 @@ export default function ViewEvents() {
   const context = React.useContext(Context);
   const [memberEvents, setMemberEvents] = React.useState([]);
   const [publicEvents, setPublicEvents] = React.useState([]);
+  const [businessEvents, setBusinessEvents] = React.useState([]);
+  const [memberBusinesses, setMemberBusinesses] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
   const [checkState, setCheckState] = React.useState({
@@ -549,12 +551,36 @@ export default function ViewEvents() {
     }).then((response) => response.json())
         .then((json) => {
           getMemberEvents(json.useremail);
-          // getMemberBusinesses(json.useremail);
+          getMemberBusinesses(json.useremail);
         },
         (error) => {
           console.log(error);
         },
         );
+  };
+
+  /**
+   * getMemberBusinesses
+   * API call to get all businesses the user
+   * is a part of
+   * @param {string} email
+   */
+  function getMemberBusinesses(email) {
+    const apicall = 'http://localhost:3010/api/members/getMemberBusinesses/'+email;
+    fetch(apicall, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        throw response;
+      } else {
+        return response.json();
+      }
+    }).then((json) => {
+      setMemberBusinesses(json);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
   };
 
   /**
@@ -607,12 +633,38 @@ export default function ViewEvents() {
         });
   };
 
+  /**
+   * getBusinessEvents
+   * gets events for a business when in a business account
+   */
+  function getBusinessEvents() {
+    const apicall = 'http://localhost:3010/api/events';
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setBusinessEvents(json.slice(0, 8));
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
   React.useEffect(() => {
     if (context.businessState === false) {
       getPublicEvents();
       getUserInfo();
     } else {
-      // getBusinessEvents();
+      getBusinessEvents();
     }
   }, []);
 
@@ -659,6 +711,82 @@ export default function ViewEvents() {
   console.log(memberEvents);
   console.log(publicEvents);
   console.log(searchEventsList);
+  console.log(memberBusinesses);
+
+  /* Show member events if user is part of any businesses */
+  let showMemberEvents;
+  if (context.businessState === false) {
+    if (memberEvents.length === 0) {
+      showMemberEvents = (
+        <div></div>
+      );
+    } else {
+      showMemberEvents = (
+        <div>
+          <Typography variant="h4" className={classes.eventHeader}>
+            My Business Events
+          </Typography>
+          <Grid className={classes.gridContainer}
+            container spacing={3}>
+            {memberEvents.map((event) =>
+              <EventCard key={event.eventid} context={context}
+                row={event}/>,
+            )}
+          </Grid>
+        </div>
+      );
+    }
+  } else {
+    showMemberEvents = (
+      <div></div>
+    );
+  }
+
+  /* Show public events if it is a user account */
+  let showPublicEvents;
+  if (context.businessState === false) {
+    showPublicEvents = (
+      <div>
+        <Typography variant="h4" className={classes.eventHeader}>
+          Public Events
+        </Typography>
+        <Grid className={classes.gridContainer}
+          container spacing={3}>
+          {publicEvents.map((event) =>
+            <EventCard key={event.eventid} context={context}
+              row={event}/>,
+          )}
+        </Grid>
+      </div>
+    );
+  } else {
+    showPublicEvents = (
+      <div></div>
+    );
+  }
+
+  /* Show business's events if it is a business account */
+  let showBusinessEvents;
+  if (context.businessState === true) {
+    showBusinessEvents = (
+      <div>
+        <Typography variant="h4" className={classes.eventHeader}>
+          My Events
+        </Typography>
+        <Grid className={classes.gridContainer}
+          container spacing={3}>
+          {businessEvents.map((event) =>
+            <EventCard key={event.eventid} context={context}
+              row={event}/>,
+          )}
+        </Grid>
+      </div>
+    );
+  } else {
+    showBusinessEvents = (
+      <div></div>
+    );
+  }
 
   return (
     <div className={classes.root}>
@@ -845,7 +973,13 @@ export default function ViewEvents() {
                   />
                 </FormGroup>
               </ListItem>
-              <Divider variant="middle" />
+            </Box>
+            <Box textAlign='center'>
+              <Button size='small'
+                variant='contained'
+                color='secondary'>
+                Apply Filters
+              </Button>
             </Box>
 
           </List>
@@ -878,29 +1012,11 @@ export default function ViewEvents() {
             See All Events
           </Button>
         </Box>
-
         <Box>
           <main className={classes.content}>
-            <Typography variant="h4" className={classes.eventHeader}>
-              My Business Events
-            </Typography>
-            <Grid className={classes.gridContainer}
-              container spacing={3}>
-              {memberEvents.map((event) =>
-                <EventCard key={event.eventid} context={context}
-                  row={event}/>,
-              )}
-            </Grid>
-            <Typography variant="h4" className={classes.eventHeader}>
-              Public Events
-            </Typography>
-            <Grid className={classes.gridContainer}
-              container spacing={3}>
-              {publicEvents.map((event) =>
-                <EventCard key={event.eventid} context={context}
-                  row={event}/>,
-              )}
-            </Grid>
+            {showMemberEvents}
+            {showPublicEvents}
+            {showBusinessEvents}
           </main>
         </Box>
       </Grid>
