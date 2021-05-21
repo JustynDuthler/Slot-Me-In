@@ -12,7 +12,6 @@ const businesses = require('./routes/businesses');
 const events = require('./routes/events');
 const attendees = require('./routes/attendees');
 const members = require('./routes/members');
-const db = require('./db/db');
 
 const app = express();
 app.use(cors());
@@ -45,17 +44,17 @@ app.delete('/api/users/removeUserAttending',
 // Business routes
 app.post('/api/businesses/login', businesses.login);
 app.post('/api/businesses/signup', businesses.signup);
-app.get('/api/businesses/getBusiness', 
-auth.businessAuth, businesses.getInfo);
-app.get('/api/businesses/getBusinessEvents', 
-auth.businessAuth, businesses.getEvents);
+app.get('/api/businesses/getBusiness',
+    auth.businessAuth, businesses.getInfo);
+app.get('/api/businesses/getBusinessEvents',
+    auth.businessAuth, businesses.getEvents);
 app.get('/api/businesses/:businessid/events', businesses.getEventsByID);
-app.get('/api/businesses/checkBusinessID', 
-  auth.businessAuth, businesses.validID);
-app.post('/api/businesses/uploadProfileImage', auth.businessAuth, 
-  businesses.saveProfileImage);
-app.get('/api/businesses/getProfileImage', auth.businessAuth, 
-  businesses.sendProfileImage);
+app.get('/api/businesses/checkBusinessID',
+    auth.businessAuth, businesses.validID);
+app.post('/api/businesses/uploadProfileImage', auth.businessAuth,
+    businesses.saveProfileImage);
+app.get('/api/businesses/getProfileImage', auth.businessAuth,
+    businesses.sendProfileImage);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 
 // Event routes
@@ -82,14 +81,23 @@ app.get('/api/members/getMembers', auth.businessAuth,
     members.getMembers);
 app.delete('/api/members/deleteMember', auth.businessAuth,
     members.deleteMember);
-app.get('/api/members/getRestrictedEvents/:useremail', members.getRestrictedEvents);
-app.get('/api/members/getMemberBusinesses/:useremail', members.getMemberBusinesses);
+app.get('/api/members/getRestrictedEvents/:useremail',
+    members.getRestrictedEvents);
+app.get('/api/members/getMemberBusinesses/:useremail',
+    members.getMemberBusinesses);
 
 // Generates a token which expires in 1 minute
 app.get('/api/test/get_token', async (req, res) => {
   tempToken = await auth.generateJWT(
       'jeff@ucsc.edu', '00000000-0000-0000-0000-000000000000', 'user');
   res.status(200).json({auth_token: tempToken});
+});
+
+/* Generates a business token for testing */
+app.get('/api/test/get_business_token', async (req, res) => {
+    tempBusinessToken = await auth.generateJWT(
+        'contact@google.com', '10000000-0000-0000-0000-000000000000', 'business');
+    res.status(200).json({auth_token: tempBusinessToken});
 });
 
 // A test api which uses authentication middleware

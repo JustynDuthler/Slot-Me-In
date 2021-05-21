@@ -24,6 +24,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserToken"
+  /test/get_business_token:
+    get:
+      description: Gets a business test token
+      responses:
+        200:
+          description: a jwt is being sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
   /test/test_token:
     post:
       description: Test API to check token sending
@@ -455,7 +465,7 @@ paths:
         - bearerAuth: []
       responses:
         200:
-          description: successfully uploaded profile image
+          description: successfully retrieved profile image
           content:
             multipart/form-data:
               schema:
@@ -1050,7 +1060,6 @@ components:
           format: uuid
       required:
         - eventid
-
     Event:
       type: object
       additionalProperties: false

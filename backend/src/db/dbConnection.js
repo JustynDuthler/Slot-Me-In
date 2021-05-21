@@ -11,7 +11,10 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: 5432,
 });
-pool.connect((err) => {if (err) {
-  console.error('Error acquiring client', err, err.stack);}});
+pool.connect((err) => {
+  if (err) {
+    console.error('Error acquiring client', err, err.stack);
+  }
+});
 module.exports = pool;
 console.log(`Connected to database '${process.env.DB}'`);

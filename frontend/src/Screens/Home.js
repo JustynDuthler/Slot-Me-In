@@ -9,6 +9,7 @@ import Hidden from '@material-ui/core/Hidden';
 import Login from '../Components/Account/Login';
 import Register from '../Components/Account/Register';
 import EventGrid from '../Components/Events/EventGrid';
+import {UserAttendingCalendar} from '../Components/Events/EventCalendar';
 
 // This page is is the react-route for /
 
@@ -219,7 +220,7 @@ const AuthHome = (props) => {
 
   return (
     <Box>
-      <EventGrid/>
+      <UserAttendingCalendar/>
     </Box>
   );
 };

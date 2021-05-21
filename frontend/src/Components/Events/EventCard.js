@@ -28,11 +28,9 @@ const CardButton = ({buttonType, context, row}) => {
       <Button size='small'
         variant='contained'
         color='secondary'
-        href={context.businessState === false ?
-          '/event/' + row.eventid : '/profile/'}
+        href={'/event/' + row.eventid}
         style={{margin: 'auto'}}>
-        {context.businessState === false ?
-          'View Event' : 'View Event in Profile'}
+        View Event
       </Button>
     );
   } else if (buttonType === 'login') {

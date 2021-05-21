@@ -10,10 +10,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import InstagramIcon from '@material-ui/icons/Instagram';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import {BusinessInfo} from './Components';
@@ -30,6 +26,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import {TwitterShareButton, FacebookShareButton} from './Components';
 const Auth = require('./libs/Auth');
 const Util = require('./libs/Util');
 
@@ -96,6 +93,9 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1rem',
     },
   },
+  chip: {
+    marginRight: 5,
+  },
   description: {
     marginTop: theme.spacing(3),
     marginLeft: 10,
@@ -131,6 +131,12 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 5,
     },
   },
+  no: {
+    color: theme.palette.error.main,
+  },
+  yes: {
+    color: theme.palette.secondary.dark,
+  },
 }));
 
 /**
@@ -148,21 +154,21 @@ const IndividualEvent = (props) => {
   const [eventData, setEventData] = useState({});
   const [businessData, setBusinessData] = useState({});
   const [signupError, setSignupError] = useState(false);
+  const [signupErrorMsg, setSignupErrorMsg] = useState('');
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
   const [eventList, setEventList] = React.useState([]);
-  const [chipData, setChipData] = React.useState([]);
-  // property names from DB
-  const chipProperties = ['membersonly', 'over18', 'over21'];
-  // formatted strings to display on Chips
-  const chipNames = ['Members Only', '18+', '21+'];
+  const properties = [['membersonly', 'Members Only'], ['over18', '18+'],
+    ['over21', '21+'], ['category',
+      eventData.category ? eventData.category[0].toUpperCase() +
+      eventData.category.substring(1) : null]];
 
   useEffect(() => {
     getEventData();
     getTotalAttendees();
-    getRegistration();
-  }, []);
+    if (context.authState) getRegistration();
+  }, [context.authState]);
 
   /**
    * getBusinessEvents
@@ -181,9 +187,15 @@ const IndividualEvent = (props) => {
       }
       return response.json();
     }).then((json) => {
-      setEventList(json.filter((event) =>
-        event.eventid !== eventid,
-      ).slice(0, 3));
+      if (context.authState) {
+        setEventList(json.filter((event) =>
+          event.eventid !== eventid,
+        ).slice(0, 3));
+      } else {
+        setEventList(json.filter((event) =>
+          event.eventid !== eventid && !event.membersonly,
+        ).slice(0, 3));
+      }
     })
         .catch((error) => {
           console.log(error);
@@ -209,7 +221,7 @@ const IndividualEvent = (props) => {
               setSignupType(true);
             } else if (response.status === 403) {
               setSignupError(true);
-              console.log(response);
+              return response.json();
             } else {
               return;
             }
@@ -218,6 +230,9 @@ const IndividualEvent = (props) => {
             setNumAttendees(numAttendees+1);
             return response;
           }
+        })
+        .then((json) => {
+          if (json) setSignupErrorMsg(json.message);
         })
         .catch((error) => {
           console.log(error);
@@ -295,27 +310,8 @@ const IndividualEvent = (props) => {
         })
         .then((json) => {
           setEventData(json);
-          console.log(json);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
-          const chipList = [];
-          // check if each property is true
-          for (const index in chipProperties) {
-            if (chipProperties.hasOwnProperty(index)) {
-              if (json[chipProperties[index]]) {
-                // if true, push object with key and formatted name
-                // ex: if property membersonly true, push label of Members Only
-                chipList.push(
-                    {key: chipProperties[index], label: chipNames[index]});
-              }
-            }
-          }
-          if (json.category) {
-            chipList.push({key: 'category', label:
-              json.category[0].toUpperCase() +
-              json.category.substring(1)});
-          }
-          setChipData(chipList);
         })
         .catch((error) => {
           console.log(error);
@@ -345,20 +341,6 @@ const IndividualEvent = (props) => {
           console.log(error);
         });
   };
-  /**
-   * tweetURL
-   * @return {string} The URL for making a tweet with pre-filled text and the
-   * URL of the event
-   */
-  function tweetURL() {
-    // const orig = encodeURIComponent('localhost:3000');
-    const msg = encodeURIComponent('I am going to '+eventData.eventname+
-      ' at '+Util.formatDate(eventData.starttime, eventData.endtime))+
-      '. Sign up!';
-    const url = encodeURIComponent('localhost:3000/events/'+eventid);
-    return 'https://twitter.com/intent/tweet?text='+
-      msg+'&url='+url;
-  }
 
   /**
    * getRegistration
@@ -451,11 +433,11 @@ const IndividualEvent = (props) => {
           </ListItem>
 
           <Box>
-            {chipData.map((data) => {
+            {properties.filter((data) => eventData[data[0]]).map((data) => {
               return (
                 <Chip
-                  key={data.key}
-                  label={data.label}
+                  key={data[1]}
+                  label={data[1]}
                   className={classes.chip}
                 />
               );
@@ -477,7 +459,7 @@ const IndividualEvent = (props) => {
             &nbsp;of {eventData.capacity} spots open
           </Typography>
 
-          {signupType !== undefined &&
+          {context.authState && !context.businessState &&
             (<Button className={classes.signupButton}
               variant="contained" color="secondary"
               disabled={signupType && numAttendees == eventData.capacity}
@@ -485,20 +467,26 @@ const IndividualEvent = (props) => {
                 signupType === true ? signUp() : setConfirmDialog(true);
               }}>
               {signupType === true ? 'Sign Up' : 'Withdraw'}
+            </Button>)}
+          {!context.authState &&
+            (<Button className={classes.signupButton}
+              variant="contained" color="secondary"
+              href='/login'>
+              Login To Sign Up For Event
             </Button>)
           }
+
           <Box className={classes.share}>
-            <IconButton>
-              <FacebookIcon className={classes.shareIcon}/>
-            </IconButton>
-            <IconButton>
-              <a className="twitter-share-button"
-                href={tweetURL()}>
-                <TwitterIcon className={classes.shareIcon}/></a>
-            </IconButton>
-            <IconButton>
-              <InstagramIcon className={classes.shareIcon}/>
-            </IconButton>
+            <FacebookShareButton
+              msg={'I am going to '+eventData.eventname+
+                ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
+                '. Sign up!'}
+              url={'localhost:3000/events/'+eventid}/>
+            <TwitterShareButton
+              msg={'I am going to '+eventData.eventname+
+                ' at '+Util.formatDate(eventData.starttime, eventData.endtime)+
+                '. Sign up!'}
+              url={'localhost:3000/events/'+eventid}/>
           </Box>
         </Grid>
 
@@ -532,15 +520,17 @@ const IndividualEvent = (props) => {
         <Alert onClose={() => {
           setSignupError(false);
         }} severity="error">
-          You do not meet the age requirements for this event.
+          {signupErrorMsg}
         </Alert>
       </Snackbar>
 
       {/* Confirmation dialog for withdrawing from events */}
-      <Dialog open={confirmDialog} onClose={() => {
-        setConfirmDialog(false);
-      }}
-      aria-labelledby="confirm-dialog-title">
+      <Dialog
+        open={confirmDialog}
+        onClose={() => {
+          setConfirmDialog(false);
+        }}
+        aria-labelledby="confirm-dialog-title">
         <DialogTitle id="confirm-dialog-title">
           Withdraw From Event
         </DialogTitle>
@@ -549,21 +539,21 @@ const IndividualEvent = (props) => {
         </DialogContentText>
         <DialogActions>
           <Button
-            color="primary"
+            className={classes.no}
+            onClick={() => {
+              // Close dialog and don't withdraw if user clicks No
+              setConfirmDialog(false);
+            }}>
+            No
+          </Button>
+          <Button
+            className={classes.yes}
             onClick={() => {
               // Call withdraw, close dialog if user clicks Yes
               withdraw();
               setConfirmDialog(false);
             }}>
             Yes
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => {
-              // Close dialog and don't withdraw if user clicks No
-              setConfirmDialog(false);
-            }}>
-            No
           </Button>
         </DialogActions>
       </Dialog>

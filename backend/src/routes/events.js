@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     event.repeatid =
         await eventsDb.insertRepeatingEvent(event.eventname, event.description,
             req.payload.id, event.starttime, event.endtime, event.capacity,
-            event.membersonly, event.over18, event.over21,
+            event.membersonly, event.over18, event.over21, event.category,
             event.repeatdays['sunday'], event.repeatdays['monday'],
             event.repeatdays['tuesday'], event.repeatdays['wednesday'],
             event.repeatdays['thursday'], event.repeatdays['friday'],
@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
                 event.eventname, start.toISOString(), end.toISOString(),
                 req.payload.id, event.capacity, event.description,
                 event.membersonly, event.over18, event.over21,
-                event.repeatid);
+                event.category, event.repeatid);
         // set eventid on first inserted event only
         if (!event.eventid) event.eventid = eventid;
       }
@@ -61,7 +61,7 @@ exports.create = async (req, res) => {
     const eventid =
         await eventsDb.insertEvent(event.eventname, event.starttime,
             event.endtime, req.payload.id, event.capacity, event.description,
-            event.membersonly, event.over18, event.over21);
+            event.membersonly, event.over18, event.over21, event.category);
     event.eventid = eventid;
   }
   // return 201 with event
@@ -119,14 +119,26 @@ exports.signup = async (req, res) => {
   } else {
     // get difference in years between now and user's birthdate
     const user = await userDb.selectUser(userid);
-    const diffInYears = timeDiffCalc(new Date(Date.now()), new Date(user.birthdate));
-    // return 403 if user does not meet age restrictions
+    const diffInYears = timeDiffCalc(new Date(Date.now()),
+        new Date(user.birthdate));
+    // return 403 if user does not meet event restrictions
     if (event.over18 && diffInYears < 18) {
-      res.status(403).send();
+      res.status(403).json({code: 403, message:
+          'You must be at least 18 years old to sign up for this event.'});
       return;
     }
     if (event.over21 && diffInYears < 21) {
-      res.status(403).send();
+      res.status(403).json({code: 403, message:
+          'You must be at least 21 years old to sign up for this event.'});
+      return;
+    }
+    if (event.membersonly) {
+      const userIsMember =
+          await memberDb.checkUserIsMember(event.businessid, user.useremail);
+      if (!userIsMember)
+        res.status(403).json({code: 403,
+            message: 'You must be a member of this business' +
+            ' to sign up for this event.'});
       return;
     }
 
@@ -153,14 +165,14 @@ exports.signup = async (req, res) => {
 // This route doesn't use JWT authorization
 exports.publicEvents = async (req, res, next) => {
   eventsDb.getPublicEvents()
-  .then((events) => {
-    res.status(200).send(events);
-  })
-  .catch((error) => {
-    console.log("Error in publicEvents: " + error);
-    error.status = 500;
-    next(error);
-  });
+      .then((events) => {
+        res.status(200).send(events);
+      })
+      .catch((error) => {
+        console.log('Error in publicEvents: ' + error);
+        error.status = 500;
+        next(error);
+      });
 };
 
 // sends array of member + public events for a user
@@ -170,7 +182,8 @@ exports.publicAndMemberEvents = async (req, res) => {
   // push member events
   for (var i = 0; i < businesses.length; i++) {
     // get restricted events for the business
-    const restrictedEvents = await memberDb.getBusinessRestrictedEvents(businesses[i].businessid);
+    const restrictedEvents = await memberDb.getBusinessRestrictedEvents(
+      businesses[i].businessid);
     for (var j = 0; j < restrictedEvents.length; j++) {
       // push each event
       eventList.push(restrictedEvents[j]);
@@ -186,11 +199,17 @@ exports.publicAndMemberEvents = async (req, res) => {
   res.status(200).json(eventList);
 }
 
+/** calculates time difference
+ * @constructor
+ * @param {date} dateFuture future date
+ * @param {date} dateNow curr date
+ *
+ */
 function timeDiffCalc(dateFuture, dateNow) {
   // subtract dates and divide by 1000 to convert ms to seconds
   const diffInSeconds = Math.abs(dateFuture - dateNow) / 1000;
   // 60 seconds/min * 60 min/hr * 24hr/day * 365day/yr
-  const secondsInAYear = 60 * 60 * 24 * 365
+  const secondsInAYear = 60 * 60 * 24 * 365;
 
   // calculate difference in years
   const years = diffInSeconds / secondsInAYear;

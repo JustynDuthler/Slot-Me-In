@@ -1,5 +1,5 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -16,9 +16,9 @@ import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
 import EventIcon from '@material-ui/icons/Event';
 import AddIcon from '@material-ui/icons/Add';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import Context from '../../Context';
 const Auth = require('../../libs/Auth');
-
 
 const useStyles = makeStyles((theme) => ({
   leftMenu: {
@@ -33,70 +33,58 @@ const useStyles = makeStyles((theme) => ({
  */
 const NavBar = ({userType}) => {
   const classes = useStyles();
-
+  const history = useHistory();
   const context = React.useContext(Context);
 
   /**
    * logout()
    * Removes JWT and sets authState to null upon logout
-   * @return {object} Redirect to home screen
    */
   const logout = () => {
     Auth.removeJWT();
     context.setAuthState(false);
-    return <Redirect to={{pathname: '/'}}/>;
+    history.push('/');
   };
 
-  const rightSide = (
-    <ButtonGroup>
-      <Button
-        startIcon={<AccountBoxOutlinedIcon />}
-        href="/profile"
-        color="secondary"
-        size="large"
-        variant="contained"
-      >
-        Profile
-      </Button>
-      <Button
-        startIcon={<ExitToAppIcon/>}
-        color="secondary"
-        size="large"
-        variant="contained"
-        onClick={logout}
-      >
-        Logout
-      </Button>
-    </ButtonGroup>
-  );
-    // rightSide = (
-    //   <ButtonGroup
-    //     anchororigin={{
-    //       vertical: 'top',
-    //       horizonal: 'right',
-    //     }}
-    //   >
-    //     <Button
-    //       startIcon={<AccountCircleOutlinedIcon />}
-    //       href="/register"
-    //       color="secondary"
-    //       size="large"
-    //       variant="contained"
-    //     >
-    //       Register Account
-    //     </Button>
-    //     <Button
-    //       startIcon={<LockOutlinedIcon />}
-    //       href="/Login"
-    //       color="secondary"
-    //       size="large"
-    //       variant="contained"
-    //     >
-    //       Login
-    //     </Button>
-    //   </ButtonGroup>
-    // );
-
+  let rightSide;
+  if (userType !== 'guest') {
+    rightSide = (
+      <ButtonGroup>
+        <Button
+          startIcon={<AccountBoxOutlinedIcon />}
+          href="/profile"
+          color="secondary"
+          size="large"
+          variant="contained"
+        >
+          Profile
+        </Button>
+        <Button
+          startIcon={<ExitToAppIcon/>}
+          color="secondary"
+          size="large"
+          variant="contained"
+          onClick={logout}
+        >
+          Logout
+        </Button>
+      </ButtonGroup>
+    );
+  } else {
+    rightSide = (
+      <ButtonGroup>
+        <Button
+          startIcon={<LockOpenIcon/>}
+          color="secondary"
+          size="large"
+          variant="contained"
+          href="/login"
+        >
+          Login
+        </Button>
+      </ButtonGroup>
+    );
+  }
 
   let leftSide;
   if (userType == 'business') {
@@ -141,7 +129,7 @@ const NavBar = ({userType}) => {
         </ButtonGroup>
       </Box>
     );
-  } else {
+  } else if (userType == 'user') {
     leftSide = (
       <Box className={classes.leftMenu}>
         <ButtonGroup>
@@ -162,6 +150,30 @@ const NavBar = ({userType}) => {
             variant="contained"
           >
             Events
+          </Button>
+          <Button
+            href="/authtest"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            AuthTest
+          </Button>
+        </ButtonGroup>
+      </Box>
+    );
+  } else {
+    leftSide = (
+      <Box className={classes.leftMenu}>
+        <ButtonGroup>
+          <Button
+            startIcon={<HomeIcon/>}
+            href="/"
+            color="secondary"
+            size="large"
+            variant="contained"
+          >
+            Home
           </Button>
           <Button
             href="/authtest"
