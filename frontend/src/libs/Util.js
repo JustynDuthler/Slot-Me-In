@@ -89,8 +89,13 @@ exports.cropImage = (url, aspectRatio) => {
   return new Promise((resolve) => {
     // this image will hold our source image data
     const inputImage = new Image();
-
+    // console.log(require(url));
     // we want to wait for our image to load
+    inputImage.onerror = (error) => {
+      console.log(error);
+      console.log(inputImage.currentSrc);
+      console.log('url: ', url);
+    };
     inputImage.onload = () => {
       // let's store the width and height of our image
       const inputWidth = inputImage.naturalWidth;
