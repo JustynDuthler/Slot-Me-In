@@ -55,9 +55,9 @@ export default function UserInfo({picture: path, name: name, email: email,
       backgroundColor: theme.palette.primary.light,
     },
     avatar: {
-      margin: '0 auto',
+      margin: '0',
       width: '100%',
-      height: '270px',
+      height: '100%',
     },
   }));
   const classes = useStyles();
@@ -136,12 +136,12 @@ export default function UserInfo({picture: path, name: name, email: email,
               style={{marginTop: '10px'}}
               ref={profileImage}/>
           ) : (
-            <>
+            <Box width='100%' height='100%'>
               <Avatar
                 alt={'pfp'} width='auto'
                 className={classes.avatar}
               />
-            </>
+            </Box>
           )}
         </label>
         <input
