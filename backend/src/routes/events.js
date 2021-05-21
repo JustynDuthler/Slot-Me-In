@@ -135,10 +135,11 @@ exports.signup = async (req, res) => {
     if (event.membersonly) {
       const userIsMember =
           await memberDb.checkUserIsMember(event.businessid, user.useremail);
-      if (!userIsMember)
+      if (!userIsMember) {
         res.status(403).json({code: 403,
-            message: 'You must be a member of this business' +
+          message: 'You must be a member of this business' +
             ' to sign up for this event.'});
+      }
       return;
     }
 
@@ -178,13 +179,13 @@ exports.publicEvents = async (req, res, next) => {
 // sends array of member + public events for a user
 exports.publicAndMemberEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
-  let eventList = []
+  const eventList = [];
   // push member events
-  for (var i = 0; i < businesses.length; i++) {
+  for (let i = 0; i < businesses.length; i++) {
     // get restricted events for the business
     const restrictedEvents = await memberDb.getBusinessRestrictedEvents(
-      businesses[i].businessid);
-    for (var j = 0; j < restrictedEvents.length; j++) {
+        businesses[i].businessid);
+    for (let j = 0; j < restrictedEvents.length; j++) {
       // push each event
       eventList.push(restrictedEvents[j]);
     }
@@ -192,12 +193,12 @@ exports.publicAndMemberEvents = async (req, res) => {
 
   // push public events
   const publicEvents = await eventsDb.getPublicEvents();
-  for (var i = 0; i < publicEvents.length; i++) {
+  for (let i = 0; i < publicEvents.length; i++) {
     eventList.push(publicEvents[i]);
   }
 
   res.status(200).json(eventList);
-}
+};
 
 /** calculates time difference
  * @constructor
