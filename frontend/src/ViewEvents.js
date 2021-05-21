@@ -86,6 +86,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '-40px',
     marginRight: '250px',
   },
+  card: {
+    width: 275,
+  },
 }));
 
 /**
@@ -301,12 +304,13 @@ export default function ViewEvents() {
       showMemberEvents = (
         <div>
           <Typography variant="h4" className={classes.eventHeader}>
-            Events For Your Businesses
+            Events From Your Businesses
           </Typography>
           <Grid className={classes.gridContainer}
             container spacing={3}>
             {memberEvents.map((event) =>
-              <EventCard key={event.eventid} context={context}
+              <EventCard className={classes.card} key={event.eventid}
+                context={context}
                 row={event}/>,
             )}
           </Grid>
@@ -330,7 +334,8 @@ export default function ViewEvents() {
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {publicEvents.map((event) =>
-            <EventCard key={event.eventid} context={context}
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
               row={event}/>,
           )}
         </Grid>
@@ -387,12 +392,13 @@ export default function ViewEvents() {
     showBusinessEvents = (
       <div>
         <Typography variant="h4" className={classes.eventHeader}>
-          My Events
+          Your Events
         </Typography>
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {businessEvents.map((event) =>
-            <EventCard key={event.eventid} context={context}
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
               row={event}/>,
           )}
         </Grid>
