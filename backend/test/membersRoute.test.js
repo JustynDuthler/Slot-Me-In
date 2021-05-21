@@ -201,3 +201,75 @@ test('Get member restrcited events with bad email', async () => {
   await request.get('/api/members/getRestrictedEvents/k')
   .expect(400)
 })
+
+/*
+----------------------addMembers tests--------------------------------
+
+  1. adds 3 members (2 non users, 1 already a user) 
+  2. adds existing member
+  3. bad business token
+*/
+test('Adding members to a business', async () => {
+  await request.post('/api/members/insertMembers')
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .send(['daniel@mclaren.com','max@redbull', 'kai@ucsc.edu'])
+  .expect(200)
+  .expect('Content-Type', /json/)
+  .then(data => {
+    expect(data).toBeDefined();
+    expect(data.body).toBeDefined();
+    expect(data.body).toStrictEqual(      [
+        { username: null, email: 'daniel@mclaren.com', userid: null },
+        { username: null, email: 'max@redbull', userid: null },
+        {
+          username: 'Kai',
+          email: 'kai@ucsc.edu',
+          userid: '00000000-0000-0000-0000-000000000011'
+        }
+      ]);
+  })
+})
+
+test('Adding member that already is a member', async () => {
+  await request.post('/api/members/insertMembers')
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .send(['jeff@ucsc.edu'])
+  .expect(200)
+})
+
+test('Adding member that already is a member', async () => {
+  await request.post('/api/members/insertMembers')
+  .set({'Authorization': 'Bearer ' + 'sedrfgvbhnj23e4r5t6y7u8'})
+  .send(['jeff@ucsc.edu'])
+  .expect(401)
+})
+
+/*
+----------------------removeMembers tests--------------------------------
+
+  1. removes a member
+  2. removes non member
+  3. bad business token
+
+*/
+test('removing a member from a business', async () => {
+  await request.delete('/api/members/deleteMember')
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .send({'email': 'daniel@mclaren.com'})
+  .expect(200)
+  .expect('Content-Type', /json/)
+  .then(data => {
+    expect(data).toBeDefined();
+    expect(data.body).toBeDefined();
+    expect(data.body).toStrictEqual(
+      { username: null, email: 'daniel@mclaren.com', userid: null }
+    );
+  })
+})
+/* should be a 401 but is 500 because of bad database businessid */
+test('removing a non member from a business', async () => {
+  await request.delete('/api/members/deleteMember')
+  .set({'Authorization': 'Bearer ' + 'asdfghjk234567dfghj'})
+  .send({'email': 'micheal@ferrari.com'})
+  .expect(401)
+})

@@ -48,7 +48,7 @@ exports.addMembers = async (req, res) => {
       })
       .catch((error) => {
         console.log('error in addMembers: ' + error.stack);
-        res.status(409).send();
+        res.status(500).send();
       });
 };
 
