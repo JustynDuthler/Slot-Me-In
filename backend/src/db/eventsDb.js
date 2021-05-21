@@ -247,7 +247,7 @@ exports.getPublicEvents = async () => {
   for (const i in rows) {
     if (rows.hasOwnProperty(i)) {
       // get number of attendees for each event
-      const attendees = await exports.checkRemainingEventCapacity(i.eventid);
+      const attendees = await exports.checkRemainingEventCapacity(rows[i].eventid);
       rows[i]['attendees'] = attendees.length;
     }
   }
