@@ -1,14 +1,10 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
+import EventCard from './Components/Events/EventCard';
 
 import Context from './Context';
 const Auth = require('./libs/Auth');
@@ -25,21 +21,17 @@ const useStyles = makeStyles({
     margin: '0 2px',
     transform: 'scale(0.8)',
   },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginTop: 8,
-  },
   gridContainer: {
     paddingLeft: '10px',
     paddingRight: '10px',
   },
   pageBox: {
-    position: 'fixed',
+    position: 'relative',
     left: '50vw',
-    bottom: 15,
     transform: 'translate(-50%, -50%)',
+  },
+  card: {
+    width: 400,
   },
 });
 
@@ -185,65 +177,6 @@ export default function AllEvents() {
   }, []);
 
   /**
-   * getCard
-   * This function gets the individual event data
-   * for each card and displays it. When the card
-   * is clicked, it goes to URL /event/{eventid}.
-   * @param {*} row
-   * @return {object} JSX
-   */
-  function getCard(row) {
-    return (
-      <Grid item xs={12} sm={6} md={4} key={row.eventid}>
-        <Card>
-          <CardContent>
-            <Typography variant='h5' component='h2' align='center'>
-              {row.eventname}
-            </Typography>
-            <Typography className={classes.pos}
-              variant='body2' align='center' noWrap>
-              Description: {row.description ? row.description : 'N/A'}
-            </Typography>
-            <Typography className={classes.pos}
-              color='textSecondary' variant='body2' align='center'>
-              Start: {new Date(row.starttime).toLocaleString('en-US',
-                  {weekday: 'short', month: 'short', day: 'numeric',
-                    year: 'numeric'})} at {new Date(row.starttime)
-                  .toLocaleString(
-                      'en-US', {hour: 'numeric', minute: 'numeric'})}
-            </Typography>
-            <Typography className={classes.pos}
-              color='textSecondary' variant='body2' align='center'>
-              End: {new Date(row.endtime).toLocaleString('en-US',
-                  {weekday: 'short', month: 'short', day: 'numeric',
-                    year: 'numeric'})} at {new Date(row.endtime)
-                  .toLocaleString(
-                      'en-US', {hour: 'numeric', minute: 'numeric'})}
-            </Typography>
-            <Typography className={classes.pos}
-              variant='subtitle1' align='center'
-              color={row.attendees === row.capacity ?
-                  'primary' : 'textPrimary'}>
-              {row.capacity - row.attendees} of {row.capacity} spots open
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Button size='small'
-              variant='contained'
-              color='secondary'
-              href={context.businessState === false ?
-                '/event/' + row.eventid : '/profile/'}
-              style={{margin: 'auto'}}>
-              {context.businessState === false ?
-                'View Event' : 'View Event in Profile'}
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
-    );
-  };
-
-  /**
    * handleChange
    * This function gets the events for a new page
    * @param {event} event
@@ -276,7 +209,9 @@ export default function AllEvents() {
           justify='center'
         >
           {pageEvents.map((row) =>
-            getCard(row),
+            <EventCard
+              className={classes.card}
+              row={row} context={context} key={row.eventid} />,
           )}
         </Grid>
         <Box mt={5} display="flex" justifyContent="center"
