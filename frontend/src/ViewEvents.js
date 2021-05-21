@@ -59,9 +59,7 @@ const useStyles = makeStyles((theme) => ({
   searchBar: {
     padding: '2px 4px',
     display: 'flex',
-    alignItems: 'center',
     width: 400,
-    margin: 'auto',
   },
   searchInput: {
     marginLeft: theme.spacing(1),
@@ -82,9 +80,8 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: '10px',
     marginBottom: '10px',
   },
-  allEventsButton: {
-    marginTop: '-40px',
-    marginRight: '250px',
+  card: {
+    width: 275,
   },
 }));
 
@@ -301,12 +298,13 @@ export default function ViewEvents() {
       showMemberEvents = (
         <div>
           <Typography variant="h4" className={classes.eventHeader}>
-            Events For Your Businesses
+            Events From Your Businesses
           </Typography>
           <Grid className={classes.gridContainer}
             container spacing={3}>
             {memberEvents.map((event) =>
-              <EventCard key={event.eventid} context={context}
+              <EventCard className={classes.card} key={event.eventid}
+                context={context}
                 row={event}/>,
             )}
           </Grid>
@@ -330,7 +328,8 @@ export default function ViewEvents() {
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {publicEvents.map((event) =>
-            <EventCard key={event.eventid} context={context}
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
               row={event}/>,
           )}
         </Grid>
@@ -387,12 +386,13 @@ export default function ViewEvents() {
     showBusinessEvents = (
       <div>
         <Typography variant="h4" className={classes.eventHeader}>
-          My Events
+          Your Events
         </Typography>
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {businessEvents.map((event) =>
-            <EventCard key={event.eventid} context={context}
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
               row={event}/>,
           )}
         </Grid>
@@ -606,7 +606,7 @@ export default function ViewEvents() {
       </Hidden>
 
       <Grid container>
-        <Box justifyContent="center" textAlign='center' width='100%' mt={5}>
+        <Box mt={3} ml={13} className={classes.content}>
           <Paper component="form" className={classes.searchBar}>
             <InputBase
               className={classes.searchInput}
