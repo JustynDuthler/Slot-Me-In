@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
   pos: {
     marginTop: 8,
   },
+  chip: {
+    marginRight: 3,
+  },
 }));
 
 /**
