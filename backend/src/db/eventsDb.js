@@ -5,7 +5,7 @@ const pool = require('./dbConnection');
 exports.insertEvent =
     async (eventname, starttime, endtime, businessid,
         capacity, description, membersonly,
-        over18, over21, category, repeatid=null) => {
+        over18, over21, category=null, repeatid=null) => {
       const insert = 'INSERT INTO Events ' +
           '(eventname, starttime, endtime, businessid, capacity, ' +
           'description, membersonly, over18, over21, category, repeatid) ' +
@@ -24,7 +24,7 @@ exports.insertEvent =
 
 exports.insertRepeatingEvent =
   async (eventname, description, businessid, starttime, endtime, capacity,
-      membersonly, over18, over21, category,
+      membersonly, over18, over21, category=null,
       sunday, monday, tuesday, wednesday, thursday, friday, saturday,
       repeattype='w', repeatend) => {
     const insert = 'INSERT INTO RepeatingEvents ' +
@@ -247,7 +247,7 @@ exports.getPublicEvents = async () => {
   for (const i in rows) {
     if (rows.hasOwnProperty(i)) {
       // get number of attendees for each event
-      const attendees = await exports.checkRemainingEventCapacity(i.eventid);
+      const attendees = await exports.checkRemainingEventCapacity(rows[i].eventid);
       rows[i]['attendees'] = attendees.length;
     }
   }

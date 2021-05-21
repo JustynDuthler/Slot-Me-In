@@ -27,6 +27,17 @@ exports.selectBusiness = async (businessid) => {
   return (rows.length > 0 ? rows[0] : undefined);
 };
 
+// Returns row for a specific businessid
+exports.getBusinesses = async () => {
+  const select = 'SELECT * FROM Businesses';
+  const query = {
+    text: select,
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
+
 // check if a business email is already in use
 exports.checkBusinessEmailTaken = async (email) => {
   const insert = 'SELECT * FROM Businesses b WHERE b.businessemail ILIKE $1';

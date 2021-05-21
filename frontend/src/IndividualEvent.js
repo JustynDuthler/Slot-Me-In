@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   title: {
+    fontWeight: 350,
     [theme.breakpoints.down('sm')]: {
       fontSize: '2.5rem',
     },

@@ -30,7 +30,9 @@ import EventCard from './Components/Events/EventCard';
 import Context from './Context';
 const Auth = require('./libs/Auth');
 
-const drawerWidth = 240;
+import './CSS/Scrollbar.css';
+
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    overflowY: 'scroll',
+    scrollbarWidth: 'none',
   },
   drawerPaper: {
     width: drawerWidth,
@@ -59,9 +63,7 @@ const useStyles = makeStyles((theme) => ({
   searchBar: {
     padding: '2px 4px',
     display: 'flex',
-    alignItems: 'center',
     width: 400,
-    margin: 'auto',
   },
   searchInput: {
     marginLeft: theme.spacing(1),
@@ -82,9 +84,8 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: '10px',
     marginBottom: '10px',
   },
-  allEventsButton: {
-    marginTop: '-40px',
-    marginRight: '250px',
+  card: {
+    width: 275,
   },
 }));
 
@@ -99,10 +100,11 @@ export default function ViewEvents() {
   const [publicEvents, setPublicEvents] = React.useState([]);
   const [businessEvents, setBusinessEvents] = React.useState([]);
   const [memberBusinesses, setMemberBusinesses] = React.useState([]);
+  const [businessList, setBusinessList] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
+  // change to get category query
   const [checkState, setCheckState] = React.useState({
-    business: false,
     gym: false,
     club: false,
     party: false,
@@ -235,10 +237,38 @@ export default function ViewEvents() {
         });
   };
 
+  /**
+   * getAllBusinesses
+   * obtains all businesses
+   */
+  function getAllBusinesses() {
+    const apicall = 'http://localhost:3010/api/businesses';
+    fetch(apicall, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setBusinessList(json);
+      json.map((business) =>
+        // attach to checkstate
+        setCheckState({...checkState, [business.businessname]: false}),
+      );
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
   React.useEffect(() => {
     if (context.businessState === false) {
       getPublicEvents();
       getUserInfo();
+      getAllBusinesses();
     } else {
       getBusinessEvents();
     }
@@ -283,12 +313,10 @@ export default function ViewEvents() {
    */
   const handleChange = (event) => {
     setCheckState({...checkState, [event.target.name]: event.target.checked});
+    console.log(event.target.name + ' ' + event.target.checked);
   };
 
-  console.log(memberEvents);
-  console.log(publicEvents);
   console.log(searchEventsList);
-  console.log(memberBusinesses);
 
   /* Show member events if user is part of any businesses */
   let showMemberEvents;
@@ -301,12 +329,13 @@ export default function ViewEvents() {
       showMemberEvents = (
         <div>
           <Typography variant="h4" className={classes.eventHeader}>
-            My Business Events
+            Events From Your Businesses
           </Typography>
           <Grid className={classes.gridContainer}
             container spacing={3}>
             {memberEvents.map((event) =>
-              <EventCard key={event.eventid} context={context}
+              <EventCard className={classes.card} key={event.eventid}
+                context={context}
                 row={event}/>,
             )}
           </Grid>
@@ -330,7 +359,8 @@ export default function ViewEvents() {
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {publicEvents.map((event) =>
-            <EventCard key={event.eventid} context={context}
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
               row={event}/>,
           )}
         </Grid>
@@ -354,7 +384,7 @@ export default function ViewEvents() {
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
           >
-            <Typography variant="h5">My Businesses</Typography>
+            <Typography variant="h5">Your Businesses</Typography>
           </AccordionSummary>
           {memberBusinesses.map((business) =>
             <ListItem
@@ -387,12 +417,13 @@ export default function ViewEvents() {
     showBusinessEvents = (
       <div>
         <Typography variant="h4" className={classes.eventHeader}>
-          My Events
+          Your Events
         </Typography>
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {businessEvents.map((event) =>
-            <EventCard key={event.eventid} context={context}
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
               row={event}/>,
           )}
         </Grid>
@@ -438,17 +469,20 @@ export default function ViewEvents() {
                 </ListItem>
                 <ListItem>
                   <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={checkState.business}
-                          onChange={handleChange}
-                          name="business"
-                          color="secondary"
-                        />
-                      }
-                      label="Business 1"
-                    />
+                    {businessList.map((business) =>
+                      <FormControlLabel
+                        key={business.businessid}
+                        control={
+                          <Checkbox
+                            checked={checkState.businessname}
+                            onChange={handleChange}
+                            name={business.businessname}
+                            color="secondary"
+                          />
+                        }
+                        label={business.businessname}
+                      />,
+                    )}
                   </FormGroup>
                 </ListItem>
                 <Divider variant="middle" />
@@ -606,7 +640,7 @@ export default function ViewEvents() {
       </Hidden>
 
       <Grid container>
-        <Box justifyContent="center" textAlign='center' width='100%' mt={5}>
+        <Box mt={3} ml={13} className={classes.content}>
           <Paper component="form" className={classes.searchBar}>
             <InputBase
               className={classes.searchInput}

@@ -35,6 +35,25 @@ exports.getBusinessByID = async (req, res) => {
   res.status(200).json(businessData);
 };
 
+exports.getBusinesses = async (req, res) => {
+  const businesses = await businessDb.getBusinesses();
+  // 404 if business ID does not exist
+  if (!businesses) res.status(404).send();
+  let businessList = []
+  for (let i = 0; i < businesses.length; i++) {
+    const businessData = {
+      businessid: businesses[i].businessid,
+      businessname: businesses[i].businessname,
+      email: businesses[i].businessemail,
+      phonenumber: businesses[i].phonenumber,
+      description: businesses[i].description,
+    };
+    businessList.push(businessData);
+  }
+  console.log(businessList);
+  res.status(200).json(businessList);
+};
+
 exports.signup = async (req, res) => {
   // hash password using bcrypt with 10 salt rounds
   bcrypt.hash(req.body.password, 10, async (error, hash) => {

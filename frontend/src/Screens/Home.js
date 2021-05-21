@@ -11,6 +11,8 @@ import Register from '../Components/Account/Register';
 import EventGrid from '../Components/Events/EventGrid';
 import {UserAttendingCalendar} from '../Components/Events/EventCalendar';
 
+import '../CSS/Scrollbar.css';
+
 // This page is is the react-route for /
 
 const useStyles = makeStyles((theme) => ({
@@ -25,11 +27,14 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: 'auto',
     width: '100vw',
     maxWidth: '100%',
-    minHeight: '100vh',
+    minHeight: 'calc(100vh - 50px)',
+    maxHeight: 'calc(100vh - 50px)',
   },
   events: {
+    overflowY: 'scroll',
     backgroundColor: 'white',
     flex: '3 2',
+    scrollbarWidth: 'none',
   },
   right: {
     minWidth: '25rem',
@@ -74,6 +79,13 @@ const useStyles = makeStyles((theme) => ({
   underText: {
     color: theme.palette.primary.light,
     marginBottom: theme.spacing(4),
+  },
+  homeTitle: {
+    color: theme.palette.primary.main,
+    marginTop: 15,
+    marginLeft: 15,
+    marginBottom: 15,
+    fontWeight: 350,
   },
 }));
 
@@ -216,10 +228,13 @@ const UnAuthHome = (props) => {
  * @return {object} JSX
  */
 const AuthHome = (props) => {
-  // const classes = useStyles();
+  const classes = useStyles();
 
   return (
     <Box>
+      <Typography variant='h3' align='center' className={classes.homeTitle}>
+        Your Upcoming Schedule
+      </Typography>
       <UserAttendingCalendar/>
     </Box>
   );

@@ -14,8 +14,11 @@ const useStyles = makeStyles((theme) => ({
   pos: {
     marginTop: 8,
   },
-  card: {
-    width: 275,
+  eventName: {
+    fontWeight: 500,
+  },
+  chip: {
+    marginRight: 3,
   },
 }));
 
@@ -79,14 +82,13 @@ export default function EventCard({row, context, isBusiness, buttonType='view',
   // console.log(row);
   return (
     <Card style={{margin: '20px', backgroundColor: 'ff0000'}}
-      className={classes.card}
       key={row.eventid} {...rest}>
       <CardContent>
-        <Typography variant='h5' component='h2' align='center'>
+        <Typography variant='h5' align='center' className={classes.eventName}>
           {row.eventname}
         </Typography>
         <Typography className={classes.pos}
-          color='textSecondary' variant='body2' align='center'>
+          color='primary' variant='body2' align='center'>
           {formatDate(row.starttime, row.endtime)}
         </Typography>
         <Box width='100%'>

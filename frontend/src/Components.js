@@ -55,9 +55,9 @@ export default function UserInfo({picture: path, name: name, email: email,
       backgroundColor: theme.palette.primary.light,
     },
     avatar: {
-      margin: '0 auto',
+      margin: '0',
       width: '100%',
-      height: '270px',
+      height: '100%',
     },
   }));
   const classes = useStyles();
@@ -136,12 +136,12 @@ export default function UserInfo({picture: path, name: name, email: email,
               style={{marginTop: '10px'}}
               ref={profileImage}/>
           ) : (
-            <>
+            <Box width='100%' height='100%'>
               <Avatar
                 alt={'pfp'} width='auto'
                 className={classes.avatar}
               />
-            </>
+            </Box>
           )}
         </label>
         <input
@@ -200,7 +200,7 @@ export function ShareBar({...rest}) {
       height: 50,
     },
     share: {
-      fontSize: '20px',
+      fontSize: '24px',
       color: theme.palette.secondary.main,
     },
   }));
@@ -211,11 +211,12 @@ export function ShareBar({...rest}) {
       alignItems="center"
       direction="row"
       {...rest}>
-      <Grid item container md={3} className={classes.grid}
-        justify="center">
+      <Box width='90px' alignItems='flex-end' justifyContent='flex-end'
+        display="flex">
         <Typography className={classes.share}>Share</Typography>
-      </Grid>
-      <Box className={classes.share}>
+      </Box>
+      <Box className={classes.share} display='flex' justifyContent='center'
+        width='170px'>
         {/* This won't work unless we put the webapp on an actual website and
         not localhost */}
         <FacebookShareButton url={'http://google.com'}
