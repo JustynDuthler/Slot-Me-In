@@ -154,51 +154,55 @@ function App() {
             businessState, setBusinessState,
           }}>
             <CssBaseline />
-            {menu}
-            <Switch>
-              <Route path="/authtest">
-                <AuthTest />
-              </Route>
-              <PrivateRoute
-                path="/events/create"
-                authed={authState}
-                component={CreateEvent}
-              />
-              <PrivateRoute
-                path="/events"
-                authed={authState}
-                component={ViewEvents}
-              />
-              <PrivateRoute
-                path="/allevents"
-                authed={authState}
-                component={AllEvents}
-              />
-              <Route path="/profile">
-                {(authState) ? ((businessState === false) ?
-                <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-              </Route>
-              <Route exact path="/events">
-                <ViewEvents/>
-              </Route>
-              <Route
-                exact path="/business/profile/:businessid"
-                render={(props) =>
-                  <PublicBusinessProfile
-                    businessid={props.match.params.businessid}
-                    {...props} />}
-              />
-              <Route
-                exact path="/event/:eventid"
-                render={(props) =>
-                  <IndividualEvent eventID={props.match.params.eventid}
-                    {...props} />}
-              />
-              <Route path="/allevents">
-                <AllEvents/>
-              </Route>
-              <Route path="/" component={Home}/>
-            </Switch>
+            <Box className={classes.allButFooter}>
+              {menu}
+              <Switch>
+                <Route path="/authtest">
+                  <AuthTest />
+                </Route>
+                <PrivateRoute
+                  path="/events/create"
+                  authed={authState}
+                  component={CreateEvent}
+                />
+                <PrivateRoute
+                  path="/events"
+                  authed={authState}
+                  component={ViewEvents}
+                />
+                <Route path="/profile">
+                  {(authState) ? ((businessState === false) ?
+                  <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
+                </Route>
+                <Route exact path="/events">
+                  <ViewEvents/>
+                </Route>
+                <Route
+                  exact path="/business/profile/:businessid"
+                  render={(props) =>
+                    <PublicBusinessProfile
+                      businessid={props.match.params.businessid}
+                      {...props} />}
+                />
+                <Route
+                  exact path="/event/:eventid"
+                  render={(props) =>
+                    <IndividualEvent eventID={props.match.params.eventid}
+                      {...props} />}
+                />
+                <Route path="/allevents">
+                  <AllEvents/>
+                </Route>
+                <Route path="/about">
+                  <About/>
+                </Route>
+                <Route path="/contact">
+                  <Contact/>
+                </Route>
+                <Route path="/" component={Home}/>
+              </Switch>
+            </Box>
+            <Footer className={classes.footer}/>
           </Context.Provider>
         </ThemeProvider>
       </Router>
