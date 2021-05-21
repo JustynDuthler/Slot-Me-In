@@ -4,6 +4,7 @@ import {Grid} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
 import EventCard from './Components/Events/EventCard';
 
 import Context from './Context';
@@ -29,6 +30,11 @@ const useStyles = makeStyles({
     position: 'relative',
     left: '50vw',
     transform: 'translate(-50%, -50%)',
+  },
+  title: {
+    fontWeight: 350,
+    marginTop: 30,
+    marginBottom: 10,
   },
   card: {
     width: 400,
@@ -199,12 +205,15 @@ export default function AllEvents() {
   };
 
   return (
-    <React.Fragment>
-      <h1 style={{marginLeft: 12}}>Events</h1>
+    <div style={{overflow: 'hidden'}}>
       <Box mt={5} mb={5} className={classes.box}>
+        <Typography className={classes.title}
+          variant='h3' align='center'>
+          All Events
+        </Typography>
         <Grid
           container
-          spacing={2}
+          spacing={6}
           className={classes.gridContainer}
           justify='center'
         >
@@ -224,6 +233,6 @@ export default function AllEvents() {
             onChange={handleChange} />
         </Box>
       </Box>
-    </React.Fragment>
+    </div>
   );
 }

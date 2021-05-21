@@ -232,7 +232,7 @@ const AuthHome = (props) => {
 
   return (
     <Box>
-      <Typography variant='h3' align='left' className={classes.homeTitle}>
+      <Typography variant='h3' align='center' className={classes.homeTitle}>
         Your Upcoming Schedule
       </Typography>
       <UserAttendingCalendar/>
