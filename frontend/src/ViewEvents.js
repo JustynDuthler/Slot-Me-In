@@ -301,7 +301,7 @@ export default function ViewEvents() {
       showMemberEvents = (
         <div>
           <Typography variant="h4" className={classes.eventHeader}>
-            Events For Your Businesses
+            Events From Your Businesses
           </Typography>
           <Grid className={classes.gridContainer}
             container spacing={3}>
@@ -387,7 +387,7 @@ export default function ViewEvents() {
     showBusinessEvents = (
       <div>
         <Typography variant="h4" className={classes.eventHeader}>
-          My Events
+          Your Events
         </Typography>
         <Grid className={classes.gridContainer}
           container spacing={3}>
