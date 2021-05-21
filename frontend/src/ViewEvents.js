@@ -30,7 +30,7 @@ import EventCard from './Components/Events/EventCard';
 import Context from './Context';
 const Auth = require('./libs/Auth');
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
   root: {
