@@ -11,6 +11,8 @@ import Register from '../Components/Account/Register';
 import EventGrid from '../Components/Events/EventGrid';
 import {UserAttendingCalendar} from '../Components/Events/EventCalendar';
 
+import '../CSS/Scrollbar.css';
+
 // This page is is the react-route for /
 
 const useStyles = makeStyles((theme) => ({
@@ -26,10 +28,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100vw',
     maxWidth: '100%',
     minHeight: 'calc(100vh - 50px)',
+    maxHeight: 'calc(100vh - 50px)',
   },
   events: {
+    overflowY: 'scroll',
     backgroundColor: 'white',
     flex: '3 2',
+    scrollbarWidth: 'none',
   },
   right: {
     minWidth: '25rem',
