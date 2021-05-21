@@ -15,10 +15,10 @@ const pool = new Pool({
 const run = async (file) => {
   const content = fs.readFileSync(file, 'utf8');
   await pool.query(content);
-  //const statements = content.split(/;/);
-  //for (statement of statements) {
+  // const statements = content.split(/;/);
+  // for (statement of statements) {
   //  await pool.query(statement);
-  //}
+  // }
 };
 
 exports.reset = async () => {

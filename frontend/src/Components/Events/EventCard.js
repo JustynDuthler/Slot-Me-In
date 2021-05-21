@@ -73,6 +73,7 @@ export default function EventCard({row, context, isBusiness, buttonType='view',
     ['over21', '21+'], ['category',
       row.category ? row.category[0].toUpperCase() +
       row.category.substring(1) : null]];
+  // console.log(row);
   return (
     <Card style={{margin: '20px', backgroundColor: 'ff0000'}}
       key={row.eventid} {...rest}>
