@@ -301,7 +301,7 @@ export default function ViewEvents() {
       showMemberEvents = (
         <div>
           <Typography variant="h4" className={classes.eventHeader}>
-            My Business Events
+            Events For Your Businesses
           </Typography>
           <Grid className={classes.gridContainer}
             container spacing={3}>
@@ -354,7 +354,7 @@ export default function ViewEvents() {
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
           >
-            <Typography variant="h5">My Businesses</Typography>
+            <Typography variant="h5">Your Businesses</Typography>
           </AccordionSummary>
           {memberBusinesses.map((business) =>
             <ListItem
