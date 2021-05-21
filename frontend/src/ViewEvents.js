@@ -448,6 +448,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Grid} from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import NavBar from './Components/Nav/NavBar';
 import EventCard from './Components/Events/EventCard';
@@ -765,6 +769,45 @@ export default function ViewEvents() {
     );
   }
 
+  let showBusinessList;
+  if (context.businessState === false) {
+    if (memberBusinesses.length === 0) {
+      showBusinessList = (
+        <div></div>
+      );
+    } else {
+      showBusinessList = (
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Typography variant="h5">My Businesses</Typography>
+          </AccordionSummary>
+          {memberBusinesses.map((business) =>
+            <ListItem
+              key={business.businessid}
+              button
+              component="a"
+              href={'/business/profile/'+business.businessid}>
+              <AccordionDetails>
+                <Grid item xs={4}>
+                  <Typography
+                    variant="h6">
+                    {business.businessname}
+                  </Typography>
+                </Grid>
+              </AccordionDetails>
+            </ListItem>,
+          )}
+        </Accordion>
+      );
+    }
+  } else {
+    showBusinessList = (
+      <div></div>
+    );
+  }
+
   /* Show business's events if it is a business account */
   let showBusinessEvents;
   if (context.businessState === true) {
@@ -805,14 +848,7 @@ export default function ViewEvents() {
       >
         <Toolbar />
         <div className={classes.drawerContainer}>
-          <List>
-            {['My Businesses'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
+          {showBusinessList}
           <List>
             <ListItem>
               <ListItemText>
