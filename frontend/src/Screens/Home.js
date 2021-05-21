@@ -75,6 +75,13 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.light,
     marginBottom: theme.spacing(4),
   },
+  homeTitle: {
+    color: theme.palette.primary.main,
+    marginTop: 15,
+    marginLeft: 15,
+    marginBottom: 15,
+    fontWeight: 350,
+  },
 }));
 
 
@@ -216,10 +223,13 @@ const UnAuthHome = (props) => {
  * @return {object} JSX
  */
 const AuthHome = (props) => {
-  // const classes = useStyles();
+  const classes = useStyles();
 
   return (
     <Box>
+      <Typography variant='h3' align='left' className={classes.homeTitle}>
+        Your Upcoming Schedule
+      </Typography>
       <UserAttendingCalendar/>
     </Box>
   );
