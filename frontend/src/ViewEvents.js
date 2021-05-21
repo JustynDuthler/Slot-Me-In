@@ -59,9 +59,7 @@ const useStyles = makeStyles((theme) => ({
   searchBar: {
     padding: '2px 4px',
     display: 'flex',
-    alignItems: 'center',
     width: 400,
-    margin: 'auto',
   },
   searchInput: {
     marginLeft: theme.spacing(1),
@@ -81,10 +79,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '110px',
     paddingRight: '10px',
     marginBottom: '10px',
-  },
-  allEventsButton: {
-    marginTop: '-40px',
-    marginRight: '250px',
   },
   card: {
     width: 275,
@@ -612,7 +606,7 @@ export default function ViewEvents() {
       </Hidden>
 
       <Grid container>
-        <Box justifyContent="center" textAlign='center' width='100%' mt={5}>
+        <Box mt={3} ml={13} className={classes.content}>
           <Paper component="form" className={classes.searchBar}>
             <InputBase
               className={classes.searchInput}

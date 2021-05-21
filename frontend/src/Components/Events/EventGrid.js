@@ -20,8 +20,9 @@ const useStyles = makeStyles((theme) => ({
   },
   gridContainer: {
     height: '75%',
-    widht: '75%',
+    width: '75%',
     flexGrow: 1,
+    justifyContent: 'center',
   },
   card: {
     width: 275,
