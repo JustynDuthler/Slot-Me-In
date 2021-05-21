@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: 'auto',
     width: '100vw',
     maxWidth: '100%',
-    minHeight: '100vh',
+    minHeight: 'calc(100vh - 50px)',
   },
   events: {
     backgroundColor: 'white',
