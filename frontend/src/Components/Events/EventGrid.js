@@ -82,16 +82,16 @@ const EventGrid = ({publicEvents=false}) => {
   const gridItems = [];
   events.forEach((item) => {
     gridItems.push(
-        <Grid key={item.eventid} item sm={6} md={4} xl={3}>
-          <Box className={classes.eventCard}>
-            <EventCard
-              row={item}
-              context={context}
-              isBusiness={false}
-              buttonType='view'
-            />
-          </Box>
-        </Grid>);
+        // <Grid key={item.eventid} item sm={6} md={4} xl={3}>
+        <Box className={classes.eventCard} key={item.eventid}>
+          <EventCard
+            row={item}
+            context={context}
+            isBusiness={false}
+            buttonType='view'
+          />
+        </Box>);
+    // </Grid>);
   });
 
   return (

@@ -247,7 +247,7 @@ export default function ViewEvents() {
   /**
    * searchEvents
    * takes input and searches events
-   * @param {object} event
+   * @param {*} event
    */
   const searchEvents = (event) => {
     let apicall = 'http://localhost:3010/api/events';
@@ -278,6 +278,7 @@ export default function ViewEvents() {
 
   /**
    * handleChange
+   * used for filter checkboxes
    * @param {*} event
    */
   const handleChange = (event) => {
@@ -590,6 +591,14 @@ export default function ViewEvents() {
                   Apply Filters
                 </Button>
               </Box>
+              <Box textAlign='center' mt={2}>
+                <Button size='medium'
+                  variant='contained'
+                  color='secondary'
+                  href={'/allevents'}>
+                  See All Events
+                </Button>
+              </Box>
 
             </List>
           </div>
@@ -613,16 +622,6 @@ export default function ViewEvents() {
               <SearchIcon />
             </IconButton>
           </Paper>
-          <Hidden mdDown>
-            <Button size='small'
-              variant='contained'
-              color='secondary'
-              href={'/allevents'}
-              style={{float: 'right'}}
-              className={classes.allEventsButton}>
-              See All Events
-            </Button>
-          </Hidden>
         </Box>
         <Box>
           <main className={classes.content}>
