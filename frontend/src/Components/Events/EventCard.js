@@ -14,9 +14,6 @@ const useStyles = makeStyles((theme) => ({
   pos: {
     marginTop: 8,
   },
-  card: {
-    width: 275,
-  },
 }));
 
 /**
@@ -79,7 +76,6 @@ export default function EventCard({row, context, isBusiness, buttonType='view',
   // console.log(row);
   return (
     <Card style={{margin: '20px', backgroundColor: 'ff0000'}}
-      className={classes.card}
       key={row.eventid} {...rest}>
       <CardContent>
         <Typography variant='h5' component='h2' align='center'>

@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     widht: '75%',
     flexGrow: 1,
   },
+  card: {
+    width: 275,
+  },
 }));
 
 /**
@@ -82,16 +85,15 @@ const EventGrid = ({publicEvents=false}) => {
   const gridItems = [];
   events.forEach((item) => {
     gridItems.push(
-        // <Grid key={item.eventid} item sm={6} md={4} xl={3}>
         <Box className={classes.eventCard} key={item.eventid}>
           <EventCard
+            className={classes.card}
             row={item}
             context={context}
             isBusiness={false}
             buttonType='view'
           />
         </Box>);
-    // </Grid>);
   });
 
   return (
