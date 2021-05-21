@@ -99,7 +99,7 @@ export default function CreateEvent() {
     eventObj.over18 = (age === 18);
     eventObj.over21 = (age === 21);
     // set event category
-    eventObj.category = '';
+    eventObj.category = null;
     for (const index in chipData) {
       if (chipData.hasOwnProperty(index) && chipData[index]['selected']) {
         eventObj.category = chipData[index]['category'];

@@ -519,9 +519,14 @@ export default function BusinessProfile() {
    */
   function upcomingEvents(range) {
     const recentEvents = [];
+    let recentEventCount = 0;
     for (const i in eventList) {
       if (eventList.hasOwnProperty(i)) {
+        recentEventCount++;
         recentEvents.push(eventList[i]);
+        if (recentEventCount === 6) {
+          break;
+        }
       }
     }
     recentEvents.sort((firstEl, secondEl) => {
@@ -785,7 +790,7 @@ export default function BusinessProfile() {
               <Typography style={{margin: 8, fontSize: '24px'}}>
                 Upcoming Events:</Typography>
               <Box width='100%' height='550px'>
-                <Grid item md={12} container justify='space-evenly'
+                <Grid item container justify='space-evenly'
                   className={classes.grid2}>
                   {recentEvents.map((event) => {
                     return (
