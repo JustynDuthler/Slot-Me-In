@@ -6,7 +6,6 @@ const fs = require('fs');
 dotenv.config();
 
 const auth = require('../auth');
-const pool = require('../db/dbConnection');
 
 exports.getInfo = async (req, res) => {
   const business = await businessDb.selectBusiness(req.payload.id);

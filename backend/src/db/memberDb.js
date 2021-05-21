@@ -81,7 +81,6 @@ exports.getMemberBusinesses = async (email) => {
     text: select,
     values: [email],
   };
-
   const {rows} = await pool.query(query);
   return rows;
 };

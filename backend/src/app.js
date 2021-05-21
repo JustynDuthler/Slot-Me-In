@@ -66,7 +66,8 @@ or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
 app.get('/api/events/publicEvents', events.publicEvents);
-app.get('/api/events/publicAndMemberEvents/:useremail', events.publicAndMemberEvents);
+app.get('/api/events/publicAndMemberEvents/:useremail',
+    events.publicAndMemberEvents);
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
 app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);
@@ -95,9 +96,9 @@ app.get('/api/test/get_token', async (req, res) => {
 
 /* Generates a business token for testing */
 app.get('/api/test/get_business_token', async (req, res) => {
-    tempBusinessToken = await auth.generateJWT(
-        'contact@google.com', '10000000-0000-0000-0000-000000000000', 'business');
-    res.status(200).json({auth_token: tempBusinessToken});
+  tempBusinessToken = await auth.generateJWT(
+      'contact@google.com', '10000000-0000-0000-0000-000000000000', 'business');
+  res.status(200).json({auth_token: tempBusinessToken});
 });
 
 // A test api which uses authentication middleware
