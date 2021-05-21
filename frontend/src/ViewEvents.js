@@ -23,6 +23,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Hidden from '@material-ui/core/Hidden';
 
 import NavBar from './Components/Nav/NavBar';
 import EventCard from './Components/Events/EventCard';
@@ -410,188 +411,190 @@ export default function ViewEvents() {
           'user' : 'business'}>
         </NavBar>
       </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <Toolbar />
-        <div className={classes.drawerContainer}>
-          {showBusinessList}
-          <List>
-            <ListItem>
-              <ListItemText>
-                <Typography variant="h5">
-                  Filters
-                </Typography>
-              </ListItemText>
-            </ListItem>
+      <Hidden smDown>
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <Toolbar />
+          <div className={classes.drawerContainer}>
+            {showBusinessList}
+            <List>
+              <ListItem>
+                <ListItemText>
+                  <Typography variant="h5">
+                    Filters
+                  </Typography>
+                </ListItemText>
+              </ListItem>
 
-            <Box>
-              <ListItem>
-                <ListItemText primary='Businesses' />
-              </ListItem>
-              <ListItem>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.business}
-                        onChange={handleChange}
-                        name="business"
-                        color="secondary"
-                      />
-                    }
-                    label="Business 1"
-                  />
-                </FormGroup>
-              </ListItem>
-              <Divider variant="middle" />
-            </Box>
+              <Box>
+                <ListItem>
+                  <ListItemText primary='Businesses' />
+                </ListItem>
+                <ListItem>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.business}
+                          onChange={handleChange}
+                          name="business"
+                          color="secondary"
+                        />
+                      }
+                      label="Business 1"
+                    />
+                  </FormGroup>
+                </ListItem>
+                <Divider variant="middle" />
+              </Box>
 
-            <Box>
-              <ListItem>
-                <ListItemText primary='Event Type' />
-              </ListItem>
-              <ListItem>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.gym}
-                        onChange={handleChange}
-                        name="gym"
-                        color="secondary"
-                      />
-                    }
-                    label="Gym"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.club}
-                        onChange={handleChange}
-                        name="club"
-                        color="secondary"
-                      />
-                    }
-                    label="Club"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.party}
-                        onChange={handleChange}
-                        name="party"
-                        color="secondary"
-                      />
-                    }
-                    label="Party"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.conference}
-                        onChange={handleChange}
-                        name="conference"
-                        color="secondary"
-                      />
-                    }
-                    label="Conference"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.workshop}
-                        onChange={handleChange}
-                        name="workshop"
-                        color="secondary"
-                      />
-                    }
-                    label="Workshop"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.tutoring}
-                        onChange={handleChange}
-                        name="tutoring"
-                        color="secondary"
-                      />
-                    }
-                    label="Tutoring"
-                  />
-                </FormGroup>
-              </ListItem>
-              <Divider variant="middle" />
-            </Box>
+              <Box>
+                <ListItem>
+                  <ListItemText primary='Event Type' />
+                </ListItem>
+                <ListItem>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.gym}
+                          onChange={handleChange}
+                          name="gym"
+                          color="secondary"
+                        />
+                      }
+                      label="Gym"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.club}
+                          onChange={handleChange}
+                          name="club"
+                          color="secondary"
+                        />
+                      }
+                      label="Club"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.party}
+                          onChange={handleChange}
+                          name="party"
+                          color="secondary"
+                        />
+                      }
+                      label="Party"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.conference}
+                          onChange={handleChange}
+                          name="conference"
+                          color="secondary"
+                        />
+                      }
+                      label="Conference"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.workshop}
+                          onChange={handleChange}
+                          name="workshop"
+                          color="secondary"
+                        />
+                      }
+                      label="Workshop"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.tutoring}
+                          onChange={handleChange}
+                          name="tutoring"
+                          color="secondary"
+                        />
+                      }
+                      label="Tutoring"
+                    />
+                  </FormGroup>
+                </ListItem>
+                <Divider variant="middle" />
+              </Box>
 
-            <Box>
-              <ListItem>
-                <ListItemText primary='Restrictions' />
-              </ListItem>
-              <ListItem>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.members}
-                        onChange={handleChange}
-                        name="members"
-                        color="secondary"
-                      />
-                    }
-                    label="Members Only"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.public}
-                        onChange={handleChange}
-                        name="public"
-                        color="secondary"
-                      />
-                    }
-                    label="Public Events"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.eighteen}
-                        onChange={handleChange}
-                        name="eighteen"
-                        color="secondary"
-                      />
-                    }
-                    label="18+"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkState.twentyone}
-                        onChange={handleChange}
-                        name="twentyone"
-                        color="secondary"
-                      />
-                    }
-                    label="21+"
-                  />
-                </FormGroup>
-              </ListItem>
-            </Box>
-            <Box textAlign='center'>
-              <Button size='small'
-                variant='contained'
-                color='secondary'>
-                Apply Filters
-              </Button>
-            </Box>
+              <Box>
+                <ListItem>
+                  <ListItemText primary='Restrictions' />
+                </ListItem>
+                <ListItem>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.members}
+                          onChange={handleChange}
+                          name="members"
+                          color="secondary"
+                        />
+                      }
+                      label="Members Only"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.public}
+                          onChange={handleChange}
+                          name="public"
+                          color="secondary"
+                        />
+                      }
+                      label="Public Events"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.eighteen}
+                          onChange={handleChange}
+                          name="eighteen"
+                          color="secondary"
+                        />
+                      }
+                      label="18+"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkState.twentyone}
+                          onChange={handleChange}
+                          name="twentyone"
+                          color="secondary"
+                        />
+                      }
+                      label="21+"
+                    />
+                  </FormGroup>
+                </ListItem>
+              </Box>
+              <Box textAlign='center'>
+                <Button size='small'
+                  variant='contained'
+                  color='secondary'>
+                  Apply Filters
+                </Button>
+              </Box>
 
-          </List>
-        </div>
-      </Drawer>
+            </List>
+          </div>
+        </Drawer>
+      </Hidden>
 
       <Grid container>
         <Box justifyContent="center" textAlign='center' width='100%' mt={5}>
@@ -610,14 +613,16 @@ export default function ViewEvents() {
               <SearchIcon />
             </IconButton>
           </Paper>
-          <Button size='small'
-            variant='contained'
-            color='secondary'
-            href={'/allevents'}
-            style={{float: 'right'}}
-            className={classes.allEventsButton}>
-            See All Events
-          </Button>
+          <Hidden mdDown>
+            <Button size='small'
+              variant='contained'
+              color='secondary'
+              href={'/allevents'}
+              style={{float: 'right'}}
+              className={classes.allEventsButton}>
+              See All Events
+            </Button>
+          </Hidden>
         </Box>
         <Box>
           <main className={classes.content}>
