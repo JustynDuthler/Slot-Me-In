@@ -58,6 +58,9 @@ app.get('/api/businesses/getProfileImage', auth.businessAuth,
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 app.get('/api/businesses', businesses.getBusinesses);
 
+// static routes
+app.use(express.static('public'));
+
 // Event routes
 app.post('/api/events', auth.businessAuth, events.create);
 

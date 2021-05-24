@@ -145,12 +145,12 @@ exports.saveProfileImage = async (req, res) => {
     /* saved file name is just businessid.extension */
     const newFileName = req.payload.id + fileExtension;
     /* construct path for image folder */
-    const path = __dirname + '/../../../images/businessProfileImages/' +
+    const path = __dirname + '/../public/businessProfileImages/' +
      newFileName;
     /* retrieve previous image and delete it */
     const prevFileName = await businessDb.getBusinessImageName(businessID);
     if (prevFileName.businessimagename !== 'stockPhoto.png') {
-      const prevPath = __dirname + '/../../../images/businessProfileImages/' +
+      const prevPath = __dirname + '/../public/businessProfileImages/' +
                       prevFileName.businessimagename;
       fs.unlink(prevPath, (err) => {
         if (err) {
@@ -178,13 +178,20 @@ exports.saveProfileImage = async (req, res) => {
   }
 };
 
+
 exports.sendProfileImage = async (req, res) => {
   const businessID = req.payload.id;
   const imageName = await businessDb.getBusinessImageName(businessID);
-  /* construct path to file */
-  const path = __dirname + '/../../../images/businessProfileImages/' +
+  if (imageName == null) {
+    res.status(500);
+  } else {
+    res.status(200).json(imageName.businessimagename);
+  }
+  /*
+  /* construct path to file 
+  const path = __dirname + '/../public/businessProfileImages/' +
               imageName.businessimagename;
-  /* read the file data into a buffer */
+  /* read the file data into a buffer 
   fs.readFile(path, 'binary', (err, buffer) => {
     if (err) {
       console.error(err);
@@ -192,4 +199,5 @@ exports.sendProfileImage = async (req, res) => {
     }
     res.status(200).send(buffer);
   });
+  */
 };
