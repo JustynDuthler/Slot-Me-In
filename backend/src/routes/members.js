@@ -48,7 +48,7 @@ exports.addMembers = async (req, res) => {
       })
       .catch((error) => {
         console.log('error in addMembers: ' + error.stack);
-        res.status(409).send();
+        res.status(500).send();
       });
 };
 
@@ -93,8 +93,8 @@ exports.getMemberBusinesses = async (req, res) => {
 exports.getRestrictedEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
 
-  const restrictedEventList = [];
-  for (let i = 0; i < businesses.length; i++) {
+  let restrictedEventList = []
+  for (var i = 0; i < businesses.length; i++) {
     // get restricted events for the business
     const restrictedEvents = await memberDb.getBusinessRestrictedEvents(
         businesses[i].businessid);

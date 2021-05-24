@@ -160,6 +160,8 @@ VALUES ('jeff@ucsc.edu', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
 VALUES ('jeff@ucsc.edu', '20000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
+VALUES ('jeff@ucsc.edu', '90000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
 VALUES ('elle@ucsc.edu', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
 VALUES ('aaron@ucsc.edu', '10000000-0000-0000-0000-000000000000');
@@ -167,6 +169,8 @@ INSERT INTO Members(memberemail, businessid)
 VALUES ('julia@ucsc.edu', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
 VALUES ('spencer@ucsc.edu', '10000000-0000-0000-0000-000000000000');
+INSERT INTO Members(memberemail, businessid)
+VALUES ('katie', '30000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
 VALUES ('justyn@gmail.com', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)

@@ -30,6 +30,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import UserInfo from '../Components';
 import {ShareBar} from '../Components';
 import EventCard from '../Components/Events/EventCard';
+import Hidden from '@material-ui/core/Hidden';
 
 /**
  * BusinessProfile component
@@ -524,7 +525,7 @@ export default function BusinessProfile() {
       if (eventList.hasOwnProperty(i)) {
         recentEventCount++;
         recentEvents.push(eventList[i]);
-        if (recentEventCount === 6) {
+        if (recentEventCount === range) {
           break;
         }
       }
@@ -789,14 +790,22 @@ export default function BusinessProfile() {
               className={classes.grid}>
               <Typography style={{margin: 8, fontSize: '24px'}}>
                 Upcoming Events:</Typography>
-              <Box width='100%' height='550px'>
+              <Box width='100%' height='550px' style={{overflow: 'hidden',
+                maxHeight: '550px'}}>
                 <Grid item container justify='space-evenly'
                   className={classes.grid2}>
                   {recentEvents.map((event) => {
                     return (
-                      <Box width='275px' key={event.eventid}>
-                        <EventCard row={event} context={context}/>
-                      </Box>
+                      <Hidden key={event.eventid}>
+                        <Box width='260px' height='280px' key={event.eventid}
+                          display="flex"
+                          justifyContent="center" alignItems="center">
+                          <Box width='240px' height='80%'>
+                            <EventCard row={event} context={context}
+                              style={{width: '100%', height: '100%'}}/>
+                          </Box>
+                        </Box>
+                      </Hidden>
                     );
                   })}
                 </Grid>
