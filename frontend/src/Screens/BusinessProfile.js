@@ -637,6 +637,7 @@ export default function BusinessProfile() {
                 variant='contained'
                 color='secondary'
                 onClick={() => {
+                  console.log('rrr');
                   setShowAll(true);
                 }}
               >
@@ -734,13 +735,13 @@ export default function BusinessProfile() {
         </div>
         <div className={classes.testgrid}>
           <Grid container spacing={0}>
-            <Grid item container md={12}
+            <Grid item container sm={12}
               direction="row">
-              <Grid item md={3} className={classes.buttonGroupBox}>
+              <Grid item sm={3} className={classes.buttonGroupBox}>
               </Grid>
               <Divider orientation="vertical" flexItem
                 style={{marginRight: '-1px', color: '#ff0000'}} />
-              <Grid item container md={8} className={classes.buttonGroupBox}>
+              <Grid item container sm={8} className={classes.buttonGroupBox}>
 
                 <ButtonGroup variant="text"
                   className={classes.buttonGroup}
@@ -770,10 +771,10 @@ export default function BusinessProfile() {
                 </ButtonGroup>
 
               </Grid>
-              <Grid item md={1} className={classes.buttonGroupBox}>
+              <Grid item sm={1} className={classes.buttonGroupBox}>
               </Grid>
             </Grid>
-            <Grid container item md={3} direction="column">
+            <Grid container item sm={3} direction="column">
               <UserInfo picture="picture"
                 name={businessData.businessname}
                 email={businessData.email}
@@ -786,7 +787,7 @@ export default function BusinessProfile() {
             <Divider orientation="vertical" flexItem
               style={{marginRight: '-1px'}} />}
             {tab === 0 &&
-            <Grid item md={9} container style={{height: 700}}
+            <Grid item sm={9} container style={{height: 700}}
               className={classes.grid}>
               <Typography style={{margin: 8, fontSize: '24px'}}>
                 Upcoming Events:</Typography>
@@ -812,7 +813,7 @@ export default function BusinessProfile() {
               </Box>
               <ShareBar style={{flexGrow: 1}}/>
             </Grid>}
-            {tab === 1 && <Grid item container md={9} direction="row"
+            {tab === 1 && <Grid item container sm={9} direction="row"
               justify="center" style={{height: 700, overflow: 'auto',
                 maxHeight: 700}}
               className={classes.grid}>
@@ -871,7 +872,7 @@ export default function BusinessProfile() {
                 </Button>
               </Box>
             </Grid>}
-            {tab === 2 && <Grid item container md={9}
+            {tab === 2 && <Grid item container sm={9}
               direction={eventState !== null || showAll ? 'column' : 'row'}
               alignItems='center'
               style={{height: 700, overflow: 'auto',

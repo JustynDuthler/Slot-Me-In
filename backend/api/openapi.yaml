@@ -488,13 +488,10 @@ paths:
         200:
           description: successfully retrieved profile image
           content:
-            multipart/form-data:
+            image/png:
               schema:
-                type: object
-                properties:
-                  Image:
-                    type: string
-                    format: binary
+                type: string
+                format: binary
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
