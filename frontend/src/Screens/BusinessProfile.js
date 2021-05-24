@@ -31,7 +31,6 @@ import UserInfo from '../Components';
 import {ShareBar} from '../Components';
 import EventCard from '../Components/Events/EventCard';
 import Hidden from '@material-ui/core/Hidden';
-import {cropImage} from '../libs/Util.js';
 
 /**
  * BusinessProfile component
@@ -638,6 +637,7 @@ export default function BusinessProfile() {
                 variant='contained'
                 color='secondary'
                 onClick={() => {
+                  console.log('rrr');
                   setShowAll(true);
                 }}
               >

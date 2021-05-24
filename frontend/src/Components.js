@@ -62,46 +62,42 @@ export default function UserInfo({picture: path, name: name, email: email,
   }));
   const classes = useStyles();
   const [image, setImage] = React.useState({preview: '', raw: ''});
-  const [outstr, setOutstr] = React.useState('');
   React.useEffect(async () => {
-    // fetch('https://upload.wikimedia.org/wikipedia/'+
-    //   'commons/7/77/Delete_key1.jpg')
-    //     .then((res) => res.blob())
-    //     .then((res) => {
-    //       const url = URL.createObjectURL(res);
-    //       cropImage(url, 1).then((canvas) => {
-    //         setImage({
-    //           preview: canvas.toDataURL('image/png'),
-    //           raw: res,
-    //         });
-    //       });
-    //     });
-    console.log('ok');
-    fetch('http://localhost:3010/api/businesses/'+
-      'getProfileImage', {
-      method: 'GET',
-      headers: Auth.headerJsonJWT(),
-    }).then((data) => {
-      data.blob().then(function(blob) {
-        console.log(blob);
-        setOutstr(outstr + JSON.stringify(blob.size));
-        console.log('gamer time');
-        const url = URL.createObjectURL(blob);
-        console.log(url);
-        cropImage(url, 1).then((canvas) => {
-          setImage({
-            preview: canvas.toDataURL('image/png'),
-            raw: buffer,
+    fetch('https://upload.wikimedia.org/wikipedia/'+
+      'commons/7/77/Delete_key1.jpg')
+        .then((res) => res.blob())
+        .then((res) => {
+          const url = URL.createObjectURL(res);
+          cropImage(url, 1).then((canvas) => {
+            setImage({
+              preview: canvas.toDataURL('image/png'),
+              raw: res,
+            });
           });
         });
-      });
-    },
-    (error) => {
-      console.log(error);
-    },
-    );
+    // fetch('http://localhost:3010/api/businesses/'+
+    //   'getProfileImage', {
+    //   method: 'GET',
+    //   headers: Auth.headerJsonJWT(),
+    // }).then((data) => {
+    //   data.blob().then(function(blob) {
+    //     console.log(blob);
+    //     setOutstr(outstr + JSON.stringify(blob.size));
+    //     const url = URL.createObjectURL(blob);
+    //     console.log(url);
+    //     cropImage(url, 1).then((canvas) => {
+    //       setImage({
+    //         preview: canvas.toDataURL('image/png'),
+    //         raw: buffer,
+    //       });
+    //     });
+    //   });
+    // },
+    // (error) => {
+    //   console.log(error);
+    // },
+    // );
   }, []);
-  console.log('outstr', outstr);
   /**
    * changeImage function
    * @param {e} e
