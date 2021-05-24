@@ -30,6 +30,8 @@ import EventCard from './Components/Events/EventCard';
 import Context from './Context';
 const Auth = require('./libs/Auth');
 
+import './CSS/Scrollbar.css';
+
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    overflowY: 'scroll',
+    scrollbarWidth: 'none',
   },
   drawerPaper: {
     width: drawerWidth,
@@ -96,10 +100,11 @@ export default function ViewEvents() {
   const [publicEvents, setPublicEvents] = React.useState([]);
   const [businessEvents, setBusinessEvents] = React.useState([]);
   const [memberBusinesses, setMemberBusinesses] = React.useState([]);
+  const [businessList, setBusinessList] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
+  // change to get category query
   const [checkState, setCheckState] = React.useState({
-    business: false,
     gym: false,
     club: false,
     party: false,
@@ -232,10 +237,38 @@ export default function ViewEvents() {
         });
   };
 
+  /**
+   * getAllBusinesses
+   * obtains all businesses
+   */
+  function getAllBusinesses() {
+    const apicall = 'http://localhost:3010/api/businesses';
+    fetch(apicall, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setBusinessList(json);
+      json.map((business) =>
+        // attach to checkstate
+        setCheckState({...checkState, [business.businessname]: false}),
+      );
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
   React.useEffect(() => {
     if (context.businessState === false) {
       getPublicEvents();
       getUserInfo();
+      getAllBusinesses();
     } else {
       getBusinessEvents();
     }
@@ -280,12 +313,10 @@ export default function ViewEvents() {
    */
   const handleChange = (event) => {
     setCheckState({...checkState, [event.target.name]: event.target.checked});
+    console.log(event.target.name + ' ' + event.target.checked);
   };
 
-  console.log(memberEvents);
-  console.log(publicEvents);
   console.log(searchEventsList);
-  console.log(memberBusinesses);
 
   /* Show member events if user is part of any businesses */
   let showMemberEvents;
@@ -438,17 +469,20 @@ export default function ViewEvents() {
                 </ListItem>
                 <ListItem>
                   <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={checkState.business}
-                          onChange={handleChange}
-                          name="business"
-                          color="secondary"
-                        />
-                      }
-                      label="Business 1"
-                    />
+                    {businessList.map((business) =>
+                      <FormControlLabel
+                        key={business.businessid}
+                        control={
+                          <Checkbox
+                            checked={checkState.businessname}
+                            onChange={handleChange}
+                            name={business.businessname}
+                            color="secondary"
+                          />
+                        }
+                        label={business.businessname}
+                      />,
+                    )}
                   </FormGroup>
                 </ListItem>
                 <Divider variant="middle" />
