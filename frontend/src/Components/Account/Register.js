@@ -232,6 +232,7 @@ export default function Register() {
                 format='MM/dd/yyyy'
                 label='Date of Birth'
                 inputVariant='outlined'
+                id='dob'
                 value={dob}
                 onChange={setDob}
                 onKeyPress={handleKeypress}
@@ -290,7 +291,8 @@ export default function Register() {
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value='remember'
+              control={<Checkbox id='businessCheckbox'
+                value='remember'
                 color='primary'
                 onChange={(event) => {
                   setForm(event.target.checked);
@@ -298,6 +300,7 @@ export default function Register() {
               label='Business Account'
             />
             {showBusiness && <PhoneInput
+              id='phonenumber'
               isValid={!errors.phone}
               inputStyle={{width: '100%'}}
               country={'us'}
@@ -327,6 +330,7 @@ export default function Register() {
               onKeyPress={handleKeypress}
             />}
             <Button
+              id='submit'
               type='submit'
               fullWidth
               variant='contained'
