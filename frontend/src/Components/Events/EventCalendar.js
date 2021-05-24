@@ -15,7 +15,8 @@ const localizer = momentLocalizer(moment);
  * @param {*} props
  * @return {object} JSX
  */
-export const EventCalendar = ({BusinessList, EventList}) => {
+export const EventCalendar = ({BusinessList, EventList,
+  ...rest}) => {
   const calendars = [];
   BusinessList.forEach((element) => {
     calendars.push({id: element.businessid, name: element.businessname});
@@ -36,11 +37,11 @@ export const EventCalendar = ({BusinessList, EventList}) => {
 
   return (
     <Calendar
+      {...rest}
       localizer={localizer}
       defaultDate={new Date()}
       defaultView='week'
       events={events}
-      style={{height: 500}}
     />
   );
 };
@@ -48,13 +49,15 @@ export const EventCalendar = ({BusinessList, EventList}) => {
 EventCalendar.propTypes = {
   BusinessList: PropTypes.arrayOf(PropTypes.object),
   EventList: PropTypes.arrayOf(PropTypes.object),
+  style: PropTypes.object,
 };
 
 /**
  * A calender which event data on a users attending events
+ * @param {*} props
  * @return {Object} JSX
  */
-export const UserAttendingCalendar = () => {
+export const UserAttendingCalendar = (props) => {
   const [eventList, setEventList] = React.useState([]);
   const [businessList, setBusinessList] = React.useState([]);
 
@@ -72,6 +75,7 @@ export const UserAttendingCalendar = () => {
 
   return (
     <EventCalendar
+      {...props}
       EventList={eventList}
       BusinessList={businessList}
     />

@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
-import {UserAttendingCalendar} from '../Components/Events/EventCalendar';
+import {EventCalendar} from '../Components/Events/EventCalendar';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import {getUsersEvents} from '../API/EventAPI';
 import {getMemberBusinesses} from '../API/BusinessAPI';
 import {getUserInfo} from '../API/UserAPI';
+import {Hidden} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,11 +20,23 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     margin: 'auto',
     width: '80rem',
+    display: 'flex',
+    [theme.breakpoints.up('lg')]: {
+      flexDirection: 'row',
+    },
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
   },
   userInfo: {
     // height: '5rem',
     display: 'flex',
-    flexDirection: 'row',
+    [theme.breakpoints.up('lg')]: {
+      flexDirection: 'column',
+    },
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'row',
+    },
     alignItems: 'baseline',
     marginBottom: theme.spacing(4),
   },
@@ -77,7 +90,20 @@ const Content = ({businessList, eventList}) => {
         <Button onClick={() => setContentState('calendar')}>
           Set calendar
         </Button>
-        <UserAttendingCalendar/>
+        <Hidden mdDown>
+          <EventCalendar
+            style={{height: 800, width: 1200}}
+            EventList={eventList}
+            BusinessList={businessList}
+          />
+        </Hidden>
+        <Hidden lgUp>
+          <EventCalendar
+            style={{height: 800, width: 1200}}
+            EventList={eventList}
+            BusinessList={businessList}
+          />
+        </Hidden>
       </Box>
     );
   } else {
@@ -124,6 +150,7 @@ const UserProfile = (props) => {
       setError(error);
     }
   }, []);
+
   if (!isLoaded) {
     return <h1>Loading...</h1>;
   }
