@@ -19,18 +19,20 @@ const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(4),
     margin: 'auto',
-    width: '80rem',
+    width: '60rem',
     display: 'flex',
     [theme.breakpoints.up('lg')]: {
       flexDirection: 'row',
     },
     [theme.breakpoints.down('md')]: {
       flexDirection: 'column',
+      width: '40rem',
     },
   },
   userInfo: {
     // height: '5rem',
     display: 'flex',
+    padding: theme.spacing(2),
     [theme.breakpoints.up('lg')]: {
       flexDirection: 'column',
     },
@@ -38,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'row',
     },
     alignItems: 'baseline',
-    marginBottom: theme.spacing(4),
   },
   textpadding: {
     paddingRight: theme.spacing(4),
@@ -92,14 +93,14 @@ const Content = ({businessList, eventList}) => {
         </Button>
         <Hidden mdDown>
           <EventCalendar
-            style={{height: 800, width: 1200}}
+            style={{height: '100%', width: '100%'}}
             EventList={eventList}
             BusinessList={businessList}
           />
         </Hidden>
         <Hidden lgUp>
           <EventCalendar
-            style={{height: 800, width: 1200}}
+            style={{height: '100%', width: '100%'}}
             EventList={eventList}
             BusinessList={businessList}
           />

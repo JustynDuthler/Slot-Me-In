@@ -22,6 +22,8 @@ import About from './Screens/About';
 import Contact from './Screens/Contact';
 import NavBar from './Components/Nav/NavBar';
 import Footer from './Components/Nav/Footer';
+import NotFound from './Screens/NotFound';
+
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -199,7 +201,8 @@ function App() {
                 <Route path="/contact">
                   <Contact/>
                 </Route>
-                <Route path="/" component={Home}/>
+                <Route exact path="/" component={Home}/>
+                <Route component={NotFound}/>
               </Switch>
             </Box>
             <Footer className={classes.footer}/>
