@@ -342,5 +342,41 @@ test('getEvents with business token', async () => {
 test('getEvents with bad token', async () => {
   await request.get('/api/events')
     .set({'Authorization': 'Bearer ' + 'wsedrfvgbhnjmkdx345678'})
-    .expect(401)
+    .expect(401);
 })
+
+/*
+---------------------------getEventByID tests------------------------------------
+
+  1. sucessfully get an event by its ID
+  2. invalid ID
+
+*/
+test('getEventByID', async () => {
+  await request.get('/api/events/00000000-0019-0000-0000-000000000000')
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      expect(data.body).toStrictEqual({
+        eventid: '00000000-0019-0000-0000-000000000000',
+        eventname: 'Wine Tasting',
+        description: 'Temp Description',
+        businessid: '00000000-0000-0000-0000-000000000000',
+        starttime: '2021-09-15T23:30:00.000Z',
+        endtime: '2021-09-16T02:30:00.000Z',
+        capacity: 20,
+        repeatid: null,
+        membersonly: false,
+        over18: false,
+        over21: true,
+        category: null
+      });
+  })
+})  
+
+test('getEventByID bad eventID', async () => {
+  await request.get('/api/events/00000000-0019-0006-0000-000100000000')
+    .expect(404);
+})  
