@@ -1,6 +1,6 @@
 -- 20 fake users. Every password is PaSWord
 INSERT INTO Users(userid, username, password, useremail, birthdate)
-VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'jeff@ucsc.edu', '2000-01-01T13:30:00.000Z');
+VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'jeff@ucsc.edu', '2003-01-01T13:30:00.000Z');
 INSERT INTO Users(userid, username, password, useremail, birthdate)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Aaron', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'aaron@ucsc.edu', '2002-01-01T13:30:00.000Z');
 INSERT INTO Users(userid, username, password, useremail, birthdate)
@@ -71,8 +71,8 @@ INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity,
 VALUES ('00000000-0001-0000-0000-000000000000', 'Test Event 1', '00000000-0000-0000-0000-000000000000', '2021-05-02T09:00:00.000Z', '2021-05-02T10:00:00.000Z', 5, 'This is the description for Test Event 1.', 'gym');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, category, over18)
 VALUES ('00000000-0002-0000-0000-000000000000', 'Test Event 2', '10000000-0000-0000-0000-000000000000', '2021-05-02T10:30:00.000Z', '2021-05-02T12:30:00.000Z', 10, 'party', TRUE);
-INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)
-VALUES ('00000000-0003-0000-0000-000000000000', 'Test Event 3', '20000000-0000-0000-0000-000000000000', '2021-05-03T13:30:00.000Z', '2021-05-03T16:00:00.000Z', 4, 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.', 'school');
+INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description, category)
+VALUES ('f','00000000-0003-0000-0000-000000000000', 'Test Event 3', '20000000-0000-0000-0000-000000000000', '2021-05-03T13:30:00.000Z', '2021-05-03T16:00:00.000Z', 4, 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.', 'school');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)
 VALUES ('00000000-0004-0000-0000-000000000000', 'Test Event 4', '30000000-0000-0000-0000-000000000000', '2021-05-03T08:20:00.000Z', '2021-05-03T09:22:00.000Z', 5, 'This is the description for Test Event 4.', 'club');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)

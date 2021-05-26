@@ -39,3 +39,4 @@ test('Date of Birth Input', async () => {
   const content = await (await date.getProperty('value')).jsonValue();
   expect(content).toBe(expected);
 });
+
