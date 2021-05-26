@@ -303,7 +303,7 @@ test('getEvents with business token', async () => {
           description: 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.',
           over18: false,
           over21: false,
-          membersonly: true,
+          membersonly: false,
           category: 'school',
           attendees: 4
         },
@@ -388,6 +388,8 @@ test('getEventByID bad eventID', async () => {
   2. user does not meet restrictions for event
   3. bad event id
   4. user already signed up
+  5. user is not a member of business
+  6. event is at capacity
 
 */
 test('event sign up successful', async () => {
@@ -413,3 +415,175 @@ test('event sign up with user already signed up', async () => {
     .set({'Authorization': 'Bearer ' + userAuthToken})
     .expect(409);
 })
+
+test('event sign up with user not a member', async () => {
+  await request.put('/api/events/00000000-0001-0000-0000-000000000000/signup')
+    .set({'Authorization': 'Bearer ' + userAuthToken})
+    .expect(403);
+})
+
+test('event sign up with full event', async () => {
+  await request.put('/api/events/00000000-0003-0000-0000-000000000000/signup')
+    .set({'Authorization': 'Bearer ' + userAuthToken})
+    .expect(403);
+})
+
+/*
+---------------------------publicEvents tests------------------------------------
+
+  1. get all public events
+
+*/
+test('Get public events', async () => {
+  await request.get('/api/events/publicEvents')
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      expect(data.body).toStrictEqual([
+        {
+          eventid: '00000000-0003-0000-0000-000000000000',
+          eventname: 'Test Event 3',
+          description: 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.',
+          businessid: '20000000-0000-0000-0000-000000000000',
+          starttime: '2021-05-03T13:30:00.000Z',
+          endtime: '2021-05-03T16:00:00.000Z',
+          capacity: 4,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: 'school',
+          attendees: 4
+        },
+        {
+          eventid: '00000000-0012-0000-0000-000000000000',
+          eventname: 'Ocean Kayaking Club Meet',
+          description: 'Join the santa cruz kayak club in an an ocean kayaking adventure. Bring a kayak and some food. Potluck afterwards',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 50,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: 'sport',
+          attendees: 0
+        },
+        {
+          eventid: '00000000-0013-0000-0000-000000000000',
+          eventname: 'Group Ride',
+          description: 'Join the Santa Cruzes finest! on a group MTB ride.',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 25,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: null,
+          attendees: 1
+        },
+        {
+          eventid: '00000000-0014-0000-0000-000000000000',
+          eventname: 'Yoga in the park',
+          description: 'Temp Description',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 15,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: null,
+          attendees: 0
+        },
+        {
+          eventid: '00000000-0015-0000-0000-000000000000',
+          eventname: 'Telescope viewing',
+          description: 'Temp Description',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 15,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: null,
+          attendees: 0
+        },
+        {
+          eventid: '00000000-0016-0000-0000-000000000000',
+          eventname: 'Group Run',
+          description: 'Temp Description',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 20,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: null,
+          attendees: 0
+        },
+        {
+          eventid: '00000000-0017-0000-0000-000000000000',
+          eventname: 'Paint Westcliff',
+          description: 'Temp Description',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 10,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: null,
+          attendees: 0
+        },
+        {
+          eventid: '00000000-0018-0000-0000-000000000000',
+          eventname: 'Photography Club Meet',
+          description: 'Temp Description',
+          businessid: '90000000-0000-0000-0000-000000000000',
+          starttime: '2021-10-07T13:30:00.000Z',
+          endtime: '2021-10-07T15:00:00.000Z',
+          capacity: 30,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: false,
+          category: null,
+          attendees: 0
+        },
+        {
+          eventid: '00000000-0019-0000-0000-000000000000',
+          eventname: 'Wine Tasting',
+          description: 'Temp Description',
+          businessid: '00000000-0000-0000-0000-000000000000',
+          starttime: '2021-09-15T23:30:00.000Z',
+          endtime: '2021-09-16T02:30:00.000Z',
+          capacity: 20,
+          repeatid: null,
+          membersonly: false,
+          over18: false,
+          over21: true,
+          category: null,
+          attendees: 0
+        }
+      ]);
+    })
+})
+
+/*
+---------------------------publicAndMemberEvents tests------------------------------------
+
+  1. get all public and member events events
+
+*/

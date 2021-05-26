@@ -120,6 +120,7 @@ test('Get member restrcited events with restricted events', async () => {
   .then(data => {
     expect(data).toBeDefined();
     expect(data.body).toBeDefined();
+    console.log(data.body);
     expect(data.body).toStrictEqual(
       [
         {
@@ -136,21 +137,6 @@ test('Get member restrcited events with restricted events', async () => {
           over21: false,
           category: 'party',
           attendees: 3
-        },
-        {
-          eventid: '00000000-0003-0000-0000-000000000000',
-          eventname: 'Test Event 3',
-          description: 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.',
-          businessid: '20000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-03T13:30:00.000Z',
-          endtime: '2021-05-03T16:00:00.000Z',
-          capacity: 4,
-          repeatid: null,
-          membersonly: true,
-          over18: false,
-          over21: false,
-          category: 'school',
-          attendees: 4
         },
         {
           eventid: '00000000-0010-0000-0000-000000000000',
