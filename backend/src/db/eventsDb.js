@@ -193,7 +193,9 @@ exports.getUsersEvents = async (userid) => {
 };
 
 // returns list of events created by businessid
-exports.getBusinessEvents = async (businessid) => {
+exports.getBusinessEvents = async (businessid, start='2000-01-01T00:00:00.000Z',
+    end='3000-01-01T00:00:00.000Z',
+    search='') => {
   const queryText =
   'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime ' +
       'AS repeatstart, e.endtime, e.capacity, e.description,' +
@@ -201,10 +203,11 @@ exports.getBusinessEvents = async (businessid) => {
       'monday,tuesday,wednesday,thursday,friday,saturday,sunday,' +
       'r.repeattype,r.repeatend,e.repeatid FROM ' +
       '(Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) ' +
-      'WHERE e.businessid = $1';
+      'WHERE e.businessid = $1 AND e.starttime >= $2 AND e.endtime <= $3 AND ' +
+      '(e.eventname ~* $4 OR e.description ~* $4)';
   const query = {
     text: queryText,
-    values: [businessid],
+    values: [businessid, start, end, search],
   };
   const days =
       {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
@@ -234,6 +237,7 @@ exports.getBusinessEvents = async (businessid) => {
       rows2.push(row);
     }
   }
+  console.log(rows2);
   return rows2;
 };
 

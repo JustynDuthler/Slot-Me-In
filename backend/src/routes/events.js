@@ -89,8 +89,10 @@ exports.delete = async (req, res) => {
 
 exports.getEvents = async (req, res) => {
   // if business account, only show the events made by that business
+  console.log(req.query.search);
   if (req.payload.userType == 'business') {
-    const events = await eventsDb.getBusinessEvents(req.payload.id);
+    const events = await eventsDb.getBusinessEvents(req.payload.id,
+      req.query.start, req.query.end, req.query.search);
     res.status(200).json(events);
   } else if (req.payload.userType == 'user') {
     const events = await eventsDb.getEvents(

@@ -346,15 +346,16 @@ export default function ViewEvents() {
    * @param {*} event
    */
   const searchEvents = (event) => {
+    setSearchBoolean(true);
     let apicall;
     if (context.businessState === false) {
       apicall = 'http://localhost:3010/api/events/search/';
       if (searchValue !== '') {
-        setSearchBoolean(true);
+        // setSearchBoolean(true);
         apicall += userEmail+'?search='+searchValue;
         history.push('/events?search='+searchValue);
       } else {
-        setSearchBoolean(true);
+        // setSearchBoolean(true);
         apicall += userEmail;
         history.push('/events?search=');
       }
