@@ -1,19 +1,19 @@
 const puppeteer = require('puppeteer');
-
+import 'regenerator-runtime/runtime'
 // The browser instance created for each test
 let browser;
 
 // Create the browser before each test
 beforeEach(async (done) => {
   browser = await puppeteer.launch({
-    // headless: false 
+    // headless: false
   });
   done();
 });
 
 // Close the browser after each test
 afterEach(async (done) => {
-  await browser.close(); 
+  await browser.close();
   done();
 });
 

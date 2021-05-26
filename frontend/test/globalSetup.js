@@ -1,6 +1,7 @@
 /*
  * Starts the dev server before all tests start
  */
+import 'regenerator-runtime/runtime'
 const {setup: setupDevServer} = require('jest-dev-server');
 
 module.exports = async () => {

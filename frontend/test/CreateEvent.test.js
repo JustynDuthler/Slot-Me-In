@@ -21,7 +21,7 @@ afterEach(async (done) => {
 /**
  * Tests if date picker works correctly
  */
-test('Date of Birth Input', async () => {
+test('Start Date Input', async () => {
   let page = await browser.newPage();
   // set up expected date value in mm/dd/yyyy format
   // https://stackoverflow.com/questions/46228846
@@ -30,12 +30,16 @@ test('Date of Birth Input', async () => {
   ops.month = ops.day = '2-digit';
   const expected = (new Intl.DateTimeFormat([], ops).format(now));
 
-  // set date picker to today by just pressing enter
-  await page.goto('http://localhost:3000/register');
-  await page.click('#dob');
+  // try to log in
+  await page.goto('http://localhost:3000/login');
+  await page.type('#email', 'contact@testinc.com', { delay: 100 });
+  await page.type('#password', 'password', { delay: 100 });
+  await page.keyboard.press('Enter');
+  await page.goto('http://localhost:3000/events/create');
+  await page.click('#startdatetime');
   await page.waitForTimeout(100);
   await page.keyboard.press('Enter');
-  const date = await page.$('#dob');
+  const date = await page.$('#startdatetime');
   const content = await (await date.getProperty('value')).jsonValue();
   expect(content).toBe(expected);
 });
