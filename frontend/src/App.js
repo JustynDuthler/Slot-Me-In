@@ -204,6 +204,7 @@ function App() {
                 <Route exact path="/" component={Home}/>
                 <Route exact path="/login" component={Home}/>
                 <Route exact path="/register" component={Home}/>
+                <Route path="/404" component={NotFound}/>
                 <Route component={NotFound}/>
               </Switch>
             </Box>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {useHistory} from 'react-router-dom';
+import {Redirect, useHistory} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -153,6 +153,7 @@ const IndividualEvent = (props) => {
   const eventid = props.eventID;
 
   const [eventData, setEventData] = useState({});
+  const [eventExists, setEventExists] = useState(true);
   const [businessData, setBusinessData] = useState({});
   const [signupError, setSignupError] = useState(false);
   const [signupErrorMsg, setSignupErrorMsg] = useState('');
@@ -304,6 +305,7 @@ const IndividualEvent = (props) => {
     })
         .then((response) => {
           if (!response.ok) {
+            setEventExists(false);
             throw response;
           } else {
             return response.json();
@@ -311,6 +313,7 @@ const IndividualEvent = (props) => {
         })
         .then((json) => {
           setEventData(json);
+          setEventExists(true);
           getBusinessData(json.businessid);
           getBusinessEvents(json.businessid);
         })
@@ -373,6 +376,11 @@ const IndividualEvent = (props) => {
       console.log(error);
     });
   };
+
+  if (!eventExists) {
+    return <Redirect to={{pathname: '/404'}} />;
+  }
+
   return (
     <div style={{overflow: 'hidden'}}>
       <Grid container spacing={6} className={classes.grid}>

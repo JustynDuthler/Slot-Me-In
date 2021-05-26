@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-// import {useHistory, useLocation} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import {Grid} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
@@ -109,11 +109,9 @@ const useStyles = makeStyles((theme) => ({
 const PublicBusinessProfile = (props) => {
   const classes = useStyles();
   const context = React.useContext(Context);
-  // const history = useHistory();
-  // const location = useLocation();
   const businessid = props.businessid;
   const [businessData, setBusinessData] = useState({});
-  // const [signupError, setSignupError] = useState(false);
+  const [businessExists, setBusinessExists] = useState(true);
   const [eventList, setEventList] = React.useState([]);
 
   useEffect(() => {
@@ -134,6 +132,7 @@ const PublicBusinessProfile = (props) => {
       headers: Auth.headerJsonJWT(),
     }).then((response) => {
       if (!response.ok) {
+        setBusinessExists(false);
         throw response;
       }
       return response.json();
@@ -170,6 +169,10 @@ const PublicBusinessProfile = (props) => {
           console.log(error);
         });
   };
+
+  if (!businessExists) {
+    return <Redirect to={{pathname: '/404'}} />;
+  }
 
   return (
     <div style={{overflow: 'hidden'}}>
