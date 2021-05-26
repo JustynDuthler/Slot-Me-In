@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime'
 let browser;
 
 // Create the browser before each test
-beforeEach(async (done) => {
+beforeAll(async (done) => {
   browser = await puppeteer.launch({
     // headless: false
   });
@@ -12,7 +12,7 @@ beforeEach(async (done) => {
 });
 
 // Close the browser after each test
-afterEach(async (done) => {
+afterAll(async (done) => {
   await browser.close();
   done();
 });

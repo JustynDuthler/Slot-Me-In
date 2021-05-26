@@ -134,7 +134,7 @@ function App() {
   }
 
   const userType = businessState ? 'business' : 'user';
-  const path = window.location.pathname;
+  const path = window.location.pathname.toLowerCase();
   let menu;
   // do not show NavBar on home, login, or register when not logged in
   if (!(path == '/') && !(path.startsWith('/login')) &&
