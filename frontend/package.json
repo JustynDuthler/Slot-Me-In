@@ -46,7 +46,7 @@
   "jest": {
     "globalSetup": "./test/globalSetup.js",
     "globalTeardown": "./test/globalTeardown.js",
-    "testTimeout": 10000
+    "testTimeout": 60000
   },
   "scripts": {
     "lint": "eslint . --ext .js",
@@ -54,7 +54,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test-start": "react-scripts start",
-    "test": "jest --runInBand --testTimeout=10000"
+    "test": "jest --runInBand --testTimeout=60000"
   },
   "resolutions": {
     "browserslist": "4.6.2",
