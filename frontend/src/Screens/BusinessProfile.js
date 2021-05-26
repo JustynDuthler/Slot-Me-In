@@ -62,7 +62,6 @@ export default function BusinessProfile() {
    * @return {Number}
    */
   function deleteEvent(eventid, all) {
-    return 1; // what is this?
     console.log(eventid);
     const apicall = 'http://localhost:3010/api/events/'+eventid;
     return fetch(apicall, {
