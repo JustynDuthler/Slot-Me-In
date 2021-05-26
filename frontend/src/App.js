@@ -218,6 +218,13 @@ function App() {
   );
 }
 
+App.propTypes = {
+  'match': PropTypes.object,
+  'match.params': PropTypes.object,
+  'match.params.businessid': PropTypes.string,
+  'match.params.eventid': PropTypes.string,
+};
+
 // Prop types for PrivateRoute
 PrivateRoute.propTypes = {
   component: PropTypes.func,

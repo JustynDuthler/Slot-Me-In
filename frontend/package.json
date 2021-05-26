@@ -15,7 +15,8 @@
     "jest-cli": "26.6.0",
     "jest-dev-server": "^4.4.0",
     "puppeteer": "^5.4.1",
-    "react-scripts": "4.0.0"
+    "react-scripts": "4.0.0",
+    "whatwg-fetch": "^3.6.2"
   },
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
@@ -42,13 +43,18 @@
     "react-test-renderer": "^17.0.2",
     "styled-components": "^5.3.0"
   },
+  "jest": {
+    "globalSetup": "./test/globalSetup.js",
+    "globalTeardown": "./test/globalTeardown.js",
+    "testTimeout": 10000
+  },
   "scripts": {
     "lint": "eslint . --ext .js",
     "lintfix": "eslint . --ext .js --fix",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test-start": "react-scripts start",
-    "test": "jest --runInBand --testTimeout=2000"
+    "test": "jest --runInBand --testTimeout=10000"
   },
   "resolutions": {
     "browserslist": "4.6.2",

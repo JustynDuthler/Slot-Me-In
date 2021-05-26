@@ -152,6 +152,8 @@ exports.signup = async (req, res) => {
       const capacity = await eventsDb.checkRemainingEventCapacity(eventid);
       if (capacity.length === event.capacity) {
         console.log('Event is already full.');
+        res.status(403).json({code: 403,
+          message: 'Event is full'});
       } else {
         // if not already attending, add user to attendees then send 200
         await attendeesDb.insertAttendees(eventid, userid);

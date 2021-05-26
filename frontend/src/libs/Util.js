@@ -89,6 +89,7 @@ exports.cropImage = (url, aspectRatio) => {
   return new Promise((resolve) => {
     // this image will hold our source image data
     const inputImage = new Image();
+    inputImage.crossOrigin = 'anonymous';
     // console.log(require(url));
     // we want to wait for our image to load
     inputImage.onerror = (error) => {
