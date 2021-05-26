@@ -746,6 +746,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /events/search/{useremail}:
+    get:
+      description: Returns an array of public and member events
+      tags:
+        - events
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events starting after a given timestamp (optional)
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events ending before a given timestamp (optional)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search events by text (optional)
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 
   /attendees/{eventid}:
     get:

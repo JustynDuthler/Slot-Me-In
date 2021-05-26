@@ -202,6 +202,36 @@ exports.publicAndMemberEvents = async (req, res) => {
   res.status(200).json(eventList);
 };
 
+exports.getSearchEvents = async (req, res) => {
+  if (req.payload.userType == 'business') {
+    const events = await eventsDb.getBusinessEvents(req.payload.id);
+    res.status(200).json(events);
+  } else if (req.payload.userType == 'user') {
+    const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
+
+    // gets all searched events
+    const events = await eventsDb.getEvents(
+        req.query.start, req.query.end, req.query.search);
+
+    // go through all events and get the public ones or ones that are part of the businesses
+    const searchEventList = []
+    for (let i = 0; i < events.length; i++) {
+      for (let j = 0; j < businesses.length; j++) {
+        if (events[i].businessid === businesses[j].businessid ||
+          events[i].membersonly === false) {
+            searchEventList.push(events[i]);
+            break;
+          }
+      }
+    }
+
+    console.log(searchEventList);
+    res.status(200).json(searchEventList);
+  }
+
+
+};
+
 /** calculates time difference
  * @constructor
  * @param {date} dateFuture future date

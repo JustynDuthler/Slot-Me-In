@@ -75,6 +75,7 @@ app.get('/api/events/publicAndMemberEvents/:useremail',
 app.get('/api/events/:eventid', events.getEventByID);
 app.delete('/api/events/:eventid', auth.businessAuth, events.delete);
 app.put('/api/events/:eventid/signup', auth.userAuth, events.signup);
+app.get('/api/events/search/:useremail', auth.authenticateJWT, events.getSearchEvents);
 
 // Attendees routes
 app.get('/api/attendees/:eventid', attendees.getTotalAttendees);

@@ -24,6 +24,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Hidden from '@material-ui/core/Hidden';
+import {useHistory} from 'react-router-dom';
 
 import NavBar from './Components/Nav/NavBar';
 import EventCard from './Components/Events/EventCard';
@@ -94,8 +95,10 @@ const useStyles = makeStyles((theme) => ({
  * @return {object} ViewEvents JSX
  */
 export default function ViewEvents() {
+  const history = useHistory();
   const classes = useStyles();
   const context = React.useContext(Context);
+  const [userEmail, setUserEmail] = React.useState('');
   const [memberEvents, setMemberEvents] = React.useState([]);
   const [publicEvents, setPublicEvents] = React.useState([]);
   const [businessEvents, setBusinessEvents] = React.useState([]);
@@ -103,6 +106,7 @@ export default function ViewEvents() {
   const [businessList, setBusinessList] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
+  const [searchBoolean, setSearchBoolean] = React.useState(false);
   // change to get category query
   const [checkState, setCheckState] = React.useState({
     gym: false,
@@ -130,6 +134,17 @@ export default function ViewEvents() {
         .then((json) => {
           getMemberEvents(json.useremail);
           getMemberBusinesses(json.useremail);
+          setUserEmail(json.useremail);
+
+          if (window.location.href === 'http://localhost:3000/events') {
+            /* show all events */
+            setSearchBoolean(false);
+          } else {
+            setSearchBoolean(true);
+            const parsedURL = (window.location.href).split('?');
+            /* stick parsedURL in an api call and pass it to search events */
+            searchFromURL(parsedURL[1], json.useremail);
+          }
         },
         (error) => {
           console.log(error);
@@ -155,6 +170,7 @@ export default function ViewEvents() {
       }
     }).then((json) => {
       setMemberBusinesses(json);
+      console.log(json);
     })
         .catch((error) => {
           console.log(error);
@@ -272,19 +288,36 @@ export default function ViewEvents() {
     } else {
       getBusinessEvents();
     }
+
+    /* set it so the url is parsed and you can get the searched events again */
+    if (window.location.href === 'http://localhost:3000/events') {
+      /* show all events */
+      setSearchBoolean(false);
+    } else {
+      setSearchBoolean(true);
+      const parsedURL = (window.location.href).split('?');
+      /* stick parsedURL in an api call and pass it to search events */
+      searchFromURL(parsedURL[1]);
+    }
   }, []);
 
   /**
-   * searchEvents
-   * takes input and searches events
-   * @param {*} event
+   * searchFromURL
+   * obtains all businesses
+   * @param {string} url
+   * @param {email} email
    */
-  const searchEvents = (event) => {
+  function searchFromURL(url, email) {
+    console.log('url'+url);
     let apicall = 'http://localhost:3010/api/events';
-    if (searchValue !== '') {
-      apicall += '?search='+searchValue;
+    /* if user account */
+    if (context.businessState === false) {
+      apicall += '/search/'+email+'?search='+url;
+    } else {
+      /* if business account */
+      apicall += '?'+url;
     }
-    console.log(apicall);
+    console.log('api: '+apicall);
     fetch(apicall, {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
@@ -299,7 +332,60 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setSearchEventsList(json);
-      setSearch('');
+      console.log(json);
+      console.log(searchEventsList);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
+  /**
+   * searchEvents
+   * takes input and searches events
+   * @param {*} event
+   */
+  const searchEvents = (event) => {
+    let apicall;
+    if (context.businessState === false) {
+      apicall = 'http://localhost:3010/api/events/search/';
+      if (searchValue !== '') {
+        setSearchBoolean(true);
+        apicall += userEmail+'?search='+searchValue;
+        history.push('/events?search='+searchValue);
+      } else {
+        setSearchBoolean(true);
+        apicall += userEmail;
+        history.push('/events?search=');
+      }
+      console.log(apicall);
+    } else {
+      console.log('hi');
+      apicall = 'http://localhost:3010/api/events';
+      if (searchValue !== '') {
+        apicall += '?search='+searchValue;
+      }
+      console.log('business apicall '+apicall);
+      history.push('/events?search='+searchValue);
+    }
+
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setSearchEventsList(json);
+      console.log(json);
+      console.log(searchEventsList);
+      // setSearch('');
     })
         .catch((error) => {
           console.log(error);
@@ -315,8 +401,6 @@ export default function ViewEvents() {
     setCheckState({...checkState, [event.target.name]: event.target.checked});
     console.log(event.target.name + ' ' + event.target.checked);
   };
-
-  console.log(searchEventsList);
 
   /* Show member events if user is part of any businesses */
   let showMemberEvents;
@@ -435,6 +519,68 @@ export default function ViewEvents() {
     );
   }
 
+  /* Show business filters if it is a user account */
+  let showBusinessFilters;
+  if (context.businessState === false) {
+    showBusinessFilters = (
+      <Box>
+        <ListItem>
+          <ListItemText primary='Businesses' />
+        </ListItem>
+        <ListItem>
+          <FormGroup>
+            {businessList.map((business) =>
+              <FormControlLabel
+                key={business.businessid}
+                control={
+                  <Checkbox
+                    checked={checkState.businessname}
+                    onChange={handleChange}
+                    name={business.businessname}
+                    color="secondary"
+                  />
+                }
+                label={business.businessname}
+              />,
+            )}
+          </FormGroup>
+        </ListItem>
+        <Divider variant="middle" />
+      </Box>
+    );
+  } else {
+    showBusinessFilters = (
+      <div></div>
+    );
+  }
+
+  let showSearchedEvents;
+  if (searchBoolean === false) {
+    showSearchedEvents = (
+      <main className={classes.content}>
+        {showMemberEvents}
+        {showPublicEvents}
+        {showBusinessEvents}
+      </main>
+    );
+  } else {
+    showSearchedEvents = (
+      <main className={classes.content}>
+        <Typography variant="h4" className={classes.eventHeader}>
+          Events
+        </Typography>
+        <Grid className={classes.gridContainer}
+          container spacing={3}>
+          {searchEventsList.map((event) =>
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
+              row={event}/>,
+          )}
+        </Grid>
+      </main>
+    );
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -463,30 +609,7 @@ export default function ViewEvents() {
                 </ListItemText>
               </ListItem>
 
-              <Box>
-                <ListItem>
-                  <ListItemText primary='Businesses' />
-                </ListItem>
-                <ListItem>
-                  <FormGroup>
-                    {businessList.map((business) =>
-                      <FormControlLabel
-                        key={business.businessid}
-                        control={
-                          <Checkbox
-                            checked={checkState.businessname}
-                            onChange={handleChange}
-                            name={business.businessname}
-                            color="secondary"
-                          />
-                        }
-                        label={business.businessname}
-                      />,
-                    )}
-                  </FormGroup>
-                </ListItem>
-                <Divider variant="middle" />
-              </Box>
+              {showBusinessFilters}
 
               <Box>
                 <ListItem>
@@ -640,7 +763,7 @@ export default function ViewEvents() {
       </Hidden>
 
       <Grid container>
-        <Box mt={3} ml={13} className={classes.content}>
+        <Box mt={3} ml={13} className={classes.content} style={{width: '100%'}}>
           <Paper component="form" className={classes.searchBar}>
             <InputBase
               className={classes.searchInput}
@@ -652,17 +775,14 @@ export default function ViewEvents() {
             <IconButton
               className={classes.searchIcon}
               aria-label="search"
-              onClick={searchEvents}>
+              onClick={searchEvents}
+              onKeyPress={searchEvents}>
               <SearchIcon />
             </IconButton>
           </Paper>
         </Box>
         <Box>
-          <main className={classes.content}>
-            {showMemberEvents}
-            {showPublicEvents}
-            {showBusinessEvents}
-          </main>
+          {showSearchedEvents}
         </Box>
       </Grid>
     </div>
