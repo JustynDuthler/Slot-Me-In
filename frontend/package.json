@@ -15,7 +15,8 @@
     "jest-cli": "26.6.0",
     "jest-dev-server": "^4.4.0",
     "puppeteer": "^5.4.1",
-    "react-scripts": "4.0.0"
+    "react-scripts": "4.0.0",
+    "whatwg-fetch": "^3.6.2"
   },
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
