@@ -201,6 +201,15 @@ export default function Register() {
             Create Account
           </Typography>
           <div className={classes.form}>
+            <FormControlLabel
+              control={<Checkbox id='businessCheckbox'
+                value='remember'
+                color='primary'
+                onChange={(event) => {
+                  setForm(event.target.checked);
+                }}/>}
+              label='Business Account'
+            />
             <TextField
               className={classes.textentry}
               variant='outlined'
@@ -232,6 +241,7 @@ export default function Register() {
                 format='MM/dd/yyyy'
                 label='Date of Birth'
                 inputVariant='outlined'
+                id='dob'
                 value={dob}
                 onChange={setDob}
                 onKeyPress={handleKeypress}
@@ -289,17 +299,11 @@ export default function Register() {
                 }
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value='remember'
-                color='primary'
-                onChange={(event) => {
-                  setForm(event.target.checked);
-                }}/>}
-              label='Business Account'
-            />
             {showBusiness && <PhoneInput
+              id='phonenumber'
+              style={{marginTop: 10}}
+              inputStyle={{background: 'transparent', width: '100%'}}
               isValid={!errors.phone}
-              inputStyle={{width: '100%'}}
               country={'us'}
               value={phoneNumber}
               onChange={(phone) => {
@@ -310,11 +314,11 @@ export default function Register() {
               }}
             />}
             {showBusiness && <TextField
+              style={{marginTop: 10}}
               error={errors.description}
               helperText={errors.description ?
                 'Description must be less than 500 characters.' : ''}
               variant='outlined'
-              margin='normal'
               fullWidth
               id='description'
               label='Description (max 500 chars)'
@@ -327,6 +331,7 @@ export default function Register() {
               onKeyPress={handleKeypress}
             />}
             <Button
+              id='submit'
               type='submit'
               fullWidth
               variant='contained'
@@ -335,7 +340,7 @@ export default function Register() {
             >
               Create Account
             </Button>
-            <Link href="/login" variant="body2">
+            <Link href="/login" variant="body2" id="login">
                 Already have an account? Log In
             </Link>
           </div>

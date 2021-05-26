@@ -22,6 +22,8 @@ import About from './Screens/About';
 import Contact from './Screens/Contact';
 import NavBar from './Components/Nav/NavBar';
 import Footer from './Components/Nav/Footer';
+import NotFound from './Screens/NotFound';
+
 const Auth = require('./libs/Auth');
 
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
@@ -134,7 +136,7 @@ function App() {
   }
 
   const userType = businessState ? 'business' : 'user';
-  const path = window.location.pathname;
+  const path = window.location.pathname.toLowerCase();
   let menu;
   // do not show NavBar on home, login, or register when not logged in
   if (!(path == '/') && !(path.startsWith('/login')) &&
@@ -199,7 +201,8 @@ function App() {
                 <Route path="/contact">
                   <Contact/>
                 </Route>
-                <Route path="/" component={Home}/>
+                <Route exact path="/" component={Home}/>
+                <Route component={NotFound}/>
               </Switch>
             </Box>
             <Footer className={classes.footer}/>
@@ -217,6 +220,13 @@ function App() {
     </>
   );
 }
+
+App.propTypes = {
+  'match': PropTypes.object,
+  'match.params': PropTypes.object,
+  'match.params.businessid': PropTypes.string,
+  'match.params.eventid': PropTypes.string,
+};
 
 // Prop types for PrivateRoute
 PrivateRoute.propTypes = {

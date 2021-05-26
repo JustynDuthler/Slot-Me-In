@@ -265,6 +265,7 @@ export default function CreateEvent() {
                 className={classes.dateselect}
                 label='Start Date/Time'
                 inputVariant='outlined'
+                id='startdatetime'
                 value={startDateTime}
                 onChange={changeStartDateTime}
                 onKeyPress={handleKeypress}
