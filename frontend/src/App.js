@@ -202,6 +202,8 @@ function App() {
                   <Contact/>
                 </Route>
                 <Route exact path="/" component={Home}/>
+                <Route exact path="/login" component={Home}/>
+                <Route exact path="/register" component={Home}/>
                 <Route component={NotFound}/>
               </Switch>
             </Box>
