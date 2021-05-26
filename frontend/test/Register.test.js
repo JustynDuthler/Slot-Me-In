@@ -5,7 +5,6 @@ let browser;
 
 // Create the browser before each test
 beforeEach(async (done) => {
-  require("whatwg-fetch");
   browser = await puppeteer.launch({
     // headless: false 
   });
@@ -41,25 +40,3 @@ test('Date of Birth Input', async () => {
   expect(content).toBe(expected);
 });
 
-test('Create User Account', async () => {
-  const expected = {
-
-  };
-  jest.spyOn(window, "fetch").mockImplementation(() => {
-    const fetchResponse = {
-      ok: true,
-      json: () => Promise.resolve(expected)
-    };
-    return Promise.resolve(fetchResponse);
-  });
-
-  let page = await browser.newPage();
-  await page.goto('http://localhost:3000/register');
-  await page.type('#username', 'Test User');
-  await page.type('#email', 'test@ucsc.edu');
-  await page.click('#dob');
-  await page.waitForTimeout(100);
-  await page.keyboard.press('Enter');
-  await page.type('#password', 'Pwd');
-  await page.click('#submit');
-});

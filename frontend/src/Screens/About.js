@@ -26,6 +26,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 0,
     marginBottom: 20,
   },
+  iconAttribution: {
+    fontSize: '0.6rem',
+    position: 'relative',
+    bottom: 10,
+  },
+  link: {
+    textDecoration: 'none',
+  },
 }));
 
 /**
@@ -66,6 +74,14 @@ export default function About() {
         all public events. Users can see all of the events they have signed
         up for on an easy to use calendar view.
       </Typography>
+      <br/>
+      <Box className={classes.iconAttribution}>
+        Favicon derived from icon by
+        &nbsp;<a href="https://www.freepik.com" title="Freepik"
+          className={classes.link}>Freepik</a> from
+        &nbsp;<a href="https://www.flaticon.com/" title="Flaticon"
+          className={classes.link}>www.flaticon.com</a>
+      </Box>
     </Box>
   );
 };
