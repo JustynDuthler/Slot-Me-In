@@ -1,6 +1,6 @@
 -- 20 fake users. Every password is PaSWord
 INSERT INTO Users(userid, username, password, useremail, birthdate)
-VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'jeff@ucsc.edu', '2000-01-01T13:30:00.000Z');
+VALUES ('00000000-0000-0000-0000-000000000000', 'Jeff', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'jeff@ucsc.edu', '2003-01-01T13:30:00.000Z');
 INSERT INTO Users(userid, username, password, useremail, birthdate)
 VALUES ('00000000-0000-0000-0000-000000000001', 'Aaron', '$2b$10$yM6wHn3IDtPttfUKnZ3mge/wTJKcxBnFSPNqm/2DIusW5KPYWNihm', 'aaron@ucsc.edu', '2002-01-01T13:30:00.000Z');
 INSERT INTO Users(userid, username, password, useremail, birthdate)

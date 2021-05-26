@@ -1,6 +1,7 @@
 const supertest = require('supertest');
 const http = require('http');
 const app = require('../src/app');
+const { request } = require('express');
 
 let server;
 let businessAuthToken;
@@ -380,3 +381,18 @@ test('getEventByID bad eventID', async () => {
   await request.get('/api/events/00000000-0019-0006-0000-000100000000')
     .expect(404);
 })  
+
+/*
+---------------------------signup tests------------------------------------
+
+  1. successfully signed up for event
+  2. user does not meet restrictions for event
+  3. bad event id
+  4. user already signed up
+
+*/
+test('event sign up successful', async () => {
+  await request.put('api/events/00000000-0013-0000-0000-000000000000/signup')
+    .set({'Authorization': 'Bearer ' + userAuthToken})
+    .expect(200);
+})
