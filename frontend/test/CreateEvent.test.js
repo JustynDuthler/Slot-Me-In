@@ -35,11 +35,13 @@ test('Start Date Input', async () => {
   await page.type('#email', 'contact@testinc.com', { delay: 100 });
   await page.type('#password', 'password', { delay: 100 });
   await page.keyboard.press('Enter');
-  await page.goto('http://localhost:3000/events/create');
-  await page.click('#startdatetime');
-  await page.waitForTimeout(100);
   await page.keyboard.press('Enter');
+  await page.goto('http://localhost:3000/events/create');
+  // await page.click('#startdatetime');
+  // await page.waitForTimeout(100);
+  // await page.keyboard.press('Enter');
   const date = await page.$('#startdatetime');
+  console.log(date);
   const content = await (await date.getProperty('value')).jsonValue();
   expect(content).toBe(expected);
 });
