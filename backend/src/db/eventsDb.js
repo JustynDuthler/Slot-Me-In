@@ -114,35 +114,10 @@ exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
     text: select,
     values: values,
   };
-  const days =
-      {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
-        'thursday': 4, 'friday': 5, 'saturday': 6};
-  const {rows} = await pool.query(query);
-  const rows2 = [];
-  for (const i in rows) {
-    if (rows.hasOwnProperty(i)) {
-      const row = {};
-      const rowDays = {};
-      for (const j in rows[i]) {
-        if (rows[i][j] === null) {
-          continue;
-        }
-        if (j in days) {
-          rowDays[j] = rows[i][j];
-        } else {
-          row[j] = rows[i][j];
-        }
-      }
-      if (rows[i]['repeatid'] !== null) {
-        row['repeatdays'] = rowDays;
-      }
-      // get number of attendees for each event
-      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
-      row['attendees'] = attendees.length;
-      rows2.push(row);
-    }
-  }
-  return rows2;
+  let {rows} = await pool.query(query);
+  rows = getEventRepeatDays(rows);
+  rows = await getEventAttendees(rows);
+  return rows;
 };
 
 
@@ -178,35 +153,10 @@ exports.getUsersEvents = async (userid) => {
     values: [userid],
   };
 
-  const days =
-      {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
-        'thursday': 4, 'friday': 5, 'saturday': 6};
-  const {rows} = await pool.query(query);
-  const rows2 = [];
-  for (const i in rows) {
-    if (rows.hasOwnProperty(i)) {
-      const row = {};
-      const rowDays = {};
-      for (const j in rows[i]) {
-        if (rows[i][j] === null) {
-          continue;
-        }
-        if (j in days) {
-          rowDays[j] = rows[i][j];
-        } else {
-          row[j] = rows[i][j];
-        }
-      }
-      if (rows[i]['repeatid'] !== null) {
-        row['repeatdays'] = rowDays;
-      }
-      // get number of attendees for each event
-      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
-      row['attendees'] = attendees.length;
-      rows2.push(row);
-    }
-  }
-  return rows2;
+  let {rows} = await pool.query(query);
+  rows = getEventRepeatDays(rows);
+  rows = await getEventAttendees(rows);
+  return rows;
 };
 
 // returns list of events created by businessid
@@ -243,10 +193,31 @@ exports.getBusinessEvents = async (businessid, start='2000-01-01T00:00:00.000Z',
     text: queryText,
     values: values,
   };
+  let {rows} = await pool.query(query);
+  rows = getEventRepeatDays(rows);
+  rows = await getEventAttendees(rows);
+  return rows;
+};
+
+exports.getPublicEvents = async () => {
+  const SELECT = 'SELECT * FROM Events WHERE membersonly = FALSE';
+  const query = {
+    text: SELECT,
+    values: [],
+  };
+  let {rows} = await pool.query(query);
+  rows = await getEventAttendees(rows);
+  return rows;
+};
+
+/** get repeat days for events
+ * @return {Array} Rows with repeatdays property added
+ * @param {Array} rows Rows from a SELECT FROM Events db query
+ */
+function getEventRepeatDays(rows) {
   const days =
       {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
         'thursday': 4, 'friday': 5, 'saturday': 6};
-  const {rows} = await pool.query(query);
   const rows2 = [];
   for (const i in rows) {
     if (rows.hasOwnProperty(i)) {
@@ -265,23 +236,17 @@ exports.getBusinessEvents = async (businessid, start='2000-01-01T00:00:00.000Z',
       if (rows[i]['repeatid'] !== null) {
         row['repeatdays'] = rowDays;
       }
-      // get number of attendees for each event
-      const attendees = await exports.checkRemainingEventCapacity(row.eventid);
-      row['attendees'] = attendees.length;
       rows2.push(row);
     }
   }
-  console.log(rows2);
   return rows2;
-};
+}
 
-exports.getPublicEvents = async () => {
-  const SELECT = 'SELECT * FROM Events WHERE membersonly = FALSE';
-  const query = {
-    text: SELECT,
-    values: [],
-  };
-  const {rows} = await pool.query(query);
+/** get attendees for events
+ * @return {Array} Rows with repeatdays property added
+ * @param {Array} rows Rows from a SELECT FROM Events db query
+ */
+getEventAttendees = async (rows) => {
   for (const i in rows) {
     if (rows.hasOwnProperty(i)) {
       // get number of attendees for each event
@@ -290,7 +255,7 @@ exports.getPublicEvents = async () => {
     }
   }
   return rows;
-};
+}
 
 // exports.getSearchEvents = async (start='2000-01-01T00:00:00.000Z',
 //     end='3000-01-01T00:00:00.000Z',
