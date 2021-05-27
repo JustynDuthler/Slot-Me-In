@@ -12,7 +12,7 @@ import Context from './Context';
 import Home from './Screens/Home';
 import AuthTest from './Screens/AuthTest';
 import CreateEvent from './Screens/CreateEvent';
-import IndividualEvent from './IndividualEvent';
+import IndividualEvent from './Screens/IndividualEvent';
 import PublicBusinessProfile from './Screens/PublicBusinessProfile';
 import ViewEvents from './ViewEvents';
 import UserProfile from './Screens/UserProfile';
