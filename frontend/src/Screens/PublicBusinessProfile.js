@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Redirect} from 'react-router-dom';
 import {Grid} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
+import NotFound from './NotFound';
 import {BusinessInfo} from '../Components';
 import EventCard from '../Components/Events/EventCard';
 import Card from '@material-ui/core/Card';
@@ -171,7 +171,7 @@ const PublicBusinessProfile = (props) => {
   };
 
   if (!businessExists) {
-    return <Redirect to={{pathname: '/404'}} />;
+    return <NotFound />;
   }
 
   return (
