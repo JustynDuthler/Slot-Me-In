@@ -83,8 +83,8 @@ exports.checkRemainingEventCapacity = async (eventid) => {
 //    are retrieved when no queries are provided
 exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
     end='3000-01-01T00:00:00.000Z',
-    search='') => {
-  const select =
+    search='', category='', membersonly, over18, over21) => {
+  let select =
       'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime'+
       ' AS repeatstart, e.endtime, e.capacity,e.description,e.over18,e.over21,'+
       'e.membersonly, e.category,'+
@@ -93,9 +93,26 @@ exports.getEvents = async (start='2000-01-01T00:00:00.000Z',
       'FROM (Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) '+
       'WHERE e.starttime >= $1 AND e.endtime <= $2 AND ' +
       '(e.eventname ~* $3 OR e.description ~* $3)';
+  let values = [start, end, search];
+  if (category) {
+    values.push(category);
+    select += ' AND e.category = $' + values.length;
+  };
+  if (membersonly) {
+    values.push(membersonly);
+    select += ' AND e.membersonly = $' + values.length;
+  };
+  if (over18) {
+    values.push(over18);
+    select += ' AND e.over18 = $' + values.length;
+  };
+  if (over21) {
+    values.push(over21);
+    select += ' AND e.over21 = $' + values.length;
+  };
   const query = {
     text: select,
-    values: [start, end, search],
+    values: values,
   };
   const days =
       {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
@@ -195,8 +212,8 @@ exports.getUsersEvents = async (userid) => {
 // returns list of events created by businessid
 exports.getBusinessEvents = async (businessid, start='2000-01-01T00:00:00.000Z',
     end='3000-01-01T00:00:00.000Z',
-    search='') => {
-  const queryText =
+    search='', category='', membersonly, over18, over21) => {
+  let queryText =
   'SELECT e.eventid, e.eventname, e.businessid, e.starttime, r.starttime ' +
       'AS repeatstart, e.endtime, e.capacity, e.description,' +
       'e.over18, e.over21, e.membersonly, e.category,' +
@@ -205,9 +222,26 @@ exports.getBusinessEvents = async (businessid, start='2000-01-01T00:00:00.000Z',
       '(Events e LEFT JOIN RepeatingEvents r ON e.repeatid = r.repeatid) ' +
       'WHERE e.businessid = $1 AND e.starttime >= $2 AND e.endtime <= $3 AND ' +
       '(e.eventname ~* $4 OR e.description ~* $4)';
+  let values = [businessid, start, end, search];
+  if (category) {
+    values.push(category);
+    queryText += ' AND e.category = $' + values.length;
+  };
+  if (membersonly) {
+    values.push(membersonly);
+    select += ' AND e.membersonly = $' + values.length;
+  };
+  if (over18) {
+    values.push(over18);
+    select += ' AND e.over18 = $' + values.length;
+  };
+  if (over21) {
+    values.push(over21);
+    select += ' AND e.over21 = $' + values.length;
+  };
   const query = {
     text: queryText,
-    values: [businessid, start, end, search],
+    values: values,
   };
   const days =
       {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,
