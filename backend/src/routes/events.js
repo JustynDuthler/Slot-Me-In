@@ -87,6 +87,11 @@ exports.delete = async (req, res) => {
   }
 };
 
+exports.getCategories = async (req,res) => {
+  const categories = await eventsDb.getCategories();
+  res.status(200).send(categories);
+}
+
 exports.getEvents = async (req, res) => {
   // if business account, only show the events made by that business
   console.log(req.query.search);

@@ -79,6 +79,16 @@ exports.checkRemainingEventCapacity = async (eventid) => {
   return rows;
 };
 
+exports.getCategories = async () => {
+  const select = 'SELECT * FROM EventCategories';
+  const query = {
+    text: select,
+    values: [],
+  };
+  const {rows} = await pool.query(query);
+  return rows;
+}
+
 // default values for start/end time queries so that all events
 //    are retrieved when no queries are provided
 exports.getEvents = async (start='2000-01-01T00:00:00.000Z',

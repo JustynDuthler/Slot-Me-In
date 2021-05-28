@@ -203,7 +203,9 @@ export default function Login() {
             </FormControl>
             <FormControlLabel
               control={<Checkbox value="remember"
+                checked={showBusiness}
                 color="primary"
+                id='businesscheckbox'
                 onChange={(event) => {
                   setForm(event.target.checked);
                 }}/>}
