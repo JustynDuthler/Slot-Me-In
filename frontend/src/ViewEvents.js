@@ -35,7 +35,6 @@ import Context from './Context';
 const Auth = require('./libs/Auth');
 
 import './CSS/Scrollbar.css';
-// import { endOfToday } from 'date-fns';
 
 const drawerWidth = 260;
 
@@ -107,29 +106,35 @@ export default function ViewEvents() {
   const classes = useStyles();
   const context = React.useContext(Context);
   const [userEmail, setUserEmail] = React.useState('');
+  const [eventList, setEventList] = React.useState([]);
   const [memberEvents, setMemberEvents] = React.useState([]);
   const [publicEvents, setPublicEvents] = React.useState([]);
   const [businessEvents, setBusinessEvents] = React.useState([]);
+  const [allBusinessEvents, setAllBusinessEvents] = React.useState([]);
   const [memberBusinesses, setMemberBusinesses] = React.useState([]);
   const [businessList, setBusinessList] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
+  const [filteredEventsList, setFilteredEventsList] = React.useState([]);
   const [searchBoolean, setSearchBoolean] = React.useState(false);
+  const [filterBoolean, setFilterBoolean] = React.useState(false);
   const [startDateTime, changeStartDateTime] = React.useState(null);
   const [endDateTime, changeEndDateTime] = React.useState(null);
-  // change to get category query
-  const [checkState, setCheckState] = React.useState({
+  const [restrictions, setRestrictions] = React.useState({
+    membersonly: false,
+    over18: false,
+    over21: false,
+    public: false,
+  });
+  const [categories, setCategories] = React.useState({
     gym: false,
     club: false,
     party: false,
     conference: false,
     workshop: false,
     tutoring: false,
-    members: false,
-    eighteen: false,
-    twentyone: false,
-    public: false,
   });
+  const [businesses, setBusinesses] = React.useState({});
 
   /**
    * getUserInfo
@@ -144,6 +149,7 @@ export default function ViewEvents() {
         .then((json) => {
           getMemberEvents(json.useremail);
           getMemberBusinesses(json.useremail);
+          getPublicAndMemberEvents(json.useremail);
           setUserEmail(json.useremail);
 
           if (window.location.href === 'http://localhost:3000/events') {
@@ -161,6 +167,35 @@ export default function ViewEvents() {
         },
         );
   };
+
+  /**
+   * getPublicAndMemberEvents
+   * API call to get all businesses the user
+   * is a part of
+   * @param {string} email
+   */
+  function getPublicAndMemberEvents(email) {
+    const apicall = 'http://localhost:3010/api/events/publicAndMemberEvents/'+email;
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      // gets all public events + member events
+      setEventList(json);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  }
 
   /**
    * getMemberBusinesses
@@ -256,6 +291,7 @@ export default function ViewEvents() {
       }
       return response.json();
     }).then((json) => {
+      setAllBusinessEvents(json);
       setBusinessEvents(json.slice(0, 8));
     })
         .catch((error) => {
@@ -282,7 +318,7 @@ export default function ViewEvents() {
       setBusinessList(json);
       json.map((business) =>
         // attach to checkstate
-        setCheckState({...checkState, [business.businessname]: false}),
+        setBusinesses({...businesses, [business.businessid]: false}),
       );
     })
         .catch((error) => {
@@ -359,6 +395,8 @@ export default function ViewEvents() {
    * @param {*} event
    */
   const searchEvents = (event) => {
+    setFilterBoolean(false);
+    // TODO: go through all filters and set to false
     if (searchValue !== '' || startDateTime !== null ||
       endDateTime !== null) {
       setSearchBoolean(true);
@@ -449,12 +487,199 @@ export default function ViewEvents() {
   };
 
   /**
+   * applyFilters
+   * apply filters that are set to true
+   */
+  function applyFilters() {
+    setFilterBoolean(true);
+    const filteredEvents = [];
+    if (searchBoolean === true) {
+      for (let i = 0; i < searchEventsList.length; i++) {
+        let added = false;
+        // filtering restrictions
+        for (const j in restrictions) {
+          if (j === 'public') {
+            if (restrictions.public === true &&
+              searchEventsList[i]['membersonly'] === false) {
+              console.log(searchEventsList[i]);
+              added = true;
+              break;
+            }
+          } else if (restrictions[j] === true && searchEventsList[i][j] ===
+            true) {
+            filteredEvents.push(searchEventsList[i]);
+            added = true;
+            break;
+          }
+        }
+        // filtering categories
+        for (const j in categories) {
+          if (categories[j] === true && j === searchEventsList[i].category &&
+            added === false) {
+            filteredEvents.push(searchEventsList[i]);
+            added = true;
+            break;
+          }
+        }
+        // console.log(categories);
+        console.log(businesses);
+        // filtering businesses
+        for (const j in businesses) {
+          if (businesses[j] === true && j === searchEventsList[i].businessid &&
+            added === false) {
+            filteredEvents.push(searchEventsList[i]);
+            added = true;
+            break;
+          }
+        }
+      }
+    } else if (context.businessState === false) {
+      for (let i = 0; i < eventList.length; i++) {
+        let added = false;
+        // filtering restrictions
+        for (const j in restrictions) {
+          if (j === 'public') {
+            if (restrictions.public === true &&
+              eventList[i]['membersonly'] === false) {
+              filteredEvents.push(eventList[i]);
+              added = true;
+              break;
+            }
+          } else if (restrictions[j] === true && eventList[i][j] ===
+            true) {
+            filteredEvents.push(eventList[i]);
+            added = true;
+            break;
+          }
+        }
+        // filtering categories
+        for (const j in categories) {
+          if (categories[j] === true && j === eventList[i].category &&
+            added === false) {
+            filteredEvents.push(eventList[i]);
+            added = true;
+            break;
+          }
+        }
+        // console.log(categories);
+        console.log(businesses);
+        // filtering businesses
+        for (const j in businesses) {
+          if (businesses[j] === true && j === eventList[i].businessid &&
+            added === false) {
+            filteredEvents.push(eventList[i]);
+            added = true;
+            break;
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < allBusinessEvents.length; i++) {
+        let added = false;
+        // filtering restrictions
+        for (const j in restrictions) {
+          if (j === 'public') {
+            if (restrictions.public === true &&
+              allBusinessEvents[i]['membersonly'] === false) {
+              filteredEvents.push(allBusinessEvents[i]);
+              added = true;
+              break;
+            }
+          } else if (restrictions[j] === true && allBusinessEvents[i][j] ===
+            true) {
+            filteredEvents.push(allBusinessEvents[i]);
+            added = true;
+            break;
+          }
+        }
+        // filtering categories
+        for (const j in categories) {
+          if (categories[j] === true && j === allBusinessEvents[i].category &&
+            added === false) {
+            filteredEvents.push(allBusinessEvents[i]);
+            added = true;
+            break;
+          }
+        }
+        // console.log(categories);
+        console.log(businesses);
+        // filtering businesses
+        for (const j in businesses) {
+          if (businesses[j] === true && j === allBusinessEvents[i].businessid &&
+            added === false) {
+            filteredEvents.push(allBusinessEvents[i]);
+            added = true;
+            break;
+          }
+        }
+      }
+    }
+    let noFilter = true;
+    for (const i in businesses) {
+      if (businesses[i] === true) {
+        noFilter = false;
+      }
+    }
+    for (const i in categories) {
+      if (categories[i] === true) {
+        noFilter = false;
+      }
+    }
+    for (const i in restrictions) {
+      if (restrictions[i] === true) {
+        noFilter = false;
+      }
+    }
+    if (noFilter === true && context.businessState === false &&
+      searchBoolean === false) {
+      setFilteredEventsList(eventList);
+    } else if (noFilter === true && context.businessState === true &&
+      searchBoolean === false) {
+      setFilteredEventsList(allBusinessEvents);
+    } else if (noFilter === false) {
+      setFilteredEventsList(filteredEvents);
+    } else {
+      setFilteredEventsList(searchEventsList);
+    }
+    console.log(filteredEvents);
+  }
+
+  /**
    * handleChange
    * used for filter checkboxes
    * @param {*} event
    */
-  const handleChange = (event) => {
-    setCheckState({...checkState, [event.target.name]: event.target.checked});
+  // const handleChange = (event) => {
+  //   setCheckState({...checkState, [event.target.name]:
+  //    event.target.checked});
+  // };
+
+  /**
+   * handleChange
+   * used for filter checkboxes
+   * @param {*} event
+   */
+  const handleRestrictionChange = (event) => {
+    setRestrictions({...restrictions, [event.target.name]:
+      event.target.checked});
+  };
+
+  /**
+   * handleChange
+   * used for filter checkboxes
+   * @param {*} event
+   */
+  const handleCategoryChange = (event) => {
+    setCategories({...categories, [event.target.name]: event.target.checked});
+  };
+
+  /**
+   * handleChange
+   * used for filter checkboxes
+   * @param {*} event
+   */
+  const handleBusinessChange = (event) => {
+    setBusinesses({...businesses, [event.target.name]: event.target.checked});
     console.log(event.target.name + ' ' + event.target.checked);
   };
 
@@ -590,9 +815,9 @@ export default function ViewEvents() {
                 key={business.businessid}
                 control={
                   <Checkbox
-                    checked={checkState.businessname}
-                    onChange={handleChange}
-                    name={business.businessname}
+                    checked={businesses.businessid}
+                    onChange={handleBusinessChange}
+                    name={business.businessid}
                     color="secondary"
                   />
                 }
@@ -611,7 +836,7 @@ export default function ViewEvents() {
   }
 
   let showSearchedEvents;
-  if (searchBoolean === false) {
+  if (searchBoolean === false && filterBoolean === false) {
     showSearchedEvents = (
       <main className={classes.content}>
         {showMemberEvents}
@@ -619,7 +844,7 @@ export default function ViewEvents() {
         {showBusinessEvents}
       </main>
     );
-  } else {
+  } else if (searchBoolean === true && filterBoolean === false) {
     showSearchedEvents = (
       <main className={classes.content}>
         <Typography variant="h4" className={classes.eventHeader}>
@@ -628,6 +853,22 @@ export default function ViewEvents() {
         <Grid className={classes.gridContainer}
           container spacing={3}>
           {searchEventsList.map((event) =>
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
+              row={event}/>,
+          )}
+        </Grid>
+      </main>
+    );
+  } else if (filterBoolean === true) {
+    showSearchedEvents = (
+      <main className={classes.content}>
+        <Typography variant="h4" className={classes.eventHeader}>
+          Events
+        </Typography>
+        <Grid className={classes.gridContainer}
+          container spacing={3}>
+          {filteredEventsList.map((event) =>
             <EventCard className={classes.card} key={event.eventid}
               context={context}
               row={event}/>,
@@ -690,8 +931,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.gym}
-                          onChange={handleChange}
+                          checked={categories.gym}
+                          onChange={handleCategoryChange}
                           name="gym"
                           color="secondary"
                         />
@@ -701,8 +942,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.club}
-                          onChange={handleChange}
+                          checked={categories.club}
+                          onChange={handleCategoryChange}
                           name="club"
                           color="secondary"
                         />
@@ -712,8 +953,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.party}
-                          onChange={handleChange}
+                          checked={categories.party}
+                          onChange={handleCategoryChange}
                           name="party"
                           color="secondary"
                         />
@@ -723,8 +964,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.conference}
-                          onChange={handleChange}
+                          checked={categories.conference}
+                          onChange={handleCategoryChange}
                           name="conference"
                           color="secondary"
                         />
@@ -734,8 +975,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.workshop}
-                          onChange={handleChange}
+                          checked={categories.workshop}
+                          onChange={handleCategoryChange}
                           name="workshop"
                           color="secondary"
                         />
@@ -745,8 +986,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.tutoring}
-                          onChange={handleChange}
+                          checked={categories.tutoring}
+                          onChange={handleCategoryChange}
                           name="tutoring"
                           color="secondary"
                         />
@@ -767,9 +1008,9 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.members}
-                          onChange={handleChange}
-                          name="members"
+                          checked={restrictions.membersonly}
+                          onChange={handleRestrictionChange}
+                          name="membersonly"
                           color="secondary"
                         />
                       }
@@ -778,8 +1019,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.public}
-                          onChange={handleChange}
+                          checked={restrictions.public}
+                          onChange={handleRestrictionChange}
                           name="public"
                           color="secondary"
                         />
@@ -789,9 +1030,9 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.eighteen}
-                          onChange={handleChange}
-                          name="eighteen"
+                          checked={restrictions.over18}
+                          onChange={handleRestrictionChange}
+                          name="over18"
                           color="secondary"
                         />
                       }
@@ -800,9 +1041,9 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.twentyone}
-                          onChange={handleChange}
-                          name="twentyone"
+                          checked={restrictions.over21}
+                          onChange={handleRestrictionChange}
+                          name="over21"
                           color="secondary"
                         />
                       }
@@ -814,7 +1055,8 @@ export default function ViewEvents() {
               <Box textAlign='center'>
                 <Button size='small'
                   variant='contained'
-                  color='secondary'>
+                  color='secondary'
+                  onClick={applyFilters}>
                   Apply Filters
                 </Button>
               </Box>
