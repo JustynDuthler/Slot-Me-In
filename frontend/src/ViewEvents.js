@@ -322,7 +322,10 @@ export default function ViewEvents() {
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
     if (context.businessState === false) {
-      apicall += '/search/'+email+'?search='+url;
+      // apicall += '/search/'+email+'?search='+url;
+      if (url !== undefined) {
+        apicall += '/search/'+encodeURIComponent(email)+'?'+url;
+      }
     } else {
       /* if business account */
       apicall += '?'+url;
@@ -356,20 +359,41 @@ export default function ViewEvents() {
    * @param {*} event
    */
   const searchEvents = (event) => {
-    setSearchBoolean(true);
+    if (searchValue !== '' || startDateTime !== null ||
+      endDateTime !== null) {
+      setSearchBoolean(true);
+    }
     let apicall;
     if (context.businessState === false) {
-      apicall = 'http://localhost:3010/api/events/search/';
-      if (searchValue !== '') {
-        // setSearchBoolean(true);
-        apicall += userEmail+'?search='+searchValue;
-        history.push('/events?search='+searchValue);
-      } else {
-        // setSearchBoolean(true);
-        apicall += userEmail;
-        history.push('/events?search=');
+      // search api call for users
+      apicall = 'http://localhost:3010/api/events/search/'+
+        encodeURIComponent(userEmail);
+      if (startDateTime !== null) {
+        const startTime = startDateTime.toISOString();
+        apicall += '?start='+encodeURIComponent(startTime);
+        if (endDateTime !== null) {
+          const endTime = endDateTime.toISOString();
+          apicall += '&end='+encodeURIComponent(endTime);
+        }
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (endDateTime !== null) {
+        const endTime = endDateTime.toISOString();
+        apicall += '?end='+encodeURIComponent(endTime);
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (searchValue !== '') {
+        apicall += '?search='+searchValue;
       }
       console.log(apicall);
+      const parsedCall = (apicall).split('?');
+      if (parsedCall[1] !== undefined) {
+        history.push('/events?'+parsedCall[1]);
+      } else {
+        history.push('/events');
+      }
     } else {
       // search api call for business accounts
       apicall = 'http://localhost:3010/api/events';
@@ -394,7 +418,11 @@ export default function ViewEvents() {
       }
       console.log('business apicall '+apicall);
       const parsedCall = (apicall).split('?');
-      history.push('/events?'+parsedCall[1]);
+      if (parsedCall[1] !== undefined) {
+        history.push('/events?'+parsedCall[1]);
+      } else {
+        history.push('/events');
+      }
     }
 
     fetch(apicall, {
