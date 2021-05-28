@@ -25,6 +25,9 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Hidden from '@material-ui/core/Hidden';
 import {useHistory} from 'react-router-dom';
+import DateFnsUtils from '@date-io/date-fns';
+import {DateTimePicker, MuiPickersUtilsProvider}
+  from '@material-ui/pickers';
 
 import NavBar from './Components/Nav/NavBar';
 import EventCard from './Components/Events/EventCard';
@@ -57,9 +60,13 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    // flexDirection: row,
   },
   allButFooter: {
     minHeight: 'calc(100vh - 50px)',
+  },
+  datePicker: {
+    backgroundColor: theme.palette.common.white,
   },
   searchBar: {
     padding: '2px 4px',
@@ -99,27 +106,35 @@ export default function ViewEvents() {
   const classes = useStyles();
   const context = React.useContext(Context);
   const [userEmail, setUserEmail] = React.useState('');
+  const [eventList, setEventList] = React.useState([]);
   const [memberEvents, setMemberEvents] = React.useState([]);
   const [publicEvents, setPublicEvents] = React.useState([]);
   const [businessEvents, setBusinessEvents] = React.useState([]);
+  const [allBusinessEvents, setAllBusinessEvents] = React.useState([]);
   const [memberBusinesses, setMemberBusinesses] = React.useState([]);
   const [businessList, setBusinessList] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
+  const [filteredEventsList, setFilteredEventsList] = React.useState([]);
   const [searchBoolean, setSearchBoolean] = React.useState(false);
-  // change to get category query
-  const [checkState, setCheckState] = React.useState({
+  const [filterBoolean, setFilterBoolean] = React.useState(false);
+  const [startDateTime, changeStartDateTime] = React.useState(null);
+  const [endDateTime, changeEndDateTime] = React.useState(null);
+  const [restrictions, setRestrictions] = React.useState({
+    membersonly: false,
+    over18: false,
+    over21: false,
+    public: false,
+  });
+  const [categories, setCategories] = React.useState({
     gym: false,
     club: false,
     party: false,
     conference: false,
     workshop: false,
     tutoring: false,
-    members: false,
-    eighteen: false,
-    twentyone: false,
-    public: false,
   });
+  const [businesses, setBusinesses] = React.useState({});
 
   /**
    * getUserInfo
@@ -134,6 +149,7 @@ export default function ViewEvents() {
         .then((json) => {
           getMemberEvents(json.useremail);
           getMemberBusinesses(json.useremail);
+          getPublicAndMemberEvents(json.useremail);
           setUserEmail(json.useremail);
 
           if (window.location.href === 'http://localhost:3000/events') {
@@ -151,6 +167,35 @@ export default function ViewEvents() {
         },
         );
   };
+
+  /**
+   * getPublicAndMemberEvents
+   * API call to get all businesses the user
+   * is a part of
+   * @param {string} email
+   */
+  function getPublicAndMemberEvents(email) {
+    const apicall = 'http://localhost:3010/api/events/publicAndMemberEvents/'+email;
+    fetch(apicall, {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          Auth.removeJWT();
+          context.setAuthState(false);
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      // gets all public events + member events
+      setEventList(json);
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  }
 
   /**
    * getMemberBusinesses
@@ -246,6 +291,7 @@ export default function ViewEvents() {
       }
       return response.json();
     }).then((json) => {
+      setAllBusinessEvents(json);
       setBusinessEvents(json.slice(0, 8));
     })
         .catch((error) => {
@@ -272,7 +318,7 @@ export default function ViewEvents() {
       setBusinessList(json);
       json.map((business) =>
         // attach to checkstate
-        setCheckState({...checkState, [business.businessname]: false}),
+        setBusinesses({...businesses, [business.businessid]: false}),
       );
     })
         .catch((error) => {
@@ -312,7 +358,10 @@ export default function ViewEvents() {
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
     if (context.businessState === false) {
-      apicall += '/search/'+email+'?search='+url;
+      // apicall += '/search/'+email+'?search='+url;
+      if (url !== undefined) {
+        apicall += '/search/'+encodeURIComponent(email)+'?'+url;
+      }
     } else {
       /* if business account */
       apicall += '?'+url;
@@ -346,28 +395,72 @@ export default function ViewEvents() {
    * @param {*} event
    */
   const searchEvents = (event) => {
-    setSearchBoolean(true);
+    setFilterBoolean(false);
+    // TODO: go through all filters and set to false
+    if (searchValue !== '' || startDateTime !== null ||
+      endDateTime !== null) {
+      setSearchBoolean(true);
+    }
     let apicall;
     if (context.businessState === false) {
-      apicall = 'http://localhost:3010/api/events/search/';
-      if (searchValue !== '') {
-        // setSearchBoolean(true);
-        apicall += userEmail+'?search='+searchValue;
-        history.push('/events?search='+searchValue);
-      } else {
-        // setSearchBoolean(true);
-        apicall += userEmail;
-        history.push('/events?search=');
+      // search api call for users
+      apicall = 'http://localhost:3010/api/events/search/'+
+        encodeURIComponent(userEmail);
+      if (startDateTime !== null) {
+        const startTime = startDateTime.toISOString();
+        apicall += '?start='+encodeURIComponent(startTime);
+        if (endDateTime !== null) {
+          const endTime = endDateTime.toISOString();
+          apicall += '&end='+encodeURIComponent(endTime);
+        }
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (endDateTime !== null) {
+        const endTime = endDateTime.toISOString();
+        apicall += '?end='+encodeURIComponent(endTime);
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (searchValue !== '') {
+        apicall += '?search='+searchValue;
       }
       console.log(apicall);
+      const parsedCall = (apicall).split('?');
+      if (parsedCall[1] !== undefined) {
+        history.push('/events?'+parsedCall[1]);
+      } else {
+        history.push('/events');
+      }
     } else {
-      console.log('hi');
+      // search api call for business accounts
       apicall = 'http://localhost:3010/api/events';
-      if (searchValue !== '') {
+      if (startDateTime !== null) {
+        const startTime = startDateTime.toISOString();
+        apicall += '?start='+encodeURIComponent(startTime);
+        if (endDateTime !== null) {
+          const endTime = endDateTime.toISOString();
+          apicall += '&end='+encodeURIComponent(endTime);
+        }
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (endDateTime !== null) {
+        const endTime = endDateTime.toISOString();
+        apicall += '?end='+encodeURIComponent(endTime);
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (searchValue !== '') {
         apicall += '?search='+searchValue;
       }
       console.log('business apicall '+apicall);
-      history.push('/events?search='+searchValue);
+      const parsedCall = (apicall).split('?');
+      if (parsedCall[1] !== undefined) {
+        history.push('/events?'+parsedCall[1]);
+      } else {
+        history.push('/events');
+      }
     }
 
     fetch(apicall, {
@@ -394,12 +487,199 @@ export default function ViewEvents() {
   };
 
   /**
+   * applyFilters
+   * apply filters that are set to true
+   */
+  function applyFilters() {
+    setFilterBoolean(true);
+    const filteredEvents = [];
+    if (searchBoolean === true) {
+      for (let i = 0; i < searchEventsList.length; i++) {
+        let added = false;
+        // filtering restrictions
+        for (const j in restrictions) {
+          if (j === 'public') {
+            if (restrictions.public === true &&
+              searchEventsList[i]['membersonly'] === false) {
+              console.log(searchEventsList[i]);
+              added = true;
+              break;
+            }
+          } else if (restrictions[j] === true && searchEventsList[i][j] ===
+            true) {
+            filteredEvents.push(searchEventsList[i]);
+            added = true;
+            break;
+          }
+        }
+        // filtering categories
+        for (const j in categories) {
+          if (categories[j] === true && j === searchEventsList[i].category &&
+            added === false) {
+            filteredEvents.push(searchEventsList[i]);
+            added = true;
+            break;
+          }
+        }
+        // console.log(categories);
+        console.log(businesses);
+        // filtering businesses
+        for (const j in businesses) {
+          if (businesses[j] === true && j === searchEventsList[i].businessid &&
+            added === false) {
+            filteredEvents.push(searchEventsList[i]);
+            added = true;
+            break;
+          }
+        }
+      }
+    } else if (context.businessState === false) {
+      for (let i = 0; i < eventList.length; i++) {
+        let added = false;
+        // filtering restrictions
+        for (const j in restrictions) {
+          if (j === 'public') {
+            if (restrictions.public === true &&
+              eventList[i]['membersonly'] === false) {
+              filteredEvents.push(eventList[i]);
+              added = true;
+              break;
+            }
+          } else if (restrictions[j] === true && eventList[i][j] ===
+            true) {
+            filteredEvents.push(eventList[i]);
+            added = true;
+            break;
+          }
+        }
+        // filtering categories
+        for (const j in categories) {
+          if (categories[j] === true && j === eventList[i].category &&
+            added === false) {
+            filteredEvents.push(eventList[i]);
+            added = true;
+            break;
+          }
+        }
+        // console.log(categories);
+        console.log(businesses);
+        // filtering businesses
+        for (const j in businesses) {
+          if (businesses[j] === true && j === eventList[i].businessid &&
+            added === false) {
+            filteredEvents.push(eventList[i]);
+            added = true;
+            break;
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < allBusinessEvents.length; i++) {
+        let added = false;
+        // filtering restrictions
+        for (const j in restrictions) {
+          if (j === 'public') {
+            if (restrictions.public === true &&
+              allBusinessEvents[i]['membersonly'] === false) {
+              filteredEvents.push(allBusinessEvents[i]);
+              added = true;
+              break;
+            }
+          } else if (restrictions[j] === true && allBusinessEvents[i][j] ===
+            true) {
+            filteredEvents.push(allBusinessEvents[i]);
+            added = true;
+            break;
+          }
+        }
+        // filtering categories
+        for (const j in categories) {
+          if (categories[j] === true && j === allBusinessEvents[i].category &&
+            added === false) {
+            filteredEvents.push(allBusinessEvents[i]);
+            added = true;
+            break;
+          }
+        }
+        // console.log(categories);
+        console.log(businesses);
+        // filtering businesses
+        for (const j in businesses) {
+          if (businesses[j] === true && j === allBusinessEvents[i].businessid &&
+            added === false) {
+            filteredEvents.push(allBusinessEvents[i]);
+            added = true;
+            break;
+          }
+        }
+      }
+    }
+    let noFilter = true;
+    for (const i in businesses) {
+      if (businesses[i] === true) {
+        noFilter = false;
+      }
+    }
+    for (const i in categories) {
+      if (categories[i] === true) {
+        noFilter = false;
+      }
+    }
+    for (const i in restrictions) {
+      if (restrictions[i] === true) {
+        noFilter = false;
+      }
+    }
+    if (noFilter === true && context.businessState === false &&
+      searchBoolean === false) {
+      setFilteredEventsList(eventList);
+    } else if (noFilter === true && context.businessState === true &&
+      searchBoolean === false) {
+      setFilteredEventsList(allBusinessEvents);
+    } else if (noFilter === false) {
+      setFilteredEventsList(filteredEvents);
+    } else {
+      setFilteredEventsList(searchEventsList);
+    }
+    console.log(filteredEvents);
+  }
+
+  /**
    * handleChange
    * used for filter checkboxes
    * @param {*} event
    */
-  const handleChange = (event) => {
-    setCheckState({...checkState, [event.target.name]: event.target.checked});
+  // const handleChange = (event) => {
+  //   setCheckState({...checkState, [event.target.name]:
+  //    event.target.checked});
+  // };
+
+  /**
+   * handleChange
+   * used for filter checkboxes
+   * @param {*} event
+   */
+  const handleRestrictionChange = (event) => {
+    setRestrictions({...restrictions, [event.target.name]:
+      event.target.checked});
+  };
+
+  /**
+   * handleChange
+   * used for filter checkboxes
+   * @param {*} event
+   */
+  const handleCategoryChange = (event) => {
+    setCategories({...categories, [event.target.name]: event.target.checked});
+  };
+
+  /**
+   * handleChange
+   * used for filter checkboxes
+   * @param {*} event
+   */
+  const handleBusinessChange = (event) => {
+    setBusinesses({...businesses, [event.target.name]: event.target.checked});
     console.log(event.target.name + ' ' + event.target.checked);
   };
 
@@ -535,9 +815,9 @@ export default function ViewEvents() {
                 key={business.businessid}
                 control={
                   <Checkbox
-                    checked={checkState.businessname}
-                    onChange={handleChange}
-                    name={business.businessname}
+                    checked={businesses.businessid}
+                    onChange={handleBusinessChange}
+                    name={business.businessid}
                     color="secondary"
                   />
                 }
@@ -556,7 +836,7 @@ export default function ViewEvents() {
   }
 
   let showSearchedEvents;
-  if (searchBoolean === false) {
+  if (searchBoolean === false && filterBoolean === false) {
     showSearchedEvents = (
       <main className={classes.content}>
         {showMemberEvents}
@@ -564,7 +844,7 @@ export default function ViewEvents() {
         {showBusinessEvents}
       </main>
     );
-  } else {
+  } else if (searchBoolean === true && filterBoolean === false) {
     showSearchedEvents = (
       <main className={classes.content}>
         <Typography variant="h4" className={classes.eventHeader}>
@@ -580,7 +860,37 @@ export default function ViewEvents() {
         </Grid>
       </main>
     );
+  } else if (filterBoolean === true) {
+    showSearchedEvents = (
+      <main className={classes.content}>
+        <Typography variant="h4" className={classes.eventHeader}>
+          Events
+        </Typography>
+        <Grid className={classes.gridContainer}
+          container spacing={3}>
+          {filteredEventsList.map((event) =>
+            <EventCard className={classes.card} key={event.eventid}
+              context={context}
+              row={event}/>,
+          )}
+        </Grid>
+      </main>
+    );
   }
+
+  /**
+   * handleKeypress
+   * Checks if keypress was enter, then submits form
+   * @param {*} event Event submission event
+   */
+  const handleKeypress = (event) => {
+    // only start submit process if enter is pressed
+    if (event.key === 'Enter') {
+      console.log(searchValue);
+      history.push('/events?search='+searchValue);
+      searchEvents(event);
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -621,8 +931,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.gym}
-                          onChange={handleChange}
+                          checked={categories.gym}
+                          onChange={handleCategoryChange}
                           name="gym"
                           color="secondary"
                         />
@@ -632,8 +942,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.club}
-                          onChange={handleChange}
+                          checked={categories.club}
+                          onChange={handleCategoryChange}
                           name="club"
                           color="secondary"
                         />
@@ -643,8 +953,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.party}
-                          onChange={handleChange}
+                          checked={categories.party}
+                          onChange={handleCategoryChange}
                           name="party"
                           color="secondary"
                         />
@@ -654,8 +964,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.conference}
-                          onChange={handleChange}
+                          checked={categories.conference}
+                          onChange={handleCategoryChange}
                           name="conference"
                           color="secondary"
                         />
@@ -665,8 +975,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.workshop}
-                          onChange={handleChange}
+                          checked={categories.workshop}
+                          onChange={handleCategoryChange}
                           name="workshop"
                           color="secondary"
                         />
@@ -676,8 +986,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.tutoring}
-                          onChange={handleChange}
+                          checked={categories.tutoring}
+                          onChange={handleCategoryChange}
                           name="tutoring"
                           color="secondary"
                         />
@@ -698,9 +1008,9 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.members}
-                          onChange={handleChange}
-                          name="members"
+                          checked={restrictions.membersonly}
+                          onChange={handleRestrictionChange}
+                          name="membersonly"
                           color="secondary"
                         />
                       }
@@ -709,8 +1019,8 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.public}
-                          onChange={handleChange}
+                          checked={restrictions.public}
+                          onChange={handleRestrictionChange}
                           name="public"
                           color="secondary"
                         />
@@ -720,9 +1030,9 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.eighteen}
-                          onChange={handleChange}
-                          name="eighteen"
+                          checked={restrictions.over18}
+                          onChange={handleRestrictionChange}
+                          name="over18"
                           color="secondary"
                         />
                       }
@@ -731,9 +1041,9 @@ export default function ViewEvents() {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkState.twentyone}
-                          onChange={handleChange}
-                          name="twentyone"
+                          checked={restrictions.over21}
+                          onChange={handleRestrictionChange}
+                          name="over21"
                           color="secondary"
                         />
                       }
@@ -745,7 +1055,8 @@ export default function ViewEvents() {
               <Box textAlign='center'>
                 <Button size='small'
                   variant='contained'
-                  color='secondary'>
+                  color='secondary'
+                  onClick={applyFilters}>
                   Apply Filters
                 </Button>
               </Box>
@@ -765,22 +1076,48 @@ export default function ViewEvents() {
 
       <Grid container>
         <Box mt={3} ml={13} className={classes.content} style={{width: '100%'}}>
-          <Paper component="form" className={classes.searchBar}>
-            <InputBase
-              className={classes.searchInput}
-              placeholder="Search Events..."
-              onChange={(event) => {
-                setSearch(event.target.value);
-              }}
-            />
-            <IconButton
-              className={classes.searchIcon}
-              aria-label="search"
-              onClick={searchEvents}
-              onKeyPress={searchEvents}>
-              <SearchIcon />
-            </IconButton>
-          </Paper>
+          <Grid container direction={'row'}>
+            <MuiPickersUtilsProvider
+              utils={DateFnsUtils}>
+              <DateTimePicker
+                className={classes.datePicker}
+                clearable
+                label='Start Date/Time'
+                inputVariant='outlined'
+                id='startdatetime'
+                value={startDateTime}
+                onChange={changeStartDateTime}
+                onKeyPress={handleKeypress}
+              />
+            </MuiPickersUtilsProvider>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DateTimePicker
+                className={classes.datePicker}
+                clearable
+                label='End Date/Time'
+                inputVariant='outlined'
+                value={endDateTime}
+                onChange={changeEndDateTime}
+                onKeyPress={handleKeypress}
+              />
+            </MuiPickersUtilsProvider>
+            <Paper component="form" className={classes.searchBar}>
+              <InputBase
+                className={classes.searchInput}
+                placeholder="Search Events..."
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                }}
+                onKeyPress={handleKeypress}
+              />
+              <IconButton
+                className={classes.searchIcon}
+                aria-label="search"
+                onClick={searchEvents}>
+                <SearchIcon />
+              </IconButton>
+            </Paper>
+          </Grid>
         </Box>
         <Box>
           {showSearchedEvents}
