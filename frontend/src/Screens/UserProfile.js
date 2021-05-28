@@ -14,7 +14,8 @@ import {Hidden} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
+    // minHeight: '100%',
+    // maxHeight: 'calc(100% - 50px)',
   },
   container: {
     marginTop: theme.spacing(4),
@@ -91,20 +92,22 @@ const Content = ({businessList, eventList}) => {
         <Button onClick={() => setContentState('calendar')}>
           Set calendar
         </Button>
-        <Hidden mdDown>
-          <EventCalendar
-            style={{height: '100%', width: '100%'}}
-            EventList={eventList}
-            BusinessList={businessList}
-          />
-        </Hidden>
-        <Hidden lgUp>
-          <EventCalendar
-            style={{height: '100%', width: '100%'}}
-            EventList={eventList}
-            BusinessList={businessList}
-          />
-        </Hidden>
+        <Box>
+          <Hidden mdDown>
+            <EventCalendar
+              style={{height: '100%', width: '100%'}}
+              EventList={eventList}
+              BusinessList={businessList}
+            />
+          </Hidden>
+          <Hidden lgUp>
+            <EventCalendar
+              style={{height: '100%', width: '100%'}}
+              EventList={eventList}
+              BusinessList={businessList}
+            />
+          </Hidden>
+        </Box>
       </Box>
     );
   } else {
