@@ -25,6 +25,9 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Hidden from '@material-ui/core/Hidden';
 import {useHistory} from 'react-router-dom';
+import DateFnsUtils from '@date-io/date-fns';
+import {DateTimePicker, MuiPickersUtilsProvider}
+  from '@material-ui/pickers';
 
 import NavBar from './Components/Nav/NavBar';
 import EventCard from './Components/Events/EventCard';
@@ -32,6 +35,7 @@ import Context from './Context';
 const Auth = require('./libs/Auth');
 
 import './CSS/Scrollbar.css';
+// import { endOfToday } from 'date-fns';
 
 const drawerWidth = 260;
 
@@ -57,9 +61,13 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    // flexDirection: row,
   },
   allButFooter: {
     minHeight: 'calc(100vh - 50px)',
+  },
+  datePicker: {
+    backgroundColor: theme.palette.common.white,
   },
   searchBar: {
     padding: '2px 4px',
@@ -107,6 +115,8 @@ export default function ViewEvents() {
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
   const [searchBoolean, setSearchBoolean] = React.useState(false);
+  const [startDateTime, changeStartDateTime] = React.useState(null);
+  const [endDateTime, changeEndDateTime] = React.useState(null);
   // change to get category query
   const [checkState, setCheckState] = React.useState({
     gym: false,
@@ -361,13 +371,30 @@ export default function ViewEvents() {
       }
       console.log(apicall);
     } else {
-      console.log('hi');
+      // search api call for business accounts
       apicall = 'http://localhost:3010/api/events';
-      if (searchValue !== '') {
+      if (startDateTime !== null) {
+        const startTime = startDateTime.toISOString();
+        apicall += '?start='+encodeURIComponent(startTime);
+        if (endDateTime !== null) {
+          const endTime = endDateTime.toISOString();
+          apicall += '&end='+encodeURIComponent(endTime);
+        }
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (endDateTime !== null) {
+        const endTime = endDateTime.toISOString();
+        apicall += '?end='+encodeURIComponent(endTime);
+        if (searchValue !== '') {
+          apicall += '&search='+searchValue;
+        }
+      } else if (searchValue !== '') {
         apicall += '?search='+searchValue;
       }
       console.log('business apicall '+apicall);
-      history.push('/events?search='+searchValue);
+      const parsedCall = (apicall).split('?');
+      history.push('/events?'+parsedCall[1]);
     }
 
     fetch(apicall, {
@@ -582,6 +609,20 @@ export default function ViewEvents() {
     );
   }
 
+  /**
+   * handleKeypress
+   * Checks if keypress was enter, then submits form
+   * @param {*} event Event submission event
+   */
+  const handleKeypress = (event) => {
+    // only start submit process if enter is pressed
+    if (event.key === 'Enter') {
+      console.log(searchValue);
+      history.push('/events?search='+searchValue);
+      searchEvents(event);
+    }
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -765,22 +806,48 @@ export default function ViewEvents() {
 
       <Grid container>
         <Box mt={3} ml={13} className={classes.content} style={{width: '100%'}}>
-          <Paper component="form" className={classes.searchBar}>
-            <InputBase
-              className={classes.searchInput}
-              placeholder="Search Events..."
-              onChange={(event) => {
-                setSearch(event.target.value);
-              }}
-            />
-            <IconButton
-              className={classes.searchIcon}
-              aria-label="search"
-              onClick={searchEvents}
-              onKeyPress={searchEvents}>
-              <SearchIcon />
-            </IconButton>
-          </Paper>
+          <Grid container direction={'row'}>
+            <MuiPickersUtilsProvider
+              utils={DateFnsUtils}>
+              <DateTimePicker
+                className={classes.datePicker}
+                clearable
+                label='Start Date/Time'
+                inputVariant='outlined'
+                id='startdatetime'
+                value={startDateTime}
+                onChange={changeStartDateTime}
+                onKeyPress={handleKeypress}
+              />
+            </MuiPickersUtilsProvider>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DateTimePicker
+                className={classes.datePicker}
+                clearable
+                label='End Date/Time'
+                inputVariant='outlined'
+                value={endDateTime}
+                onChange={changeEndDateTime}
+                onKeyPress={handleKeypress}
+              />
+            </MuiPickersUtilsProvider>
+            <Paper component="form" className={classes.searchBar}>
+              <InputBase
+                className={classes.searchInput}
+                placeholder="Search Events..."
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                }}
+                onKeyPress={handleKeypress}
+              />
+              <IconButton
+                className={classes.searchIcon}
+                aria-label="search"
+                onClick={searchEvents}>
+                <SearchIcon />
+              </IconButton>
+            </Paper>
+          </Grid>
         </Box>
         <Box>
           {showSearchedEvents}
