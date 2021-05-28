@@ -39,3 +39,19 @@ test('Date of Birth Input', async () => {
   const content = await (await date.getProperty('value')).jsonValue();
   expect(content).toBe(expected);
 });
+
+/**
+ * Tests if business form shows appropriate fields
+ */
+test('Business Account Register Form', async () => {
+  let page = await browser.newPage();
+  await page.goto('http://localhost:3000/register');
+  expect(await page.$('#phonenumber')).toBeNull();
+  expect(await page.$('#description')).toBeNull();
+  expect(await page.$('#dob')).toBeDefined();
+  await page.click('#businessCheckbox');
+  await page.waitForTimeout(100);
+  expect(await page.$('#phonenumber')).toBeDefined();
+  expect(await page.$('#description')).toBeDefined();
+  expect(await page.$('#dob')).toBeNull();
+});
