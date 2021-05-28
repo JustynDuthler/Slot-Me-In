@@ -571,6 +571,26 @@ paths:
           schema:
             type: string
           description: Search events by text (optional)
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Search events by category (optional)
+        - name: membersonly
+          in: query
+          schema:
+            type: boolean
+          description: Get events marked as membersonly (optional)
+        - name: over18
+          in: query
+          schema:
+            type: boolean
+          description: Get events marked as 18+ (optional)
+        - name: over21
+          in: query
+          schema:
+            type: boolean
+          description: Get events marked as 21+ (optional)
       security:
         - bearerAuth: []
       responses:

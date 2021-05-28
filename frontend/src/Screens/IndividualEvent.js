@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Redirect, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
+import NotFound from './NotFound';
 import Box from '@material-ui/core/Box';
 import {Grid} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -12,11 +13,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
-import {BusinessInfo} from './Components';
-import EventCard from './Components/Events/EventCard';
+import {BusinessInfo} from '../Components';
+import EventCard from '../Components/Events/EventCard';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Context from './Context';
+import Context from '../Context';
 import Hidden from '@material-ui/core/Hidden';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -26,9 +27,9 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import {TwitterShareButton, FacebookShareButton} from './Components';
-const Auth = require('./libs/Auth');
-const Util = require('./libs/Util');
+import {TwitterShareButton, FacebookShareButton} from '../Components';
+const Auth = require('../libs/Auth');
+const Util = require('../libs/Util');
 
 /**
  * Alert component for error snackbar
@@ -377,8 +378,9 @@ const IndividualEvent = (props) => {
     });
   };
 
+  // if event with event ID does not exist, show 404 Not Found page
   if (!eventExists) {
-    return <Redirect to={{pathname: '/404'}} />;
+    return <NotFound />;
   }
 
   return (

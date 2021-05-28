@@ -2,6 +2,7 @@ const eventsDb = require('../db/eventsDb');
 const attendeesDb = require('../db/attendeesDb');
 const userDb = require('../db/userDb');
 const memberDb = require('../db/memberDb');
+const categoriesDb = require('../db/categoriesDb');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -88,20 +89,21 @@ exports.delete = async (req, res) => {
 };
 
 exports.getCategories = async (req,res) => {
-  const categories = await eventsDb.getCategories();
+  const categories = await categoriesDb.getCategories();
   res.status(200).send(categories);
 }
 
 exports.getEvents = async (req, res) => {
   // if business account, only show the events made by that business
-  console.log(req.query.search);
   if (req.payload.userType == 'business') {
     const events = await eventsDb.getBusinessEvents(req.payload.id,
-      req.query.start, req.query.end, req.query.search);
+      req.query.start, req.query.end, req.query.search, req.query.category,
+      req.query.membersonly, req.query.over18, req.query.over21);
     res.status(200).json(events);
   } else if (req.payload.userType == 'user') {
     const events = await eventsDb.getEvents(
-        req.query.start, req.query.end, req.query.search);
+        req.query.start, req.query.end, req.query.search, req.query.category,
+        req.query.membersonly, req.query.over18, req.query.over21);
     res.status(200).json(events);
   }
 };
@@ -232,11 +234,8 @@ exports.getSearchEvents = async (req, res) => {
       }
     }
 
-    console.log(searchEventList);
     res.status(200).json(searchEventList);
   }
-
-
 };
 
 /** calculates time difference
