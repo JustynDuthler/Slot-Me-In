@@ -69,6 +69,7 @@ events or just events by the business depending on if the account is a business
 or user account
 */
 app.get('/api/events', auth.authenticateJWT, events.getEvents);
+app.get('/api/events/categories', events.getCategories);
 app.get('/api/events/publicEvents', events.publicEvents);
 app.get('/api/events/publicAndMemberEvents/:useremail',
     events.publicAndMemberEvents);

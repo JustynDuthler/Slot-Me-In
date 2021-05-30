@@ -740,7 +740,7 @@ export default function BusinessProfile() {
               </Grid>
               <Divider orientation="vertical" flexItem
                 style={{marginRight: '-1px', color: '#ff0000'}} />
-              <Grid item container sm={8} className={classes.buttonGroupBox}>
+              <Grid item container sm={6} className={classes.buttonGroupBox}>
 
                 <ButtonGroup variant="text"
                   className={classes.buttonGroup}
@@ -760,17 +760,10 @@ export default function BusinessProfile() {
                       setTab(1);
                     }}>Members
                   </Button>
-                  <Button
-                    className={tab === 2 ? classes.menuButton :
-                      classes.menuButton2}
-                    onClick={()=>{
-                      setTab(2);
-                    }}>Events
-                  </Button>
                 </ButtonGroup>
 
               </Grid>
-              <Grid item sm={1} className={classes.buttonGroupBox}>
+              <Grid item sm={3} className={classes.buttonGroupBox}>
               </Grid>
             </Grid>
             <Grid container item sm={3} direction="column">
@@ -800,7 +793,7 @@ export default function BusinessProfile() {
                         <Box width='260px' height='280px' key={event.eventid}
                           display="flex"
                           justifyContent="center" alignItems="center">
-                          <Box width='240px' height='80%'>
+                          <Box width='240px' height='85%'>
                             <EventCard row={event} context={context}
                               style={{width: '100%', height: '100%'}}/>
                           </Box>

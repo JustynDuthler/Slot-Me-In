@@ -809,8 +809,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
-
+  /events/categories:
+    get:
+      description: Returns an array of all the possible categories
+      tags:
+        - events
+      responses:
+        200:
+          description: successfully retrieved categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /attendees/{eventid}:
     get:
       description: Retrieves number of attendees for an event
@@ -1200,6 +1216,14 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Event"
+    CategoryList:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          category:
+            type: string
     RepeatDays:
       type: object
       additionalProperties: false

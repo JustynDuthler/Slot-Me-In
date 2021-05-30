@@ -6,7 +6,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import {cropImage} from './libs/Util.js';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -55,9 +54,20 @@ export default function UserInfo({picture: path, name: name, email: email,
       backgroundColor: theme.palette.primary.light,
     },
     avatar: {
-      margin: '0',
-      width: '100%',
-      height: '100%',
+      'margin': '0',
+      'width': '100%',
+      'height': '100%',
+      '&:hover': {
+        'border-style': 'dashed',
+        'border-color': theme.palette.primary.dark,
+      },
+    },
+    pfp: {
+      '&:hover': {
+        'backgroundColor': theme.palette.back.main,
+        'color': theme.palette.primary.dark,
+        'border-style': 'dashed',
+      },
     },
   }));
   const classes = useStyles();
@@ -113,6 +123,7 @@ export default function UserInfo({picture: path, name: name, email: email,
           preview: canvas.toDataURL('image/png'),
           raw: e.target.files[0],
         });
+        uploadProfileImage(e.target.files[0]);
       });
     }
   };
@@ -145,9 +156,12 @@ export default function UserInfo({picture: path, name: name, email: email,
       <Box width='90%' height='270px'>
         <label htmlFor="upload-button">
           {image.preview ? (
-            <img src={image.preview} alt="dummy" width='100%' height='auto'
-              style={{marginTop: '10px'}}
-              ref={profileImage}/>
+            <Box>
+              <img src={image.preview} alt="dummy" width='100%' height='auto'
+                style={{marginTop: '10px', cursor: 'copy'}}
+                className={classes.pfp}
+                ref={profileImage}/>
+            </Box>
           ) : (
             <Box width='100%' height='100%'>
               <Avatar
@@ -163,15 +177,6 @@ export default function UserInfo({picture: path, name: name, email: email,
           style={{display: 'none'}}
           onChange={changeImage}
         />
-      </Box>
-      <Box>
-        {image.preview && <Button
-          style={{fontSize: '12px', marginTop: '20px'}}
-          variant='outlined'
-          onClick={()=>{
-            uploadProfileImage(image.raw);
-          }}>Upload
-        </Button>}
       </Box>
       <Typography className={classes.text}>{name}
       </Typography>
@@ -352,12 +357,57 @@ export function BusinessInfo({picture: path, name: name, email: email,
     },
   }));
   const classes = useStyles();
+  const [image, setImage] = React.useState({preview: '', raw: ''});
+  React.useEffect(async () => {
+    // fetch('https://upload.wikimedia.org/wikipedia/'+
+    //   'commons/7/77/Delete_key1.jpg')
+    //     .then((res) => res.blob())
+    //     .then((res) => {
+    //       const url = URL.createObjectURL(res);
+    //       cropImage(url, 1).then((canvas) => {
+    //         setImage({
+    //           preview: canvas.toDataURL('image/png'),
+    //           raw: res,
+    //         });
+    //       });
+    //     });
+    fetch('http://localhost:3010/api/businesses/'+
+      'getProfileImage', {
+      method: 'GET',
+      headers: Auth.headerJsonJWT(),
+    }).then((data) => {
+      console.log(data);
+      return data.json();
+    }).then((json) => {
+      console.log(json);
+      // setImage({
+      //   preview: 'http://localhost:3010/static/businessProfileImages/'+
+      //     json,
+      //   raw: '',
+      // });
+      const url = 'http://localhost:3010/static/businessProfileImages/' + json;
+      cropImage(url, 1).then((canvas) => {
+        setImage({
+          preview: canvas.toDataURL('image/png'),
+          raw: '',
+        });
+      });
+    });
+  }, []);
   return (
     <Grid item className={classes.businessInfo} {...rest}>
-      <Avatar className={classes.avatar}
-        alt={name}
-        src={'./picture'}
-      />
+      {image.preview ? (
+        <img src={image.preview} alt="dummy" width='100%' height='auto'
+          style={{marginTop: '10px'}}
+          ref={profileImage}/>
+      ) : (
+        <Box width='100%' height='100%'>
+          <Avatar
+            alt={'pfp'} width='auto'
+            className={classes.avatar}
+          />
+        </Box>
+      )}
       <Typography className={classes.businessName}
         variant='h3' align='center'>
         {name}

@@ -14,6 +14,7 @@ import Chip from '@material-ui/core/Chip';
 import TagFacesIcon from '@material-ui/icons/TagFaces';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -67,16 +68,17 @@ export default function CreateEvent() {
           {'category': 'conference'}, {'category': 'workshop'},
           {'category': 'tutoring'}]);
     /* uncomment when getCategories route is finished */
-      /* fetch('http://localhost:3010/api/categories/getCategories', {
-        method: 'GET',
-      }).then((res) => res.json())
-      .then((data) => {
-        setChipData(data);
-      },
-      (error) => {
-        console.log(error);
-      },
-    );*/
+    fetch('http://localhost:3010/api/events/categories', {
+      method: 'GET',
+    }).then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setChipData(data);
+        },
+        (error) => {
+          console.log(error);
+        },
+        );
     await Promise.all([categoryRes]);
     setIsLoaded(true);
   }, []);
@@ -170,6 +172,9 @@ export default function CreateEvent() {
     },
     chip: {
       'margin': theme.spacing(0.5),
+    },
+    chipBox: {
+      backgroundColor: theme.palette.back.main,
     },
   }));
   const classes = useStyles();
@@ -426,33 +431,37 @@ export default function CreateEvent() {
                 onKeyPress={handleKeypress}
               />
             </MuiPickersUtilsProvider>}
-            <Grid width='100%' container direction='row'>
-              {chipData.map((data, idx) => {
-                let icon;
+            <Box width='100%' style={{height: '75px', maxHeight: '75px',
+              overflow: 'auto'}}
+            className={classes.chipBox}>
+              <Grid width='100%' container direction='row'>
+                {chipData.map((data, idx) => {
+                  let icon;
 
-                if (data.category === 'party') {
-                  icon = <TagFacesIcon />;
-                }
-                return (
-                  <div key={data.category}>
-                    <Chip
-                      icon={icon}
-                      label={data.category}
-                      color={data.selected===true ? 'primary' : 'default'}
-                      onClick={()=>{
-                        data.selected=!data.selected;
-                        const chipDataCopy = chipData.map((d, i)=>{
-                          return {'category': d.category, 'selected':
-                            i===idx && data.selected};
-                        });
-                        setChipData(chipDataCopy);
-                      }}
-                      className={classes.chip}
-                    />
-                  </div>
-                );
-              })}
-            </Grid>
+                  if (data.category === 'party') {
+                    icon = <TagFacesIcon />;
+                  }
+                  return (
+                    <div key={data.category}>
+                      <Chip
+                        icon={icon}
+                        label={data.category}
+                        color={data.selected===true ? 'primary' : 'default'}
+                        onClick={()=>{
+                          data.selected=!data.selected;
+                          const chipDataCopy = chipData.map((d, i)=>{
+                            return {'category': d.category, 'selected':
+                              i===idx && data.selected};
+                          });
+                          setChipData(chipDataCopy);
+                        }}
+                        className={classes.chip}
+                      />
+                    </div>
+                  );
+                })}
+              </Grid>
+            </Box>
             <TextField
               error={errors.capacity}
               helperText={errors.capacity ?
