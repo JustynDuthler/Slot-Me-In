@@ -28,7 +28,6 @@ exports.signup = async (req, res) => {
       const emailRes = await userDb.checkUserEmailTaken(req.body.email);
       if (emailRes) {
         res.status(409).send();
-        console.log('Email already taken!');
       } else {
         const userid =
             await userDb.insertUserAccount(
@@ -65,10 +64,6 @@ exports.login = async (req, res) => {
 
 exports.getEvents = async (req, res, next) => {
   const userID = req.payload.id;
-  if (userID == null) {
-    throw new Error('UserID was null');
-  }
-
   eventsDb.getUsersEvents(userID)
       .then((events) => {
         res.status(200).send(events);
@@ -83,7 +78,7 @@ exports.removeUserAttending = async (req, res) => {
   const userID = req.payload.id;
   const eventID = req.body.eventid;
 
-  const ret = attendeesDb.removeUserAttending(eventID, userID);
+  const ret = await attendeesDb.removeUserAttending(eventID, userID);
   if (ret) {
     res.status(200).send();
   } else {
