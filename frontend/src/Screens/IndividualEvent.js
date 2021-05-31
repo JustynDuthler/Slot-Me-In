@@ -388,7 +388,7 @@ const IndividualEvent = (props) => {
       <Grid container spacing={6} className={classes.grid}>
         <Hidden xsDown>
           <Grid item md={3}>
-            <BusinessInfo
+            {businessData.businessid && <BusinessInfo
               picture='picture'
               name={businessData.businessname}
               email={businessData.email}
@@ -398,7 +398,7 @@ const IndividualEvent = (props) => {
               onClick={()=>{
                 history.push('/business/profile/'+businessData.businessid);
               }}
-            />
+            />}
           </Grid>
         </Hidden>
 

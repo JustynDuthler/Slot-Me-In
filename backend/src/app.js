@@ -53,6 +53,8 @@ app.post('/api/businesses/uploadProfileImage', auth.businessAuth,
     businesses.saveProfileImage);
 app.get('/api/businesses/getProfileImage', auth.businessAuth,
     businesses.sendProfileImage);
+app.get('/api/businesses/:businessid/getProfileImage',
+    businesses.sendProfileImage);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 app.get('/api/businesses', businesses.getBusinesses);
 

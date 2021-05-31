@@ -188,8 +188,10 @@ exports.saveProfileImage = async (req, res) => {
 
 
 exports.sendProfileImage = async (req, res) => {
-  const businessID = req.payload.id;
+  const businessID = (req.payload) ? req.payload.id : req.params.businessid;
   const imageName = await businessDb.getBusinessImageName(businessID);
+
+
   if (imageName == null) {
     res.status(500);
   } else {
