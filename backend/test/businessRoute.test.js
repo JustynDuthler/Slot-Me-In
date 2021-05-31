@@ -1,6 +1,7 @@
 const supertest = require('supertest');
 const http = require('http');
 const app = require('../src/app');
+const { send } = require('process');
 
 let server;
 let businessAuthToken;
@@ -300,4 +301,68 @@ test('Get Business By ID Test', async() => {
 test('Get Business By Not Found ID Test', async() => {
   await request.get('/api/businesses/10000000-0000-0000-9999-000000000000')
     .expect(404)
+})
+
+/*
+---------------------------Businesses get tests------------------------------------
+
+  1. successful retreival of all businesses (200)
+  
+  cannot run 404 as database is full of businesses
+
+*/
+test('Get All Businesses Information Test', async() => {
+  await request.get('/api/businesses/')
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      const expected = [{
+        businessid: expect.any(String),
+        businessname: expect.any(String),
+        email: expect.any(String),
+        phonenumber: expect.any(String),
+        description: expect.any(String)
+      }]
+      expect(data.body).toEqual(expect.arrayContaining(expected));
+    })
+})
+
+/*
+---------------------------uploadProfileImage tests------------------------------------
+
+  1. successful image upload (200) (Through Swagger UI, Dont want to dump 10MB strings in testing)
+  2. Invalid File type (400)       (Trhough Swagger UI, Dont want to dump 10MB strings in testing)
+
+/*
+---------------------------getProfileImage tests------------------------------------
+
+  1. successfully get image (201)
+  3. User token (403)
+  4. Bad token (401)
+
+*/
+test('Get Profile Image Test', async() => {
+  await request.get('/api/businesses/getProfileImage')
+    .set({'Authorization': 'Bearer ' + businessAuthToken})
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      expect(data.body).toEqual(expect.any(String));
+    })
+})
+
+test('Get Profile Image User Token Test', async() => {
+  await request.get('/api/businesses/getProfileImage')
+    .set({'Authorization': 'Bearer ' + userAuthToken})
+    .expect(403)
+})
+
+test('Get Profile Image User Token Test', async() => {
+  await request.get('/api/businesses/getProfileImage')
+    .set({'Authorization': 'Bearer ' + 'fghj34567sdfg'})
+    .expect(401)
 })
