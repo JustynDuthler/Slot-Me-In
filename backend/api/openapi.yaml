@@ -776,7 +776,7 @@ paths:
 
   /events/publicAndMemberEvents/{useremail}:
     get:
-      description: Returns an array of public and member events
+      description: Returns an array of upcoming public and member events
       tags:
         - events
       parameters:
@@ -787,6 +787,11 @@ paths:
           schema:
             type: string
             format: email
+        - name: all
+          in: query
+          description: Return all events, including past events (default false)
+          schema:
+            type: boolean
       responses:
         200:
           description: Successfully returned events

@@ -192,6 +192,7 @@ exports.publicEvents = async (req, res, next) => {
 exports.publicAndMemberEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
   const eventList = [];
+  const now = req.query.all ? new Date('1/1/1900') : new Date(Date.now());
   // push member events
   for (let i = 0; i < businesses.length; i++) {
     // get restricted events for the business
@@ -199,16 +200,23 @@ exports.publicAndMemberEvents = async (req, res) => {
         businesses[i].businessid);
     for (let j = 0; j < restrictedEvents.length; j++) {
       // push each event
-      eventList.push(restrictedEvents[j]);
+      const starttime = new Date(restrictedEvents[j]['starttime'])
+      if (starttime >= now)
+        eventList.push(restrictedEvents[j]);
     }
   }
 
   // push public events
   const publicEvents = await eventsDb.getPublicEvents();
   for (let i = 0; i < publicEvents.length; i++) {
-    eventList.push(publicEvents[i]);
+    const starttime = new Date(publicEvents[i]['starttime'])
+      if (starttime >= now)
+      eventList.push(publicEvents[i]);
   }
 
+  eventList.sort(
+    (a, b) =>
+      new Date(a.starttime).getTime() - new Date(b.starttime).getTime());
   res.status(200).json(eventList);
 };
 
