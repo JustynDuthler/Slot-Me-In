@@ -228,8 +228,6 @@ const UnAuthHome = (props) => {
  * @return {object} JSX
  */
 const AuthHome = (props) => {
-  // const classes = useStyles();
-
   return (
     <Box>
       <ViewEvents />

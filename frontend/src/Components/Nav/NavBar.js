@@ -101,15 +101,6 @@ const NavBar = ({userType}) => {
             Home
           </Button>
           <Button
-            startIcon={<AddIcon/>}
-            href="/events/create"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            Create Event
-          </Button>
-          <Button
             startIcon={<EventIcon/>}
             href="/events"
             color="secondary"
@@ -119,12 +110,13 @@ const NavBar = ({userType}) => {
             Events
           </Button>
           <Button
-            href="/authtest"
+            startIcon={<AddIcon/>}
+            href="/events/create"
             color="secondary"
             size="large"
             variant="contained"
           >
-            AuthTest
+            Create Event
           </Button>
         </ButtonGroup>
       </Box>
@@ -151,14 +143,6 @@ const NavBar = ({userType}) => {
           >
             Events
           </Button>
-          <Button
-            href="/authtest"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            AuthTest
-          </Button>
         </ButtonGroup>
       </Box>
     );
@@ -174,14 +158,6 @@ const NavBar = ({userType}) => {
             variant="contained"
           >
             Home
-          </Button>
-          <Button
-            href="/authtest"
-            color="secondary"
-            size="large"
-            variant="contained"
-          >
-            AuthTest
           </Button>
         </ButtonGroup>
       </Box>
