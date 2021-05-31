@@ -69,6 +69,7 @@ exports.create = async (req, res) => {
   res.status(201).send(event);
 };
 
+
 exports.delete = async (req, res) => {
   const event = await eventsDb.getEventByID(req.params.eventid);
   if (!event) {
