@@ -9,7 +9,7 @@ import Hidden from '@material-ui/core/Hidden';
 import Login from '../Components/Account/Login';
 import Register from '../Components/Account/Register';
 import EventGrid from '../Components/Events/EventGrid';
-// import {UserAttendingCalendar} from '../Components/Events/EventCalendar';
+import ViewEvents from '../ViewEvents';
 
 import '../CSS/Scrollbar.css';
 
@@ -232,10 +232,7 @@ const AuthHome = (props) => {
 
   return (
     <Box>
-      <Typography variant='h3' align='center' className={classes.homeTitle}>
-        Your Upcoming Schedule
-      </Typography>
-      {/* <UserAttendingCalendar/>*/}
+      <ViewEvents />
     </Box>
   );
 };

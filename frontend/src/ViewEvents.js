@@ -146,7 +146,7 @@ export default function ViewEvents() {
           getPublicAndMemberEvents(json.useremail);
           setUserEmail(json.useremail);
 
-          if (window.location.href === 'http://localhost:3000/events') {
+          if (window.location.href === 'http://localhost:3000/') {
             /* show all events */
             setSearchBoolean(false);
           } else {
@@ -354,7 +354,7 @@ export default function ViewEvents() {
       getAllBusinesses();
     } else {
       getBusinessEvents();
-      if (window.location.href === 'http://localhost:3000/events') {
+      if (window.location.href === 'http://localhost:3000/') {
         /* show all events */
         setSearchBoolean(false);
       } else {
@@ -472,9 +472,9 @@ export default function ViewEvents() {
       }
       const parsedCall = (apicall).split('?');
       if (parsedCall[1] !== undefined) {
-        history.push('/events?'+parsedCall[1]);
+        history.push('/?'+parsedCall[1]);
       } else {
-        history.push('/events');
+        history.push('/');
       }
     } else {
       // search api call for business accounts
@@ -500,9 +500,9 @@ export default function ViewEvents() {
       }
       const parsedCall = (apicall).split('?');
       if (parsedCall[1] !== undefined) {
-        history.push('/events?'+parsedCall[1]);
+        history.push('/'+parsedCall[1]);
       } else {
-        history.push('/events');
+        history.push('/');
       }
     }
 
@@ -907,7 +907,7 @@ export default function ViewEvents() {
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
     if (event.key === 'Enter') {
-      history.push('/events?search='+searchValue);
+      history.push('/?search='+searchValue);
       searchEvents(event);
     }
   };
@@ -1108,7 +1108,7 @@ export default function ViewEvents() {
                 <Button size='medium'
                   variant='contained'
                   color='secondary'
-                  href={'/allevents'}>
+                  href={'/events'}>
                   See All Events
                 </Button>
               </Box>

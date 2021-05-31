@@ -14,7 +14,6 @@ import AuthTest from './Screens/AuthTest';
 import CreateEvent from './Screens/CreateEvent';
 import IndividualEvent from './Screens/IndividualEvent';
 import PublicBusinessProfile from './Screens/PublicBusinessProfile';
-import ViewEvents from './ViewEvents';
 import UserProfile from './Screens/UserProfile';
 import BusinessProfile from './Screens/BusinessProfile';
 import AllEvents from './AllEvents';
@@ -170,14 +169,11 @@ function App() {
                 <PrivateRoute
                   path="/events"
                   authed={authState}
-                  component={ViewEvents}
+                  component={AllEvents}
                 />
                 <Route path="/profile">
                   {(authState) ? ((businessState === false) ?
                   <UserProfile/> : <BusinessProfile/>) : <Redirect to="/"/>}
-                </Route>
-                <Route exact path="/events">
-                  <ViewEvents/>
                 </Route>
                 <Route
                   exact path="/business/profile/:businessid"
@@ -192,7 +188,7 @@ function App() {
                     <IndividualEvent eventID={props.match.params.eventid}
                       {...props} />}
                 />
-                <Route path="/allevents">
+                <Route path="/events">
                   <AllEvents/>
                 </Route>
                 <Route path="/about">
