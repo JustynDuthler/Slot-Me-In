@@ -165,10 +165,8 @@ exports.saveProfileImage = async (req, res) => {
           return;
         }
       });
-      console.log(deleteRes);
     }
     /* write data to file */
-    console.log('next');
     fs.writeFile(path, req.files[0].buffer, 'binary', (err) => {
       if (err) {
         res.status(500).send();
