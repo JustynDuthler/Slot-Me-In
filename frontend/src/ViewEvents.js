@@ -907,6 +907,7 @@ export default function ViewEvents() {
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
     if (event.key === 'Enter') {
+      event.preventDefault();
       history.push('/?search='+searchValue);
       searchEvents(event);
     }
