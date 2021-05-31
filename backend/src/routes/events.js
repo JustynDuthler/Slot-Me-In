@@ -149,8 +149,8 @@ exports.signup = async (req, res) => {
         res.status(403).json({code: 403,
           message: 'You must be a member of this business' +
             ' to sign up for this event.'});
+        return;
       }
-      return;
     }
 
     const userAttending = await attendeesDb.checkUserAttending(eventid, userid);

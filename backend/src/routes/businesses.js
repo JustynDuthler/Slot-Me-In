@@ -165,10 +165,8 @@ exports.saveProfileImage = async (req, res) => {
           return;
         }
       });
-      console.log(deleteRes);
     }
     /* write data to file */
-    console.log('next');
     fs.writeFile(path, req.files[0].buffer, 'binary', (err) => {
       if (err) {
         res.status(500).send();
@@ -188,8 +186,10 @@ exports.saveProfileImage = async (req, res) => {
 
 
 exports.sendProfileImage = async (req, res) => {
-  const businessID = req.payload.id;
+  const businessID = (req.payload) ? req.payload.id : req.params.businessid;
   const imageName = await businessDb.getBusinessImageName(businessID);
+
+
   if (imageName == null) {
     res.status(500);
   } else {
