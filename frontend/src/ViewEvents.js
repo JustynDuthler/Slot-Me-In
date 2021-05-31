@@ -113,6 +113,7 @@ export default function ViewEvents() {
   const [allBusinessEvents, setAllBusinessEvents] = React.useState([]);
   const [memberBusinesses, setMemberBusinesses] = React.useState([]);
   const [businessList, setBusinessList] = React.useState([]);
+  const [categoryList, setCategoryList] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [searchEventsList, setSearchEventsList] = React.useState([]);
   const [filteredEventsList, setFilteredEventsList] = React.useState([]);
@@ -126,14 +127,7 @@ export default function ViewEvents() {
     over21: false,
     public: false,
   });
-  const [categories, setCategories] = React.useState({
-    gym: false,
-    club: false,
-    party: false,
-    conference: false,
-    workshop: false,
-    tutoring: false,
-  });
+  const [categories, setCategories] = React.useState({});
   const [businesses, setBusinesses] = React.useState({});
 
   /**
@@ -215,7 +209,6 @@ export default function ViewEvents() {
       }
     }).then((json) => {
       setMemberBusinesses(json);
-      console.log(json);
     })
         .catch((error) => {
           console.log(error);
@@ -326,6 +319,34 @@ export default function ViewEvents() {
         });
   };
 
+  /**
+   * getCategories
+   * obtains all businesses
+   */
+  function getCategories() {
+    const apicall = 'http://localhost:3010/api/events/categories';
+    fetch(apicall, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw response;
+        }
+      }
+      return response.json();
+    }).then((json) => {
+      setCategoryList(json);
+      json.map((category1) =>
+        // attach to category state
+        setCategories({...categories, [category1.category]: false}),
+      );
+    })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
+
   React.useEffect(() => {
     if (context.businessState === false) {
       getPublicEvents();
@@ -333,20 +354,30 @@ export default function ViewEvents() {
       getAllBusinesses();
     } else {
       getBusinessEvents();
+      if (window.location.href === 'http://localhost:3000/events') {
+        /* show all events */
+        setSearchBoolean(false);
+      } else {
+        setSearchBoolean(true);
+        const parsedURL = (window.location.href).split('?');
+        /* stick parsedURL in an api call and pass it to search events */
+        searchFromURL(parsedURL[1]);
+      }
     }
+    getCategories();
 
-    /* set it so the url is parsed and you can get the searched events again */
-    if (window.location.href === 'http://localhost:3000/events') {
-      /* show all events */
-      setSearchBoolean(false);
-    } else {
-      setSearchBoolean(true);
-      const parsedURL = (window.location.href).split('?');
-      /* stick parsedURL in an api call and pass it to search events */
-      searchFromURL(parsedURL[1]);
-    }
+    // if (window.location.href === 'http://localhost:3000/events') {
+    //   /* show all events */
+    //   setSearchBoolean(false);
+    // } else {
+    //   setSearchBoolean(true);
+    //   const parsedURL = (window.location.href).split('?');
+    //   /* stick parsedURL in an api call and pass it to search events */
+    //   searchFromURL(parsedURL[1]);
+    // }
   }, []);
 
+  // console.log(categories);
   /**
    * searchFromURL
    * obtains all businesses
@@ -354,19 +385,18 @@ export default function ViewEvents() {
    * @param {email} email
    */
   function searchFromURL(url, email) {
-    console.log('url'+url);
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
+    console.log('url: '+url);
     if (context.businessState === false) {
       // apicall += '/search/'+email+'?search='+url;
-      if (url !== undefined) {
+      if (url !== '') {
         apicall += '/search/'+encodeURIComponent(email)+'?'+url;
       }
     } else {
       /* if business account */
       apicall += '?'+url;
     }
-    console.log('api: '+apicall);
     fetch(apicall, {
       method: 'GET',
       headers: Auth.headerJsonJWT(),
@@ -381,8 +411,6 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setSearchEventsList(json);
-      console.log(json);
-      console.log(searchEventsList);
     })
         .catch((error) => {
           console.log(error);
@@ -396,7 +424,24 @@ export default function ViewEvents() {
    */
   const searchEvents = (event) => {
     setFilterBoolean(false);
-    // TODO: go through all filters and set to false
+    // reset all filters to false
+    if (context.businessState === false) {
+      for (const i in businesses) {
+        if (businesses[i] === true) {
+          businesses[i] = false;
+        }
+      }
+    }
+    for (const i in categories) {
+      if (categories[i] === true) {
+        categories[i] = false;
+      }
+    }
+    for (const i in restrictions) {
+      if (restrictions[i] === true) {
+        restrictions[i] = false;
+      }
+    }
     if (searchValue !== '' || startDateTime !== null ||
       endDateTime !== null) {
       setSearchBoolean(true);
@@ -425,7 +470,6 @@ export default function ViewEvents() {
       } else if (searchValue !== '') {
         apicall += '?search='+searchValue;
       }
-      console.log(apicall);
       const parsedCall = (apicall).split('?');
       if (parsedCall[1] !== undefined) {
         history.push('/events?'+parsedCall[1]);
@@ -454,7 +498,6 @@ export default function ViewEvents() {
       } else if (searchValue !== '') {
         apicall += '?search='+searchValue;
       }
-      console.log('business apicall '+apicall);
       const parsedCall = (apicall).split('?');
       if (parsedCall[1] !== undefined) {
         history.push('/events?'+parsedCall[1]);
@@ -477,9 +520,6 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setSearchEventsList(json);
-      console.log(json);
-      console.log(searchEventsList);
-      // setSearch('');
     })
         .catch((error) => {
           console.log(error);
@@ -491,9 +531,12 @@ export default function ViewEvents() {
    * apply filters that are set to true
    */
   function applyFilters() {
+    console.log(businesses);
+    console.log(categories);
     setFilterBoolean(true);
     const filteredEvents = [];
     if (searchBoolean === true) {
+      console.log('search boolean is true');
       for (let i = 0; i < searchEventsList.length; i++) {
         let added = false;
         // filtering restrictions
@@ -501,7 +544,6 @@ export default function ViewEvents() {
           if (j === 'public') {
             if (restrictions.public === true &&
               searchEventsList[i]['membersonly'] === false) {
-              console.log(searchEventsList[i]);
               added = true;
               break;
             }
@@ -521,8 +563,6 @@ export default function ViewEvents() {
             break;
           }
         }
-        // console.log(categories);
-        console.log(businesses);
         // filtering businesses
         for (const j in businesses) {
           if (businesses[j] === true && j === searchEventsList[i].businessid &&
@@ -534,6 +574,7 @@ export default function ViewEvents() {
         }
       }
     } else if (context.businessState === false) {
+      console.log('in second one');
       for (let i = 0; i < eventList.length; i++) {
         let added = false;
         // filtering restrictions
@@ -556,13 +597,12 @@ export default function ViewEvents() {
         for (const j in categories) {
           if (categories[j] === true && j === eventList[i].category &&
             added === false) {
+            console.log(eventList[i].category);
             filteredEvents.push(eventList[i]);
             added = true;
             break;
           }
         }
-        // console.log(categories);
-        console.log(businesses);
         // filtering businesses
         for (const j in businesses) {
           if (businesses[j] === true && j === eventList[i].businessid &&
@@ -574,6 +614,7 @@ export default function ViewEvents() {
         }
       }
     } else {
+      console.log('in last one');
       for (let i = 0; i < allBusinessEvents.length; i++) {
         let added = false;
         // filtering restrictions
@@ -601,8 +642,6 @@ export default function ViewEvents() {
             break;
           }
         }
-        // console.log(categories);
-        console.log(businesses);
         // filtering businesses
         for (const j in businesses) {
           if (businesses[j] === true && j === allBusinessEvents[i].businessid &&
@@ -641,46 +680,37 @@ export default function ViewEvents() {
     } else {
       setFilteredEventsList(searchEventsList);
     }
-    console.log(filteredEvents);
   }
 
   /**
-   * handleChange
-   * used for filter checkboxes
-   * @param {*} event
-   */
-  // const handleChange = (event) => {
-  //   setCheckState({...checkState, [event.target.name]:
-  //    event.target.checked});
-  // };
-
-  /**
-   * handleChange
-   * used for filter checkboxes
+   * handleRestrictionChange
+   * used for restriction filter checkboxes
    * @param {*} event
    */
   const handleRestrictionChange = (event) => {
     setRestrictions({...restrictions, [event.target.name]:
       event.target.checked});
+    console.log(event.target.name + ': ' + event.target.checked);
   };
 
   /**
-   * handleChange
-   * used for filter checkboxes
+   * handleCategoryChange
+   * used for category filter checkboxes
    * @param {*} event
    */
   const handleCategoryChange = (event) => {
     setCategories({...categories, [event.target.name]: event.target.checked});
+    console.log(event.target.name + ': ' + event.target.checked);
   };
 
   /**
-   * handleChange
-   * used for filter checkboxes
+   * handleBusinessChange
+   * used for business filter checkboxes
    * @param {*} event
    */
   const handleBusinessChange = (event) => {
     setBusinesses({...businesses, [event.target.name]: event.target.checked});
-    console.log(event.target.name + ' ' + event.target.checked);
+    console.log(event.target.name + ': ' + event.target.checked);
   };
 
   /* Show member events if user is part of any businesses */
@@ -886,7 +916,6 @@ export default function ViewEvents() {
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
     if (event.key === 'Enter') {
-      console.log(searchValue);
       history.push('/events?search='+searchValue);
       searchEvents(event);
     }
@@ -921,8 +950,32 @@ export default function ViewEvents() {
               </ListItem>
 
               {showBusinessFilters}
-
               <Box>
+                <ListItem>
+                  <ListItemText primary='Categories' />
+                </ListItem>
+                <ListItem>
+                  <FormGroup>
+                    {categoryList.map((category1) =>
+                      <FormControlLabel
+                        key={category1.category}
+                        control={
+                          <Checkbox
+                            checked={categories.category}
+                            onChange={handleCategoryChange}
+                            name={category1.category}
+                            color="secondary"
+                          />
+                        }
+                        label={category1.category}
+                      />,
+                    )}
+                  </FormGroup>
+                </ListItem>
+                <Divider variant="middle" />
+              </Box>
+
+              {/* <Box>
                 <ListItem>
                   <ListItemText primary='Event Type' />
                 </ListItem>
@@ -997,7 +1050,7 @@ export default function ViewEvents() {
                   </FormGroup>
                 </ListItem>
                 <Divider variant="middle" />
-              </Box>
+              </Box> */}
 
               <Box>
                 <ListItem>
