@@ -24,7 +24,10 @@ exports.getInfo = async (req, res) => {
 exports.getBusinessByID = async (req, res) => {
   const business = await businessDb.selectBusiness(req.params.businessid);
   // 404 if business ID does not exist
-  if (!business) res.status(404).send();
+  if (!business) {
+    res.status(404).send();
+    return;
+  }
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
