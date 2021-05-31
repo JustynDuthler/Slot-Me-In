@@ -23,7 +23,7 @@ exports.selectUser = async (userid) => {
   };
 
   const {rows} = await pool.query(query);
-  return rows[0];
+  return (rows.length > 0 ? rows[0] : undefined);
 };
 
 // check if an email is already in use
