@@ -399,7 +399,7 @@ export function BusinessInfo({picture: path, name: name, email: email,
       {image.preview ? (
         <img src={image.preview} alt="dummy" width='100%' height='auto'
           style={{marginTop: '10px'}}
-          ref={profileImage}/>
+          ref={image}/>
       ) : (
         <Box width='100%' height='100%'>
           <Avatar

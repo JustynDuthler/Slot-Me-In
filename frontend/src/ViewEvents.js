@@ -531,12 +531,9 @@ export default function ViewEvents() {
    * apply filters that are set to true
    */
   function applyFilters() {
-    console.log(businesses);
-    console.log(categories);
     setFilterBoolean(true);
     const filteredEvents = [];
     if (searchBoolean === true) {
-      console.log('search boolean is true');
       for (let i = 0; i < searchEventsList.length; i++) {
         let added = false;
         // filtering restrictions
@@ -574,7 +571,6 @@ export default function ViewEvents() {
         }
       }
     } else if (context.businessState === false) {
-      console.log('in second one');
       for (let i = 0; i < eventList.length; i++) {
         let added = false;
         // filtering restrictions
@@ -597,7 +593,6 @@ export default function ViewEvents() {
         for (const j in categories) {
           if (categories[j] === true && j === eventList[i].category &&
             added === false) {
-            console.log(eventList[i].category);
             filteredEvents.push(eventList[i]);
             added = true;
             break;
@@ -614,7 +609,6 @@ export default function ViewEvents() {
         }
       }
     } else {
-      console.log('in last one');
       for (let i = 0; i < allBusinessEvents.length; i++) {
         let added = false;
         // filtering restrictions
@@ -690,7 +684,6 @@ export default function ViewEvents() {
   const handleRestrictionChange = (event) => {
     setRestrictions({...restrictions, [event.target.name]:
       event.target.checked});
-    console.log(event.target.name + ': ' + event.target.checked);
   };
 
   /**
@@ -700,7 +693,6 @@ export default function ViewEvents() {
    */
   const handleCategoryChange = (event) => {
     setCategories({...categories, [event.target.name]: event.target.checked});
-    console.log(event.target.name + ': ' + event.target.checked);
   };
 
   /**
@@ -710,7 +702,6 @@ export default function ViewEvents() {
    */
   const handleBusinessChange = (event) => {
     setBusinesses({...businesses, [event.target.name]: event.target.checked});
-    console.log(event.target.name + ': ' + event.target.checked);
   };
 
   /* Show member events if user is part of any businesses */
@@ -916,6 +907,7 @@ export default function ViewEvents() {
   const handleKeypress = (event) => {
     // only start submit process if enter is pressed
     if (event.key === 'Enter') {
+      event.preventDefault();
       history.push('/?search='+searchValue);
       searchEvents(event);
     }
