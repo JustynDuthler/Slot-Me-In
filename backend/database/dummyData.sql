@@ -70,11 +70,11 @@ VALUES ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)
 VALUES ('00000000-0001-0000-0000-000000000000', 'Morning Yoga', '00000000-0000-0000-0000-000000000000', '2021-06-07T18:00:00.000Z', '2021-06-08T19:00:00.000Z', 5, 'Come join us for a morning yoga session to start your day!', 'gym');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, category, over18)
-VALUES ('00000000-0002-0000-0000-000000000000', 'Welcome Party', '10000000-0000-0000-0000-000000000000', '2021-06-09T06:30:00.000Z', '2021-06-09T07:30:00.000Z', 10, 'party', TRUE);
+VALUES ('00000000-0002-0000-0000-000000000000', 'Welcome Party', '10000000-0000-0000-0000-000000000000', '2021-06-09T03:30:00.000Z', '2021-06-09T04:30:00.000Z', 10, 'party', TRUE);
 INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description, category)
 VALUES ('f','00000000-0003-0000-0000-000000000000', 'AWS Basics Class', '20000000-0000-0000-0000-000000000000', '2021-06-14T21:30:00.000Z', '2021-06-14T22:30:00.000Z', 4, 'Do you want to learn the basics of Amazon Web Services? Join us at Amazon for a class where we will cover how to get started with Amazon Web Services.', 'school');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category, over21)
-VALUES ('00000000-0004-0000-0000-000000000000', 'Karaoke Night', '30000000-0000-0000-0000-000000000000', '2021-06-19T06:00:00.000Z', '2021-06-19T09:00:00.000Z', 5, 'Start your weekend with a night of singing, dancing, and drinking!', 'club', TRUE);
+VALUES ('00000000-0004-0000-0000-000000000000', 'Karaoke Night', '30000000-0000-0000-0000-000000000000', '2021-06-19T04:00:00.000Z', '2021-06-19T05:00:00.000Z', 5, 'Start your weekend with a night of singing, dancing, and drinking!', 'club', TRUE);
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)
 VALUES ('00000000-0005-0000-0000-000000000000', 'Cooking Competition', '40000000-0000-0000-0000-000000000000', '2021-06-21T20:00:00.000Z', '2021-06-21T23:00:00.000Z', 8, 'Join our live audience for the latest cooking competition show on Netflix!', 'cooking');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)
