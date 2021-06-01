@@ -141,10 +141,12 @@ export default function ViewEvents() {
       headers: Auth.headerJsonJWT(),
     }).then((response) => response.json())
         .then((json) => {
-          getMemberEvents(json.useremail);
-          getMemberBusinesses(json.useremail);
-          getPublicAndMemberEvents(json.useremail);
-          setUserEmail(json.useremail);
+          if (json.useremail) {
+            getMemberEvents(json.useremail);
+            getMemberBusinesses(json.useremail);
+            getPublicAndMemberEvents(json.useremail);
+            setUserEmail(json.useremail);
+          }
 
           if (window.location.href === 'http://localhost:3000/') {
             /* show all events */
@@ -375,7 +377,7 @@ export default function ViewEvents() {
     //   /* stick parsedURL in an api call and pass it to search events */
     //   searchFromURL(parsedURL[1]);
     // }
-  }, []);
+  }, [context.businessState]);
 
   // console.log(categories);
   /**
@@ -532,6 +534,8 @@ export default function ViewEvents() {
    */
   function applyFilters() {
     setFilterBoolean(true);
+    // use apicall for each category checked + all restriction filters
+    // combine those and then filter for businesses
     const filteredEvents = [];
     if (searchBoolean === true) {
       for (let i = 0; i < searchEventsList.length; i++) {
@@ -940,6 +944,15 @@ export default function ViewEvents() {
                   </Typography>
                 </ListItemText>
               </ListItem>
+              <Box textAlign='center'>
+                <Button size='medium'
+                  variant='contained'
+                  color='secondary'
+                  style={{width: '90%'}}
+                  onClick={applyFilters}>
+                  Apply Filters
+                </Button>
+              </Box>
 
               {showBusinessFilters}
               <Box>
@@ -966,83 +979,6 @@ export default function ViewEvents() {
                 </ListItem>
                 <Divider variant="middle" />
               </Box>
-
-              {/* <Box>
-                <ListItem>
-                  <ListItemText primary='Event Type' />
-                </ListItem>
-                <ListItem>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={categories.gym}
-                          onChange={handleCategoryChange}
-                          name="gym"
-                          color="secondary"
-                        />
-                      }
-                      label="Gym"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={categories.club}
-                          onChange={handleCategoryChange}
-                          name="club"
-                          color="secondary"
-                        />
-                      }
-                      label="Club"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={categories.party}
-                          onChange={handleCategoryChange}
-                          name="party"
-                          color="secondary"
-                        />
-                      }
-                      label="Party"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={categories.conference}
-                          onChange={handleCategoryChange}
-                          name="conference"
-                          color="secondary"
-                        />
-                      }
-                      label="Conference"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={categories.workshop}
-                          onChange={handleCategoryChange}
-                          name="workshop"
-                          color="secondary"
-                        />
-                      }
-                      label="Workshop"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={categories.tutoring}
-                          onChange={handleCategoryChange}
-                          name="tutoring"
-                          color="secondary"
-                        />
-                      }
-                      label="Tutoring"
-                    />
-                  </FormGroup>
-                </ListItem>
-                <Divider variant="middle" />
-              </Box> */}
 
               <Box>
                 <ListItem>
@@ -1097,18 +1033,11 @@ export default function ViewEvents() {
                   </FormGroup>
                 </ListItem>
               </Box>
-              <Box textAlign='center'>
-                <Button size='small'
-                  variant='contained'
-                  color='secondary'
-                  onClick={applyFilters}>
-                  Apply Filters
-                </Button>
-              </Box>
               <Box textAlign='center' mt={2}>
                 <Button size='medium'
                   variant='contained'
                   color='secondary'
+                  style={{width: '90%'}}
                   href={'/events'}>
                   See All Events
                 </Button>

@@ -53,7 +53,6 @@ exports.getBusinesses = async (req, res) => {
     };
     businessList.push(businessData);
   }
-  console.log(businessList);
   res.status(200).json(businessList);
 };
 

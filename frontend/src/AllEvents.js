@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   pageBox: {
     position: 'relative',
     left: '50vw',
-    transform: 'translate(-50%, -50%)',
+    transform: 'translate(-50%, -20%)',
   },
   title: {
     fontWeight: 350,
@@ -209,7 +209,7 @@ export default function AllEvents() {
       <Box mt={5} mb={5} className={classes.box}>
         <Typography className={classes.title}
           variant='h3' align='center'>
-          All Events
+          All Upcoming Events
         </Typography>
         <Grid
           container
