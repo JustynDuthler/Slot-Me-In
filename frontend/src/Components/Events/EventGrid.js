@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {*} props
  * @return {object} JSX
  */
-const EventGrid = ({publicEvents=false}) => {
+const EventGrid = ({publicEvents=false, eventList=[]}) => {
   const [events, setEvents] = React.useState([]);
   const context = React.useContext(Context);
   const classes = useStyles();
@@ -77,6 +77,8 @@ const EventGrid = ({publicEvents=false}) => {
     if (publicEvents) {
       const eventResponse = await fetchPublicevents();
       setEvents(eventResponse);
+    } else if (EventGrid.length > 0) {
+      setEvents(eventList);
     } else {
       const eventResponse = await fetchEvents();
       setEvents(eventResponse);
@@ -108,6 +110,7 @@ const EventGrid = ({publicEvents=false}) => {
 
 EventGrid.propTypes = {
   publicEvents: PropTypes.bool,
+  eventList: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default EventGrid;

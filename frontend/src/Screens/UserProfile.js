@@ -3,6 +3,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import {EventCalendar} from '../Components/Events/EventCalendar';
+import EventGrid from '../Components/Events/EventGrid';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
@@ -29,6 +30,19 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       flexDirection: 'column',
       width: '40rem',
+    },
+  },
+  userText: {
+    [theme.breakpoints.up('lg')]: {
+      marginBottom: theme.spacing(4),
+    },
+    [theme.breakpoints.down('md')]: {
+      margin: theme.spacing(0, 4, 0, 0),
+    },
+  },
+  businessText: {
+    [theme.breakpoints.down('md')]: {
+      // margin: theme.spacing(2),
     },
   },
   userInfo: {
@@ -60,6 +74,8 @@ const BusinessButton = ({elem, ...rest}) => {
       <Button
         component={Link}
         variant="contained"
+        color="secondary"
+        size="small"
         to={'/business/profile/'+ elem.businessid}
       >
         {elem.businessname}
@@ -88,17 +104,19 @@ const UserInfo = ({info, memberBusinesses}) => {
           {info.username}
         </Typography>
         <Typography
+          style={{fontSize: '1.5rem', fontWeight: '300'}}
           variant='h6'
         >
           {info.useremail}
         </Typography>
       </Box>
-      <Typography
-        variant='h6'
-      >
-        My Businesses
-      </Typography>
       <Box className={classes.businessGrid}>
+        <Typography
+          variant='h6'
+          className={classes.businessText}
+        >
+          My Businesses
+        </Typography>
         <Grid container spacing={2}>
           {memberBusinesses.map((elem) => {
             console.log(elem.businessid);
@@ -121,20 +139,78 @@ UserInfo.propTypes = {
  */
 const Content = ({memberBusinesses, eventList, colorDict}) => {
   const [contentState, setContentState] = React.useState('calendar');
+  //const [selectedEventId, setSelectedEventID] = React.useState('');
   const classes = useStyles();
+
+  /**
+  *
+  * @param {object} event object
+  * @param {*} e syntheticEvent
+  */
+  // const selectEvent = (event, e) => {
+  //   setSelectedEventID(event.id);
+  // };
+
+  /**
+   *
+   * @param {*} event
+   * @param {*} start
+   * @param {*} end
+   * @param {*} isSelected
+   * @return {Object}
+   */
+  const styleEvent = (event, start, end, isSelected) => {
+    if (isSelected) {
+      return {style: {backgroundColor: '#51596f'}};
+    } else {
+      return {style: {backgroundColor: '#edc97c'}};
+    }
+  };
 
   if (contentState === 'calendar') {
     return (
       <Box className={classes.content}>
-        <Button onClick={() => setContentState('calendar')}>
-          Set calendar
-        </Button>
+        <Box classname={classes.switchBtn}>
+          <Button
+            onClick={() => setContentState('eventGrid')}
+            variant="contained"
+            color="secondary"
+            size="small"
+          >
+            Show Grid
+          </Button>
+          {/* <Typography>
+            {selectedEventId}
+          </Typography> */}
+        </Box>
         <Box>
           <EventCalendar
             style={{height: '100%', width: '100%'}}
             EventList={eventList}
             BusinessList={memberBusinesses}
             colorDict={colorDict}
+            // onSelectEvent={selectEvent}
+            eventPropGetter={styleEvent}
+          />
+        </Box>
+      </Box>
+    );
+  } else if (contentState === 'eventGrid') {
+    return (
+      <Box className={classes.content}>
+        <Box classname={classes.switchBtn}>
+          <Button
+            onClick={() => setContentState('calendar')}
+            variant="contained"
+            color="secondary"
+            size="small"
+          >
+            Show Calendar
+          </Button>
+        </Box>
+        <Box>
+          <EventGrid
+            eventList={eventList}
           />
         </Box>
       </Box>
@@ -200,7 +276,6 @@ const UserProfile = (props) => {
       setError(error);
     }
   }, []);
-
 
   if (!isLoaded) {
     return <h1>Loading...</h1>;

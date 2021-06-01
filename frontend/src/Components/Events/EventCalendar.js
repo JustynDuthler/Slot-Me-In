@@ -37,6 +37,7 @@ export const EventCalendar = ({BusinessList, EventList, colorDict,
     events.push(event);
   });
 
+
   return (
     <Calendar
       {...rest}
@@ -44,22 +45,6 @@ export const EventCalendar = ({BusinessList, EventList, colorDict,
       defaultDate={new Date()}
       defaultView='week'
       events={events}
-      eventPropGetter={
-        (event, start, end, isSelected) => {
-          const color = colorDict.hasOwnProperty(event.businessid) ?
-            colorDict[event.businessid] : '#edc97c';
-          console.log(colorDict);
-          console.log(event.businessid);
-          return {
-            style: {backgroundColor: color},
-          };
-        }
-      }
-      titleAccessor={
-        (event) => {
-          return event.title;
-        }
-      }
       formats={{
         eventTimeRangeFormat: () => {
           return '';
