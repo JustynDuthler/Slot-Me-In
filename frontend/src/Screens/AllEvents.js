@@ -5,10 +5,10 @@ import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import EventCard from './Components/Events/EventCard';
+import EventCard from '../Components/Events/EventCard';
 
-import Context from './Context';
-const Auth = require('./libs/Auth');
+import Context from '../Context';
+const Auth = require('../libs/Auth');
 
 const useStyles = makeStyles({
   root: {

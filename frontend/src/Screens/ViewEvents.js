@@ -29,12 +29,12 @@ import DateFnsUtils from '@date-io/date-fns';
 import {DateTimePicker, MuiPickersUtilsProvider}
   from '@material-ui/pickers';
 
-import NavBar from './Components/Nav/NavBar';
-import EventCard from './Components/Events/EventCard';
-import Context from './Context';
-const Auth = require('./libs/Auth');
+import NavBar from '../Components/Nav/NavBar';
+import EventCard from '../Components/Events/EventCard';
+import Context from '../Context';
+const Auth = require('../libs/Auth');
 
-import './CSS/Scrollbar.css';
+import '../CSS/Scrollbar.css';
 
 const drawerWidth = 260;
 
