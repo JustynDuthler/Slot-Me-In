@@ -1,6 +1,6 @@
 # Slot-Me-In
 
-This is a group project written by Lucas Battelle, Ethan perlada, William Leber, Justyn Duther, and Shirley Phuong. 
+This is a group project written by Lucas Battelle, Ethan Perlada, William Leber, Justyn Duther, and Shirley Phuong. 
 
 ### Install
 Clone the repository. Make sure npm is installed. Cd to the frontend folder and backend folder and run `npm install` in both. Install both docker and docker-compose. Run `docker pull postgres` to pull the proper docker image.
