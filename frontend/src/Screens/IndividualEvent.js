@@ -144,6 +144,9 @@ const useStyles = makeStyles((theme) => ({
   yes: {
     color: theme.palette.secondary.dark,
   },
+  snackbar: {
+    bottom: 60,
+  },
 }));
 
 /**
@@ -395,12 +398,18 @@ const IndividualEvent = (props) => {
     })
         .then((response) => {
           if (!response.ok) {
-            throw response;
+            if (response.status === 403) {
+              setSignupError(true);
+              return response.json();
+            }
           } else {
             setEventData({});
             setEventExists(false);
             history.push('/');
           }
+        })
+        .then((json) => {
+          if (json) setSignupErrorMsg(json.message);
         })
         .catch((error) => {
           console.log(error);
@@ -569,9 +578,10 @@ const IndividualEvent = (props) => {
       </Grid>
 
       {/* Error snackbar when signing up for age restricted events */}
-      <Snackbar open={signupError} autoHideDuration={5000} onClose={() => {
-        setSignupError(false);
-      }}>
+      <Snackbar className={classes.snackbar}
+        open={signupError} autoHideDuration={5000} onClose={() => {
+          setSignupError(false);
+        }}>
         <Alert onClose={() => {
           setSignupError(false);
         }} severity="error">

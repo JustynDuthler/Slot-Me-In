@@ -72,6 +72,12 @@ exports.create = async (req, res) => {
 
 exports.delete = async (req, res) => {
   const event = await eventsDb.getEventByID(req.params.eventid);
+  if (req.payload.id !== event.businessid) {
+    // 403 if business did not create the event being deleted
+    res.status(403).json({code: 403, message:
+      'You may only delete events that you have created.'});
+    return;
+  }
   if (!event) {
     // 404 if event not found
     res.status(404).send();
