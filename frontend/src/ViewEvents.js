@@ -153,9 +153,45 @@ export default function ViewEvents() {
             setSearchBoolean(false);
           } else {
             setSearchBoolean(true);
-            const parsedURL = (window.location.href).split('?');
-            /* stick parsedURL in an api call and pass it to search events */
-            searchFromURL(parsedURL[1], json.useremail);
+            if ((window.location.href).indexOf('start=') !== -1 ||
+            (window.location.href).indexOf('end=') !== -1 ||
+            (window.location.href).indexOf('search=') !== -1) {
+              console.log('searching from url');
+              const parsedURL = (window.location.href).split('?');
+              /* stick parsedURL in an api call and pass it to search events */
+              searchFromURL(parsedURL[1], json.useremail);
+            } else {
+              setSearchBoolean(false);
+              console.log('else');
+              // no date or text search so just check filters
+              const parsedURL = (window.location.href).split('?');
+              // parse the filters using &
+              const filters = parsedURL[1].split('&');
+              for (let i = 0; i < filters.length; i++) {
+                for (const j in businesses) {
+                  if (j === decodeURIComponent(filters[i])) {
+                    console.log(decodeURIComponent(filters[i]));
+                    businesses[j] = true;
+                    break;
+                  }
+                }
+                for (const j in categories) {
+                  if (j === decodeURIComponent(filters[i])) {
+                    console.log(decodeURIComponent(filters[i]));
+                    categories[j] = true;
+                    break;
+                  }
+                }
+                for (const j in restrictions) {
+                  if (j === decodeURIComponent(filters[i])) {
+                    console.log(decodeURIComponent(filters[i]));
+                    restrictions[j] = true;
+                    break;
+                  }
+                }
+              }
+              applyFilters();
+            }
           }
         },
         (error) => {
@@ -186,6 +222,7 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       // gets all public events + member events
+      console.log(json);
       setEventList(json);
     })
         .catch((error) => {
@@ -323,7 +360,7 @@ export default function ViewEvents() {
 
   /**
    * getCategories
-   * obtains all businesses
+   * obtains all categories
    */
   function getCategories() {
     const apicall = 'http://localhost:3010/api/events/categories';
@@ -338,9 +375,9 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setCategoryList(json);
-      json.map((category1) =>
+      json.map((cat) =>
         // attach to category state
-        setCategories({...categories, [category1.category]: false}),
+        setCategories({...categories, [cat.category]: false}),
       );
     })
         .catch((error) => {
@@ -361,9 +398,15 @@ export default function ViewEvents() {
         setSearchBoolean(false);
       } else {
         setSearchBoolean(true);
-        const parsedURL = (window.location.href).split('?');
-        /* stick parsedURL in an api call and pass it to search events */
-        searchFromURL(parsedURL[1]);
+        if ((window.location.href).indexOf('start=') !== -1 ||
+          (window.location.href).indexOf('end=') !== -1 ||
+          (window.location.href).indexOf('search=') !== -1) {
+          const parsedURL = (window.location.href).split('?');
+          /* stick parsedURL in an api call and pass it to search events */
+          searchFromURL(parsedURL[1]);
+        } else {
+          // no date or text search so just check filters
+        }
       }
     }
     getCategories();
@@ -494,7 +537,7 @@ export default function ViewEvents() {
       }
       const parsedCall = (apicall).split('?');
       if (parsedCall[1] !== undefined) {
-        history.push('/'+parsedCall[1]);
+        history.push('/?'+parsedCall[1]);
       } else {
         history.push('/');
       }
@@ -647,6 +690,7 @@ export default function ViewEvents() {
         }
       }
     } else if (context.businessState === false) {
+      console.log('no searhc user filtering');
       for (let i = 0; i < eventList.length; i++) {
         let added = false;
         // filtering restrictions
@@ -674,6 +718,7 @@ export default function ViewEvents() {
             break;
           }
         }
+        console.log(added);
         // filtering businesses
         for (const j in businesses) {
           if (businesses[j] === true && j === eventList[i].businessid &&
@@ -1033,18 +1078,18 @@ export default function ViewEvents() {
                 </ListItem>
                 <ListItem>
                   <FormGroup>
-                    {categoryList.map((category1) =>
+                    {categoryList.map((cat) =>
                       <FormControlLabel
-                        key={category1.category}
+                        key={cat.category}
                         control={
                           <Checkbox
                             checked={categories.category}
                             onChange={handleCategoryChange}
-                            name={category1.category}
+                            name={cat.category}
                             color="secondary"
                           />
                         }
-                        label={category1.category}
+                        label={cat.category}
                       />,
                     )}
                   </FormGroup>

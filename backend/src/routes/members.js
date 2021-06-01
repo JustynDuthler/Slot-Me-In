@@ -92,15 +92,18 @@ exports.getMemberBusinesses = async (req, res) => {
 // Returns restricted events for all businesses a user is a part of
 exports.getRestrictedEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
-
+  const now = req.query.all ? new Date('1/1/1900') : new Date(Date.now());
   let restrictedEventList = []
+
   for (var i = 0; i < businesses.length; i++) {
     // get restricted events for the business
     const restrictedEvents = await memberDb.getBusinessRestrictedEvents(
         businesses[i].businessid);
     for (let j = 0; j < restrictedEvents.length; j++) {
       // push each event
-      restrictedEventList.push(restrictedEvents[j]);
+      const starttime = new Date(restrictedEvents[j]['starttime'])
+      if (starttime >= now)
+        restrictedEventList.push(restrictedEvents[j]);
     }
   }
   res.status(200).json(restrictedEventList);
