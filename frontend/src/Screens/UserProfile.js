@@ -119,7 +119,6 @@ const UserInfo = ({info, memberBusinesses}) => {
         </Typography>
         <Grid container spacing={2}>
           {memberBusinesses.map((elem) => {
-            console.log(elem.businessid);
             return <BusinessButton key={elem.businessid} elem={elem}/>;
           })}
         </Grid>
@@ -170,7 +169,7 @@ const Content = ({memberBusinesses, eventList, colorDict}) => {
   if (contentState === 'calendar') {
     return (
       <Box className={classes.content}>
-        <Box classname={classes.switchBtn}>
+        <Box className={classes.switchBtn}>
           <Button
             onClick={() => setContentState('eventGrid')}
             variant="contained"
@@ -198,7 +197,7 @@ const Content = ({memberBusinesses, eventList, colorDict}) => {
   } else if (contentState === 'eventGrid') {
     return (
       <Box className={classes.content}>
-        <Box classname={classes.switchBtn}>
+        <Box className={classes.switchBtn}>
           <Button
             onClick={() => setContentState('calendar')}
             variant="contained"
