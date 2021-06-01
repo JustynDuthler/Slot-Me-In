@@ -111,9 +111,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 10,
   },
   deleteButton: {
-    marginTop: 15,
-    marginLeft: 10,
-    background: theme.palette.error.main,
+    'marginTop': 15,
+    'marginLeft': 10,
+    'background': theme.palette.error.main,
+    '&:hover': {
+      'background': theme.palette.error.dark,
+      'color': theme.palette.primary.dark,
+    },
   },
   share: {
     marginTop: theme.spacing(3),
