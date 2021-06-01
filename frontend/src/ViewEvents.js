@@ -141,10 +141,12 @@ export default function ViewEvents() {
       headers: Auth.headerJsonJWT(),
     }).then((response) => response.json())
         .then((json) => {
-          getMemberEvents(json.useremail);
-          getMemberBusinesses(json.useremail);
-          getPublicAndMemberEvents(json.useremail);
-          setUserEmail(json.useremail);
+          if (json.useremail) {
+            getMemberEvents(json.useremail);
+            getMemberBusinesses(json.useremail);
+            getPublicAndMemberEvents(json.useremail);
+            setUserEmail(json.useremail);
+          }
 
           if (window.location.href === 'http://localhost:3000/') {
             /* show all events */
@@ -377,7 +379,7 @@ export default function ViewEvents() {
     //   /* stick parsedURL in an api call and pass it to search events */
     //   searchFromURL(parsedURL[1]);
     // }
-  }, []);
+  }, [context.businessState]);
 
   // console.log(categories);
   /**
