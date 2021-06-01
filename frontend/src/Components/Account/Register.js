@@ -67,7 +67,6 @@ export default function Register() {
     } else {
       info['birthdate'] = dob.toISOString();
     }
-    console.log(info);
     fetch(apicall, {
       method: 'POST',
       body: JSON.stringify(info),
@@ -92,7 +91,6 @@ export default function Register() {
           Auth.saveJWT(json.auth_token);
           context.setAuthState(true);
           context.setBusinessState(true);
-          console.log(json);
           history.push('/');
         })
         .catch((error) => {

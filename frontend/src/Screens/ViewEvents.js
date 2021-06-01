@@ -29,12 +29,12 @@ import DateFnsUtils from '@date-io/date-fns';
 import {DateTimePicker, MuiPickersUtilsProvider}
   from '@material-ui/pickers';
 
-import NavBar from './Components/Nav/NavBar';
-import EventCard from './Components/Events/EventCard';
-import Context from './Context';
-const Auth = require('./libs/Auth');
+import NavBar from '../Components/Nav/NavBar';
+import EventCard from '../Components/Events/EventCard';
+import Context from '../Context';
+const Auth = require('../libs/Auth');
 
-import './CSS/Scrollbar.css';
+import '../CSS/Scrollbar.css';
 
 const drawerWidth = 260;
 
@@ -389,7 +389,7 @@ export default function ViewEvents() {
   function searchFromURL(url, email) {
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
-    console.log('url: '+url);
+    // console.log('url: '+url);
     if (context.businessState === false) {
       // apicall += '/search/'+email+'?search='+url;
       if (url !== '') {

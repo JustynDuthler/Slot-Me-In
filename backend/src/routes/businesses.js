@@ -130,7 +130,6 @@ exports.getEventsByID = async (req, res) => {
 
 exports.validID = async (req, res) => {
   // jwt will return 401 or 403 if id is not a business
-  console.log(req.payload.id);
   res.status(200).send();
 };
 

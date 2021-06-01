@@ -9,7 +9,7 @@ import Hidden from '@material-ui/core/Hidden';
 import Login from '../Components/Account/Login';
 import Register from '../Components/Account/Register';
 import EventGrid from '../Components/Events/EventGrid';
-import ViewEvents from '../ViewEvents';
+import ViewEvents from './ViewEvents';
 
 import '../CSS/Scrollbar.css';
 
