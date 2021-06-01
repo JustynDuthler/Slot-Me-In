@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   pageBox: {
     position: 'relative',
     left: '50vw',
-    transform: 'translate(-50%, -50%)',
+    transform: 'translate(-50%, -20%)',
   },
   title: {
     fontWeight: 350,
@@ -67,7 +67,7 @@ export default function AllEvents() {
     }).then((response) => response.json())
         .then((json) => {
           // if the url is just /events, get page 1 events
-          if (window.location.href === 'http://localhost:3000/allevents') {
+          if (window.location.href === 'http://localhost:3000/events') {
             getEvents(1, json.useremail);
           } else {
             // parse url to get the page number and pass it to getEvents
@@ -162,7 +162,7 @@ export default function AllEvents() {
     if (context.businessState === false) {
       getUserInfo();
     } else {
-      if (window.location.href === 'http://localhost:3000/allevents') {
+      if (window.location.href === 'http://localhost:3000/events') {
         getBusinessEvents(1);
       } else {
         // parse url to get the page number and pass it to getEvents
@@ -172,7 +172,7 @@ export default function AllEvents() {
       }
     }
     // // if the url is just /events, get page 1 events
-    // if (window.location.href === 'http://localhost:3000/allevents') {
+    // if (window.location.href === 'http://localhost:3000/events') {
     //   getEvents(1);
     // } else {
     //   // parse url to get the page number and pass it to getEvents
@@ -192,10 +192,10 @@ export default function AllEvents() {
     setCurrentPage(value);
     if (value === 1) {
       // if on first page, change url to /events
-      history.push('/allevents');
+      history.push('/events');
     } else {
       // if on other page, change url depending on number
-      history.push('/allevents?page='+value);
+      history.push('/events?page='+value);
     }
 
     // get events for the current page
@@ -209,7 +209,7 @@ export default function AllEvents() {
       <Box mt={5} mb={5} className={classes.box}>
         <Typography className={classes.title}
           variant='h3' align='center'>
-          All Events
+          All Upcoming Events
         </Typography>
         <Grid
           container

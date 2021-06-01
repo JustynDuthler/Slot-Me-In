@@ -69,12 +69,19 @@ exports.create = async (req, res) => {
   res.status(201).send(event);
 };
 
+
 exports.delete = async (req, res) => {
   const event = await eventsDb.getEventByID(req.params.eventid);
   if (!event) {
     // 404 if event not found
     res.status(404).send();
   } else {
+    if (req.payload.id !== event.businessid) {
+      // 403 if business did not create the event being deleted
+      res.status(403).json({code: 403, message:
+        'You may only delete events that you have created.'});
+      return;
+    }
     if (req.body.deleteAll && event.repeatid) {
       // deleteAll is true and event is an instance of a repeating event
       // deletion of RepeatingEvent will cascade to Events
@@ -148,8 +155,8 @@ exports.signup = async (req, res) => {
         res.status(403).json({code: 403,
           message: 'You must be a member of this business' +
             ' to sign up for this event.'});
+        return;
       }
-      return;
     }
 
     const userAttending = await attendeesDb.checkUserAttending(eventid, userid);
@@ -191,6 +198,7 @@ exports.publicEvents = async (req, res, next) => {
 exports.publicAndMemberEvents = async (req, res) => {
   const businesses = await memberDb.getMemberBusinesses(req.params.useremail);
   const eventList = [];
+  const now = req.query.all ? new Date('1/1/1900') : new Date(Date.now());
   // push member events
   for (let i = 0; i < businesses.length; i++) {
     // get restricted events for the business
@@ -198,16 +206,23 @@ exports.publicAndMemberEvents = async (req, res) => {
         businesses[i].businessid);
     for (let j = 0; j < restrictedEvents.length; j++) {
       // push each event
-      eventList.push(restrictedEvents[j]);
+      const starttime = new Date(restrictedEvents[j]['starttime'])
+      if (starttime >= now)
+        eventList.push(restrictedEvents[j]);
     }
   }
 
   // push public events
   const publicEvents = await eventsDb.getPublicEvents();
   for (let i = 0; i < publicEvents.length; i++) {
-    eventList.push(publicEvents[i]);
+    const starttime = new Date(publicEvents[i]['starttime'])
+      if (starttime >= now)
+      eventList.push(publicEvents[i]);
   }
 
+  eventList.sort(
+    (a, b) =>
+      new Date(a.starttime).getTime() - new Date(b.starttime).getTime());
   res.status(200).json(eventList);
 };
 

@@ -110,6 +110,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 15,
     marginLeft: 10,
   },
+  deleteButton: {
+    'marginTop': 15,
+    'marginLeft': 10,
+    'background': theme.palette.error.main,
+    '&:hover': {
+      'background': theme.palette.error.dark,
+      'color': theme.palette.primary.dark,
+    },
+  },
   share: {
     marginTop: theme.spacing(3),
   },
@@ -138,6 +147,9 @@ const useStyles = makeStyles((theme) => ({
   },
   yes: {
     color: theme.palette.secondary.dark,
+  },
+  snackbar: {
+    bottom: 60,
   },
 }));
 
@@ -378,6 +390,36 @@ const IndividualEvent = (props) => {
     });
   };
 
+  /**
+   * deleteEvent
+   * API call to delete an event
+   */
+  function deleteEvent() {
+    const apicall = 'http://localhost:3010/api/events/'+eventid;
+    fetch(apicall, {
+      method: 'DELETE',
+      headers: Auth.headerJsonJWT(),
+    })
+        .then((response) => {
+          if (!response.ok) {
+            if (response.status === 403) {
+              setSignupError(true);
+              return response.json();
+            }
+          } else {
+            setEventData({});
+            setEventExists(false);
+            history.push('/');
+          }
+        })
+        .then((json) => {
+          if (json) setSignupErrorMsg(json.message);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
   // if event with event ID does not exist, show 404 Not Found page
   if (!eventExists) {
     return <NotFound />;
@@ -388,7 +430,7 @@ const IndividualEvent = (props) => {
       <Grid container spacing={6} className={classes.grid}>
         <Hidden xsDown>
           <Grid item md={3}>
-            <BusinessInfo
+            {businessData.businessid && <BusinessInfo
               picture='picture'
               name={businessData.businessname}
               email={businessData.email}
@@ -398,7 +440,7 @@ const IndividualEvent = (props) => {
               onClick={()=>{
                 history.push('/business/profile/'+businessData.businessid);
               }}
-            />
+            />}
           </Grid>
         </Hidden>
 
@@ -479,6 +521,21 @@ const IndividualEvent = (props) => {
               }}>
               {signupType === true ? 'Sign Up' : 'Withdraw'}
             </Button>)}
+          {context.authState && context.businessState &&
+            (<Button className={classes.deleteButton}
+              variant="contained"
+              onClick={() => {
+                setConfirmDialog(true);
+              }}>
+              Delete Event
+            </Button>)}
+          {!context.authState &&
+            (<Button className={classes.signupButton}
+              variant="contained" color="secondary"
+              href='/login'>
+              Login To Sign Up For Event
+            </Button>)
+          }
           {!context.authState &&
             (<Button className={classes.signupButton}
               variant="contained" color="secondary"
@@ -525,9 +582,10 @@ const IndividualEvent = (props) => {
       </Grid>
 
       {/* Error snackbar when signing up for age restricted events */}
-      <Snackbar open={signupError} autoHideDuration={5000} onClose={() => {
-        setSignupError(false);
-      }}>
+      <Snackbar className={classes.snackbar}
+        open={signupError} autoHideDuration={5000} onClose={() => {
+          setSignupError(false);
+        }}>
         <Alert onClose={() => {
           setSignupError(false);
         }} severity="error">
@@ -535,7 +593,9 @@ const IndividualEvent = (props) => {
         </Alert>
       </Snackbar>
 
-      {/* Confirmation dialog for withdrawing from events */}
+      {/* Confirmation dialog
+          User: withdrawing from event
+          Business: deleting event */}
       <Dialog
         open={confirmDialog}
         onClose={() => {
@@ -543,16 +603,18 @@ const IndividualEvent = (props) => {
         }}
         aria-labelledby="confirm-dialog-title">
         <DialogTitle id="confirm-dialog-title">
-          Withdraw From Event
+          {context.businessState ? 'Delete Event' : 'Withdraw From Event'}
         </DialogTitle>
         <DialogContentText className={classes.dialogText}>
-          Are you sure you want to withdraw from this event?
+          {context.businessState ?
+            'Are you sure you want to delete this event?' :
+            'Are you sure you want to withdraw from this event?'}
         </DialogContentText>
         <DialogActions>
           <Button
             className={classes.no}
             onClick={() => {
-              // Close dialog and don't withdraw if user clicks No
+              // Close dialog and don't withdraw/delete if user clicks No
               setConfirmDialog(false);
             }}>
             No
@@ -560,8 +622,8 @@ const IndividualEvent = (props) => {
           <Button
             className={classes.yes}
             onClick={() => {
-              // Call withdraw, close dialog if user clicks Yes
-              withdraw();
+              // Call withdraw/deleteEvent, close dialog if user clicks Yes
+              context.businessState ? deleteEvent() : withdraw();
               setConfirmDialog(false);
             }}>
             Yes

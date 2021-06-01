@@ -5,6 +5,7 @@ const app = require('../src/app');
 let server;
 let businessAuthToken;
 let userAuthToken;
+let repeatTestID;
 
 beforeAll(() => {
   server = http.createServer(app);
@@ -37,9 +38,9 @@ beforeEach(async () => {
 /*
 ---------------------------getEvents tests------------------------------------
 
-  1. business token getting events
-  2. user token getting events
-  3. bad token
+  1. business token getting events  (200)
+  2. user token getting events      (200)
+  3. bad token                      (401)
 
 */
 test('getEvents with business token', async () => {
@@ -53,10 +54,10 @@ test('getEvents with business token', async () => {
       expect(data.body).toStrictEqual([
         {
           eventid: '00000000-0002-0000-0000-000000000000',
-          eventname: 'Test Event 2',
+          eventname: 'Welcome Party',
           businessid: '10000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-02T10:30:00.000Z',
-          endtime: '2021-05-02T12:30:00.000Z',
+          starttime: '2021-06-09T03:30:00.000Z',
+          endtime: '2021-06-09T04:30:00.000Z',
           capacity: 10,
           description: '',
           over18: true,
@@ -77,265 +78,20 @@ test('getEvents with business token', async () => {
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
-      expect(data.body).toStrictEqual([
-        {
-          eventid: '00000000-0019-0000-0000-000000000000',
-          eventname: 'Wine Tasting',
-          businessid: '00000000-0000-0000-0000-000000000000',
-          starttime: '2021-09-15T23:30:00.000Z',
-          endtime: '2021-09-16T02:30:00.000Z',
-          capacity: 20,
-          description: 'Temp Description',
-          over18: false,
-          over21: true,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0018-0000-0000-000000000000',
-          eventname: 'Photography Club Meet',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 30,
-          description: 'Temp Description',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0017-0000-0000-000000000000',
-          eventname: 'Paint Westcliff',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 10,
-          description: 'Temp Description',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0016-0000-0000-000000000000',
-          eventname: 'Group Run',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 20,
-          description: 'Temp Description',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0015-0000-0000-000000000000',
-          eventname: 'Telescope viewing',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 15,
-          description: 'Temp Description',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0014-0000-0000-000000000000',
-          eventname: 'Yoga in the park',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 15,
-          description: 'Temp Description',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0013-0000-0000-000000000000',
-          eventname: 'Group Ride',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 25,
-          description: 'Join the Santa Cruzes finest! on a group MTB ride.',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0012-0000-0000-000000000000',
-          eventname: 'Ocean Kayaking Club Meet',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 50,
-          description: 'Join the santa cruz kayak club in an an ocean kayaking adventure. Bring a kayak and some food. Potluck afterwards',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          category: 'sport',
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0011-0000-0000-000000000000',
-          eventname: 'Test Event 11',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 50,
-          description: 'This is the description for Test Event 1.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0010-0000-0000-000000000000',
-          eventname: 'Test Event 10',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-09-07T13:30:00.000Z',
-          endtime: '2021-09-07T15:00:00.000Z',
-          capacity: 45,
-          description: 'This is the description for Test Event 10.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0009-0000-0000-000000000000',
-          eventname: 'Test Event 9',
-          businessid: '80000000-0000-0000-0000-000000000000',
-          starttime: '2021-08-06T11:45:00.000Z',
-          endtime: '2021-08-06T12:45:00.000Z',
-          capacity: 25,
-          description: 'This is the description for Test Event 9.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'job fair',
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0008-0000-0000-000000000000',
-          eventname: 'Test Event 8',
-          businessid: '70000000-0000-0000-0000-000000000000',
-          starttime: '2021-07-06T15:00:00.000Z',
-          endtime: '2021-07-06T19:30:00.000Z',
-          capacity: 90,
-          description: 'This is the description for Test Event 8.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'concert',
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0007-0000-0000-000000000000',
-          eventname: 'Test Event 7',
-          businessid: '60000000-0000-0000-0000-000000000000',
-          starttime: '2021-06-05T07:30:00.000Z',
-          endtime: '2021-06-05T08:00:00.000Z',
-          capacity: 50,
-          description: 'This is the description for Test Event 7.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'workshop',
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0006-0000-0000-000000000000',
-          eventname: 'Test Event 6',
-          businessid: '50000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-04T10:30:00.000Z',
-          endtime: '2021-05-04T14:00:00.000Z',
-          capacity: 20,
-          description: 'This is the description for Test Event 6.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'meeting',
-          attendees: 2
-        },
-        {
-          eventid: '00000000-0005-0000-0000-000000000000',
-          eventname: 'Test Event 5',
-          businessid: '40000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-03T16:30:00.000Z',
-          endtime: '2021-05-03T18:00:00.000Z',
-          capacity: 8,
-          description: 'This is the description for Test Event 5.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'cooking',
-          attendees: 3
-        },
-        {
-          eventid: '00000000-0004-0000-0000-000000000000',
-          eventname: 'Test Event 4',
-          businessid: '30000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-03T08:20:00.000Z',
-          endtime: '2021-05-03T09:22:00.000Z',
-          capacity: 5,
-          description: 'This is the description for Test Event 4.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'club',
-          attendees: 5
-        },
-        {
-          eventid: '00000000-0003-0000-0000-000000000000',
-          eventname: 'Test Event 3',
-          businessid: '20000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-03T13:30:00.000Z',
-          endtime: '2021-05-03T16:00:00.000Z',
-          capacity: 4,
-          description: 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.',
-          over18: false,
-          over21: false,
-          membersonly: false,
-          category: 'school',
-          attendees: 4
-        },
-        {
-          eventid: '00000000-0002-0000-0000-000000000000',
-          eventname: 'Test Event 2',
-          businessid: '10000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-02T10:30:00.000Z',
-          endtime: '2021-05-02T12:30:00.000Z',
-          capacity: 10,
-          description: '',
-          over18: true,
-          over21: false,
-          membersonly: true,
-          category: 'party',
-          attendees: 3
-        },
-        {
-          eventid: '00000000-0001-0000-0000-000000000000',
-          eventname: 'Test Event 1',
-          businessid: '00000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-02T09:00:00.000Z',
-          endtime: '2021-05-02T10:00:00.000Z',
-          capacity: 5,
-          description: 'This is the description for Test Event 1.',
-          over18: false,
-          over21: false,
-          membersonly: true,
-          category: 'gym',
-          attendees: 2
-        }
-      ]);
+      const expected = [{
+        eventid: expect.any(String),
+        eventname: expect.any(String),
+        description: expect.any(String),
+        businessid: expect.any(String),
+        starttime: expect.any(String),
+        endtime: expect.any(String),
+        capacity: expect.any(Number),
+        membersonly: expect.any(Boolean),
+        over18: expect.any(Boolean),
+        over21: expect.any(Boolean),
+        attendees: expect.any(Number)
+      }];
+      expect(data.body).toEqual(expect.arrayContaining(expected));
   })
 })
 
@@ -348,8 +104,8 @@ test('getEvents with bad token', async () => {
 /*
 ---------------------------getEventByID tests------------------------------------
 
-  1. sucessfully get an event by its ID
-  2. invalid ID
+  1. sucessfully get an event by its ID (200)
+  2. invalid ID                         (404)
 
 */
 test('getEventByID', async () => {
@@ -359,20 +115,21 @@ test('getEventByID', async () => {
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
-      expect(data.body).toStrictEqual({
-        eventid: '00000000-0019-0000-0000-000000000000',
-        eventname: 'Wine Tasting',
-        description: 'Temp Description',
-        businessid: '00000000-0000-0000-0000-000000000000',
-        starttime: '2021-09-15T23:30:00.000Z',
-        endtime: '2021-09-16T02:30:00.000Z',
-        capacity: 20,
+      const expected = {
+        eventid: expect.any(String),
+        eventname: expect.any(String),
+        description: expect.any(String),
+        businessid: expect.any(String),
+        starttime: expect.any(String),
+        endtime: expect.any(String),
+        capacity: expect.any(Number),
         repeatid: null,
-        membersonly: false,
-        over18: false,
-        over21: true,
+        membersonly: expect.any(Boolean),
+        over18: expect.any(Boolean),
+        over21: expect.any(Boolean),
         category: null
-      });
+      };
+      expect(data.body).toEqual(expect.objectContaining(expected));
   })
 })  
 
@@ -384,12 +141,12 @@ test('getEventByID bad eventID', async () => {
 /*
 ---------------------------signup tests------------------------------------
 
-  1. successfully signed up for event
-  2. user does not meet restrictions for event
-  3. bad event id
-  4. user already signed up
-  5. user is not a member of business
-  6. event is at capacity
+  1. successfully signed up for event           (200)
+  2. user does not meet restrictions for event  (403)
+  3. bad event id                               (404)
+  4. user already signed up                     (409)
+  5. user is not a member of business           (403)
+  6. event is at capacity                       (403)
 
 */
 test('event sign up successful', async () => {
@@ -431,7 +188,7 @@ test('event sign up with full event', async () => {
 /*
 ---------------------------publicEvents tests------------------------------------
 
-  1. get all public events
+  1. get all public events (200)
 
 */
 test('Get public events', async () => {
@@ -441,150 +198,29 @@ test('Get public events', async () => {
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
-      expect(data.body).toStrictEqual([
-        {
-          eventid: '00000000-0003-0000-0000-000000000000',
-          eventname: 'Test Event 3',
-          description: 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.',
-          businessid: '20000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-03T13:30:00.000Z',
-          endtime: '2021-05-03T16:00:00.000Z',
-          capacity: 4,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: 'school',
-          attendees: 4
-        },
-        {
-          eventid: '00000000-0012-0000-0000-000000000000',
-          eventname: 'Ocean Kayaking Club Meet',
-          description: 'Join the santa cruz kayak club in an an ocean kayaking adventure. Bring a kayak and some food. Potluck afterwards',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 50,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: 'sport',
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0013-0000-0000-000000000000',
-          eventname: 'Group Ride',
-          description: 'Join the Santa Cruzes finest! on a group MTB ride.',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 25,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0014-0000-0000-000000000000',
-          eventname: 'Yoga in the park',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 15,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0015-0000-0000-000000000000',
-          eventname: 'Telescope viewing',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 15,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0016-0000-0000-000000000000',
-          eventname: 'Group Run',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 20,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0017-0000-0000-000000000000',
-          eventname: 'Paint Westcliff',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 10,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0018-0000-0000-000000000000',
-          eventname: 'Photography Club Meet',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 30,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0019-0000-0000-000000000000',
-          eventname: 'Wine Tasting',
-          description: 'Temp Description',
-          businessid: '00000000-0000-0000-0000-000000000000',
-          starttime: '2021-09-15T23:30:00.000Z',
-          endtime: '2021-09-16T02:30:00.000Z',
-          capacity: 20,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: true,
-          category: null,
-          attendees: 0
-        }
-      ]);
+      const expected = [{
+        eventid: expect.any(String),
+        eventname: expect.any(String),
+        description: expect.any(String),
+        businessid: expect.any(String),
+        starttime: expect.any(String),
+        endtime: expect.any(String),
+        capacity: expect.any(Number),
+        repeatid: null,
+        membersonly: expect.any(Boolean),
+        over18: expect.any(Boolean),
+        over21: expect.any(Boolean),
+        category: null,
+        attendees: expect.any(Number)
+      }];
+      expect(data.body).toEqual(expect.arrayContaining(expected));
     })
 })
 
 /*
 ---------------------------publicAndMemberEvents tests------------------------------------
 
-  1. get all public and member events events
+  1. get all public and member events events (200)
 
 */
 test('Get public and member events', async () => {
@@ -594,187 +230,291 @@ test('Get public and member events', async () => {
     .then(data => {
       expect(data).toBeDefined();
       expect(data.body).toBeDefined();
-      expect(data.body).toStrictEqual([
-        {
-          eventid: '00000000-0002-0000-0000-000000000000',
-          eventname: 'Test Event 2',
-          description: '',
-          businessid: '10000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-02T10:30:00.000Z',
-          endtime: '2021-05-02T12:30:00.000Z',
-          capacity: 10,
-          repeatid: null,
-          membersonly: true,
-          over18: true,
-          over21: false,
-          category: 'party',
-          attendees: 3
+      const expected = [{
+        eventid: expect.any(String),
+        eventname: expect.any(String),
+        description: expect.any(String),
+        businessid: expect.any(String),
+        starttime: expect.any(String),
+        endtime: expect.any(String),
+        capacity: expect.any(Number),
+        repeatid: null,
+        membersonly: expect.any(Boolean),
+        over18: expect.any(Boolean),
+        over21: expect.any(Boolean),
+        category: null,
+        attendees: expect.any(Number)
+      }];
+      expect(data.body).toEqual(expect.arrayContaining(expected));
+    })
+})
+
+/*
+---------------------------get Categories tests------------------------------------
+
+  1. get the categories from the database (200)
+
+*/
+test('Get categories Test', async () => {
+  await request.get('/api/events/categories')
+    .expect(200)
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      const expected = [{category: expect.any(String)}];
+      expect(data.body).toEqual(expect.arrayContaining(expected));
+    });
+})
+
+/*
+---------------------------events post tests------------------------------------
+
+  1. successful creation of new event (201)
+  2. successful creation of repeating event (201)
+  3. bad business token (401)
+  4. user token(403)
+
+*/
+test('Creation of New Event Test', async() => {
+  await request.post('/api/events/')
+    .set({'Authorization': 'Bearer ' + businessAuthToken})
+    .send({
+    eventname: 'Track Day',
+    description: 'race event',
+    starttime: '2021-06-01T09:00:00.000Z',
+    endtime: '2021-06-01T12:00:00.000Z',
+    capacity: 50,
+    repeat: false,
+    membersonly: true,
+    over18: true,
+    over21: false,
+    category: "sport"
+    })
+    .expect(201)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      expect(data.body).toStrictEqual(      {
+        eventname: 'Track Day',
+        description: 'race event',
+        starttime: '2021-06-01T09:00:00.000Z',
+        endtime: '2021-06-01T12:00:00.000Z',
+        capacity: 50,
+        repeat: false,
+        membersonly: true,
+        over18: true,
+        over21: false,
+        category: 'sport',
+        eventid: expect.any(String)
+      });
+    })
+})
+
+test('Creation of New Repeating Event Test', async() => {
+  await request.post('/api/events/')
+    .set({'Authorization': 'Bearer ' + businessAuthToken})
+    .send({
+    eventname: 'Snowboarding',
+    description: 'pow',
+    starttime: '2021-06-01T09:00:00.000Z',
+    endtime: '2021-06-01T12:00:00.000Z',
+    capacity: 50,
+    repeat: true,
+    repeattype: 'w',
+    repeatdays: {
+        sunday: false,
+        monday: false, 
+        tuesday: true,   
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false
+      },
+    repeatstart: '2021-06-01T09:00:00.000Z',
+    repeatend: '2021-06-29T09:00:00.000Z',
+    membersonly: false,
+    over18: false,
+    over21: false,
+    category: "sport"
+
+    })
+    .expect(201)
+    .expect('Content-Type', /json/)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      expect(data.body).toStrictEqual(      {
+        eventname: 'Snowboarding',
+        description: 'pow',
+        starttime: '2021-06-01T09:00:00.000Z',
+        endtime: '2021-06-01T12:00:00.000Z',
+        capacity: 50,
+        repeat: true,
+        repeattype: 'w',
+        repeatdays: {
+          sunday: false,
+          monday: false,
+          tuesday: true,
+          wednesday: false,
+          thursday: false,
+          friday: false,
+          saturday: false
         },
-        {
-          eventid: '00000000-0010-0000-0000-000000000000',
-          eventname: 'Test Event 10',
-          description: 'This is the description for Test Event 10.',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-09-07T13:30:00.000Z',
-          endtime: '2021-09-07T15:00:00.000Z',
-          capacity: 45,
-          repeatid: null,
-          membersonly: true,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0011-0000-0000-000000000000',
-          eventname: 'Test Event 11',
-          description: 'This is the description for Test Event 1.',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 50,
-          repeatid: null,
-          membersonly: true,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0003-0000-0000-000000000000',
-          eventname: 'Test Event 3',
-          description: 'This is the description for Test Event 3. Test Event 3 has a longer description than the others.',
-          businessid: '20000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-03T13:30:00.000Z',
-          endtime: '2021-05-03T16:00:00.000Z',
-          capacity: 4,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: 'school',
-          attendees: 4
-        },
-        {
-          eventid: '00000000-0012-0000-0000-000000000000',
-          eventname: 'Ocean Kayaking Club Meet',
-          description: 'Join the santa cruz kayak club in an an ocean kayaking adventure. Bring a kayak and some food. Potluck afterwards',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 50,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: 'sport',
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0013-0000-0000-000000000000',
-          eventname: 'Group Ride',
-          description: 'Join the Santa Cruzes finest! on a group MTB ride.',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 25,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 1
-        },
-        {
-          eventid: '00000000-0014-0000-0000-000000000000',
-          eventname: 'Yoga in the park',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 15,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0015-0000-0000-000000000000',
-          eventname: 'Telescope viewing',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 15,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0016-0000-0000-000000000000',
-          eventname: 'Group Run',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 20,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0017-0000-0000-000000000000',
-          eventname: 'Paint Westcliff',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 10,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0018-0000-0000-000000000000',
-          eventname: 'Photography Club Meet',
-          description: 'Temp Description',
-          businessid: '90000000-0000-0000-0000-000000000000',
-          starttime: '2021-10-07T13:30:00.000Z',
-          endtime: '2021-10-07T15:00:00.000Z',
-          capacity: 30,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: false,
-          category: null,
-          attendees: 0
-        },
-        {
-          eventid: '00000000-0019-0000-0000-000000000000',
-          eventname: 'Wine Tasting',
-          description: 'Temp Description',
-          businessid: '00000000-0000-0000-0000-000000000000',
-          starttime: '2021-09-15T23:30:00.000Z',
-          endtime: '2021-09-16T02:30:00.000Z',
-          capacity: 20,
-          repeatid: null,
-          membersonly: false,
-          over18: false,
-          over21: true,
-          category: null,
-          attendees: 0
-        }
-      ]);
+        repeatend: '2021-06-29T09:00:00.000Z',
+        repeatid: expect.any(String),
+        repeatstart: '2021-06-01T09:00:00.000Z',
+        membersonly: false,
+        over18: false,
+        over21: false,
+        category: 'sport',
+        eventid: expect.any(String)
+      });
+      repeatTestID = data.body.eventid;
+    })
+})
+
+test('Creation of New Event Test Bad Business Token', async() => {
+  await request.post('/api/events/')
+    .set({'Authorization': 'Bearer ' + 'drfgvh34d5f6guh'})
+    .send({
+    eventname: 'Track Day',
+    description: 'race event',
+    starttime: '2021-06-01T09:00:00.000Z',
+    endtime: '2021-06-01T12:00:00.000Z',
+    capacity: 50,
+    repeat: false,
+    membersonly: true,
+    over18: true,
+    over21: false,
+    category: "sport"
+    })
+    .expect(401)
+})
+
+test('Creation of New Event Test User Token', async() => {
+  await request.post('/api/events/')
+    .set({'Authorization': 'Bearer ' + userAuthToken})
+    .send({
+    eventname: 'Track Day',
+    description: 'race event',
+    starttime: '2021-06-01T09:00:00.000Z',
+    endtime: '2021-06-01T12:00:00.000Z',
+    capacity: 50,
+    repeat: false,
+    membersonly: true,
+    over18: true,
+    over21: false,
+    category: "sport"
+    })
+    .expect(403)
+})
+
+/*
+---------------------------events delete tests------------------------------------
+
+  1. Successfully deleted event (200)
+  2. Successfully deleted repeating event (200)
+  3. Event not found (404)
+  4. Deleting event that another business created (403)
+
+*/
+test('Delete Single Event Test', async () => {
+  await request.delete('/api/events/00000000-0002-0000-0000-000000000000')
+    .set({'Authorization': 'Bearer ' + businessAuthToken})
+    .expect(200)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+    })
+})
+
+test('Delete Repeating Event', async () => {
+  await request.delete('/api/events/' + repeatTestID)
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .send({'deleteAll': true})
+  .expect(200)
+  .then(data => {
+    expect(data).toBeDefined();
+    expect(data.body).toBeDefined();
+  })
+})
+
+test('Delete Event, Bad Event ID', async () => {
+  await request.delete('/api/events/00000123-0001-0000-0000-000000000000')
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .expect(404)
+})
+
+test('Delete Event That Other Business Created', async () => {
+  await request.delete('/api/events/00000000-0006-0000-0000-000000000000')
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .expect(403)
+})
+
+/*
+---------------------------getSearchEvents tests------------------------------------
+
+  1. successfully retreived business events (200)
+  2. successfully retrieved user events (200)
+
+*/
+test('Search Event Business ID', async () => {
+  await request.get('/api/events/search/jeff@ucsc.edu')
+    .set({'Authorization': 'Bearer ' + businessAuthToken})
+    .send({
+      start: '2021-05-03T16:30:00.000Z',
+      end: '2021-06-30T16:30:00.000Z'
+    })
+    .expect(200)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      const expected = [{
+        eventid: expect.any(String),
+        eventname: expect.any(String),
+        businessid: expect.any(String),
+        starttime: expect.any(String),
+        endtime: expect.any(String),
+        capacity: expect.any(Number),
+        description: expect.any(String),
+        over18: expect.any(Boolean),
+        over21: expect.any(Boolean),
+        membersonly: expect.any(Boolean),
+        category: expect.any(String),
+        attendees: expect.any(Number)
+      }];
+      expect(data.body).toEqual(expect.arrayContaining(expected));
+    })
+})
+
+test('Search Event User ID', async () => {
+  await request.get('/api/events/search/jeff@ucsc.edu')
+    .set({'Authorization': 'Bearer ' + userAuthToken})
+    .send({
+      start: '2021-05-03T16:30:00.000Z',
+      end: '2021-06-30T16:30:00.000Z'
+    })
+    .expect(200)
+    .then(data => {
+      expect(data).toBeDefined();
+      expect(data.body).toBeDefined();
+      const expected = [{
+        eventid: expect.any(String),
+        eventname: expect.any(String),
+        businessid: expect.any(String),
+        starttime: expect.any(String),
+        endtime: expect.any(String),
+        capacity: expect.any(Number),
+        description: expect.any(String),
+        over18: expect.any(Boolean),
+        over21: expect.any(Boolean),
+        membersonly: expect.any(Boolean),
+        category: expect.any(String),
+        attendees: expect.any(Number)
+      }];
+      expect(data.body).toEqual(expect.arrayContaining(expected));
     })
 })

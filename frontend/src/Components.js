@@ -321,20 +321,21 @@ BusinessInfo.propTypes = {
   description: PropTypes.string,
   phonenumber: PropTypes.string,
   className: PropTypes.string,
+  businessid: PropTypes.string,
 };
 /**
  * BusinessInfo component
  * @return {object} BusinessInfo JSX
  */
 export function BusinessInfo({picture: path, name: name, email: email,
-  phonenumber: phonenumber, description: description,
+  phonenumber: phonenumber, description: description, businessid: businessid,
   className: className, ...rest}) {
   const useStyles = makeStyles((theme) => ({
     avatar: {
       margin: '0 auto',
       fontSize: '6rem',
-      width: theme.spacing(16),
-      height: theme.spacing(16),
+      width: '100%',
+      height: '100%',
       [theme.breakpoints.up('md')]: {
         fontSize: '10rem',
         width: theme.spacing(25),
@@ -358,6 +359,7 @@ export function BusinessInfo({picture: path, name: name, email: email,
   }));
   const classes = useStyles();
   const [image, setImage] = React.useState({preview: '', raw: ''});
+  console.log(businessid);
   React.useEffect(async () => {
     // fetch('https://upload.wikimedia.org/wikipedia/'+
     //   'commons/7/77/Delete_key1.jpg')
@@ -371,10 +373,14 @@ export function BusinessInfo({picture: path, name: name, email: email,
     //         });
     //       });
     //     });
-    fetch('http://localhost:3010/api/businesses/'+
-      'getProfileImage', {
+    if (!businessid || image.prevew) {
+      return;
+    };
+    console.log('help', businessid);
+    fetch('http://localhost:3010/api/'+'businesses/'+
+      businessid+'/getProfileImage', {
       method: 'GET',
-      headers: Auth.headerJsonJWT(),
+      headers: {'Content-Type': 'application/json'},
     }).then((data) => {
       console.log(data);
       return data.json();
@@ -398,14 +404,13 @@ export function BusinessInfo({picture: path, name: name, email: email,
     <Grid item className={classes.businessInfo} {...rest}>
       {image.preview ? (
         <img src={image.preview} alt="dummy" width='100%' height='auto'
-          style={{marginTop: '10px'}}
-          ref={profileImage}/>
+          style={{marginTop: '10px'}}/>
       ) : (
         <Box width='100%' height='100%'>
-          <Avatar
-            alt={'pfp'} width='auto'
-            className={classes.avatar}
-          />
+          <img
+            src={'http://localhost:3010/static/businessProfileImages/stockPhoto.png'}
+            alt="dummy" width='100%' height='auto'
+            style={{marginTop: '10px'}}/>
         </Box>
       )}
       <Typography className={classes.businessName}

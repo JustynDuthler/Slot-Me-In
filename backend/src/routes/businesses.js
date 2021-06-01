@@ -24,7 +24,10 @@ exports.getInfo = async (req, res) => {
 exports.getBusinessByID = async (req, res) => {
   const business = await businessDb.selectBusiness(req.params.businessid);
   // 404 if business ID does not exist
-  if (!business) res.status(404).send();
+  if (!business) {
+    res.status(404).send();
+    return;
+  }
   const businessData = {
     businessid: business.businessid,
     businessname: business.businessname,
@@ -50,7 +53,6 @@ exports.getBusinesses = async (req, res) => {
     };
     businessList.push(businessData);
   }
-  console.log(businessList);
   res.status(200).json(businessList);
 };
 
@@ -149,10 +151,13 @@ exports.saveProfileImage = async (req, res) => {
      newFileName;
     /* retrieve previous image and delete it */
     const prevFileName = await businessDb.getBusinessImageName(businessID);
-    if (prevFileName.businessimagename !== 'stockPhoto.png') {
+    const prevPath = __dirname + '/../public/businessProfileImages/' +
+                    prevFileName.businessimagename;
+    if (prevFileName.businessimagename !== 'stockPhoto.png'
+      && prevPath !== path) {
       const prevPath = __dirname + '/../public/businessProfileImages/' +
                       prevFileName.businessimagename;
-      fs.unlink(prevPath, (err) => {
+      const deleteRes = await fs.unlink(prevPath, (err) => {
         if (err) {
           console.error(err);
           res.status(500).send();
@@ -180,18 +185,20 @@ exports.saveProfileImage = async (req, res) => {
 
 
 exports.sendProfileImage = async (req, res) => {
-  const businessID = req.payload.id;
+  const businessID = (req.payload) ? req.payload.id : req.params.businessid;
   const imageName = await businessDb.getBusinessImageName(businessID);
+
+
   if (imageName == null) {
     res.status(500);
   } else {
     res.status(200).json(imageName.businessimagename);
   }
   /*
-  /* construct path to file 
+  /* construct path to file
   const path = __dirname + '/../public/businessProfileImages/' +
               imageName.businessimagename;
-  /* read the file data into a buffer 
+  /* read the file data into a buffer
   fs.readFile(path, 'binary', (err, buffer) => {
     if (err) {
       console.error(err);

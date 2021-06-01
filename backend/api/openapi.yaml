@@ -507,7 +507,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
+  /businesses/{businessid}/getProfileImage:
+    get:
+      description: get a business profile picture for individual event page
+      tags:
+        - businesses
+      parameters:
+        - name: businessid
+          in: path
+          description: ID of business to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: successfully retrieved profile image
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot read image from server
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /events:
     post:
       description: Create a new event
@@ -741,7 +776,7 @@ paths:
 
   /events/publicAndMemberEvents/{useremail}:
     get:
-      description: Returns an array of public and member events
+      description: Returns an array of upcoming public and member events
       tags:
         - events
       parameters:
@@ -752,6 +787,11 @@ paths:
           schema:
             type: string
             format: email
+        - name: all
+          in: query
+          description: Return all events, including past events (default false)
+          schema:
+            type: boolean
       responses:
         200:
           description: Successfully returned events

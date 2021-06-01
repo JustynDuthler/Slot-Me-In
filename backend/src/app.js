@@ -34,8 +34,6 @@ app.use(
 // User routes
 app.post('/api/users/login', users.login);
 app.post('/api/users/signup', users.signup);
-// incomplete, use getUserEvents
-// app.get('/api/users/:userid/events', users.getEvents);
 app.get('/api/users/getUser', auth.userAuth, users.getInfo);
 app.get('/api/users/getUserEvents', auth.userAuth, users.getEvents);
 app.delete('/api/users/removeUserAttending',
@@ -54,6 +52,8 @@ app.get('/api/businesses/checkBusinessID',
 app.post('/api/businesses/uploadProfileImage', auth.businessAuth,
     businesses.saveProfileImage);
 app.get('/api/businesses/getProfileImage', auth.businessAuth,
+    businesses.sendProfileImage);
+app.get('/api/businesses/:businessid/getProfileImage',
     businesses.sendProfileImage);
 app.get('/api/businesses/:businessid', businesses.getBusinessByID);
 app.get('/api/businesses', businesses.getBusinesses);
