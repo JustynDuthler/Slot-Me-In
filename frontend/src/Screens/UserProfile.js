@@ -139,7 +139,7 @@ UserInfo.propTypes = {
  */
 const Content = ({memberBusinesses, eventList, colorDict}) => {
   const [contentState, setContentState] = React.useState('calendar');
-  //const [selectedEventId, setSelectedEventID] = React.useState('');
+  // const [selectedEventId, setSelectedEventID] = React.useState('');
   const classes = useStyles();
 
   /**
