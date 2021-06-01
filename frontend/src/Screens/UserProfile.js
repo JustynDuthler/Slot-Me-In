@@ -63,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     width: '100%',
   },
+  switchBtn: {
+    margin: theme.spacing(2),
+  },
 }));
 
 /**
