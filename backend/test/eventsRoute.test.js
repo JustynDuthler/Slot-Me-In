@@ -54,10 +54,10 @@ test('getEvents with business token', async () => {
       expect(data.body).toStrictEqual([
         {
           eventid: '00000000-0002-0000-0000-000000000000',
-          eventname: 'Test Event 2',
+          eventname: 'Welcome Party',
           businessid: '10000000-0000-0000-0000-000000000000',
-          starttime: '2021-05-02T10:30:00.000Z',
-          endtime: '2021-05-02T12:30:00.000Z',
+          starttime: '2021-06-09T03:30:00.000Z',
+          endtime: '2021-06-09T04:30:00.000Z',
           capacity: 10,
           description: '',
           over18: true,
@@ -418,10 +418,11 @@ test('Creation of New Event Test User Token', async() => {
   1. Successfully deleted event (200)
   2. Successfully deleted repeating event (200)
   3. Event not found (404)
+  4. Deleting event that another business created (403)
 
 */
 test('Delete Single Event Test', async () => {
-  await request.delete('/api/events/00000000-0001-0000-0000-000000000000')
+  await request.delete('/api/events/00000000-0002-0000-0000-000000000000')
     .set({'Authorization': 'Bearer ' + businessAuthToken})
     .expect(200)
     .then(data => {
@@ -445,6 +446,12 @@ test('Delete Event, Bad Event ID', async () => {
   await request.delete('/api/events/00000123-0001-0000-0000-000000000000')
   .set({'Authorization': 'Bearer ' + businessAuthToken})
   .expect(404)
+})
+
+test('Delete Event That Other Business Created', async () => {
+  await request.delete('/api/events/00000000-0006-0000-0000-000000000000')
+  .set({'Authorization': 'Bearer ' + businessAuthToken})
+  .expect(403)
 })
 
 /*
