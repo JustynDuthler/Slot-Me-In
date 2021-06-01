@@ -28,8 +28,8 @@ beforeEach(async () => {
 /*
 ---------------------------getMember tests------------------------------------
 
-  1. normal get members
-  2. Bad token
+  1. normal get members (200)
+  2. Bad token          (401)
 
 */
 test('Get Members', async () => {
@@ -52,9 +52,9 @@ test('Get Members with bad token', async () => {
 /*
 ----------------------getMemberBusinesses tests--------------------------------
 
-  1. user will businesses
-  2. user with no businesses
-  3. bad email
+  1. user will businesses     (200)
+  2. user with no businesses  (200)
+  3. bad email                (400)
 
 */
 test('Get Memeber Businesses Test with businesses', async () => {
@@ -94,9 +94,9 @@ test('Get Memeber Businesses Test with no businesses', async () => {
 /*
 ----------------------getRestrictedEvents tests--------------------------------
 
-  1. user with a membership with restricted events
-  2. user with a membership and no restricted events
-  3. bad email
+  1. user with a membership with restricted events    (200)
+  2. user with a membership and no restricted events  (200)
+  3. bad email                                        (400)
 */
 test('Get member restrcited events with restricted events', async () => {
   await request.get('/api/members/getRestrictedEvents/jeff@ucsc.edu')
@@ -143,9 +143,9 @@ test('Get member restrcited events with bad email', async () => {
 /*
 ----------------------addMembers tests--------------------------------
 
-  1. adds 3 members (2 non users, 1 already a user) 
-  2. adds existing member
-  3. bad business token
+  1. adds 3 members (2 non users, 1 already a user) (200)
+  2. adds existing member                           (200)
+  3. bad business token                             (401)
 */
 test('Adding members to a business', async () => {
   await request.post('/api/members/insertMembers')
@@ -185,9 +185,8 @@ test('Adding member that already is a member', async () => {
 /*
 ----------------------removeMembers tests--------------------------------
 
-  1. removes a member
-  2. removes non member
-  3. bad business token
+  1. removes a member   (200)
+  3. bad business token (401)
 
 */
 test('removing a member from a business', async () => {
