@@ -351,12 +351,10 @@ export default function ViewEvents() {
 
   React.useEffect(() => {
     if (context.businessState === false) {
-      console.log('user');
       getPublicEvents();
       getUserInfo();
       getAllBusinesses();
     } else {
-      console.log('business');
       getBusinessEvents();
       if (window.location.href === 'http://localhost:3000/') {
         /* show all events */
@@ -370,21 +368,13 @@ export default function ViewEvents() {
     }
     getCategories();
 
-    // if (window.location.href === 'http://localhost:3000/events') {
-    //   /* show all events */
-    //   setSearchBoolean(false);
-    // } else {
-    //   setSearchBoolean(true);
-    //   const parsedURL = (window.location.href).split('?');
-    //   /* stick parsedURL in an api call and pass it to search events */
-    //   searchFromURL(parsedURL[1]);
-    // }
+    // parse url for filters and set them to true and then
+    // call applyFilters()
   }, [context.businessState]);
 
-  // console.log(categories);
   /**
    * searchFromURL
-   * obtains all businesses
+   * search by parsing the url
    * @param {string} url
    * @param {email} email
    */
@@ -535,10 +525,90 @@ export default function ViewEvents() {
    * apply filters that are set to true
    */
   function applyFilters() {
+    // set url for filters but attaching &filter for all true filters
+    if (searchBoolean === true) {
+      let url = '?'+((window.location.href).split('?'))[1];
+      let addedFilter = false;
+      for (const i in businesses) {
+        if (businesses[i] === true) {
+          if (addedFilter) {
+            url += '&' + i;
+          } else {
+            url += '?' + i;
+          }
+          addedFilter = true;
+        }
+      }
+      for (const i in categories) {
+        if (categories[i] === true) {
+          if (addedFilter) {
+            url += '&' + i;
+          } else {
+            url += '?' + i;
+          }
+          addedFilter = true;
+        }
+      }
+      for (const i in restrictions) {
+        if (restrictions[i] === true) {
+          if (addedFilter) {
+            url += '&' + i;
+          } else {
+            url += '?' + i;
+          }
+          addedFilter = true;
+        }
+      }
+      history.push(url);
+    } else {
+      let url = '?';
+      let addedFilter = false;
+      for (const i in businesses) {
+        if (businesses[i] === true) {
+          if (addedFilter) {
+            url += '&' + i;
+          } else {
+            url += i;
+          }
+          addedFilter = true;
+        }
+      }
+      for (const i in categories) {
+        if (categories[i] === true) {
+          if (addedFilter) {
+            url += '&' + i;
+          } else {
+            url += i;
+          }
+          addedFilter = true;
+        }
+      }
+      for (const i in restrictions) {
+        if (restrictions[i] === true) {
+          if (addedFilter) {
+            url += '&' + i;
+          } else {
+            url += i;
+          }
+          addedFilter = true;
+        }
+      }
+      history.push(url);
+    }
+
+    // filter events
     setFilterBoolean(true);
     // use apicall for each category checked + all restriction filters
-    // combine those and then filter for businesses
     const filteredEvents = [];
+    // if (context.businessState === false) {
+    //   for (const i in categories) {
+    //     if (categories[i] === true) {
+    //     }
+    //   }
+    // }
+
+    // combine those and then filter for businesses
+
     if (searchBoolean === true) {
       for (let i = 0; i < searchEventsList.length; i++) {
         let added = false;
