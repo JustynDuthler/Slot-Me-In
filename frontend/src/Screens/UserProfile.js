@@ -138,17 +138,7 @@ UserInfo.propTypes = {
  */
 const Content = ({memberBusinesses, eventList, colorDict}) => {
   const [contentState, setContentState] = React.useState('calendar');
-  // const [selectedEventId, setSelectedEventID] = React.useState('');
   const classes = useStyles();
-
-  /**
-  *
-  * @param {object} event object
-  * @param {*} e syntheticEvent
-  */
-  // const selectEvent = (event, e) => {
-  //   setSelectedEventID(event.id);
-  // };
 
   /**
    *
@@ -246,20 +236,6 @@ const UserProfile = (props) => {
   const [colorDict] = React.useState({});
 
   const classes = useStyles();
-
-  /**
-  * Returns a dict of colors for businessId's
-  * @param {Array} businessList
-  * @return {Object} colors
-  */
-  // const setColors = (businessList) => {
-  //   const colorArr = ['#4a4e4d', '#0e9aa7', '#3da4ab', '#f6cd61', '#fe8a71'];
-  //   const colors = {};
-  //   businessList.forEach((elem, index) => {
-  //     colors[elem.businessid] = colorArr[index];
-  //   });
-  //   return colors;
-  // };
 
   React.useEffect(async () => {
     try {

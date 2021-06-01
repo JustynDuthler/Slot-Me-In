@@ -367,16 +367,6 @@ export default function ViewEvents() {
       }
     }
     getCategories();
-
-    // if (window.location.href === 'http://localhost:3000/events') {
-    //   /* show all events */
-    //   setSearchBoolean(false);
-    // } else {
-    //   setSearchBoolean(true);
-    //   const parsedURL = (window.location.href).split('?');
-    //   /* stick parsedURL in an api call and pass it to search events */
-    //   searchFromURL(parsedURL[1]);
-    // }
   }, [context.businessState]);
 
   // console.log(categories);

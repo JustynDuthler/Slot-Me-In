@@ -73,18 +73,6 @@ export default function UserInfo({picture: path, name: name, email: email,
   const classes = useStyles();
   const [image, setImage] = React.useState({preview: '', raw: ''});
   React.useEffect(async () => {
-    // fetch('https://upload.wikimedia.org/wikipedia/'+
-    //   'commons/7/77/Delete_key1.jpg')
-    //     .then((res) => res.blob())
-    //     .then((res) => {
-    //       const url = URL.createObjectURL(res);
-    //       cropImage(url, 1).then((canvas) => {
-    //         setImage({
-    //           preview: canvas.toDataURL('image/png'),
-    //           raw: res,
-    //         });
-    //       });
-    //     });
     fetch('http://localhost:3010/api/businesses/'+
       'getProfileImage', {
       method: 'GET',
@@ -92,11 +80,6 @@ export default function UserInfo({picture: path, name: name, email: email,
     }).then((data) => {
       return data.json();
     }).then((json) => {
-      // setImage({
-      //   preview: 'http://localhost:3010/static/businessProfileImages/'+
-      //     json,
-      //   raw: '',
-      // });
       const url = 'http://localhost:3010/static/businessProfileImages/' + json;
       cropImage(url, 1).then((canvas) => {
         setImage({
@@ -298,9 +281,6 @@ export function FacebookShareButton({msg: msg, url: url, ...rest}) {
   const classes = useStyles();
   const encodedmsg = 'https://www.facebook.com/sharer/sharer.php?u='+
     encodeURIComponent(url)+'%2F&amp;src=sdkpreparse';
-  // const encodedmsg = 'https://www.facebook.com/sharer/sharer.php?s=500&'+
-  // 'p[title]=SlotMeIn&p[summary]=JoinusonSlotMeInto&p[url]='+
-  //   eurl;
   return (
     <IconButton>
       <div className="fb-share-button"
@@ -359,18 +339,6 @@ export function BusinessInfo({picture: path, name: name, email: email,
   const classes = useStyles();
   const [image, setImage] = React.useState({preview: '', raw: ''});
   React.useEffect(async () => {
-    // fetch('https://upload.wikimedia.org/wikipedia/'+
-    //   'commons/7/77/Delete_key1.jpg')
-    //     .then((res) => res.blob())
-    //     .then((res) => {
-    //       const url = URL.createObjectURL(res);
-    //       cropImage(url, 1).then((canvas) => {
-    //         setImage({
-    //           preview: canvas.toDataURL('image/png'),
-    //           raw: res,
-    //         });
-    //       });
-    //     });
     if (!businessid || image.preview) {
       return;
     };
@@ -381,11 +349,6 @@ export function BusinessInfo({picture: path, name: name, email: email,
     }).then((data) => {
       return data.json();
     }).then((json) => {
-      // setImage({
-      //   preview: 'http://localhost:3010/static/businessProfileImages/'+
-      //     json,
-      //   raw: '',
-      // });
       const url = 'http://localhost:3010/static/businessProfileImages/' + json;
       cropImage(url, 1).then((canvas) => {
         setImage({

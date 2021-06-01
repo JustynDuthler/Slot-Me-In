@@ -193,17 +193,4 @@ exports.sendProfileImage = async (req, res) => {
   } else {
     res.status(200).json(imageName.businessimagename);
   }
-  /*
-  /* construct path to file
-  const path = __dirname + '/../public/businessProfileImages/' +
-              imageName.businessimagename;
-  /* read the file data into a buffer
-  fs.readFile(path, 'binary', (err, buffer) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send();
-    }
-    res.status(200).send(buffer);
-  });
-  */
 };
