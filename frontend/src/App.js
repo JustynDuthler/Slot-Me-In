@@ -114,7 +114,6 @@ function App() {
       } else {
         setBusinessState(false);
       }
-      console.log('user type:', json);
     })
         .catch((error) => {
           console.log(error);

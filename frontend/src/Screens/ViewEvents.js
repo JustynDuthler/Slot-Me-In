@@ -389,7 +389,7 @@ export default function ViewEvents() {
   function searchFromURL(url, email) {
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
-    console.log('url: '+url);
+    // console.log('url: '+url);
     if (context.businessState === false) {
       // apicall += '/search/'+email+'?search='+url;
       if (url !== '') {

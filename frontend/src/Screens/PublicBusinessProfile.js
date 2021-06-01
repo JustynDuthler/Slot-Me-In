@@ -137,7 +137,7 @@ const PublicBusinessProfile = (props) => {
       }
       return response.json();
     }).then((json) => {
-      console.log(json);
+      // console.log(json);
       setEventList(json.slice(0, 10));
     })
         .catch((error) => {

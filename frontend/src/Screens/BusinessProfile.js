@@ -62,7 +62,6 @@ export default function BusinessProfile() {
    * @return {Number}
    */
   function deleteEvent(eventid, all) {
-    console.log(eventid);
     const apicall = 'http://localhost:3010/api/events/'+eventid;
     return fetch(apicall, {
       method: 'DELETE',
@@ -78,7 +77,6 @@ export default function BusinessProfile() {
       }
       return response;
     }).then((json)=>{
-      console.log(json);
       return 1;
     })
         .catch((error) => {
@@ -198,7 +196,6 @@ export default function BusinessProfile() {
           }
         })
         .then((json) => {
-          console.log(json);
           const membersCopy = JSON.parse(JSON.stringify(memberList));
           for (let i = 0; i < json.length; i++) {
             membersCopy[json[i].email] = json[i];
@@ -407,7 +404,6 @@ export default function BusinessProfile() {
    * @param {string} email
    */
   async function removeMember(email) {
-    console.log(email);
     return fetch('http://localhost:3010/api/members/deleteMember', {
       method: 'Delete',
       body: JSON.stringify({'email': email}),
@@ -636,7 +632,6 @@ export default function BusinessProfile() {
                 variant='contained'
                 color='secondary'
                 onClick={() => {
-                  console.log('rrr');
                   setShowAll(true);
                 }}
               >
