@@ -248,6 +248,7 @@ const Home = (props) => {
   if (context.authState === false) {
     return <UnAuthHome/>;
   } else {
+    console.log(context.businessState);
     return <AuthHome/>;
   }
 };

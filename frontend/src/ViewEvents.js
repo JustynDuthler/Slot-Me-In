@@ -349,10 +349,12 @@ export default function ViewEvents() {
 
   React.useEffect(() => {
     if (context.businessState === false) {
+      console.log('user');
       getPublicEvents();
       getUserInfo();
       getAllBusinesses();
     } else {
+      console.log('business');
       getBusinessEvents();
       if (window.location.href === 'http://localhost:3000/') {
         /* show all events */
