@@ -231,13 +231,16 @@ exports.getSearchEvents = async (req, res) => {
     const events = await eventsDb.getEvents(
         req.query.start, req.query.end, req.query.search);
 
+    const now = req.query.all ? new Date('1/1/1900') : new Date(Date.now());
     // go through all events and get the public ones or ones that are part of the businesses
     const searchEventList = []
     for (let i = 0; i < events.length; i++) {
       for (let j = 0; j < businesses.length; j++) {
         if (events[i].businessid === businesses[j].businessid ||
           events[i].membersonly === false) {
-            searchEventList.push(events[i]);
+            const starttime = new Date(events[i]['starttime'])
+            if (starttime >= now)
+              searchEventList.push(events[i]);
             break;
           }
       }

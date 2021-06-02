@@ -1,3 +1,4 @@
+  
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -29,12 +30,12 @@ import DateFnsUtils from '@date-io/date-fns';
 import {DateTimePicker, MuiPickersUtilsProvider}
   from '@material-ui/pickers';
 
-import NavBar from './Components/Nav/NavBar';
-import EventCard from './Components/Events/EventCard';
-import Context from './Context';
-const Auth = require('./libs/Auth');
+import NavBar from '../Components/Nav/NavBar';
+import EventCard from '../Components/Events/EventCard';
+import Context from '../Context';
+const Auth = require('../libs/Auth');
 
-import './CSS/Scrollbar.css';
+import '../CSS/Scrollbar.css';
 
 const drawerWidth = 260;
 
@@ -153,45 +154,9 @@ export default function ViewEvents() {
             setSearchBoolean(false);
           } else {
             setSearchBoolean(true);
-            if ((window.location.href).indexOf('start=') !== -1 ||
-            (window.location.href).indexOf('end=') !== -1 ||
-            (window.location.href).indexOf('search=') !== -1) {
-              console.log('searching from url');
-              const parsedURL = (window.location.href).split('?');
-              /* stick parsedURL in an api call and pass it to search events */
-              searchFromURL(parsedURL[1], json.useremail);
-            } else {
-              setSearchBoolean(false);
-              console.log('else');
-              // no date or text search so just check filters
-              const parsedURL = (window.location.href).split('?');
-              // parse the filters using &
-              const filters = parsedURL[1].split('&');
-              for (let i = 0; i < filters.length; i++) {
-                for (const j in businesses) {
-                  if (j === decodeURIComponent(filters[i])) {
-                    console.log(decodeURIComponent(filters[i]));
-                    businesses[j] = true;
-                    break;
-                  }
-                }
-                for (const j in categories) {
-                  if (j === decodeURIComponent(filters[i])) {
-                    console.log(decodeURIComponent(filters[i]));
-                    categories[j] = true;
-                    break;
-                  }
-                }
-                for (const j in restrictions) {
-                  if (j === decodeURIComponent(filters[i])) {
-                    console.log(decodeURIComponent(filters[i]));
-                    restrictions[j] = true;
-                    break;
-                  }
-                }
-              }
-              applyFilters();
-            }
+            const parsedURL = (window.location.href).split('?');
+            /* stick parsedURL in an api call and pass it to search events */
+            searchFromURL(parsedURL[1], json.useremail);
           }
         },
         (error) => {
@@ -222,7 +187,6 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       // gets all public events + member events
-      console.log(json);
       setEventList(json);
     })
         .catch((error) => {
@@ -360,7 +324,7 @@ export default function ViewEvents() {
 
   /**
    * getCategories
-   * obtains all categories
+   * obtains all businesses
    */
   function getCategories() {
     const apicall = 'http://localhost:3010/api/events/categories';
@@ -375,9 +339,9 @@ export default function ViewEvents() {
       return response.json();
     }).then((json) => {
       setCategoryList(json);
-      json.map((cat) =>
+      json.map((category1) =>
         // attach to category state
-        setCategories({...categories, [cat.category]: false}),
+        setCategories({...categories, [category1.category]: false}),
       );
     })
         .catch((error) => {
@@ -398,33 +362,25 @@ export default function ViewEvents() {
         setSearchBoolean(false);
       } else {
         setSearchBoolean(true);
-        if ((window.location.href).indexOf('start=') !== -1 ||
-          (window.location.href).indexOf('end=') !== -1 ||
-          (window.location.href).indexOf('search=') !== -1) {
-          const parsedURL = (window.location.href).split('?');
-          /* stick parsedURL in an api call and pass it to search events */
-          searchFromURL(parsedURL[1]);
-        } else {
-          // no date or text search so just check filters
-        }
+        const parsedURL = (window.location.href).split('?');
+        /* stick parsedURL in an api call and pass it to search events */
+        searchFromURL(parsedURL[1]);
       }
     }
     getCategories();
-
-    // parse url for filters and set them to true and then
-    // call applyFilters()
   }, [context.businessState]);
 
+  // console.log(categories);
   /**
    * searchFromURL
-   * search by parsing the url
+   * obtains all businesses
    * @param {string} url
    * @param {email} email
    */
   function searchFromURL(url, email) {
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
-    console.log('url: '+url);
+    // console.log('url: '+url);
     if (context.businessState === false) {
       // apicall += '/search/'+email+'?search='+url;
       if (url !== '') {
@@ -537,7 +493,7 @@ export default function ViewEvents() {
       }
       const parsedCall = (apicall).split('?');
       if (parsedCall[1] !== undefined) {
-        history.push('/?'+parsedCall[1]);
+        history.push('/'+parsedCall[1]);
       } else {
         history.push('/');
       }
@@ -568,90 +524,10 @@ export default function ViewEvents() {
    * apply filters that are set to true
    */
   function applyFilters() {
-    // set url for filters but attaching &filter for all true filters
-    if (searchBoolean === true) {
-      let url = '?'+((window.location.href).split('?'))[1];
-      let addedFilter = false;
-      for (const i in businesses) {
-        if (businesses[i] === true) {
-          if (addedFilter) {
-            url += '&' + i;
-          } else {
-            url += '?' + i;
-          }
-          addedFilter = true;
-        }
-      }
-      for (const i in categories) {
-        if (categories[i] === true) {
-          if (addedFilter) {
-            url += '&' + i;
-          } else {
-            url += '?' + i;
-          }
-          addedFilter = true;
-        }
-      }
-      for (const i in restrictions) {
-        if (restrictions[i] === true) {
-          if (addedFilter) {
-            url += '&' + i;
-          } else {
-            url += '?' + i;
-          }
-          addedFilter = true;
-        }
-      }
-      history.push(url);
-    } else {
-      let url = '?';
-      let addedFilter = false;
-      for (const i in businesses) {
-        if (businesses[i] === true) {
-          if (addedFilter) {
-            url += '&' + i;
-          } else {
-            url += i;
-          }
-          addedFilter = true;
-        }
-      }
-      for (const i in categories) {
-        if (categories[i] === true) {
-          if (addedFilter) {
-            url += '&' + i;
-          } else {
-            url += i;
-          }
-          addedFilter = true;
-        }
-      }
-      for (const i in restrictions) {
-        if (restrictions[i] === true) {
-          if (addedFilter) {
-            url += '&' + i;
-          } else {
-            url += i;
-          }
-          addedFilter = true;
-        }
-      }
-      history.push(url);
-    }
-
-    // filter events
     setFilterBoolean(true);
     // use apicall for each category checked + all restriction filters
-    const filteredEvents = [];
-    // if (context.businessState === false) {
-    //   for (const i in categories) {
-    //     if (categories[i] === true) {
-    //     }
-    //   }
-    // }
-
     // combine those and then filter for businesses
-
+    const filteredEvents = [];
     if (searchBoolean === true) {
       for (let i = 0; i < searchEventsList.length; i++) {
         let added = false;
@@ -690,7 +566,6 @@ export default function ViewEvents() {
         }
       }
     } else if (context.businessState === false) {
-      console.log('no searhc user filtering');
       for (let i = 0; i < eventList.length; i++) {
         let added = false;
         // filtering restrictions
@@ -718,7 +593,6 @@ export default function ViewEvents() {
             break;
           }
         }
-        console.log(added);
         // filtering businesses
         for (const j in businesses) {
           if (businesses[j] === true && j === eventList[i].businessid &&
@@ -1078,18 +952,18 @@ export default function ViewEvents() {
                 </ListItem>
                 <ListItem>
                   <FormGroup>
-                    {categoryList.map((cat) =>
+                    {categoryList.map((category1) =>
                       <FormControlLabel
-                        key={cat.category}
+                        key={category1.category}
                         control={
                           <Checkbox
                             checked={categories.category}
                             onChange={handleCategoryChange}
-                            name={cat.category}
+                            name={category1.category}
                             color="secondary"
                           />
                         }
-                        label={cat.category}
+                        label={category1.category}
                       />,
                     )}
                   </FormGroup>
