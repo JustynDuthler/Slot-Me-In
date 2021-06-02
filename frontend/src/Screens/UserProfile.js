@@ -16,8 +16,6 @@ import {getUserInfo} from '../API/UserAPI';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    // minHeight: '100%',
-    // maxHeight: 'calc(100% - 50px)',
   },
   container: {
     marginTop: theme.spacing(4),
@@ -42,11 +40,9 @@ const useStyles = makeStyles((theme) => ({
   },
   businessText: {
     [theme.breakpoints.down('md')]: {
-      // margin: theme.spacing(2),
     },
   },
   userInfo: {
-    // height: '5rem',
     display: 'flex',
     padding: theme.spacing(2),
     [theme.breakpoints.up('lg')]: {
@@ -67,6 +63,64 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
   },
 }));
+
+
+/**
+ * The main Component for the UserProfile
+ * Displays some user information along with currently attending events
+ * @param {*} props
+ * @return {object} JSX
+ */
+const UserProfile = (props) => {
+  const [userState, setUserState] = React.useState(null);
+  const [memberBusinesses, setMemberBusinesses] = React.useState([]);
+  // const [publicBusinesses, setPublicBusinesses] = React.useState([]);
+  const [eventList, setEventList] = React.useState([]);
+  const [error, setError] = React.useState(null);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [colorDict] = React.useState({});
+
+  const classes = useStyles();
+
+  React.useEffect(async () => {
+    try {
+      const userInfo = await getUserInfo();
+      const businessInfo = await getMemberBusinesses(userInfo.useremail);
+      const eventInfo = await getUsersEvents();
+      setUserState(userInfo);
+      setMemberBusinesses(businessInfo);
+      setEventList(eventInfo);
+      setIsLoaded(true);
+    } catch (error) {
+      console.log(error);
+      setError(error);
+    }
+  }, []);
+
+  if (!isLoaded) {
+    return <h1>Loading...</h1>;
+  }
+  if (error) {
+    return <h1>Error</h1>;
+  }
+
+  return (
+    <Box className={classes.root}>
+      <Box className={classes.container}>
+        <UserInfo
+          info={userState}
+          memberBusinesses={memberBusinesses}
+          colorDict={colorDict}
+        />
+        <Content
+          memberBusinesses={memberBusinesses}
+          eventList={eventList}
+          colorDict={colorDict}
+        />
+      </Box>
+    </Box>
+  );
+};
 
 /**
  * @return {object} JSX
@@ -221,63 +275,6 @@ Content.propTypes = {
   memberBusinesses: PropTypes.arrayOf(PropTypes.object),
   eventList: PropTypes.arrayOf(PropTypes.object),
   colorDict: PropTypes.object,
-};
-
-
-/**
- *
- * @param {*} props
- * @return {object} JSX
- */
-const UserProfile = (props) => {
-  const [userState, setUserState] = React.useState(null);
-  const [memberBusinesses, setMemberBusinesses] = React.useState([]);
-  // const [publicBusinesses, setPublicBusinesses] = React.useState([]);
-  const [eventList, setEventList] = React.useState([]);
-  const [error, setError] = React.useState(null);
-  const [isLoaded, setIsLoaded] = React.useState(false);
-  const [colorDict] = React.useState({});
-
-  const classes = useStyles();
-
-  React.useEffect(async () => {
-    try {
-      const userInfo = await getUserInfo();
-      const businessInfo = await getMemberBusinesses(userInfo.useremail);
-      const eventInfo = await getUsersEvents();
-      setUserState(userInfo);
-      setMemberBusinesses(businessInfo);
-      setEventList(eventInfo);
-      setIsLoaded(true);
-    } catch (error) {
-      console.log(error);
-      setError(error);
-    }
-  }, []);
-
-  if (!isLoaded) {
-    return <h1>Loading...</h1>;
-  }
-  if (error) {
-    return <h1>Error</h1>;
-  }
-
-  return (
-    <Box className={classes.root}>
-      <Box className={classes.container}>
-        <UserInfo
-          info={userState}
-          memberBusinesses={memberBusinesses}
-          colorDict={colorDict}
-        />
-        <Content
-          memberBusinesses={memberBusinesses}
-          eventList={eventList}
-          colorDict={colorDict}
-        />
-      </Box>
-    </Box>
-  );
 };
 
 export default UserProfile;
