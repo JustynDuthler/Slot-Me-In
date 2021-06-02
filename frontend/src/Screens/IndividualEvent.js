@@ -97,6 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
   chip: {
     marginRight: 5,
+    textTransform: 'capitalize',
   },
   description: {
     marginTop: theme.spacing(3),
