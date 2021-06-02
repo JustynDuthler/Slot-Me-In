@@ -68,7 +68,7 @@ VALUES ('gym'), ('school'), ('club'), ('brewery'), ('cooking'), ('tutoring'), ('
 
 -- 10 events
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, description, category)
-VALUES ('00000000-0001-0000-0000-000000000000', 'Morning Yoga', '00000000-0000-0000-0000-000000000000', '2021-06-07T18:00:00.000Z', '2021-06-08T19:00:00.000Z', 5, 'Come join us for a morning yoga session to start your day!', 'gym');
+VALUES ('00000000-0001-0000-0000-000000000000', 'Morning Yoga', '00000000-0000-0000-0000-000000000000', '2021-06-07T16:00:00.000Z', '2021-06-07T17:00:00.000Z', 5, 'Come join us for a morning yoga session to start your day!', 'gym');
 INSERT INTO Events(eventid, eventname, businessid, starttime, endtime, capacity, category, over18)
 VALUES ('00000000-0002-0000-0000-000000000000', 'Welcome Party', '10000000-0000-0000-0000-000000000000', '2021-06-09T03:30:00.000Z', '2021-06-09T04:30:00.000Z', 10, 'party', TRUE);
 INSERT INTO Events(membersonly, eventid, eventname, businessid, starttime, endtime, capacity, description, category)
@@ -168,7 +168,7 @@ VALUES ('julia@ucsc.edu', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
 VALUES ('spencer@ucsc.edu', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
-VALUES ('katie', '30000000-0000-0000-0000-000000000000');
+VALUES ('katie@ucsc.edu', '30000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
 VALUES ('justyn@gmail.com', '10000000-0000-0000-0000-000000000000');
 INSERT INTO Members(memberemail, businessid)
