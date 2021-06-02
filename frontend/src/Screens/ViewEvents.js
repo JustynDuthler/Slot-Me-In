@@ -63,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    // flexDirection: row,
   },
   allButFooter: {
     minHeight: 'calc(100vh - 50px)',
@@ -169,8 +168,8 @@ export default function ViewEvents() {
 
   /**
    * getPublicAndMemberEvents
-   * API call to get all businesses the user
-   * is a part of
+   * API call to get all public events and member restricted events
+   * for businesses the member is a part of
    * @param {string} email
    */
   function getPublicAndMemberEvents(email) {
@@ -198,8 +197,7 @@ export default function ViewEvents() {
 
   /**
    * getMemberBusinesses
-   * API call to get all businesses the user
-   * is a part of
+   * API call to get all businesses the user is a part of
    * @param {string} email
    */
   function getMemberBusinesses(email) {
@@ -222,8 +220,7 @@ export default function ViewEvents() {
 
   /**
    * getMemberEvents
-   * API call to get all events for businesses the user
-   * is a part of
+   * API call to get all events for businesses the user is a part of
    * @param {string} email
    */
   function getMemberEvents(email) {
@@ -246,7 +243,7 @@ export default function ViewEvents() {
 
   /**
    * getPublicEvents
-   * gets all public events
+   * Gets all public events
    */
   function getPublicEvents() {
     const apicall = 'http://localhost:3010/api/events/publicEvents';
@@ -272,7 +269,7 @@ export default function ViewEvents() {
 
   /**
    * getBusinessEvents
-   * gets events for a business when in a business account
+   * Gets events for a business when in a business account
    */
   function getBusinessEvents() {
     const apicall = 'http://localhost:3010/api/events';
@@ -299,7 +296,7 @@ export default function ViewEvents() {
 
   /**
    * getAllBusinesses
-   * obtains all businesses
+   * Obtains all businesses for the business filters
    */
   function getAllBusinesses() {
     const apicall = 'http://localhost:3010/api/businesses';
@@ -326,7 +323,7 @@ export default function ViewEvents() {
 
   /**
    * getCategories
-   * obtains all businesses
+   * Obtains all event categories for the filters
    */
   function getCategories() {
     const apicall = 'http://localhost:3010/api/events/categories';
@@ -372,19 +369,16 @@ export default function ViewEvents() {
     getCategories();
   }, [context.businessState]);
 
-  // console.log(categories);
   /**
    * searchFromURL
-   * obtains all businesses
+   * Searches events by parsing the URL
    * @param {string} url
    * @param {email} email
    */
   function searchFromURL(url, email) {
     let apicall = 'http://localhost:3010/api/events';
     /* if user account */
-    // console.log('url: '+url);
     if (context.businessState === false) {
-      // apicall += '/search/'+email+'?search='+url;
       if (url !== '') {
         apicall += '/search/'+encodeURIComponent(email)+'?'+url;
       }
@@ -414,7 +408,7 @@ export default function ViewEvents() {
 
   /**
    * searchEvents
-   * takes input and searches events
+   * Searches events using date and time
    * @param {*} event
    */
   const searchEvents = (event) => {
@@ -523,12 +517,10 @@ export default function ViewEvents() {
 
   /**
    * applyFilters
-   * apply filters that are set to true
+   * Filter through events using filters that are set to true
    */
   function applyFilters() {
     setFilterBoolean(true);
-    // use apicall for each category checked + all restriction filters
-    // combine those and then filter for businesses
     const filteredEvents = [];
     if (searchBoolean === true) {
       for (let i = 0; i < searchEventsList.length; i++) {
@@ -675,7 +667,7 @@ export default function ViewEvents() {
 
   /**
    * handleRestrictionChange
-   * used for restriction filter checkboxes
+   * Change state of restriction filter
    * @param {*} event
    */
   const handleRestrictionChange = (event) => {
@@ -685,7 +677,7 @@ export default function ViewEvents() {
 
   /**
    * handleCategoryChange
-   * used for category filter checkboxes
+   * Change state of category filter
    * @param {*} event
    */
   const handleCategoryChange = (event) => {
@@ -694,7 +686,7 @@ export default function ViewEvents() {
 
   /**
    * handleBusinessChange
-   * used for business filter checkboxes
+   * Change state of business filter
    * @param {*} event
    */
   const handleBusinessChange = (event) => {
@@ -853,6 +845,7 @@ export default function ViewEvents() {
     );
   }
 
+  /* Show searched events if something is searched for */
   let showSearchedEvents;
   if (searchBoolean === false && filterBoolean === false) {
     showSearchedEvents = (
