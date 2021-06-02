@@ -1,0 +1,1328 @@
+#
+# SlotMeIn Backend
+#
+
+openapi: "3.0.3"
+
+info:
+  description: API for SlotMeIn, a business timeslot reservation web app
+  version: 0.1.0
+  title: SlotMeIn API
+
+servers:
+  - url: http://localhost:3010/api
+
+paths:
+  /test/get_token:
+    get:
+      description: Gets a test token
+
+      responses:
+        200:
+          description: a jwt is being sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+  /test/get_business_token:
+    get:
+      description: Gets a business test token
+      responses:
+        200:
+          description: a jwt is being sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+  /test/test_token:
+    post:
+      description: Test API to check token sending
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Accepted JWT
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTestSchema"
+  /test/get_token_type:
+    get:
+      description: Returns whether token is a business or user token
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: User Type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTestSchema"
+        401:
+          description: Token is missing or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/getUserEvents:
+    get:
+      description: Gets events a user has signed up for based on JWT
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Sending user events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+
+  /users/getUser:
+    get:
+      description: Gets user information
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Sending user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+
+  /users/signup:
+    post:
+      description: Creates a new user account
+      tags:
+        - users
+      requestBody:
+        description: User details to set for user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccount"
+      responses:
+        201:
+          description: Successfully created user account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Unexpected property in account details
+        409:
+          description: Account with given email already exists
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/login:
+    post:
+      description: Validate user account credentials during login
+      tags:
+        - users
+      requestBody:
+        description: Account credentials to login with
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Email and password must be specified
+        401:
+          description: Incorrect password
+        404:
+          description: User account with given email not found
+
+  /users/removeUserAttending:
+    delete:
+      description: remove a user from the given event
+      tags:
+        - users
+      requestBody:
+        description: eventid
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEvent'
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successful delete
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /users/{userid}/events:
+    get:
+      description: Retrieves all events that a user has signed up for
+      tags:
+        - users
+      parameters:
+        - name: userid
+          in: path
+          description: ID of user to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: User with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses/signup:
+    post:
+      description: Creates a new business account
+      tags:
+        - businesses
+      requestBody:
+        description: Business details to set for account
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccount"
+      responses:
+        201:
+          description: Successfully created business account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Unexpected property in account details
+        409:
+          description: Account with given email already exists
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /businesses/login:
+    post:
+      description: Validate business account credentials during login
+      tags:
+        - businesses
+      requestBody:
+        description: Account credentials to login with
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        400:
+          description: Email and password must be specified
+        401:
+          description: Incorrect password
+        404:
+          description: Business account with given email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /businesses/getBusiness:
+    get:
+      description: Gets business information
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Sending business info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+
+
+  /businesses/getBusinessEvents:
+    get:
+      description: Gets events a business has created based on JWT
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        403:
+          description: Wrong user type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        200:
+          description: Sending business events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+  /businesses/{businessid}/events:
+    get:
+      description: Retrieves all events that a business has created
+      tags:
+        - businesses
+      parameters:
+        - name: businessid
+          in: path
+          description: ID of business to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: Business with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses/checkBusinessID:
+    get:
+      description: get the business info
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Given ID is a business ID
+        401:
+          description: Token is missing or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        403:
+          description: Given ID is not a business ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses/{businessid}:
+    get:
+      description: Retrieves business information associated with a specified businessID
+      tags:
+        - businesses
+      parameters:
+        - name: businessid
+          in: path
+          description: ID of business to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved business info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+        404:
+          description: Business with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses:
+    get:
+      description: Retrieves business information for all businesses
+      tags:
+        - businesses
+      responses:
+        200:
+          description: Successfully retrieved businesses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessList"
+        404:
+          description: Businesses not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /businesses/uploadProfileImage:
+    post:
+      description: Upload a business profile pictures
+      tags:
+        - businesses
+      requestBody:
+        description: binary image database
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Image:
+                  type: string
+                  format: binary
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: successfully uploaded profile image
+        400:
+          description: wrong file type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot save image
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+  /businesses/getProfileImage:
+    get:
+      description: get a business profile picture
+      tags:
+        - businesses
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: successfully retrieved profile image
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot read image from server
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /businesses/{businessid}/getProfileImage:
+    get:
+      description: get a business profile picture for individual event page
+      tags:
+        - businesses
+      parameters:
+        - name: businessid
+          in: path
+          description: ID of business to retrieve events from
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: successfully retrieved profile image
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot read image from server
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events:
+    post:
+      description: Create a new event
+      tags:
+        - events
+      requestBody:
+        description: Event details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: Successfully created event, returns event with generated event ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        400:
+          description: Unexpected property in event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      description: Get a list of events
+      tags:
+        - events
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events starting after a given timestamp (optional)
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events ending before a given timestamp (optional)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search events by text (optional)
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Search events by category (optional)
+        - name: membersonly
+          in: query
+          schema:
+            type: boolean
+          description: Get events marked as membersonly (optional)
+        - name: over18
+          in: query
+          schema:
+            type: boolean
+          description: Get events marked as 18+ (optional)
+        - name: over21
+          in: query
+          schema:
+            type: boolean
+          description: Get events marked as 21+ (optional)
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events/{eventid}:
+    get:
+      description: Retrieves a single event associated with a specified eventID
+      tags:
+        - events
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      description: Deletes an event associated with an eventID
+      tags:
+        - events
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: deleteAll
+          in: query
+          description: For a repeating event, delete all other instances of this event
+          required: false
+          schema:
+            type: boolean
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully deleted event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /events/{eventid}/signup:
+    put:
+      description: Signup for event associated with specified eventID
+      tags:
+        - events
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to signup for
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully signed up for event
+        403:
+          description: User does not meet event restrictions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Event ID does not exist
+        409:
+          description: User already signed up for this event
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /events/publicEvents:
+    get:
+      description: Returns an array of public events
+      tags:
+        - events
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /events/publicAndMemberEvents/{useremail}:
+    get:
+      description: Returns an array of upcoming public and member events
+      tags:
+        - events
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: all
+          in: query
+          description: Return all events, including past events (default false)
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /events/search/{useremail}:
+    get:
+      description: Returns an array of public and member events
+      tags:
+        - events
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events starting after a given timestamp (optional)
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Get only events ending before a given timestamp (optional)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search events by text (optional)
+      responses:
+        200:
+          description: Successfully returned events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /events/categories:
+    get:
+      description: Returns an array of all the possible categories
+      tags:
+        - events
+      responses:
+        200:
+          description: successfully retrieved categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryList'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /attendees/{eventid}:
+    get:
+      description: Retrieves number of attendees for an event
+      tags:
+        - attendees
+      parameters:
+        - name: eventid
+          in: path
+          description: ID of event to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Successfully retrieved attendees
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttendeesList"
+        404:
+          description: Event with specified ID not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /members/getMembers:
+    get:
+      description: gets the members of a business
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully retrieved members
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        409:
+          description: no members exist
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /members/insertMembers:
+    post:
+      description: adds member emails to members table
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: array of member emails
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailList"
+      responses:
+        200:
+          description: Successfully inserted emails
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemberList"
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: Authorization Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: cannot insert into database
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /members/deleteMember:
+    delete:
+      description: Deletes a single member from the member list
+      tags:
+        - members
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Email string
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        200:
+          description: Email successfully removed from member table
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Members"
+
+  /members/getRestrictedEvents/{useremail}:
+    get:
+      description: Retrieves all events for businesses a member is a part of
+      tags:
+        - members
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve events for
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventList"
+        404:
+          description: User email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /members/getMemberBusinesses/{useremail}:
+    get:
+      description: Retrieves all businesses a member is a part of
+      tags:
+        - members
+      parameters:
+        - name: useremail
+          in: path
+          description: Email of member to retrieve businesses for
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: Successfully retrieved businesses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessList"
+        404:
+          description: User email not found
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+
+
+components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  # 1) Define the security scheme type (HTTP bearer)
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+
+  schemas:
+    AuthTestSchema:
+      type: object
+      properties:
+        auth:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+    NewAccount:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        birthdate:
+          type: string
+          format: date-time
+        phonenumber:
+          type: string
+          pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+          example: "123-456-7890"
+        description:
+          type: string
+      required:
+        - name
+        - email
+        - password
+
+    UserLogin:
+      type: object
+      maxProperties: 2
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+      required:
+        - email
+        - password
+    User:
+      type: object
+      additionalProperties: false
+      properties:
+        userid:
+          type: string
+          format: uuid
+        username:
+          type: string
+        useremail:
+          type: string
+          format: email
+        birthdate:
+          type: string
+          format: date-time
+      required:
+        - userid
+        - username
+        - useremail
+        - birthdate
+    UserList:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    Business:
+      type: object
+      maxProperties: 5
+      additionalProperties: false
+      properties:
+        businessid:
+          type: string
+          format: uuid
+        businessname:
+          type: string
+        email:
+          type: string
+          format: email
+        phonenumber:
+          type: string
+          pattern: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+          example: "123-456-7890"
+        description:
+          type: string
+      required:
+        - businessid
+        - businessname
+        - email
+    BusinessList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Business"
+    UserToken:
+      type: object
+      maxProperties: 1
+      additionalProperties: false
+      properties:
+        auth_token:
+          type: string
+      required:
+        - auth_token
+    UserEvent:
+      type: object
+      maxProperties: 1
+      additionalProperties: false
+      properties:
+        eventid:
+          type: string
+          format: uuid
+      required:
+        - eventid
+    Event:
+      type: object
+      additionalProperties: false
+      properties:
+        eventid:
+          type: string
+          format: uuid
+        businessid:
+          type: string
+          format: uuid
+        eventname:
+          type: string
+        description:
+          type: string
+        starttime:
+          type: string
+          format: date-time
+        endtime:
+          type: string
+          format: date-time
+        attendees:
+          type: integer
+        capacity:
+          type: integer
+        repeat:
+          type: boolean
+        repeattype:
+          type: string
+          maxLength: 1
+        repeatdays:
+          $ref: "#/components/schemas/RepeatDays"
+        repeatstart:
+          type: string
+          format: date-time
+        repeatend:
+          type: string
+          format: date-time
+        repeatid:
+          nullable: true
+          type: string
+          format: uuid
+        businessname:
+          type: string
+        membersonly:
+          type: boolean
+        over18:
+          type: boolean
+        over21:
+          type: boolean
+        category:
+          type: string
+          nullable: true
+      required:
+        - eventname
+        - starttime
+        - endtime
+        - capacity
+    EventList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Event"
+    CategoryList:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          category:
+            type: string
+    RepeatDays:
+      type: object
+      additionalProperties: false
+      properties:
+        sunday:
+          type: boolean
+        monday:
+          type: boolean
+        tuesday:
+          type: boolean
+        wednesday:
+          type: boolean
+        thursday:
+          type: boolean
+        friday:
+          type: boolean
+        saturday:
+          type: boolean
+
+    Attendees:
+      type: object
+      additionalProperties: false
+      properties:
+        eventid:
+          type: string
+          format: uuid
+        userid:
+          type: string
+          format: uuid
+
+    AttendeesList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Attendees"
+    Emails:
+      type: string
+      format: email
+    EmailList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Emails"
+    Members:
+      type: object
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+        userid:
+          type: string
+          nullable: true
+          format: uuid
+        birthdate:
+          type: string
+          format: date-time
+    MemberList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Members"
