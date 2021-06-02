@@ -51,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'scroll',
     scrollbarWidth: 'none',
   },
+  category: {
+    textTransform: 'capitalize',
+  },
   drawerPaper: {
     width: drawerWidth,
   },
@@ -962,6 +965,7 @@ export default function ViewEvents() {
                             color="secondary"
                           />
                         }
+                        className={classes.category}
                         label={category1.category}
                       />,
                     )}
