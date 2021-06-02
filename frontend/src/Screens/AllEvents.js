@@ -5,10 +5,10 @@ import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
 import {useHistory} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import EventCard from './Components/Events/EventCard';
+import EventCard from '../Components/Events/EventCard';
 
-import Context from './Context';
-const Auth = require('./libs/Auth');
+import Context from '../Context';
+const Auth = require('../libs/Auth');
 
 const useStyles = makeStyles({
   root: {
@@ -171,15 +171,6 @@ export default function AllEvents() {
         getBusinessEvents(parsedURL[1]);
       }
     }
-    // // if the url is just /events, get page 1 events
-    // if (window.location.href === 'http://localhost:3000/events') {
-    //   getEvents(1);
-    // } else {
-    //   // parse url to get the page number and pass it to getEvents
-    //   const parsedURL = (window.location.href).split('=');
-    //   setCurrentPage(parseInt(parsedURL[1]));
-    //   getEvents(parsedURL[1]);
-    // }
   }, []);
 
   /**

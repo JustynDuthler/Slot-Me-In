@@ -8,7 +8,6 @@ dotenv.config();
 exports.deleteMember = async (req, res) => {
   const businessid = req.payload.id;
   const email = req.body.email;
-  console.log(req.body.email);
   /* get removed member info */
   const removedMember = await memberDb.getMemberUserNameID(email);
   const member = {

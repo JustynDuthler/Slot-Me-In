@@ -76,7 +76,6 @@ export default function Login() {
           // save JWT and set authState after logging in
           Auth.saveJWT(json.auth_token);
           context.setAuthState(true);
-          console.log(json);
           context.setBusinessState(showBusiness);
           history.push('/');
         })

@@ -76,6 +76,12 @@ exports.delete = async (req, res) => {
     // 404 if event not found
     res.status(404).send();
   } else {
+    if (req.payload.id !== event.businessid) {
+      // 403 if business did not create the event being deleted
+      res.status(403).json({code: 403, message:
+        'You may only delete events that you have created.'});
+      return;
+    }
     if (req.body.deleteAll && event.repeatid) {
       // deleteAll is true and event is an instance of a repeating event
       // deletion of RepeatingEvent will cascade to Events

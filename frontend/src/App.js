@@ -16,7 +16,7 @@ import IndividualEvent from './Screens/IndividualEvent';
 import PublicBusinessProfile from './Screens/PublicBusinessProfile';
 import UserProfile from './Screens/UserProfile';
 import BusinessProfile from './Screens/BusinessProfile';
-import AllEvents from './AllEvents';
+import AllEvents from './Screens/AllEvents';
 import About from './Screens/About';
 import Contact from './Screens/Contact';
 import NavBar from './Components/Nav/NavBar';
@@ -114,7 +114,6 @@ function App() {
       } else {
         setBusinessState(false);
       }
-      console.log('user type:', json);
     })
         .catch((error) => {
           console.log(error);

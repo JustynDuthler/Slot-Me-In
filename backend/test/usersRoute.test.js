@@ -28,8 +28,8 @@ beforeEach(async () => {
 /*
 ---------------------------signup tests------------------------------------
 
-  1. Signup with valid account
-  2. Signup with existing email
+  1. Signup with valid account  (200)
+  2. Signup with existing email (409)
 
 */
 
@@ -55,9 +55,9 @@ test('Create Account With Existing Email', async () => {
 /*
 ---------------------------login tests------------------------------------
 
-  1. Successful login
-  2. Login with incorrect password
-  3. Login with non-existing email
+  1. Successful login               (200)
+  2. Login with incorrect password  (401)
+  3. Login with non-existing email  (404)
 
 */
 
@@ -87,8 +87,8 @@ test('Login With Non-Existing Email', async () => {
 /*
 ---------------------------getUser tests------------------------------------
 
-  1. getUser With Valid User Token
-  2. getUser With Invalid User Token
+  1. getUser With Valid User Token    (200)
+  2. getUser With Invalid User Token  (401)
 
 */
 
@@ -119,8 +119,8 @@ test('getUser With Invalid User Token', async () => {
 /*
 ---------------------------getUserEvents tests------------------------------------
 
-  1. getUserEvents With Valid User Token
-  2. getUserEvents With Invalid User Token
+  1. getUserEvents With Valid User Token    (200)
+  2. getUserEvents With Invalid User Token  (401)
 
 */
 
@@ -160,8 +160,8 @@ test('getUserEvents With Invalid User Token', async () => {
 /*
 ---------------------------removeUserAttending tests------------------------------------
 
-  1. removeUserAttending With Valid Event ID
-  2. removeUserAttending With Invalid Event ID
+  1. removeUserAttending With Valid Event ID    (200)
+  2. removeUserAttending With Invalid Event ID  (403)
 
 */
 

@@ -72,7 +72,6 @@ export default function CreateEvent() {
       method: 'GET',
     }).then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setChipData(data);
         },
         (error) => {
@@ -128,7 +127,6 @@ export default function CreateEvent() {
         }
         return response.json();
       }).then((json) => {
-        console.log(json);
         history.push('/events');
       })
           .catch((error) => {
