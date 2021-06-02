@@ -57,12 +57,14 @@ export default function UserInfo({picture: path, name: name, email: email,
       'margin': '0',
       'width': '100%',
       'height': '100%',
+      'borderRadius': '50%',
       '&:hover': {
         'border-style': 'dashed',
         'border-color': theme.palette.primary.dark,
       },
     },
     pfp: {
+      'borderRadius': '50%',
       '&:hover': {
         'backgroundColor': theme.palette.back.main,
         'color': theme.palette.primary.dark,
@@ -147,7 +149,9 @@ export default function UserInfo({picture: path, name: name, email: email,
           ) : (
             <Box width='100%' height='100%'>
               <Avatar
-                alt={'pfp'} width='auto'
+                style={{marginTop: 10}}
+                src='../../../images/businessProfileImages/stockPhoto.png'
+                alt={name} width='auto'
                 className={classes.avatar}
               />
             </Box>
@@ -311,15 +315,20 @@ export function BusinessInfo({picture: path, name: name, email: email,
   className: className, ...rest}) {
   const useStyles = makeStyles((theme) => ({
     avatar: {
+      textAlign: 'center',
       margin: '0 auto',
+      marginTop: 10,
       fontSize: '6rem',
-      width: '100%',
-      height: '100%',
+      width: theme.spacing(15),
+      height: theme.spacing(15),
       [theme.breakpoints.up('md')]: {
         fontSize: '10rem',
         width: theme.spacing(25),
         height: theme.spacing(25),
       },
+    },
+    img: {
+      borderRadius: '50%',
     },
     businessName: {
       marginTop: theme.spacing(3),
@@ -360,17 +369,18 @@ export function BusinessInfo({picture: path, name: name, email: email,
   }, []);
   return (
     <Grid item className={classes.businessInfo} {...rest}>
-      {image.preview ? (
-        <img src={image.preview} alt="dummy" width='100%' height='auto'
-          style={{marginTop: '10px'}}/>
-      ) : (
-        <Box width='100%' height='100%'>
-          <img
-            src={'http://localhost:3010/static/businessProfileImages/stockPhoto.png'}
-            alt="dummy" width='100%' height='auto'
-            style={{marginTop: '10px'}}/>
-        </Box>
-      )}
+      <Box width='100%' height='100%' className={classes.avatar}>
+        {image.preview ? (
+          <img className={classes.img}
+            src={image.preview} alt="dummy" width='100%' height='auto'/>
+        ) : (
+            <Avatar
+              src='../../../images/businessProfileImages/stockPhoto.png'
+              alt={name}
+              className={classes.avatar}
+            />
+            )}
+      </Box>
       <Typography className={classes.businessName}
         variant='h3' align='center'>
         {name}

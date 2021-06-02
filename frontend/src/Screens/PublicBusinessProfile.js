@@ -181,6 +181,7 @@ const PublicBusinessProfile = (props) => {
           <Grid item md={3}>
             <BusinessInfo
               picture='picture'
+              businessid={businessid}
               name={businessData.businessname}
               email={businessData.email}
               phonenumber={businessData.phonenumber}
