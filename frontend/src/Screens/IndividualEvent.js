@@ -10,6 +10,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
@@ -174,11 +178,22 @@ const IndividualEvent = (props) => {
   const [signupType, setSignupType] = useState(undefined);
   const [numAttendees, setNumAttendees] = useState(undefined);
   const [confirmDialog, setConfirmDialog] = React.useState(false);
+  const [deleteDialog, setDeleteDialog] = React.useState(false);
+  const [deleteState, setDeleteState] = React.useState('');
   const [eventList, setEventList] = React.useState([]);
   const properties = [['membersonly', 'Members Only'], ['over18', '18+'],
     ['over21', '21+'], ['category',
       eventData.category ? eventData.category[0].toUpperCase() +
       eventData.category.substring(1) : null]];
+
+  /**
+   * handleRadioChange
+   * @param {*} event
+   * Sets the state for how a repeating event should be deleted
+   */
+  const handleRadioChange = (event) => {
+    setDeleteState(event.target.value);
+  };
 
   useEffect(() => {
     getEventData();
@@ -396,7 +411,12 @@ const IndividualEvent = (props) => {
    * API call to delete an event
    */
   function deleteEvent() {
-    const apicall = 'http://localhost:3010/api/events/'+eventid;
+    let apicall = 'http://localhost:3010/api/events/'+eventid;
+    if (deleteState === 'deleteAll') {
+      apicall += '?deleteAll=true';
+    } else if (deleteState === 'deleteFollowing') {
+      apicall += '?deleteFollowing=true';
+    }
     fetch(apicall, {
       method: 'DELETE',
       headers: Auth.headerJsonJWT(),
@@ -526,17 +546,10 @@ const IndividualEvent = (props) => {
             (<Button className={classes.deleteButton}
               variant="contained"
               onClick={() => {
-                setConfirmDialog(true);
+                setDeleteDialog(true);
               }}>
               Delete Event
             </Button>)}
-          {!context.authState &&
-            (<Button className={classes.signupButton}
-              variant="contained" color="secondary"
-              href='/login'>
-              Login To Sign Up For Event
-            </Button>)
-          }
           {!context.authState &&
             (<Button className={classes.signupButton}
               variant="contained" color="secondary"
@@ -594,9 +607,7 @@ const IndividualEvent = (props) => {
         </Alert>
       </Snackbar>
 
-      {/* Confirmation dialog
-          User: withdrawing from event
-          Business: deleting event */}
+      {/* Confirmation dialog for withdrawing from event */}
       <Dialog
         open={confirmDialog}
         onClose={() => {
@@ -604,30 +615,77 @@ const IndividualEvent = (props) => {
         }}
         aria-labelledby="confirm-dialog-title">
         <DialogTitle id="confirm-dialog-title">
-          {context.businessState ? 'Delete Event' : 'Withdraw From Event'}
+          Withdraw From Event
         </DialogTitle>
         <DialogContentText className={classes.dialogText}>
-          {context.businessState ?
-            'Are you sure you want to delete this event?' :
-            'Are you sure you want to withdraw from this event?'}
+          Are you sure you want to withdraw from this event?
         </DialogContentText>
         <DialogActions>
           <Button
             className={classes.no}
             onClick={() => {
-              // Close dialog and don't withdraw/delete if user clicks No
+              // Close dialog and don't withdraw if user clicks No
               setConfirmDialog(false);
             }}>
-            No
+            Cancel
           </Button>
           <Button
             className={classes.yes}
             onClick={() => {
-              // Call withdraw/deleteEvent, close dialog if user clicks Yes
-              context.businessState ? deleteEvent() : withdraw();
+              // Call withdraw close dialog if user clicks Yes
+              withdraw();
               setConfirmDialog(false);
             }}>
-            Yes
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirmation dialog for deleting events */}
+      <Dialog open={deleteDialog} onClose={() => {
+        setDeleteDialog(false);
+      }}
+      aria-labelledby="delete-dialog-title">
+        <DialogTitle id="delete-dialog-title">
+          {eventData.repeatid ? 'Delete Repeating Event' : 'Delete Event'}
+        </DialogTitle>
+        {(eventData.repeatid === null) &&
+          <DialogContentText className={classes.dialogText}>
+          Are you sure you want to delete this event?
+          </DialogContentText>}
+        {eventData.repeatid && <DialogActions>
+          <FormControl component="fieldset">
+            <RadioGroup aria-label="delete-repeating"
+              name="gender1" value={deleteState} onChange={handleRadioChange}>
+              <FormControlLabel
+                value='this' control={<Radio />}
+                label='This event' />
+              <FormControlLabel
+                value='deleteFollowing' control={<Radio />}
+                label='This and following events' />
+              <FormControlLabel
+                value='deleteAll' control={<Radio />}
+                label='All events' />
+            </RadioGroup>
+          </FormControl>
+        </DialogActions>}
+        <DialogActions>
+          <Button
+            className={classes.no}
+            onClick={() => {
+              // Close dialog and don't delete event if user clicks No
+              setDeleteDialog(false);
+            }}>
+            Cancel
+          </Button>
+          <Button
+            className={classes.yes}
+            onClick={() => {
+              // Call deleteEvent, close dialog if user clicks Yes
+              deleteEvent(eventData.eventid);
+              setDeleteDialog(false);
+            }}>
+            OK
           </Button>
         </DialogActions>
       </Dialog>

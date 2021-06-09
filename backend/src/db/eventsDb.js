@@ -68,6 +68,17 @@ exports.deleteRepeatingEvent = async (repeatid) => {
   return rows;
 };
 
+exports.deleteFollowingEvents = async (repeatid, starttime) => {
+  const del = 'DELETE FROM Events WHERE repeatid = $1 AND starttime >= $2';
+  const query = {
+    text: del,
+    values: [repeatid, starttime],
+  };
+
+  const {rows} = await pool.query(query);
+  return rows;
+};
+
 exports.checkRemainingEventCapacity = async (eventid) => {
   const insert = 'SELECT * FROM Attendees a WHERE a.eventid = $1';
   const query = {

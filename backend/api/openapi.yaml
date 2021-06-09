@@ -695,6 +695,12 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: deleteFollowing
+          in: query
+          description: For a repeating event, delete all instances of the event occurring
+            after this event
+          schema:
+            type: boolean
       security:
         - bearerAuth: []
       responses:

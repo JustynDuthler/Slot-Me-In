@@ -82,10 +82,14 @@ exports.delete = async (req, res) => {
         'You may only delete events that you have created.'});
       return;
     }
-    if (req.body.deleteAll && event.repeatid) {
+    if (req.query.deleteAll && event.repeatid) {
       // deleteAll is true and event is an instance of a repeating event
       // deletion of RepeatingEvent will cascade to Events
       await eventsDb.deleteRepeatingEvent(event.repeatid);
+    } else if (req.query.deleteFollowing && event.repeatid) {
+      // deleteFollowing is true and event is an instance of a repeating event
+      // the event and all following events will be deleted
+      await eventsDb.deleteFollowingEvents(event.repeatid, event.starttime)
     } else {
       // deleteAll is false, or event is not part of a repeating event
       await eventsDb.deleteEvent(req.params.eventid);
