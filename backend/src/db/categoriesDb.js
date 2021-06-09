@@ -1,7 +1,7 @@
 const pool = require('./dbConnection');
 
 exports.getCategories = async () => {
-  const select = 'SELECT * FROM EventCategories';
+  const select = 'SELECT * FROM EventCategories ORDER BY category';
   const query = {
     text: select,
     values: [],
